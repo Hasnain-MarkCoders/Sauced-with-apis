@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Sauced</string>
+    
+<string name="facebook_app_id">1000254491384355</string>
+<string name="fb_login_protocol_scheme">fb1000254491384355</string>
+<string name="facebook_client_token">c1b4110a1ed370643f4d764e7d4cf2e5</string>
+
+
+</resources>

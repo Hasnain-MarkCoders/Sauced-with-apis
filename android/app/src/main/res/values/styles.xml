@@ -1,0 +1,8 @@
+<resources>
+    <style name="BootTheme" parent="Theme.BootSplash">
+        <item name="bootSplashBackground">@color/bootsplash_background</item>
+        <item name="bootSplashLogo">@drawable/bootsplash_logo</item>
+        <item name="android:statusBarColor">#FFA100</item>
+<item name="android:navigationBarColor">#FFA100</item>
+    </style>
+</resources>

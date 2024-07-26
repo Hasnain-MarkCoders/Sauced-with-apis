@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1088759278734",
+    "project_id": "galileology",
+    "storage_bucket": "galileology.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088759278734:android:51a5b05f0c5b482db4addf",
+        "android_client_info": {
+          "package_name": "com.sauced"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088759278734-2e0ng2o08nol02s8tsrf2vqqed4c6eu4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sauced",
+            "certificate_hash": "0d5b415b7cf4d97a2a24603a1756eacb92550805"
+          }
+        },
+        {
+          "client_id": "1088759278734-fhb27issebbkeo2lajgjolsb0f7evavu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sauced",
+            "certificate_hash": "9df1bba687480d58bba2eaa9e4f188ccf2159283"
+          }
+        },
+        {
+          "client_id": "1088759278734-i2q7b6mth2ntcu9v3uphdcai8n8lpit8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuW6u-m8WHhFZgPI52kmq0MINeWa64H9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088759278734-i2q7b6mth2ntcu9v3uphdcai8n8lpit8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
