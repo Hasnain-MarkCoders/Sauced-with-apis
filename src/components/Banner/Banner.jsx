@@ -1,9 +1,9 @@
-import { Linking, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Linking, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
 import React, { useEffect } from 'react'
 import banner from "./../../../assets/images/banner.png";
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
-
+const screenWidth = Dimensions.get('window').width;
 const Banner = ({
     url = "",
     infoText = "",
@@ -16,18 +16,20 @@ const Banner = ({
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={{
-
-        }} activeOpacity={.8} onPress={() => { !showText && navigation.navigate("ProductDetail", { url, title }) }}>
+            
+            width:scale(screenWidth - 90),
+            borderRadius:scale(10),
+            borderWidth:.5,
+            borderColor:"#FFA100",
+            marginRight:scale(20)
+        }} activeOpacity={.8} onPress={() => { !showText && navigation.navigate("Youtube", { url, title }) }}>
 
             <ImageBackground
+            borderRadius={10}
+            style={{
+            minHeight:scale(130),
 
-                style={{
-                    width: "100%",
-                    zIndex:11111,
-                    height:scale(130),
-                    resizeMode: "contain",
-                    position:"static"
-                }}
+            }}
                 // imageStyle={{ borderRadius: 15, width:"100%", height:scale(130) }}
                 // source={{ uri: url }}
                 source={  url }
@@ -62,6 +64,7 @@ const Banner = ({
                                 <TouchableOpacity
                                     onPress={() => {
                                         // Linking.openURL(url)
+                                       navigation.navigate("EventPage")
                                     }}
                                     style={{
                                         paddingHorizontal: scale(10),
@@ -82,6 +85,8 @@ const Banner = ({
 
                                     onPress={() => {
                                         // Linking.openURL(url)
+                                    //    navigation.navigate("EventPage")
+
                                     }}
                                     style={{
                                         paddingHorizontal: scale(10),

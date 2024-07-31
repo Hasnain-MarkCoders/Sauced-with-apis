@@ -14,7 +14,9 @@ const ProductsBulletsList = ({
 
 }) => {
     return (
-      <View style={{}}>
+      <View style={{
+        paddingRight:scale(20)
+      }}>
         <FlatList
           showsHorizontalScrollIndicator={false} 
           showsVerticalScrollIndicator={false}

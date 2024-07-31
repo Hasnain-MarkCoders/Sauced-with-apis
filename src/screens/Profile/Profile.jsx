@@ -151,7 +151,7 @@ const ProfileScreen = () => {
                                                 updaterFn={setQuery}
                                                 value={query.search}
                                                 showTitle={false}
-                                                placeholder="Search Followers..."
+                                                placeholder="Search Friends..."
                                                 containterStyle={{
                                                     flexGrow: 1,
                                                 }}
@@ -191,7 +191,7 @@ const ProfileScreen = () => {
                                     }}>
 
                                         <SauceList title='My Favorites' data={topRatedSauces} />
-                                        <SauceList title='Checked in Sauces' data={topRatedSauces} />
+                                        <SauceList title='Checked-in Sauces' data={topRatedSauces} />
 
                                     </View>
 

@@ -112,7 +112,7 @@ useEffect(()=>{
                                 </View>
                                 <TouchableOpacity onPress={() => {
                                     Vibration.vibrate(10)
-                                    navigation.navigate("SauceDetails")
+                                    navigation.navigate("RequestASauceScreen")
                                 }}>
 
                                     <Text style={[styles.infoText, {
@@ -179,7 +179,7 @@ useEffect(()=>{
 
                             </View>
                             <CustomAlertModal 
-                            title='Hot Sauce Map live Soon.'
+                            title='Feature Coming Soon.'
                             modalVisible={alertModal}
                             setModalVisible={()=>setAlertModal(false)}
                             />

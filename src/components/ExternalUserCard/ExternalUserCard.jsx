@@ -1,29 +1,32 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
+import { useNavigation } from '@react-navigation/native'
 
 const ExternalUserCard = ({
-    url="",
-    name=""
+    url = "",
+    name = ""
 }) => {
     const auth = useSelector(state => state.auth)
-    const circles = [1,1,1,1,1]
+    const navigation = useNavigation()
+    const circles = [1, 1, 1, 1, 1]
     return (
         <View style={{
             width: "100%",
-            paddingVertical:scale(20),
-            paddingHorizontal:scale(10),
+            paddingVertical: scale(20),
+            paddingHorizontal: scale(20),
             borderRadius: scale(12),
             borderColor: "#FFA100",
             borderWidth: scale(1),
-            gap:scale(20)
+            gap: scale(10),
         }}>
             <View style={{
                 flexDirection: "row",
-                justifyContent:"flex-start",
-                gap:scale(10)
+                justifyContent: "flex-start",
+                gap: scale(12),
+                alignItems: "center"
             }}>
                 <Image
                     style={{
@@ -34,124 +37,150 @@ const ExternalUserCard = ({
                         borderWidth: scale(1)
                     }}
                     // source={{ uri: url }}
-                    source={url }
+                    source={url}
 
                 />
                 <View style={{
-                    gap:scale(14)
+                    // gap:scale(14)
+                    flexGrow: 1
                 }}>
 
-                    <Text 
-         numberOfLines={1} ellipsizeMode="tail"
-                    
-                    style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: scale(20),
-                        lineHeight: scale(24),
-                        maxWidth:scale(100)
-                    }}>{name}</Text>
-                    <View>
+                    <Text
+                        numberOfLines={1} ellipsizeMode="tail"
+
+                        style={{
+                            color: "white",
+                            fontWeight: 600,
+                            fontSize: scale(20),
+                            lineHeight: scale(24),
+                            maxWidth: scale(100)
+                        }}>{name}</Text>
+                    <View >
                         <View style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            gap: scale(10)
+                            gap: scale(15)
                         }}>
+                            <TouchableOpacity
+                            onPress={()=>{
+                                navigation.navigate("Followers")
+                            }}
+                            >
+
                             <View style={{
-                                alignItems:"center"
+                                alignItems: "center",
+                                justifyContent: "center"
                             }}>
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(30),
+                                    fontSize: scale(20),
                                     lineHeight: scale(36),
                                 }}>{generateThreeDigitRandomNumber()}</Text>
                                 <Text style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: scale(10),
-                        lineHeight: scale(25),
-                    }}>Followers</Text>
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(10),
+                                    lineHeight: scale(15),
+                                }}>Followers</Text>
                             </View>
+                            </TouchableOpacity>
+                                <TouchableOpacity 
+                                onPress={()=>{
+                                    navigation.navigate("Following")
+                                }}>
 
-                            <View>
+                            <View style={{
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(30),
+                                    fontSize: scale(20),
                                     lineHeight: scale(36),
                                 }}>{generateThreeDigitRandomNumber()}</Text>
                                 <Text style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: scale(10),
-                        lineHeight: scale(25),
-                    }}>Following</Text>
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(10),
+                                    lineHeight: scale(15),
+                                }}>Following</Text>
                             </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                 onPress={()=>{
+                                    navigation.navigate("AllCheckinsScreen", {routerNumber:1})
+                                }}
+                                >
 
-                            <View>
+                            <View style={{
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(30),
+                                    fontSize: scale(20),
                                     lineHeight: scale(36),
                                 }}>{generateThreeDigitRandomNumber()}</Text>
                                 <Text style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: scale(10),
-                        lineHeight: scale(25),
-                    }}>Check-ins</Text>
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(10),
+                                    lineHeight: scale(15),
+                                }}>Check-ins</Text>
                             </View>
+                                </TouchableOpacity>
 
                         </View>
                     </View>
                 </View>
             </View>
             <View style={{
-                flexDirection:"row",
-                justifyContent:"space-between"
+                flexDirection: "row",
+                justifyContent: "space-between"
             }}>
                 <View style={{
-                    flexDirection:"row",
-                    gap:scale(5)
+                    flexDirection: "row",
+                    gap: scale(5)
                 }}>
                     <Text style={{
-                        color:"#fff",
-                        fontSize:scale(10)
+                        color: "#fff",
+                        fontSize: scale(10)
                     }}>
                         Joined Date:
                     </Text>
                     <Text style={{
-                        color:"#FFA100",
-                        fontSize:scale(10)
+                        color: "#FFA100",
+                        fontSize: scale(10)
                     }}>
-                    {getRandomDate()}
+                        {getRandomDate()}
                     </Text>
                 </View>
                 <View style={{
-                    gap:scale(10),
-                    alignItems:"center",
-                    flexDirection:"row",
-                    
+                    gap: scale(10),
+                    alignItems: "center",
+                    flexDirection: "row",
+
                 }}>
                     <View style={{
-                        width:scale(10),
-                        height:scale(10),
-                        borderRadius:scale(50),
-                        backgroundColor:"#FFA100"
+                        width: scale(10),
+                        height: scale(10),
+                        borderRadius: scale(50),
+                        backgroundColor: "#FFA100"
                     }}>
 
                     </View>
-                    {circles.map((item, index)=><View key={index} style={{
-                        width:scale(10),
-                        height:scale(10),
-                        borderRadius:scale(50),
-                        backgroundColor:"#774d06"
+                    {circles.map((item, index) => <View key={index} style={{
+                        width: scale(10),
+                        height: scale(10),
+                        borderRadius: scale(50),
+                        backgroundColor: "#774d06"
                     }}>
 
                     </View>)}
-                    
+
                 </View>
             </View>
         </View>

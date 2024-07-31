@@ -6,9 +6,11 @@ const CustomRating = ({
     showRating = false,
     ratingContainerStyle = {},
     cb=()=>{},
-    isDisabled=false
+    initialRating=5,
+    isDisabled=false,
+    fractions=5
 }) => {
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState(initialRating);
     const ratingCompleted = (rating) => {
         console.log(rating)
         setRating(rating)
@@ -16,10 +18,11 @@ const CustomRating = ({
     }
     return (
         <TapRating
-        isDisbled={isDisabled}
+             isDisabled={isDisabled} 
             onFinishRating={ratingCompleted}
             size={size}
             defaultRating={rating}
+            fractions={fractions}
             showRating={showRating}
             ratingContainerStyle={
                 {

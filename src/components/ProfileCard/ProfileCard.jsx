@@ -4,7 +4,7 @@ import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
-import user from "./../../../assets/images/user.png" 
+import user from "./../../../assets/images/user.png"
 
 const ProfileCard = () => {
     const auth = useSelector(state => state.auth)
@@ -17,16 +17,18 @@ const ProfileCard = () => {
         <View style={{
             width: "100%",
             paddingVertical: scale(20),
-            paddingHorizontal: scale(10),
+            paddingHorizontal: scale(20),
             borderRadius: scale(12),
             borderColor: "#FFA100",
             borderWidth: scale(1),
-            gap: scale(20)
+            gap: scale(10),
         }}>
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
-                gap: scale(10)
+                gap: scale(12),
+                alignItems:"center"
+
             }}>
                 <Image
                     style={{
@@ -41,7 +43,7 @@ const ProfileCard = () => {
 
                 />
                 <View style={{
-                    gap: scale(14)
+                    flexGrow: 1
                 }}>
 
                     <Text style={{
@@ -49,79 +51,85 @@ const ProfileCard = () => {
                         fontWeight: 600,
                         fontSize: scale(20),
                         lineHeight: scale(24),
-                    }}>{name||"Mike"}</Text>
+                    }}>{name || "Mike"}</Text>
                     <View>
                         <View style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            gap: scale(10)
                         }}>
 
-                            <TouchableOpacity onPress={()=>{
+                            <TouchableOpacity onPress={() => {
 
-                                    navigation.navigate("Follower")
+                                navigation.navigate("Followers")
                             }}>
 
-                            <View style={{
-                                alignItems: "center"
-                            }}>
-                                <Text style={{
-                                    color: "#FFA100",
-                                    fontWeight: 600,
-                                    fontSize: scale(30),
-                                    lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
-                                <Text style={{
-                                    color: "white",
-                                    fontWeight: 600,
-                                    fontSize: scale(10),
-                                    lineHeight: scale(25),
-                                }}>Followers</Text>
-                            </View>
+                                <View style={{
+                                    alignItems: "center",
+                                    justifyContent:"center"
+                                }}>
+                                    <Text style={{
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(20),
+                                        lineHeight: scale(30),
+                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    <Text style={{
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: scale(10),
+                                        lineHeight: scale(15),
+                                    }}>Followers</Text>
+                                </View>
                             </TouchableOpacity>
-                                    <TouchableOpacity onPress={
-                                        ()=>{
-                                            navigation.navigate("Following")
-                                            
-                                        }
-                                    }>
+                            <TouchableOpacity onPress={
+                                () => {
+                                    navigation.navigate("Following")
 
-                            <View>
-                                <Text style={{
-                                    color: "#FFA100",
-                                    fontWeight: 600,
-                                    fontSize: scale(30),
-                                    lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
-                                <Text style={{
-                                    color: "white",
-                                    fontWeight: 600,
-                                    fontSize: scale(10),
-                                    lineHeight: scale(25),
-                                }}>Following</Text>
-                            </View>
-                                    </TouchableOpacity>
+                                }
+                            }>
 
-                                    <TouchableOpacity onPress={  ()=>{
-                                            navigation.navigate("AllCheckinsScreen")
-                                            
-                                        }}>
+                                <View  style={{
+                                    alignItems: "center",
+                                    justifyContent:"center"
+                                }}>
+                                    <Text style={{
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(20),
+                                        lineHeight: scale(30),
+                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    <Text style={{
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: scale(10),
+                                        lineHeight: scale(15),
+                                    }}>Following</Text>
+                                </View>
+                            </TouchableOpacity>
 
-                            <View>
-                                <Text style={{
-                                    color: "#FFA100",
-                                    fontWeight: 600,
-                                    fontSize: scale(30),
-                                    lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
-                                <Text style={{
-                                    color: "white",
-                                    fontWeight: 600,
-                                    fontSize: scale(10),
-                                    lineHeight: scale(25),
-                                }}>Check-ins</Text>
-                            </View>
-                                    </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate("AllCheckinsScreen", {routerNumber:1})
+
+                            }}>
+
+                                <View  style={{
+                                    alignItems: "center",
+                                    justifyContent:"center"
+                                }}>
+                                    <Text style={{
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(20),
+                                        lineHeight: scale(30),
+                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    <Text style={{
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: scale(10),
+                                        lineHeight: scale(15),
+                                    }}>Check-ins</Text>
+                                </View>
+                            </TouchableOpacity>
 
 
                         </View>

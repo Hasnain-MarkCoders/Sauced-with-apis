@@ -23,8 +23,8 @@ const CustomInput = ({ title = "", uri = "",localImage=false, isURL = true, mult
           <TouchableOpacity
             style={{
              ...imageStyles,
-              zIndex:2
-
+              zIndex:2,
+              position:"absolute"
             }}
             onPress={() => {
               setShowPassword(prev => !prev)

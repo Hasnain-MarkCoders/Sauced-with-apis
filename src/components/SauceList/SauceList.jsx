@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
 
-const SauceList = ({  title = "", data=[] , name="", searchTerm=""}) => {
+const SauceList = ({ title = "", data = [], name = "", searchTerm = "" }) => {
     // const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
@@ -64,21 +64,19 @@ const SauceList = ({  title = "", data=[] , name="", searchTerm=""}) => {
 
     //     fetchPhotos();
     // }, [page]);
-    
+
     return (
         <View style={styles.container}>
             <View style={{
-                flexDirection:"row", gap:scale(10)
+                flexDirection: "row", gap: scale(10)
             }}>
-            <Text
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={[styles.title, {maxWidth:scale(100)}]}>{name}</Text>
-               <Text
-            
-            style={[styles.title]}>{title}</Text>
+                {name && <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
+                {title &&<Text style={[styles.title]}>{title}</Text>}
             </View>
-         
+
             <FlatList
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
@@ -91,20 +89,20 @@ const SauceList = ({  title = "", data=[] , name="", searchTerm=""}) => {
                     }
                 }}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => <SingleSauce 
-                // url={item?.urls?.small} 
-                url={item.url}
-                // title={item?.user?.username}
-                title={item?.title} 
+                renderItem={({ item }) => <SingleSauce
+                    // url={item?.urls?.small} 
+                    url={item.url}
+                    // title={item?.user?.username}
+                    title={item?.title}
 
-                
+
                 />}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
-             {
+            {
 
-loading &&   <ActivityIndicator size="small" style={{marginBottom:scale(20)}} color="#FFA100" />
-}
+                loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
+            }
         </View>
     );
 };
@@ -113,12 +111,12 @@ export default SauceList;
 
 const styles = StyleSheet.create({
     container: {
-        gap: verticalScale(20), // This property might not work as expected in all RN versions. If it doesn't, consider adding margins manually in child components.
+        gap: scale(20), // This property might not work as expected in all RN versions. If it doesn't, consider adding margins manually in child components.
     },
     title: {
         color: "white",
-        lineHeight: verticalScale(29),
-        fontSize: moderateScale(24),
+        lineHeight: scale(29),
+        fontSize: scale(24),
         fontWeight: "600",
     },
     separator: {

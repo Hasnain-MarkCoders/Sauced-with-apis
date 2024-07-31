@@ -76,7 +76,7 @@ const EditProfileScreen = () => {
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                 // onPress={() => setShowModal(true)}
-                                title={"Edit name"}
+                                title={"Edit Name"}
                             />
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}

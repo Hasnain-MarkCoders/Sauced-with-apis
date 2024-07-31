@@ -91,7 +91,8 @@ const Product = () => {
       duration: Snackbar.LENGTH_SHORT,
       action: {
         text: 'UNDO',
-        textColor: 'green',
+        textColor: '#FFA100',
+
         onPress: () => {
           Snackbar.show({
             text: `sauce remove from List ${listNumber}`,
@@ -171,13 +172,20 @@ const Product = () => {
 
                     </Text>
 
-                    <ProductsBulletsList
+                    <Text style={{
+                      color: "white",
+                      fontFamily: "Montserrat",
+                      fontSize: scale(12),
+                      fontWeight: 700,
+                      lineHeight: 20,
 
-                      textStyles={{
-                        fontWeight: 700,
-                        color: "white"
-                      }}
-                    />
+                    }}>
+                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.
+                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh,
+                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh 
+                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh 
+
+                    </Text>
 
 
                     <Text style={{

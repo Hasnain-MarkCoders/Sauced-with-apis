@@ -72,7 +72,7 @@ const PrivateStack = () => {
                                 aspectRatio:"1/1",
                                 tintColor: focused ? 'black' : 'white'  // Set tintColor based on focus
                             }} source={icon} />
-                            <Text style={{ fontSize: 12, lineHeight: 18, color: focused ? 'black' : 'white' }}> {route.name} </Text>
+                            <Text style={{ fontSize: 12, lineHeight: 18, color: focused ? 'black' : 'white' }}> {route.name.toLocaleLowerCase()=="main"?"Profile":route.name} </Text>
                         </View>}
                         </>
                     );

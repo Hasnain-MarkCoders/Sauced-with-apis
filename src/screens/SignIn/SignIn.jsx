@@ -285,15 +285,15 @@ if(authLoading){
     <ScrollView
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1, gap:scale(14) }}
       >
      <Header showMenu={false} showProfilePic={false} cb={()=>{navigateToSignUp();  Vibration.vibrate(10)}} title="Sign in" description="Sign in with your data that you entered during registration." /> 
    
-    <View style={{  gap:scale(40),paddingHorizontal:scale(20), paddingVertical:scale(30)}}>
+    <View style={{  gap:scale(40),paddingHorizontal:scale(20),  paddingVertical:scale(10)}}>
 
       <View style={{
-        gap: 20, flex:1,
-        marginBottom:scale(20)
+        gap:scale( 10),
+         flex:1,
       }}>
         <CustomInput
           onChange={handleText}
@@ -307,11 +307,11 @@ if(authLoading){
               }}>
 
         <CustomInput
+
           imageStyles={{top:"50%", left:"90%", transform: [{ translateY: -0.5 * scale(20) }], width:scale(25), height:scale(16)}}
           isURL={false}
           showImage={true}
           uri={scaledOpenEye}
-
           onChange={handleText}
           updaterFn={setData}
           value={data.password}
@@ -322,7 +322,7 @@ if(authLoading){
            <TouchableOpacity 
               onPress={()=>
                 {setAlertModal(true)
-                setMessage('feature live soon.')}
+                setMessage('Feature Coming Soon.')}
               }>
               <Text style={{
                 color:"#C1C1C1",
@@ -333,7 +333,7 @@ if(authLoading){
               </TouchableOpacity>
         </View>
       </View>
-      <View style={{ alignItems: "center", gap: 20 }}>
+      <View style={{ alignItems: "center", gap: scale(10) }}>
         <CustomButtom
         loading={loading}
           buttonTextStyle={{ fontSize:  scale(14) }}
@@ -348,7 +348,7 @@ if(authLoading){
 
 <Text style={{
               color:"#FFA100",
-              fontSize:scale(25),
+              fontSize:scale(20),
               lineHeight:scale(30),
               fontWeight:500,
               marginVertical:scale(15)

@@ -1,0 +1,170 @@
+import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import Header from '../../components/Header/Header.jsx'
+import home from './../../../assets/images/home.png';
+import { scale, verticalScale } from 'react-native-size-matters';
+import { useNavigation } from '@react-navigation/native';
+import { handleText } from '../../../utils.js';
+import CustomInput from '../../components/CustomInput/CustomInput.jsx';
+import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
+const RequestASauceScreen = () => {
+    const [isKeyBoard, setIsKeyBoard] = useState(false)
+    const [alertModal, setAlertModal] = useState(false)
+    const [query, setQuery] = useState({
+
+        sauceName: "",
+        brandName: "",
+        webLink: "",
+        name: "",
+        title: "",
+        description: "",
+
+    });
+    const navigation = useNavigation()
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+            setIsKeyBoard(true)
+        });
+        const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+            setIsKeyBoard(false)
+        });
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
+
+    return (
+        <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
+            <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
+                <Header cb={() => navigation.goBack()}
+                    showMenu={false}
+                    showProfilePic={false} headerContainerStyle={{
+                        paddingBottom: scale(20)
+                    }} title={"Followers"} showText={false} />
+
+                <View style={{
+                    paddingHorizontal: scale(20),
+                    paddingBottom: scale(20),
+                    flex: 1
+                }}>
+                    <Text style={{
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: scale(35),
+                        lineHeight: scale(50),
+                        marginBottom: scale(20)
+                    }}>
+                        Request Sauce
+                    </Text>
+                    <View style={{
+                        gap: scale(20),
+                        flex: 1,
+                        justifyContent: "space-between",
+                    }}>
+
+                        <View style={{
+                            gap: scale(20)
+                        }}>
+                            <CustomInput
+                                // cb={() => setPage(1)}
+                                name="sauceName"
+                                onChange={handleText}
+                                updaterFn={setQuery}
+                                value={query.sauceName}
+                                showTitle={false}
+                                placeholder="Sauce Name"
+                                containterStyle={{
+                                    flexGrow: 1,
+                                }}
+                                inputStyle={{
+                                    borderColor: "#FFA100",
+                                    backgroundColor: "#2e210a",
+                                    color: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    padding: 15,
+
+                                }} />
+
+                            <CustomInput
+                                // cb={() => setPage(1)}
+                                name="brandName"
+                                onChange={handleText}
+                                updaterFn={setQuery}
+                                value={query.brandName}
+                                showTitle={false}
+                                placeholder="Brand Name"
+                                containterStyle={{
+                                    flexGrow: 1,
+                                }}
+                                inputStyle={{
+                                    borderColor: "#FFA100",
+                                    backgroundColor: "#2e210a",
+                                    color: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    padding: 15,
+
+                                }} />
+<View style={{
+    gap:scale(10)
+}}>
+
+<CustomInput
+                                // cb={() => setPage(1)}
+                                name="webLink"
+                                onChange={handleText}
+                                updaterFn={setQuery}
+                                value={query.webLink}
+                                showTitle={false}
+                                placeholder="Website Link"
+                                containterStyle={{
+                                    flexGrow: 1,
+                                }}
+                                inputStyle={{
+                                    borderColor: "#FFA100",
+                                    backgroundColor: "#2e210a",
+                                    color: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    padding: 15,
+
+                                }} />
+                                <Text style={{
+                                    color:"#FFA100",
+                                    alignSelf:"flex-end",
+                                    fontSize:scale(10)
+                                }}>Web-Link Optional</Text>
+                              
+</View>
+
+                   
+                        </View>
+                        <View>
+
+                            <CustomButtom
+                                showIcon={false}
+                                buttonTextStyle={{ fontSize: scale(14) }}
+                                buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
+                                // onPress={() => {Vibration.vibrate(10) ;setAlertModal(true)}}
+                                title={"Submit"}
+                            />
+                        </View>
+                    </View>
+                </View>
+
+
+
+
+                {/* <CustomAlertModal
+                    title='Submitted Succesfully.'
+                    modalVisible={alertModal}
+                    setModalVisible={() => setAlertModal(false)}
+                /> */}
+            </SafeAreaView>
+        </ImageBackground>
+    )
+}
+
+export default RequestASauceScreen

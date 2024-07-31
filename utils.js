@@ -278,27 +278,32 @@ export const FriendListImages = [
     // Generate a random year between 2020 and 2025
     const year = Math.floor(Math.random() * (2025 - 2020 + 1)) + 2020;
   
-    // Generate a random month between 1 and 12
-    const month = Math.floor(Math.random() * 12) + 1;
+    // Month names array
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                        "July", "August", "September", "October", "November", "December"];
+  
+    // Generate a random month index between 0 and 11
+    const monthIndex = Math.floor(Math.random() * 12);
   
     // Generate a random day based on the selected month (considering leap years for February)
     let maxDays = 31; // Default to maximum days in a month (for most months)
-    if (month === 4 || month === 6 || month === 9 || month === 11) {
+    if (monthIndex === 3 || monthIndex === 5 || monthIndex === 8 || monthIndex === 10) {
       maxDays = 30; // April, June, September, November have 30 days
-    } else if (month === 2) {
+    } else if (monthIndex === 1) {
       // February, consider leap year (not included in this basic example)
       maxDays = 28; // Assume non-leap year for simplicity
     }
   
     const day = Math.floor(Math.random() * maxDays) + 1;
   
-    // Format day, month, and year into "DD-MM-YYYY" format
+    // Format day, month, and year into "MM/DD/YYYY" format with month name
+    const formattedMonth = monthNames[monthIndex]; // Month name
     const formattedDay = day.toString().padStart(2, '0'); // Ensure two digits with leading zero if necessary
-    const formattedMonth = month.toString().padStart(2, '0'); // Ensure two digits with leading zero if necessary
     const formattedYear = year.toString();
   
-    return `${formattedDay}-${formattedMonth}-${formattedYear}`;
-  }
+    return `${formattedMonth} ${formattedDay} ${formattedYear}`;
+}
+
 
 
   export function generateRandomText(num=400) {

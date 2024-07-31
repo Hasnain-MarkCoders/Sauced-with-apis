@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, View, ImageBackground, Vibration } from 'react-native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { Image, SafeAreaView, StyleSheet, Text, View, ImageBackground, Vibration, Dimensions } from 'react-native';
+import { scale } from 'react-native-size-matters';
 import getStartedbackground from './../../../assets/images/getStartedbackground.png';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import saucedLogo from "./../../../assets/images/saucedlogo.png"
 import { useNavigation } from '@react-navigation/native';
+const screenHeight = Dimensions.get('window').height;
 const GetStarted = () => {
   const navigation = useNavigation()
   const handleNavigateSignin = ()=>{
@@ -21,18 +22,25 @@ const GetStarted = () => {
           <Text style={styles.titleText}>
             Discover your perfect flavor with our extensive sauce collection.
           </Text>
+
+
+<View style={{
+  gap:scale(15)
+}}>
+
           <CustomButtom
-            buttonTextStyle={{ fontSize: moderateScale(16) }}  // example fontSize scaling
+            buttonTextStyle={{ fontSize: scale(14) }}  // example fontSize scaling
             buttonstyle={styles.buttonStyle}
             onPress={() =>{ handleNavigateSignUp();  Vibration.vibrate(10)}}
             title={"Sign Up"}
           />
            <CustomButtom
-            buttonTextStyle={{ fontSize: moderateScale(16) }}  // example fontSize scaling
+            buttonTextStyle={{ fontSize: scale(14) }}  // example fontSize scaling
             buttonstyle={styles.buttonStyle}
             onPress={() => {handleNavigateSignin(); Vibration.vibrate(10)}}
             title={"Sign In"}
           />
+</View>
         </View>
       </SafeAreaView>
     </ImageBackground>  
@@ -50,32 +58,36 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: moderateScale(20),
-    paddingTop: verticalScale(80),
-    paddingBottom: verticalScale(100),
+    paddingHorizontal: scale(20),
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: verticalScale(20),
+    gap: scale(20),
   },
   logo: {
     width: scale(130),
     height: scale(130),
-    resizeMode:"contain"
+    resizeMode:"contain",
+    
   },
   contentContainer: {
     width: "100%",
-    gap: scale(40),
+    flexGrow:1,
+    gap:scale(20),
+    maxHeight:scale((screenHeight * .5) - 130),
+    justifyContent:"flex-end",
+    paddingBottom: scale(40),
+
   },
   titleText: {
     textAlign: "center",
     color: "white",
-    fontSize: moderateScale(30),
-    lineHeight: verticalScale(30),
+    fontSize: scale(25),
+    lineHeight: scale(30),
   },
   buttonStyle: {
     width: "100%",
     borderColor: "#FFA100",
-    padding: moderateScale(15),
+    padding: scale(15),
     backgroundColor: "#2E210A",
   },
 });

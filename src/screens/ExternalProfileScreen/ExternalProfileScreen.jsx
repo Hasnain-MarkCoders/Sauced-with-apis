@@ -13,7 +13,6 @@ import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import ExternalUserCard from '../../components/ExternalUserCard/ExternalUserCard.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import arrow from "./../../../assets/images/arrow.png";
-import search from './../../../assets/images/search_icon.png';
 
 const ExternalProfileScreen = ({
 }) => {

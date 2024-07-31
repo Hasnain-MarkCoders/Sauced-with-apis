@@ -7,7 +7,7 @@ import SingleReview from '../../components/SingleReview/SingleReview.jsx';
 import { useNavigation } from '@react-navigation/native';
 
 const AllReviewsScreen = () => {
-  const navigation = useNavigation()
+    const navigation = useNavigation()
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -16,48 +16,47 @@ const AllReviewsScreen = () => {
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}>
-                    <Header showMenu={false} showText={false} cb={() => navigation.goBack()} showProfilePic={false} showDescription={false}  />
+                    <Header showMenu={false} showText={false} cb={() => navigation.goBack()} showProfilePic={false} showDescription={false} />
                     <View style={{ paddingHorizontal: 20, flex: 1, justifyContent: "space-between", paddingVertical: 40, paddingBottom: 100, gap: scale(10) }}>
-                      <View style={{
-                        gap:20
-                      }}>
                         <View style={{
-                                flexDirection:"row",
-                                alignItems:"baseline",
-                                justifyContent:"space-between"
- 
- }}>
-                            <Text style={{
-                                 color: "white",
-                                 fontWeight: 600,
-                                 fontSize: scale(35),
-                                 lineHeight: scale(50)
+                            gap: scale(20),
+                        }}>
+                            <View style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
                             }}>
-                                Reviews
-                            </Text>
-                            <TouchableOpacity 
-                            onPress={()=>{navigation.navigate("AddReview")}}
-                            
-                            style={{
-                                backgroundColor:"#2e210a",
-                                padding:scale(10),
-                                alignSelf:"flex-start",
-                                borderRadius:scale(10),
-                                borderWidth:1,
-                                borderColor:"#FFA100"
+                                <Text style={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(35),
+                                    lineHeight: scale(50),
+                                }}>
+                                    Reviews
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => { navigation.navigate("AddReview") }}
 
-                            }}><Text style={{
-                                fontSize:scale(13),
-                                color:"white"
-                            }}>
-                                Add Review +
-                            </Text></TouchableOpacity>
+                                    style={{
+                                        backgroundColor: "#2e210a",
+                                        padding: scale(10),
+                                        // alignSelf: "flex-start",
+                                        borderRadius: scale(10),
+                                        borderWidth: 1,
+                                        borderColor: "#FFA100"
+
+                                    }}><Text style={{
+                                        fontSize: scale(13),
+                                        color: "white"
+                                    }}>
+                                        Add Review +
+                                    </Text></TouchableOpacity>
+                            </View>
+                            {
+                                Array.from({ length: 10 }, (_, index) => (<SingleReview key={index} />))
+                            }
                         </View>
-                        {
-                          Array.from({length:10}, (_, index)=>(<SingleReview key={index}/>))
-                        }
-                      </View>
-                  </View>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         </ImageBackground>
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '500',
         color: 'white',
-        fontSize:scale(14)
+        fontSize: scale(14)
     },
     dropdownButtonArrowStyle: {
         fontSize: 28,

@@ -15,6 +15,8 @@ const AllCheckinsScreen = ({
     const [commentStatus, setCommentStatus] = useState(false)
     const name = route?.params?.name
     const url = route?.params?.url
+    const numberOfRoutesBack = route?.params?.routerNumber
+    console.log(numberOfRoutesBack)
     const auth = useSelector(state => state.auth)
     const uri = auth.url
     const [data, setData] = useState([])
@@ -105,7 +107,7 @@ const AllCheckinsScreen = ({
 
                 <Header
                     showMenu={false}
-                    cb={() => navigation.pop(2)} showProfilePic={false} headerContainerStyle={{
+                    cb={() => navigation.pop(numberOfRoutesBack)} showProfilePic={false} headerContainerStyle={{
                         paddingBottom: scale(20)
                     }} showText={false} />
 

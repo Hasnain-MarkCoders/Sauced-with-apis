@@ -225,7 +225,7 @@ const CheckinScreen = () => {
               setMessage("Please write description.")
               return setAlertModal(true)
         }
-        if(!data.select){
+        if(!data.location){
             setMessage("Please slect an option from list.")
             return setAlertModal(true)
       }
@@ -239,7 +239,7 @@ const CheckinScreen = () => {
                 setAlertModal(true)
                 setTimeout(()=>{
                     setLoading(false)
-                    navigation.navigate("AllCheckinsScreen")
+                    navigation.navigate("AllCheckinsScreen", {routerNumber:2})
                 },1000)
             },2000)
             return
@@ -498,7 +498,7 @@ const CheckinScreen = () => {
                                 showIcon={false}
                                 buttonTextStyle={{ fontSize: scale(16) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
-                                // onPress={() => handleSubmit()}
+                                onPress={() => handleSubmit()}
                                 title={"Submit"}
                             />
                             <View style={{

@@ -107,7 +107,7 @@ const AddReview = () => {
                                             <Text style={{ fontSize: scale(16), color:"white" }}>
                                                 Rating
                                             </Text>
-                                            <CustomRating cb={(e)=>{setData(prev=>({...prev, rating:e}))}} size={12}/>
+                                            <CustomRating initialRating={1} cb={(e)=>{setData(prev=>({...prev, rating:e}))}} size={18}/>
                                         </TouchableOpacity>
                                         <CustomButtom
                                             showIcon={false}

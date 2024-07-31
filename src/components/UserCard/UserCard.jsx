@@ -8,8 +8,11 @@ import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal';
 
 const UserCard = ({url="",item={} ,name="", title="",cb=()=>{} }) => {
   const [LightBox, setLightBox] = useState(false)
+  const [toggledTitle, setToggledTitle] = useState(title)
 const navigation = useNavigation()
-
+const handleToggleTitle = ()=>{
+ setToggledTitle(toggledTitle=="Follow"?"Unfollow":"Follow")
+}
   return (
   
     <TouchableOpacity
@@ -68,7 +71,11 @@ const navigation = useNavigation()
       
     
        <CustomButtom buttonTextStyle={{ fontSize: scale(12) }}
-              buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}onPress={()=>{cb(item)}} title={title}/> 
+              buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}
+              // onPress={()=>{cb(item)}}
+              onPress={()=>{handleToggleTitle()}}
+              
+              title={toggledTitle}/> 
 
     </View>
     </TouchableOpacity>

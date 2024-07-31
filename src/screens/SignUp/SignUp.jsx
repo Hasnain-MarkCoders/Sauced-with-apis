@@ -338,7 +338,7 @@ if(authLoading){
               <TouchableOpacity 
               onPress={()=>{
                 setAlertModal(true)
-                setMessage("This feature live soon")}
+                setMessage("Feature Coming Soon.")}
               }
               >
               <Text style={{

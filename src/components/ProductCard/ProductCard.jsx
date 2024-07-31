@@ -151,7 +151,7 @@ const ProductCard = ({
                                                 duration: Snackbar.LENGTH_SHORT,
                                                 action: {
                                                     text: 'UNDO',
-                                                    textColor: 'green',
+                                                    textColor: '#FFA100',
                                                     onPress: () => {
 
                                                         setproductStatus(prev => ({
@@ -185,7 +185,7 @@ const ProductCard = ({
                                                 duration: Snackbar.LENGTH_SHORT,
                                                 action: {
                                                     text: 'UNDO',
-                                                    textColor: 'green',
+                                                    textColor: '#FFA100',
                                                     onPress: () => {
                                                         setproductStatus(prev => ({
                                                             ...prev,
@@ -214,8 +214,7 @@ const ProductCard = ({
 
             <View style={{
                 alignItems: "flex-start",
-                gap: scale(20)
-
+                gap: scale(20),
             }}>
 
                 <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start", }}>
@@ -258,10 +257,35 @@ const ProductCard = ({
                                 fontWeight: 600,
                                 fontSize: scale(12),
                                 lineHeight: scale(25),
-                            }}>amazon hot sauce bottles</Text>
+                            }}>www.hotsauce.com</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
+            </View>
+            <View style={{flexDirection:"row",flexGrow:1, justifyContent:"space-between"}}>
+                <TouchableOpacity
+                    onPress={() => {
+                        // Linking.openURL(url)
+                        navigation.navigate("AddReview")
+
+                    }}
+                    style={{
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(6),
+                        backgroundColor: "#FFA100",
+                        borderRadius: scale(5),
+                        elevation: scale(5),
+                        alignSelf: "flex-end",
+
+                    }}>
+                    <Text style={{
+                        color: "black",
+                        fontWeight: "700"
+
+                    }}>Add Review</Text>
+
+
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)
@@ -281,12 +305,13 @@ const ProductCard = ({
                         color: "black",
                         fontWeight: "700"
 
-                    }}>Check in</Text>
+                    }}>Check-in</Text>
 
 
                 </TouchableOpacity>
+            
+                </View>
 
-            </View>
 
         </View>
     )

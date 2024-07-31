@@ -1,4 +1,4 @@
-import {   View, SafeAreaView } from 'react-native'
+import {   View, SafeAreaView, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import { ImageBackground } from 'react-native';
 import home from './../../../assets/images/home.png';
@@ -36,25 +36,31 @@ const navigation = useNavigation()
         flex: 1,
       }}>
 
-        <View style={{
+        <ScrollView contentContainerStyle={{
           paddingHorizontal: 20,
-          paddingBottom:100,
-          gap:40,
-          justifyContent:"space-between",
-          flex:1
+          paddingBottom:scale(150),
         }}>
           <View>
-          <Header showMenu={false} showProfilePic={false} isWelcome ={ true} title={"Welcome to"} />
+          <Header showBackButton={false}  showMenu={false} showProfilePic={false} isWelcome ={ true} title={"Welcome to"} />
             <WelcomeLists />
           </View>
+         
+        </ScrollView>
+        <View style={{
+            position:"absolute",
+            width:"90%",
+            left:"50%",
+            transform: [{ translateX: -Dimensions.get('window').width * .45 }],
+            bottom:scale(40)
+          }}>
+
          <CustomButtom
           buttonTextStyle={{ fontSize: scale(20) }}
               buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
               onPress={() =>{ handleWelcome(); navigation.navigate("Drawer")}}
               title={"Next"}
               />
-
-        </View>
+          </View>
 
 
       </SafeAreaView>

@@ -19,6 +19,9 @@ import { ActivityIndicator, ImageBackground, View } from 'react-native';
 import BootSplash from "react-native-bootsplash";
 import EventPage from './src/screens/EventPage/EventPage';
 import MapScreen from './src/screens/MapScreen/MapScreen';
+import YoutubeScreen from './src/screens/YoutubeScreen/YoutubeScreen';
+import RequestASauceScreen from './src/screens/RequestASauceScreen/RequestASauceScreen';
+import AddEventScreen from './src/screens/AddEventScreen/AddEventScreen';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -100,9 +103,6 @@ function AppRouter() {
      onReady={() => BootSplash.hide({ fade: true })}
     >
       <Stack.Navigator screenOptions={{ headerShown: false,  animationEnabled: false }}>
-
-       
-
           <Stack.Screen name="Public" component={PublicStack} />
           <Stack.Screen name="Drawer" component={DrawerStack} />
           <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
@@ -112,9 +112,12 @@ function AppRouter() {
           <Stack.Screen name="AddReview" component={AddReview} />
           <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
           <Stack.Screen name="SauceDetails" component={SouceDetails} />
+          <Stack.Screen name="Youtube" component={YoutubeScreen} />
           <Stack.Screen name="ProductDetail" component={Product} />
           <Stack.Screen  name="EventPage" component={EventPage} />
           <Stack.Screen  name="Map" component={MapScreen} />
+          <Stack.Screen  name="RequestASauceScreen" component={RequestASauceScreen} />
+          <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

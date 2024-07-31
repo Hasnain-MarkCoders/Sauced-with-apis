@@ -15,7 +15,8 @@ const Header = ({
   cb = () => { },
   headerContainerStyle={},
   showProfilePic=true,
-  showMenu=true
+  showMenu=true,
+  showBackButton=true
 }) => {
   const navigation = useNavigation()
 let url = ""
@@ -41,7 +42,7 @@ let url = ""
 
            justifyContent:"space-between",
     }}>
-      <View style={{
+      {showBackButton && <View style={{
       }}>
         <TouchableOpacity onPress={()=>(cb(), Vibration.vibrate(10))} >
           <Image style={{
@@ -50,7 +51,7 @@ let url = ""
           }} source={back} />
         </TouchableOpacity>
 
-      </View>
+      </View>}
 
 {  
 

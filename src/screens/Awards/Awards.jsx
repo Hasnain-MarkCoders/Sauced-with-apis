@@ -186,7 +186,7 @@ const Awards = () => {
 
                 />
      <CustomAlertModal
-                            title='points feature live soon.'
+                            title='Feature Coming Soon.'
                             modalVisible={alertModal}
                             setModalVisible={()=>setAlertModal(false)}
                             />
