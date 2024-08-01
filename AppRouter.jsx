@@ -22,6 +22,7 @@ import MapScreen from './src/screens/MapScreen/MapScreen';
 import YoutubeScreen from './src/screens/YoutubeScreen/YoutubeScreen';
 import RequestASauceScreen from './src/screens/RequestASauceScreen/RequestASauceScreen';
 import AddEventScreen from './src/screens/AddEventScreen/AddEventScreen';
+import MyReviewSauces from './src/screens/MyReviewSauces/MyReviewSauces';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -103,22 +104,23 @@ function AppRouter() {
      onReady={() => BootSplash.hide({ fade: true })}
     >
       <Stack.Navigator screenOptions={{ headerShown: false,  animationEnabled: false }}>
+        
           <Stack.Screen name="Public" component={PublicStack} />
           <Stack.Screen name="Drawer" component={DrawerStack} />
           <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
-          <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
           <Stack.Screen name="QRScreen" component={QRScreen} />
           <Stack.Screen name="Checkin" component={CheckinScreen} />
           <Stack.Screen name="AddReview" component={AddReview} />
           <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
           <Stack.Screen name="SauceDetails" component={SouceDetails} />
           <Stack.Screen name="Youtube" component={YoutubeScreen} />
-          <Stack.Screen name="ProductDetail" component={Product} />
           <Stack.Screen  name="EventPage" component={EventPage} />
           <Stack.Screen  name="Map" component={MapScreen} />
+      <Stack.Screen name="ProductDetail" component={Product} />
           <Stack.Screen  name="RequestASauceScreen" component={RequestASauceScreen} />
           <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
-
+      <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
+      <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   </GestureHandlerRootView>

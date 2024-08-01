@@ -145,7 +145,7 @@ const AddEventScreen = () => {
                                 updaterFn={setQuery}
                                 value={query.destinationTitle}
                                 showTitle={false}
-                                placeholder="Destination Title"
+                                placeholder="Address"
                                 containterStyle={{
                                     flexGrow: 1,
                                 }}
@@ -162,12 +162,14 @@ const AddEventScreen = () => {
 
                                 <CustomInput
                                     // cb={() => setPage(1)}
+                                    multiline={true}
+                                    numberOfLines={5}
                                     name="destinationDetails"
                                     onChange={handleText}
                                     updaterFn={setQuery}
                                     value={query.destinationDetails}
                                     showTitle={false}
-                                    placeholder="Destination Details"
+                                    placeholder="Details"
                                     containterStyle={{
                                         flexGrow: 1,
                                     }}
@@ -178,43 +180,13 @@ const AddEventScreen = () => {
                                         borderWidth: 1,
                                         borderRadius: 10,
                                         padding: 15,
+            textAlignVertical:"top"
+
+
 
                                     }} />
-                                <View style={{
-                                    paddingLeft: scale(10),
-                                    paddingTop: scale(20),
-                                    gap:scale(10)
-                                }}>
-                                    {points.map((item, index)=>{
-                                        return<CustomListItem text={item} />
-                                        
-
-                                    })}
-                                </View>
-                                <TouchableOpacity
-                    onPress={() => {
-                        // Linking.openURL(url)
-                        // navigation.navigate("Checkin")
-                        handleAddBullet(query.destinationDetails)
-
-                    }}
-                    style={{
-                        paddingHorizontal: scale(10),
-                        paddingVertical: scale(6),
-                        backgroundColor: "#FFA100",
-                        borderRadius: scale(5),
-                        elevation: scale(5),
-                        alignSelf: "flex-end",
-
-                    }}>
-                    <Text style={{
-                        color: "black",
-                        fontWeight: "700"
-
-                    }}>{points.length<1?"Write a Point":"Add point"}</Text>
-
-
-                </TouchableOpacity>
+                              
+                        
 
                             </View>
 
@@ -228,7 +200,7 @@ const AddEventScreen = () => {
                                 updaterFn={setQuery}
                                 value={query.coordinates}
                                 showTitle={false}
-                                placeholder="Location Coordinates"
+                                placeholder="Location"
                                 containterStyle={{
                                     flexGrow: 1,
                                 }}

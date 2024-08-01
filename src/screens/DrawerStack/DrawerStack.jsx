@@ -62,7 +62,7 @@ const DrawerStack = () => {
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Edit Profile" component={EditProfileScreen} />
             <Drawer.Screen listeners={()=>{
                 handleLogout()
-            }} name="Logout" component={()=>null} />
+            }} name="Log Out" component={()=>null} />
 
         </Drawer.Navigator>
     );

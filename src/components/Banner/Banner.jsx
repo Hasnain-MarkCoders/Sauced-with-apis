@@ -16,13 +16,8 @@ const Banner = ({
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={{
-            
-            width:scale(screenWidth - 90),
-            borderRadius:scale(10),
-            borderWidth:.5,
-            borderColor:"#FFA100",
-            marginRight:scale(20)
-        }} activeOpacity={.8} onPress={() => { !showText && navigation.navigate("Youtube", { url, title }) }}>
+            width:"100%",
+        }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title }) }}>
 
             <ImageBackground
             borderRadius={10}
@@ -33,9 +28,6 @@ const Banner = ({
                 // imageStyle={{ borderRadius: 15, width:"100%", height:scale(130) }}
                 // source={{ uri: url }}
                 source={  url }
-
-                
-                
                 >
                 {
                     showText && <View style={{ paddingVertical: scale(5), paddingHorizontal: scale(20), gap: scale(5) }}>

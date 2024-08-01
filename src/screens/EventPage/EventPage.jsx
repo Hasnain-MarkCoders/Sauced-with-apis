@@ -17,7 +17,7 @@ import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 import {UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY} from '@env';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
 import {topRatedSauces} from '../../../utils.js';
 import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
@@ -127,7 +127,12 @@ const EventPage = () => {
       setisEnabled(true);
     }, 2000);
   };
-
+  const checkIfClickOutside = (e) => {
+    console.log(e)
+    // if (dropDown.current && !dropDown.current.contains(e.target)) {
+        // setModalVisible(false);
+    // }
+};
   if (initialLoading) {
     return (
       <ImageBackground
@@ -138,12 +143,14 @@ const EventPage = () => {
     );
   }
   return (
+   
     <ImageBackground
       style={{flex: 1, width: '100%', height: '100%'}}
       source={getStartedbackground}>
       <SafeAreaView
         style={{flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0)}}>
-        <Header
+        
+          <Header
           showMenu={false}
           cb={() => navigation.goBack()}
           showProfilePic={false}
@@ -434,15 +441,17 @@ const EventPage = () => {
           title2="List 2"
           title3="List 3"
         />
+   
       </SafeAreaView>
       <UserDetailsModal
           name= 'Emma william'
           email='Emma@gmail.com'
-          prfilePicture= {emma}
+          profilePicture= {emma}
         modalVisible={openUserDetailsModal}
         setModalVisible={setOpenUserDetailsModal}
       />
     </ImageBackground>
+
   );
 };
 

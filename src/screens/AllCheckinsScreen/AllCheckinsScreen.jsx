@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard} from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -9,6 +9,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import CommentsList from '../../components/CommentsList/CommentsList.jsx';
+import search from "./../../../assets/images/search_icon.png";
+import CustomInput from '../../components/CustomInput/CustomInput.jsx';
+import { handleText } from '../../../utils.js';
+import { messagesData } from '../../../utils';
+import user1 from "./../../../assets/images/user1.png"
+import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
+
 const AllCheckinsScreen = ({
 }) => {
     const route = useRoute()
@@ -18,16 +25,50 @@ const AllCheckinsScreen = ({
     const numberOfRoutesBack = route?.params?.routerNumber
     console.log(numberOfRoutesBack)
     const auth = useSelector(state => state.auth)
+
     const uri = auth.url
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [isKeyBoard, setIsKeyBoard] = useState(false)
+    const [isNewMsg, setNewMsg] = useState(false)
+    const [id, setId] = useState(0)
     const [query, setQuery] = useState({
         search: "",
     });
     const navigation = useNavigation()
+
+    const handleSubmitMessage = (data)=>{
+        setIsKeyBoard(true)
+    }
+    const getId = (id=0)=>{
+        return setId(id)
+    }
+    const handleUserProfileView = (data)=>{
+        navigation.navigate("ExternalProfileScreen", {url:data.profileUri, name:data.name})
+    }
+    const handleAddMessage = ()=>{
+        if(isNewMsg){
+            messagesData.unshift({
+                url: user1,
+                title: "Mike Smith",
+                text:query.search,
+                assets:[],
+                replies:[]
+            })
+            setQuery({search:""})
+            setNewMsg(false)
+            return
+        }
+
+        messagesData[id].replies.unshift({
+                url: user1,
+                title: "Mike Smith",
+                text:query.search,
+            })
+            setQuery({search:""})
+    }
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
             setIsKeyBoard(true)
@@ -100,6 +141,7 @@ const AllCheckinsScreen = ({
         };
         fetchPhotos();
     }, [page]);
+  
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -142,13 +184,80 @@ const AllCheckinsScreen = ({
                                 {
                                     index == 1 && <View style={{
                                     }}>
-                                        <CommentsList setPage={setPage} data={data} loading={loading} hasMore={hasMore} />
+                
+                <CommentsList  cb={handleUserProfileView} setNewMsg={setNewMsg} getId={getId} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
+                                        //  data={data} 
+                                         data={messagesData}
+                                        
+                                        loading={loading} hasMore={hasMore} />
                                     </View>
                                 }
                             </View>
                         )
                     }}
                 />
+               { isKeyBoard &&
+               <View style={{
+                marginBottom:scale(10)
+               }}>
+               <CustomInput
+               autoFocus ={isKeyBoard}
+                    imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                    isURL={false}
+                    showImage={true}
+                    uri={""}
+                    name="search"
+                    multiline={true}
+                    numberOfLines={3}
+                    onChange={handleText}
+                    updaterFn={setQuery}
+                    value={query.search}
+                    showTitle={false}
+                    placeholder="Write a comment."
+                    containterStyle={{
+                        flexGrow: 1,
+                        background:"red",
+                        width:"95%",
+                        margin:"auto",
+                        marginBottom:scale(10)
+                    }}
+                    inputStyle={{
+                        borderColor: "#FFA100",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        padding: 15,
+                        paddingLeft: scale(10),
+                        textAlignVertical:"top"
+
+                    }} />  
+                    <TouchableOpacity
+                    onPress={() => {
+                        handleAddMessage()
+                        // Linking.openURL(url)
+                        setIsKeyBoard(false)
+
+                    }}
+                    style={{
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(10),
+                        backgroundColor: "#FFA100",
+                        borderRadius: scale(5),
+                        elevation: scale(5),
+                        alignSelf: "flex-end",
+                        width:"95%",
+                        margin:"auto"
+
+                    }}>
+                    <Text style={{
+                        color: "black",
+                        fontWeight: "700",
+                        textAlign:"center"
+
+                    }}>Submit</Text>
+
+
+                </TouchableOpacity></View> }
+               
             </SafeAreaView>
         </ImageBackground>
     )

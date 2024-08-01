@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native'
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import Snackbar from 'react-native-snackbar'
 import { scale } from 'react-native-size-matters'
-import { generateThreeDigitRandomNumber } from '../../../utils'
+import { generateThreeDigitRandomNumber, messagesData } from '../../../utils'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
 import filledHeart from "./../../../assets/images/filledHeart.png"
 import Lightbox from 'react-native-lightbox';
@@ -10,24 +10,34 @@ import NestedComment from '../NestedComment/NestedComment'
 import UserDetailsModal from '../UserDetailsModal/UserDetailsModal'
 
 const CustomComment = ({
+    getId=()=>{},
     uri = "",
+    text = "",
+    title = "",
     profileUri = "",
     showImages = false,
+    handleSubmitMessage = () => { },
+    assets = [],
+    replies,
+    showBorder = true,
+    isReply = false,
+    count=0,
+    index=0,
+    cb=()=>{}
 }) => {
     const [commentStatus, setCommentStatus] = useState(false)
     const [LightBox, setLightBox] = useState(false)
-  const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
-    const [showMoreComments, setShowMoreComments] = useState(false)
-    const nestedComments= [1,2] 
+    const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
+    const [showReplies, setShowReplies]  = useState(false)
+
     return (
         <View style={{
-
-            alignItems: "center",
+            alignItems: (isReply || assets.length<1)?"flex-start":"center",
             gap: scale(20),
             borderBottomColor: "#FFA100",
-            borderBottomWidth: 1,
-            paddingBottom: scale(40),
-            marginBottom: scale(40)
+            borderBottomWidth: (showBorder && count >1) ? 1 : 0,
+            marginBottom:isReply?scale(0):scale(30),
+            paddingBottom:isReply?scale(0):scale(30)
         }}>
             <View style={{
                 flexDirection: "row",
@@ -36,14 +46,16 @@ const CustomComment = ({
                 <View style={{
                     flexDirection: "row",
                     gap: scale(20),
-                    flexShrink: 1
+                    flexShrink: 1,
+                    flexGrow:1
+
                 }}>
 
-                    <View>
+                    <View >
                         <Image
                             style={{
-                                width: scale(60),
-                                height: scale(60),
+                                width: isReply ? scale(30) : scale(60),
+                                height: isReply ? scale(30) : scale(60),
                                 borderRadius: scale(50),
                                 borderColor: "#FFA100",
                                 borderWidth: scale(1)
@@ -54,21 +66,23 @@ const CustomComment = ({
                         />
                     </View>
                     <View style={{
-                        flexShrink: 1
+                        flexShrink: 1,
+                        flexGrow:1
                     }}>
-                        <TouchableOpacity onPress={()=>{
+                        <TouchableOpacity onPress={() => {
                             setOpenUserDetailsModal(true)
+                            cb({profileUri,name:"Thomas", email:"example@gmail.com",number:"+1234567890"})
                         }}>
 
-                        <Text style={{
-                            color: "#FFA100",
-                            fontWeight: 700,
-                            fontSize: scale(14),
-                            lineHeight: scale(17),
-                            paddingVertical:scale(10)
-                        }}>
-                            Mike Smith
-                        </Text>
+                            <Text style={{
+                                color: isReply ? "white" : "#FFA100",
+                                fontWeight: 700,
+                                fontSize: isReply ? scale(12) : scale(14),
+                                lineHeight: scale(17),
+                                paddingVertical: scale(10),
+                            }}>
+                                {title}
+                            </Text>
                         </TouchableOpacity>
                         <Text
                             numberOfLines={3}
@@ -77,7 +91,7 @@ const CustomComment = ({
                             style={
                                 { maxWidth: "90%", color: "white" }
                             }>
-                            Maecenas id metus efficitur, @William mauris in, pellentesque risus.
+                            {text}
                         </Text>
 
                     </View>
@@ -101,8 +115,11 @@ const CustomComment = ({
                             });
                         }}
                     >
-                        <View>
+                        <View style={{
+                            display:isReply?"none":"flex"
+                        }}>
                             <Image style={{
+
                                 width: scale(20),
                                 height: scale(20),
                                 objectFit: "contain"
@@ -121,152 +138,108 @@ const CustomComment = ({
                 </View>
             </View>
 
-            {showImages &&
-                <View style={{
-                    flexDirection: "row",
-                    gap: scale(20),
-                    flexWrap: "wrap",
-                }}>
 
-
-
-                    <Lightbox
-                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-                        springConfig={{ tension: 30, friction: 7 }}
-                        onOpen={() => setLightBox(true)}
-                        willClose={() => setLightBox(false)}
-                    >
-                        <Image
-                            style={{
-                                width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(100),
-                                minWidth: scale(120),
-                                minHeight: scale(100),
-                                borderRadius: LightBox ? 0 : scale(10),
-                                borderColor: LightBox ? 0 : "#FFA100",
-                                borderWidth: LightBox ? 0 : scale(1)
-                            }}
-                            // source={{ uri: url }}
-                            source={uri}
-
-                        />
-                    </Lightbox>
-
-
-                    <Lightbox
-                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-                        springConfig={{ tension: 30, friction: 7 }}
-                        onOpen={() => setLightBox(true)}
-                        willClose={() => setLightBox(false)}
-                    >
-                        <Image
-                            style={{
-                                width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(100),
-                                minWidth: scale(120),
-                                minHeight: scale(100),
-                                borderRadius: LightBox ? 0 : scale(10),
-                                borderColor: LightBox ? 0 : "#FFA100",
-                                borderWidth: LightBox ? 0 : scale(1)
-                            }}
-                            // source={{ uri: url }}
-                            source={uri}
-
-                        />
-                    </Lightbox>
-
-                    {/* <Image 
-        source={uri }
-        
-        
-        
-        style={{
-            width: scale(125), borderColor: "#FFA100",
-            borderWidth: 1, height: scale(110), borderRadius: scale(12)
-        }} />
-         <Image
-          source={uri } 
-         
-         style={{
-            width: scale(125), borderColor: "#FFA100",
-            borderWidth: 1, height: scale(110), borderRadius: scale(12)
-        }} /> */}
-                </View>}
-            <View style={{
+            {assets.length > 0 && <View style={{
                 flexDirection: "row",
                 gap: scale(20),
-                alignSelf:showMoreComments?"flex-start":"",
-                paddingLeft:showMoreComments?scale(70):0
+                flexWrap: "wrap",
             }}>
-                <TouchableOpacity onPress={() => {
-                    Vibration.vibrate(10)
+
+                {
+                    assets.map(uri => <Lightbox
+                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
+                        springConfig={{ tension: 30, friction: 7 }}
+                        onOpen={() => setLightBox(true)}
+                        willClose={() => setLightBox(false)}
+                    >
+                        <Image
+                            style={{
+                                width: LightBox ? "100%" : scale(120),
+                                height: LightBox ? "100%" : scale(100),
+                                minWidth: scale(120),
+                                minHeight: scale(100),
+                                borderRadius: LightBox ? 0 : scale(10),
+                                borderColor: LightBox ? 0 : "#FFA100",
+                                borderWidth: LightBox ? 0 : scale(1)
+                            }}
+                            // source={{ uri: url }}
+                            source={uri}
+
+                        />
+                    </Lightbox>)
+                }
+
+
+
+
+            </View>}
+            <TouchableOpacity
+                style={{
+                    alignSelf: "flex-start",
+                    paddingLeft: isReply ? scale(55) : scale(60)
+
+                }}
+                onPress={() => {
+                    handleSubmitMessage()
+                    getId(index)
                 }}>
 
-                    <Text style={{
-                        textDecorationLine: "underline",
-                        color: "white",
-                        fontSize: scale(12)
-                    }}>
-                        Reply
-                    </Text>
-                </TouchableOpacity>
+                <Text style={{
+                    color: "white",
+                    display:isReply?"none":"flex",
+                    fontSize:scale(12),
+                }}>Reply</Text>
+            </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {
-                    Vibration.vibrate(10)
-                    setShowMoreComments(true)
+       {  showReplies?  <View style={{
+                alignSelf: "flex-start",
+                paddingLeft:scale(50)
+            }}>
+              
+                {replies?.map(item => <CustomComment
+                
+                    isReply={true}
+                    showBorder={false}
+                    handleSubmitMessage={handleSubmitMessage}
+                    profileUri={item.url}
+                    assets={item.assets}
+                    title={item.title}
+                    text={item.text}
+                    replies={item.replies}
+                />)}
 
-                }}>
-
-
-                    <Text style={{
-                        textDecorationLine: "underline",
-                        color: "white",
-                        fontSize: scale(12)
-                    }}>
-                        {
-                            !showMoreComments ? "View 2 More Replies" : ""
-                        }
-                    </Text>
-
-                </TouchableOpacity>
-            </View>
-            {
-                showMoreComments ?
-                    <View style={{
-                        alignItems: "flex-start",
-                        width:"100%",
-                        gap: scale(20),
-                        paddingLeft: scale(70)
-
-                    }}>
-                        <View>
-                            {
-                                nestedComments?.map((item, index)=>{
-                                 return   <NestedComment key={index} profileUri={profileUri}/>                        
-
-                                })
-                            }
-                        </View>
-                        <TouchableOpacity onPress={() => {
-                            setShowMoreComments(false)
-                        }}>
-                            <Text style={{
-                                color: "white"
-                            }}> {showMoreComments ? "Hide Replies" : ""}</Text>
-                        </TouchableOpacity>
-
-                    </View>
-                    : null
+            </View>:null
             }
+               { replies?.length>0 && <TouchableOpacity
+            onPress={()=>{
+                setShowReplies(prev=>!prev)
+            }}
+            style={{
+                alignSelf: "flex-start",
+                paddingLeft:scale(50),
+            }}
+            >
 
-<UserDetailsModal
-          name= 'Mike Smith'
-          email='MikeSmith@gmail.com'
-          prfilePicture= {profileUri}
-        modalVisible={openUserDetailsModal}
-        setModalVisible={setOpenUserDetailsModal}
-      />
+               { <Text 
+    
+                 style={{
+                   
+                    color:"white"
+                }}>{showReplies ? "Hide Replies":"Show replies"}</Text>}
+            </TouchableOpacity>}
+            
+        
+
+
+            {/* <UserDetailsModal
+                name='Mike Smith'
+                email='MikeSmith@gmail.com'
+                prfilePicture={profileUri}
+                modalVisible={openUserDetailsModal}
+                setModalVisible={setOpenUserDetailsModal}
+            /> */}
         </View>
+
     )
 }
 

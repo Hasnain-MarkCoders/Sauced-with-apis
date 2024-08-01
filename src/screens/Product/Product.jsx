@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, Text, View, Keyboard, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, Text, View, Keyboard, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { memo, useEffect, useState, useRef } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import getStartedbackground from './../../../assets/images/ProductDescription.jpg';
@@ -8,13 +8,17 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
-import { topRatedSauces } from '../../../utils.js';
+import { handleText, messagesData, topRatedSauces } from '../../../utils.js';
 import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
 import ProductCard from '../../components/ProductCard/ProductCard.jsx';
 import { useRoute } from "@react-navigation/native"
 import CustomSelectListModal from '../../components/CustomSelectListModal/CustomSelectListModal.jsx';
 import Snackbar from 'react-native-snackbar';
 import CommentsList from '../../components/CommentsList/CommentsList.jsx';
+import CustomInput from '../../components/CustomInput/CustomInput.jsx';
+import user1 from "./../../../assets/images/user1.png"
+import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
+
 const Product = () => {
   const route = useRoute()
   const { url = "", title = "" } = route?.params
@@ -28,8 +32,14 @@ const Product = () => {
   const [initialLoading, setInitialLoading] = useState(true)
   const [isKeyBoard, setIsKeyBoard] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
+  const [id, setId] = useState(0)
+  const [query, setQuery] = useState({search:""})
+  const [userData, setUserData] = useState({})
+  const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false)
   const [isEnabled, setisEnabled] = useState(true)
   const navigation = useNavigation()
+  const [isNewMsg, setNewMsg] = useState(false)
+
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setIsKeyBoard(true)
@@ -43,6 +53,37 @@ const Product = () => {
       hideSubscription.remove();
     };
   }, []);
+
+  const handleSubmitMessage = (data)=>{
+    console.log("hasnain")
+    setIsKeyBoard(true)
+}
+const getId = (id=0)=>{
+    return setId(id)
+}
+const handleAddMessage = ()=>{
+  if(isNewMsg){
+      messagesData.unshift({
+          url: user1,
+          title: "Mike Smith",
+          text:query.search,
+          assets:[],
+          replies:[]
+      })
+      setQuery({search:""})
+      setNewMsg(false)
+      return
+  }
+
+  console.log(messagesData[id])
+  console.log(id)
+  messagesData[id].replies.unshift({
+          url: user1,
+          title: "Mike Smith",
+          text:query.search,
+      })
+      setQuery({search:""})
+}
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -109,7 +150,10 @@ const Product = () => {
 
 
   }
-
+  const handleUserProfileView = (data)=>{
+    setOpenUserDetailsModal(true)
+    setUserData(data)
+}
 
 
   if (initialLoading) {
@@ -258,8 +302,12 @@ const Product = () => {
                         </Text>
                       </View>
 
-                      <CommentsList setPage={setPage} data={data} loading={loading} hasMore={hasMore} />
-
+                      {/* <CommentsList setPage={setPage} data={data} loading={loading} hasMore={hasMore} /> */}
+                      <CommentsList cb={handleUserProfileView} getId={getId} setNewMsg={setNewMsg} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
+                                        //  data={data} 
+                                         data={messagesData}
+                                        
+                                        loading={loading} hasMore={hasMore} />
 
                     </View>
 
@@ -286,6 +334,75 @@ const Product = () => {
 
         />
       </SafeAreaView>
+      { isKeyBoard &&
+               <View style={{
+                marginBottom:scale(10)
+               }}>
+               <CustomInput
+               autoFocus ={isKeyBoard}
+                    imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                    isURL={false}
+                    showImage={true}
+                    uri={""}
+                    name="search"
+                    multiline={true}
+                    numberOfLines={3}
+                    onChange={handleText}
+                    updaterFn={setQuery}
+                    value={query.search}
+                    showTitle={false}
+                    placeholder="Write a comment."
+                    containterStyle={{
+                        flexGrow: 1,
+                        background:"red",
+                        width:"95%",
+                        margin:"auto",
+                        marginBottom:scale(10)
+                    }}
+                    inputStyle={{
+                        borderColor: "#FFA100",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        padding: 15,
+                        paddingLeft: scale(10),
+                        textAlignVertical:"top"
+
+                    }} />  
+                    <TouchableOpacity
+                    onPress={() => {
+                        handleAddMessage()
+                        // Linking.openURL(url)
+                        setIsKeyBoard(false)
+
+                    }}
+                    style={{
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(10),
+                        backgroundColor: "#FFA100",
+                        borderRadius: scale(5),
+                        elevation: scale(5),
+                        alignSelf: "flex-end",
+                        width:"95%",
+                        margin:"auto"
+
+                    }}>
+                    <Text style={{
+                        color: "black",
+                        fontWeight: "700",
+                        textAlign:"center"
+
+                    }}>Submit</Text>
+
+
+                </TouchableOpacity></View> }
+                <UserDetailsModal
+                name={userData.name}
+                email={userData.email}
+                number={userData.number}
+                profilePicture={userData.profileUri}
+                modalVisible={openUserDetailsModal}
+                setModalVisible={setOpenUserDetailsModal}
+            />
     </ImageBackground>
 
   )

@@ -8,6 +8,7 @@ import { handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
+import SwipeableRating from 'react-native-swipeable-rating';
 import CustomRating from '../../components/CustomRating/CustomRating.jsx';
 const AddReview = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
@@ -33,15 +34,19 @@ const AddReview = () => {
         };
     }, []);
 
+    useEffect(()=>{
+console.log(data)
+    },[data])
+
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
                 <Header
-                showMenu={false}
-                
-                cb={() => navigation.goBack()} showProfilePic={false} headerContainerStyle={{
-                    paddingBottom: scale(20)
-                }} title={"Followers"} showText={false} />
+                    showMenu={false}
+
+                    cb={() => navigation.goBack()} showProfilePic={false} headerContainerStyle={{
+                        paddingBottom: scale(20)
+                    }} title={"Followers"} showText={false} />
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -93,8 +98,8 @@ const AddReview = () => {
                                                 textAlignVertical: 'top',
 
                                             }} />
-                                     
-                                        <TouchableOpacity style={{
+
+                                        {/* <TouchableOpacity style={{
                                             backgroundColor:"#2e210a",
                                             borderRadius:scale(10),
                                             paddingVertical:scale(13),
@@ -108,7 +113,21 @@ const AddReview = () => {
                                                 Rating
                                             </Text>
                                             <CustomRating initialRating={1} cb={(e)=>{setData(prev=>({...prev, rating:e}))}} size={18}/>
-                                        </TouchableOpacity>
+     
+                                        </TouchableOpacity> */}
+                                        <SwipeableRating
+                                            rating={data.rating}
+                                            allowHalves={true}
+                                            style={{
+                                                margin:"auto"
+                                            }}
+                                            size={50}
+                                            color='#FFA100'
+                                            emptyColor='#FFA100'
+                                            gap={4}
+                                            onPress={(e) => { setData(prev => ({ ...prev, rating: e })) }}
+                                            xOffset={30}
+                                        />
                                         <CustomButtom
                                             showIcon={false}
                                             buttonTextStyle={{ fontSize: scale(14) }}

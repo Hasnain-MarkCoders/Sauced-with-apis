@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -164,16 +164,46 @@ const ProfileScreen = () => {
 
                                                 }} />
                                         </View>
+                                        <View style={{
+                                            flexDirection:"row",
+                                            alignItems:"center",
+                                            justifyContent:"space-between",
+                                            marginBottom: scale(20)
+
+                                        }}>
                                         <Text style={{
                                             color: "white",
                                             fontWeight: 600,
                                             fontSize: scale(24),
                                             lineHeight: scale(28),
-                                            marginBottom: scale(20)
 
                                         }}>
                                             Add Friends
                                         </Text>
+                                        <TouchableOpacity
+                    onPress={() => {
+                        // Linking.openURL(url)
+                        navigation.navigate("MyReviewedSauces")
+
+                    }}
+                    style={{
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(6),
+                        backgroundColor: "#FFA100",
+                        borderRadius: scale(5),
+                        elevation: scale(5),
+                        alignSelf: "flex-end",
+
+                    }}>
+                    <Text style={{
+                        color: "black",
+                        fontWeight: "700"
+
+                    }}>All Check-ins</Text>
+
+
+                </TouchableOpacity>
+                                        </View>
                                         <HorizontalUsersList horizontal={true} loading={loading} hasMore={hasMore} setPage={setPage} 
                                         
                                         
@@ -192,6 +222,8 @@ const ProfileScreen = () => {
 
                                         <SauceList title='My Favorites' data={topRatedSauces} />
                                         <SauceList title='Checked-in Sauces' data={topRatedSauces} />
+                                        <SauceList title='Reviewed Sauces' data={topRatedSauces} />
+
 
                                     </View>
 

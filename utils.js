@@ -133,7 +133,75 @@ export const handleText = (value,name, updaterFn) => {
     {
       url: user2,
       title: "john Doe"
-    }
+    },
+
+  ];
+
+  
+  export const messagesData = [
+    {
+      url: user1,
+      title: "Mike Smith",
+      text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+      assets:[
+        sauce1,
+        sauce2
+      ],
+      replies:[
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        }
+      ]
+    },
+    {
+      url: user1,
+      title: "Mike Smith",
+      text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+      assets:[
+        sauce1,
+        sauce2
+      ],
+      replies:[
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        },
+        {
+          url: user1,
+          title: "Mike Smith",
+          text:"Maecenas id metus efficitur, @William mauris in, pellentesque risus.",
+        }
+      ]
+    },
+   
   ];
 
   export const bannerImages = [

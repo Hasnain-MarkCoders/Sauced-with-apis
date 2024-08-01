@@ -4,7 +4,7 @@ import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
-import user from "./../../../assets/images/user.png"
+import user from "./../../../assets/images/userWithFlames.png"
 
 const ProfileCard = () => {
     const auth = useSelector(state => state.auth)
@@ -26,22 +26,33 @@ const ProfileCard = () => {
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
-                gap: scale(12),
+                gap: scale(0),
                 alignItems:"center"
 
             }}>
+                <View style={{
+                    width:scale(100),
+                    height:scale(100),
+                    position:"relative"
+                }}>
+
                 <Image
                     style={{
-                        width: scale(100),
-                        height: scale(100),
-                        borderRadius: scale(50),
-                        borderColor: "#FFA100",
-                        borderWidth: scale(1)
+                        width: scale(130),
+                        height: scale(130),
+                        resizeMode:"contain",
+                        top:"-20%",
+                        left:"-30%",
+                        position:"absolute"
+                        // borderRadius: scale(50),
+                        // borderColor: "#FFA100",
+                        // borderWidth: scale(1)
                     }}
                     // source={{ uri: url }}
                     source={url}
 
                 />
+                </View>
                 <View style={{
                     flexGrow: 1
                 }}>

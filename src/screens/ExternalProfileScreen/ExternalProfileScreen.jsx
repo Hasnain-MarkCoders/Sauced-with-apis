@@ -221,6 +221,8 @@ const ExternalProfileScreen = ({
 
                                         <SauceList data={topRatedSauces} name={name} title='Favorites' searchTerm={query.search} />
                                         <SauceList data={topRatedSauces} title='Checked in Sauces' searchTerm={query.search} />
+                                        <SauceList title='Reviewed Sauces' data={topRatedSauces} />
+
 
 
                                         <View style={{
@@ -238,7 +240,7 @@ const ExternalProfileScreen = ({
                                                 //     Alert.alert("Blocked")
 
                                                 // }}
-                                                title={`Blocked ${name}`}
+                                                title={`Block`}
 
                                             />
 
@@ -253,7 +255,7 @@ const ExternalProfileScreen = ({
                                                 //     Alert.alert("reported")
 
                                                 // }}
-                                                title={`Report ${name}`}
+                                                title={`Report`}
 
                                             />
 
@@ -268,7 +270,7 @@ const ExternalProfileScreen = ({
                                                 //     // navigation.navigate("SauceDetails")
                                                 //     Alert.alert("shared")
                                                 // }}
-                                                title={`Share ${name} Profile`}
+                                                title={`Share`}
 
                                             />
                                         </View>

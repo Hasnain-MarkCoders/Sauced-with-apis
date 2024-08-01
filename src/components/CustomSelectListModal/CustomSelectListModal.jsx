@@ -18,13 +18,19 @@ const CustomSelectListModal = ({
     title2="",
     title3=""
 }) => {
-
+  const handleBackgroundTouch = () => {
+    setModalVisible(false);
+  };
   return (
-    <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
+   modalVisible&& <View style={{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
+    width: '100%', // Ensure it covers the full screen width
+    height: '100%', // Ensure it covers the full screen height
+  }}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -33,6 +39,17 @@ const CustomSelectListModal = ({
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
+          <TouchableOpacity
+          
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          activeOpacity={1}
+          onPressOut={handleBackgroundTouch}
+          >
+
         <View style={{
           flex: 1,
           justifyContent: 'center',
@@ -96,6 +113,7 @@ const CustomSelectListModal = ({
               />
           </View>
         </View>
+          </TouchableOpacity>
       </Modal>
     </View>
   );

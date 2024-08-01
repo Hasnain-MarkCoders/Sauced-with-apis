@@ -4,7 +4,7 @@ import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
-
+import flames from "./../../../assets/images/flames.png"
 const ExternalUserCard = ({
     url = "",
     name = ""
@@ -26,8 +26,10 @@ const ExternalUserCard = ({
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 gap: scale(12),
-                alignItems: "center"
+                alignItems: "center",
+                position:"relative"
             }}>
+                
                 <Image
                     style={{
                         width: scale(100),

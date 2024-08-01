@@ -16,10 +16,11 @@ import axios from 'axios';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import { useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
+import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 
 const Home = () => {
     const navigation = useNavigation()
-    const [banners, setBanners] = useState([])
+    const [banners, setBanners] = useState(reviewImages)
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
@@ -123,12 +124,15 @@ useEffect(()=>{
                                 </TouchableOpacity>
 
                             </View>
-                            <BannerList loading={loading} hasMore={hasMore} setPage={setPage} 
-                            // data={banners}
-                            data={bannerImages}
+                            <View style={{
+                                position:"relative",
+                            }}>
 
-                            
+                            <CustomCarousel
+                             data={bannerImages}
+                             showText={true}
                             />
+                            </View>
                             <View style={styles.contentContainer}>
 
                                 <SauceList title='Featured Sauces' data={featuredSauces} />
@@ -157,11 +161,9 @@ useEffect(()=>{
                                     }>
                                         Official Reviews
                                     </Text>
-                            <BannerList   loading={loading} showText={false} hasMore={hasMore} setPage={setPage} 
-                            // data={banners} 
-                            data={reviewImages}
-
-                            
+                            <CustomCarousel
+                             data={banners}
+                             showText={false}
                             />
                                 </View>
 
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     safeArea: {
         paddingTop: verticalScale(30),
         paddingBottom: verticalScale(150),
-        paddingHorizontal: moderateScale(20),
+        paddingHorizontal: scale(20),
         flex: 1,
     },
     closeButton: {
