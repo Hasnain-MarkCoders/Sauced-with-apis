@@ -447,6 +447,7 @@ const EventPage = () => {
           name= 'Emma william'
           email='Emma@gmail.com'
           profilePicture= {emma}
+          number={"+1 234-567-0890"}
         modalVisible={openUserDetailsModal}
         setModalVisible={setOpenUserDetailsModal}
       />

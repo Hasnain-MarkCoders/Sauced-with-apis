@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import closeEye from "./../../../assets/images/scaledCloseEye.png"
-const CustomInput = ({ title = "",autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {} }) => {
+const CustomInput = ({ readOnly=false,title = "",autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {} }) => {
   const [showPassord, setShowPassword] = useState(secureTextEntry)
   return (
     <View style={{
@@ -51,6 +51,7 @@ const CustomInput = ({ title = "",autoFocus =false, uri = "",localImage=false, i
 
         }
         <TextInput
+          readOnly={readOnly}
         autoFocus={autoFocus}
           multiline={multiline}
           numberOfLines={numberOfLines}

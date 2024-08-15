@@ -338,8 +338,8 @@ if(authLoading){
         loading={loading}
           buttonTextStyle={{ fontSize:  scale(14) }}
           buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
-          // onPress={()=>isEnabled ? (handleLogin(),  Vibration.vibrate(10)) : null}
-             onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+          onPress={()=>isEnabled ? (handleLogin(),  Vibration.vibrate(10)) : null}
+            //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
 
           title={"Sign In"}
@@ -365,8 +365,8 @@ if(authLoading){
                 Icon={()=><Image style={{width:24, height:24}}  source={google} />}
                 buttonTextStyle={{ fontSize: scale(14) }}
                 buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A",justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center" }}
-                // onPress={()=>{signInWithGoogle();  Vibration.vibrate(10)}}
-                   onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+                onPress={()=>{signInWithGoogle();  Vibration.vibrate(10)}}
+                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
                 title={"Sign In With Google"}
               />
@@ -375,8 +375,8 @@ if(authLoading){
                 Icon={()=><Image style={{width:24, height:24}}  source={fb} />}
                 buttonTextStyle={{ fontSize: scale(14) }}
                 buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" ,justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center"}}
-                // onPress={()=>{onFacebookButtonPress();  Vibration.vibrate(10)}}
-                   onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+                onPress={()=>{onFacebookButtonPress();  Vibration.vibrate(10)}}
+                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
                 
                 title={"Sign In With Facebook"}

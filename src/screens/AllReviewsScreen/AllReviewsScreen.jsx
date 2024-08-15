@@ -17,7 +17,7 @@ const AllReviewsScreen = () => {
                     showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}>
                     <Header showMenu={false} showText={false} cb={() => navigation.goBack()} showProfilePic={false} showDescription={false} />
-                    <View style={{ paddingHorizontal: 20, flex: 1, justifyContent: "space-between", paddingVertical: 40, paddingBottom: 100, gap: scale(10) }}>
+                    <View style={{ paddingHorizontal: scale(20), flex: 1, justifyContent: "space-between", paddingVertical: scale(40), paddingBottom: 100, gap: scale(10) }}>
                         <View style={{
                             gap: scale(20),
                         }}>

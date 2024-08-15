@@ -151,10 +151,8 @@ const handleAddMessage = ()=>{
 
   }
   const handleUserProfileView = (data)=>{
-    setOpenUserDetailsModal(true)
-    setUserData(data)
+    navigation.navigate("ExternalProfileScreen", {url:data.profileUri, name:data.name})
 }
-
 
   if (initialLoading) {
     return (

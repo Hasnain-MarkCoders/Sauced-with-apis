@@ -88,7 +88,7 @@ const SearchScreen = () => {
             style={{
                 flex: 1,
                 paddingHorizontal:scale(20),
-                paddingTop:scale(30),
+                paddingTop:scale(32),
             }}>
                 <KeyboardAvoidingView
                 style={{
@@ -103,6 +103,7 @@ const SearchScreen = () => {
                     flexDirection: "row",
                     alignItems: 'end',
                     marginBottom: scale(10),
+
                     gap: 10
                 }}>
                     <CustomInput

@@ -23,28 +23,28 @@ const CustomEditModal = ({
   };
   return (
     modalVisible && <View style={{
-      flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
-      width: '100%', // Ensure it covers the full screen width
-      height: '100%', // Ensure it covers the full screen height
+      width: '100%', 
+      height: '100%', 
     }}>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
           <TouchableOpacity
           
           style={{
             flex: 1,
+            width:"100%",
             justifyContent: 'center',
             alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,0.5)', 
+
           }}
           activeOpacity={1}
           onPressOut={handleBackgroundTouch}
@@ -54,6 +54,7 @@ const CustomEditModal = ({
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
+          width:"100%"
         }}>
           <View style={{
             margin: 20,
@@ -116,7 +117,7 @@ const CustomEditModal = ({
               <CustomButtom
               loading={loading}
                 buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100",margin:"auto", padding: 15, backgroundColor: "#2E210A" }}
                 onPress={() => isEnabled ? cb() : null}
                 title={"Update"}
               />

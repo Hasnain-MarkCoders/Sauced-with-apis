@@ -9,8 +9,8 @@ import user from "./../../../assets/images/userWithFlames.png"
 const ProfileCard = () => {
     const auth = useSelector(state => state.auth)
     const navigation = useNavigation()
-    // const url = auth?.url || ""
-    const url = user
+    const url = auth?.url || ""
+    // const url = user
     const name = auth?.user?.user?.displayName || auth?.name
     const circles = [1, 1, 1, 1, 1]
     return (
@@ -38,32 +38,42 @@ const ProfileCard = () => {
 
                 <Image
                     style={{
-                        width: scale(130),
-                        height: scale(130),
+                        width: scale(90),
+                        height: scale(90),
                         resizeMode:"contain",
-                        top:"-20%",
-                        left:"-30%",
-                        position:"absolute"
-                        // borderRadius: scale(50),
-                        // borderColor: "#FFA100",
-                        // borderWidth: scale(1)
+                        top:0,
+                        left:0,
+                        position:"absolute",
+                        objectFit:"cover",
+                        borderRadius: scale(50),
+                        borderColor: "#FFA100",
+                        borderWidth: scale(1)
                     }}
-                    // source={{ uri: url }}
-                    source={url}
+                    source={{ uri: url }}
+                    // source={url}
 
                 />
                 </View>
                 <View style={{
-                    flexGrow: 1
+                    flexGrow: 1,
+                    display:"flex"
                 }}>
 
-                    <Text style={{
+                    <Text
+                    
+                        ellipsizeMode='tail'
+                        numberOfLines={1}
+                    style={{
                         color: "white",
                         fontWeight: 600,
+                        maxWidth:"80%",
+                        flexBasis:"80%",
                         fontSize: scale(20),
                         lineHeight: scale(24),
-                    }}>{name || "Mike"}</Text>
-                    <View>
+                    }}>{name}</Text>
+                    <View style={{
+                        maxWidth:"80%",
+                    }}>
                         <View style={{
                             flexDirection: "row",
                             justifyContent: "space-between",

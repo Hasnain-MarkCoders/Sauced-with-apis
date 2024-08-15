@@ -1,15 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
+import moreIcon from "./../../../assets/images/more.png"
 
-const SauceList = ({ title = "", data = [], name = "", searchTerm = "" }) => {
+const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMoreIcon = false, cb = () => { } }) => {
     // const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
+    const [selected, setSelected] = useState(0)
+
+    const [isEndReached, setIsEndReached] = useState(false);
+    const flatListRef = useRef(); // Reference to the FlatList
+
+    const handleScroll = (event) => {
+        const scrollPosition = event.nativeEvent.contentOffset.x;
+        const flatListWidth = event.nativeEvent.layoutMeasurement.width;
+        const contentWidth = event.nativeEvent.contentSize.width;
+
+        // Check if the end of the flat list is reached
+        if (scrollPosition + flatListWidth >= contentWidth - 100) { // 100 can be adjusted based on when you want to trigger the end
+            setIsEndReached(true);
+        } else {
+            setIsEndReached(false);
+        }
+    };
+
+
+
+
     // useEffect(() => {
     //     const fetchPhotos = async () => {
     //         if (!searchTerm?.trim()) {
@@ -74,31 +96,64 @@ const SauceList = ({ title = "", data = [], name = "", searchTerm = "" }) => {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
-                {title &&<Text style={[styles.title]}>{title}</Text>}
+                {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
+            <View style={{
+                gap: scale(20),
+                flexDirection: "row", alignItems: "center",
+            }}>
 
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                horizontal
-                data={data}
-                onEndReachedThreshold={0.5}
-                onEndReached={() => {
-                    if (!loading && hasMore) {
-                        setPage(currentPage => currentPage + 1);
-                    }
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => <SingleSauce
-                    // url={item?.urls?.small} 
-                    url={item.url}
-                    // title={item?.user?.username}
-                    title={item?.title}
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingRight: selected ? scale(60) : scale(0)
+                    }}
+                    horizontal
+                    onScroll={handleScroll}
+                    onViewableItemsChanged={({ viewableItems }) => {
+
+                        if (viewableItems.length > 0) {
+                            setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
+                        }
+
+                    }}
+                    data={data}
+                    scrollEventThrottle={16}
+                    onEndReachedThreshold={0.5}
+
+                    onEndReached={() => {
+                        if (!loading && hasMore) {
+                            setPage(currentPage => currentPage + 1);
+                        }
+                    }}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => <SingleSauce
+                        // url={item?.urls?.small} 
+                        url={item.url}
+                        // title={item?.user?.username}
+                        title={item?.title}
 
 
-                />}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-            />
+                    />}
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                />
+                {(showMoreIcon && selected == data?.length - 1) && <TouchableOpacity
+                    style={{
+                        position: "absolute",
+                        right: "0%",
+                        zIndex: 111
+                    }}
+                    onPress={() => { cb() }}>
+                    <Image style={{
+
+                        resizeMode: "contain",
+                        width: scale(40),
+                        height: scale(40)
+                    }} source={moreIcon} />
+
+                </TouchableOpacity>}
+            </View>
             {
 
                 loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />

@@ -174,7 +174,9 @@ useEffect(()=>{
                                     buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                     onPress={() => {
                                         Vibration.vibrate(10);
-                                        navigation.navigate("SauceDetails")
+                                        // navigation.navigate("SauceDetails")
+                                        navigation.navigate("RequestASauceScreen")
+
                                     }}
                                     title={"Want to List Sauce? "}
                                 />

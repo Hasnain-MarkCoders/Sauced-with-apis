@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -13,7 +13,10 @@ import SauceList from '../../components/SauceList/SauceList.jsx';
 import { FriendListImages, handleText, topRatedSauces } from '../../../utils.js';
 import ProfileCard from '../../components/ProfileCard/ProfileCard.jsx';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
+import moreIcon from "./../../../assets/images/more.png"
+import { useSelector } from 'react-redux';
 const ProfileScreen = () => {
+    const auth = useSelector(state=>state.auth)
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
@@ -93,6 +96,11 @@ const ProfileScreen = () => {
         };
         // fetchPhotos();
     }, [page]);
+
+
+    useEffect(()=>{
+console.log("auth.token", auth.token)
+    },[auth])
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(90) }}>
@@ -138,7 +146,7 @@ const ProfileScreen = () => {
                                 {
                                     index == 1 && <View>
                                         <View style={{
-                                            marginBottom: scale(20)
+                                            marginVertical: scale(30)
                                         }}>
                                             <CustomInput
                                                 imageStyles={{ top: "50%", resizeMode: 'contain',transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
@@ -183,7 +191,7 @@ const ProfileScreen = () => {
                                         <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)
-                        navigation.navigate("MyReviewedSauces")
+                        navigation.navigate("MyReviewedSauces", {route :"check-ins"})
 
                     }}
                     style={{
@@ -222,8 +230,7 @@ const ProfileScreen = () => {
 
                                         <SauceList title='My Favorites' data={topRatedSauces} />
                                         <SauceList title='Checked-in Sauces' data={topRatedSauces} />
-                                        <SauceList title='Reviewed Sauces' data={topRatedSauces} />
-
+                                        <SauceList cb={()=>{navigation.navigate("MyReviewedSauces", {route:"review"})}} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
 
                                     </View>
 

@@ -21,6 +21,7 @@ const CustomAlertModal = ({
   return (
     modalVisible && <View   style={{
       flex: 1,
+      position:"absolute",
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',

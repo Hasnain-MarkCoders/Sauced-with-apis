@@ -4,7 +4,8 @@ import { scale } from 'react-native-size-matters'
 
 const DetailKeyValue = ({
     Key="",
-    value=""
+    value="",
+    style={}
 }) => {
   return (
     <View style={{
@@ -13,17 +14,19 @@ const DetailKeyValue = ({
         gap:scale(10)
     }}>
 
-<Text style={{
+{Key&& <Text style={{
             color:"#FFA100",
             fontSize:scale(15),
             fontWeight:700,
+            ...style
         }}>
         {Key}
-        </Text>
+        </Text>}
         <Text style={{
             color:"white",
             fontSize:scale(15),
             fontWeight:700,
+            ...style
         }}>
           {value}
         </Text>

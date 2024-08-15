@@ -9,15 +9,28 @@ import Snackbar from 'react-native-snackbar';
 const SingleSauce = ({
     url = "",
     title="",
-    customStyles={}
+    customStyles={},
+    showPopup=false,
+    setProductDetails=()=>{},
+    setAlertModal=()=>{}
 }) => {
 
 const navigation = useNavigation()
 const [selected, setSelected] = useState(false)
+const handleOnPress = ()=>{
+    
+    if(showPopup){
+    setProductDetails({url, title})
+    setAlertModal(true)
+}else{
+
+    navigation.navigate("ProductDetail", {url, title})
+}
+}
     return (
         <TouchableOpacity
         activeOpacity={.8}
-        onPress={()=>{navigation.navigate("ProductDetail", {url, title})}}
+        onPress={()=>{handleOnPress()}}
         onLongPress={()=>{
             setSelected(prev=>!prev)
             Snackbar.show({

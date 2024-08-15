@@ -6,6 +6,7 @@ import closeIcon from "./../../../assets/images/close.png"
 import CustomInput from '../CustomInput/CustomInput';
 import { handleText } from '../../../utils';
 import CustomButtom from '../CustomButtom/CustomButtom';
+import { useSelector } from 'react-redux';
 const CustomChangePasswordModal = ({
   modalVisible = false,
   setModalVisible = () => { },
@@ -21,18 +22,18 @@ const CustomChangePasswordModal = ({
   const handleBackgroundTouch = () => {
     setModalVisible(false);
   };
+  const auth = useSelector(state=>state.auth)
   return (
     modalVisible&&  <View style={{
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
       width: '100%', // Ensure it covers the full screen width
       height: '100%', // Ensure it covers the full screen height
     }}>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -41,6 +42,9 @@ const CustomChangePasswordModal = ({
         }}>
           <TouchableOpacity style={{
                 flex: 1,
+                
+          backgroundColor: 'rgba(0,0,0,0.5)', 
+
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -51,6 +55,7 @@ const CustomChangePasswordModal = ({
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
+          width:"100%"
         }}>
           <View style={{
             margin: 20,
@@ -91,14 +96,16 @@ const CustomChangePasswordModal = ({
             <CustomInput
               title={title}
               name={title}
+              readOnly={true}
               onChange={handleText}
               updaterFn={setValue}
-              value={value}
+              value={auth.email}
               showTitle={true}
               placeholder={placeholder}
               containterStyle={{
                 flexGrow: 1,
-                paddingTop: scale(20)
+                paddingTop: scale(20),
+                gap:scale(10)
 
               }}
               inputStyle={{
@@ -115,7 +122,7 @@ const CustomChangePasswordModal = ({
                 buttonTextStyle={{ fontSize: scale(12) }}
                 buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
                 onPress={() => isEnabled ? cb() : null}
-                title={"Update"}
+                title={"Reset Password"}
               />
           </View>
         </View>

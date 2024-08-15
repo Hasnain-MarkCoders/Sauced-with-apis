@@ -19,6 +19,7 @@ const Logout = () => {
         "_id": null,
         "url":null,
         "authenticated": false,
+        "welcome":false,
       })
     );
   };

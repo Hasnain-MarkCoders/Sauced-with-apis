@@ -4,17 +4,24 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
+import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
 
 const ProductSearchList = ({
-    
     title = "" , 
     setPage =()=>{},
     data=[],
     loading=false,
-    hasMore=true
+    hasMore=true,
+    setProductDetails=()=>{},
+    setAlertModal=()=>{},
+    style={}
 }) => {
+
     return (
-        <View style={styles.container}>
+        <View style={{
+            flex: 1,
+            ...style
+        }}>
             <FlatList
                 data={data}
                 showsVerticalScrollIndicator={false}
@@ -28,6 +35,9 @@ const ProductSearchList = ({
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item , index}) => <SingleSauce
+                setProductDetails={setProductDetails}
+                setAlertModal={setAlertModal}
+                showPopup={true}
                 customStyles={
                     
             {
@@ -44,28 +54,24 @@ const ProductSearchList = ({
                  title={item?.title} 
                  
                  />}
-                contentContainerStyle={styles.listContent}
+                contentContainerStyle={{
+                    justifyContent: 'space-between',
+                    paddingBottom:scale(120)
+                }}
             />
             {loading && (
                 <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
             )}
+              
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+      
+    },
 
-    },
- 
-    listContent: {
-        justifyContent: 'space-between',
-        paddingBottom:scale(120)
-    },
-    separator: {
-        // marginRight:scale(20)
-    }
 });
 
 export default ProductSearchList;

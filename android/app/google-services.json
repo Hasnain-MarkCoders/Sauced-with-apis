@@ -1,50 +1,109 @@
 {
   "project_info": {
-    "project_number": "1088759278734",
-    "project_id": "galileology",
-    "storage_bucket": "galileology.appspot.com"
+    "project_number": "406307069293",
+    "project_id": "sauced-8e5ee",
+    "storage_bucket": "sauced-8e5ee.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1088759278734:android:51a5b05f0c5b482db4addf",
+        "mobilesdk_app_id": "1:406307069293:android:1a195b2c480a18c60bce64",
         "android_client_info": {
-          "package_name": "com.sauced"
+          "package_name": "com.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1088759278734-2e0ng2o08nol02s8tsrf2vqqed4c6eu4.apps.googleusercontent.com",
+          "client_id": "406307069293-0meqin4l7s916g61jpbueo7rpmh2roel.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sauced",
-            "certificate_hash": "0d5b415b7cf4d97a2a24603a1756eacb92550805"
+            "package_name": "com.app",
+            "certificate_hash": "adc49eb095a1a401514fc712d7d50c73671a6242"
           }
         },
         {
-          "client_id": "1088759278734-fhb27issebbkeo2lajgjolsb0f7evavu.apps.googleusercontent.com",
+          "client_id": "406307069293-eginvued86u5acpnm7lbmiob43gpaaj2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sauced",
-            "certificate_hash": "9df1bba687480d58bba2eaa9e4f188ccf2159283"
+            "package_name": "com.app",
+            "certificate_hash": "4da38b50ddd7468589ac87188c7191ee3e82127f"
           }
         },
         {
-          "client_id": "1088759278734-i2q7b6mth2ntcu9v3uphdcai8n8lpit8.apps.googleusercontent.com",
+          "client_id": "406307069293-kgffko9vq29heap8t2pmvrih1qbea6bi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAuW6u-m8WHhFZgPI52kmq0MINeWa64H9g"
+          "current_key": "AIzaSyCrv45FdDnK4_8mF3m-nmKjCHk6sfbyYNQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1088759278734-i2q7b6mth2ntcu9v3uphdcai8n8lpit8.apps.googleusercontent.com",
+              "client_id": "406307069293-kgffko9vq29heap8t2pmvrih1qbea6bi.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "406307069293-mmlcku59901gcih9mlott2l54afgaonu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sauced"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406307069293:android:2b9a4b1de1c1b3950bce64",
+        "android_client_info": {
+          "package_name": "com.sauced"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406307069293-5ak7l6lbqujaqa1q1e54h71sfccmoibg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sauced",
+            "certificate_hash": "24871cc5e94f787ccde822b70c21802966ca1ed8"
+          }
+        },
+        {
+          "client_id": "406307069293-o416qidmh7bgatn4viidus6eqiuiaa5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sauced",
+            "certificate_hash": "71c99fb44a82dc681878f7be79c9bc9fd8ff2f78"
+          }
+        },
+        {
+          "client_id": "406307069293-kgffko9vq29heap8t2pmvrih1qbea6bi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrv45FdDnK4_8mF3m-nmKjCHk6sfbyYNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406307069293-kgffko9vq29heap8t2pmvrih1qbea6bi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "406307069293-mmlcku59901gcih9mlott2l54afgaonu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sauced"
+              }
             }
           ]
         }

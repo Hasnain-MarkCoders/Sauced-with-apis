@@ -4,6 +4,7 @@ import Carousel from 'react-native-reanimated-carousel'
 import { scale } from 'react-native-size-matters';
 import Banner from '../Banner/Banner';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -12,12 +13,11 @@ const CustomCarousel = ({
     showText=false
 }) => {
    const [selected, setSelected] = React.useState(0)
-   React.useEffect(()=>{
-console.log("data", data)
-   },[])
+ const navigation = useNavigation()
   return (
     <View style={{}}>
     <Carousel
+    autoPlayInterval={7000}
         loop
         width={effectiveWidth}
         height={155}

@@ -64,8 +64,8 @@ const SocialSignIn = () => {
            const res =   await auth().signInWithCredential(googleCredential)
            const firebaseToken = await res.user.getIdToken();
            const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
-           console.log("firebaseToken==>", firebaseToken)
-           console.log("myuser google==>", myuser)
+          //  console.log("firebaseToken==>", firebaseToken)
+          //  console.log("myuser google==>", myuser.data.user)
            
            if (myuser) {
              dispatch(
@@ -204,8 +204,8 @@ if(loading){
                 Icon={()=><Image style={{width:24, height:24}}  source={google} />}
                 buttonTextStyle={{ fontSize: scale(14) }}
                 buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A",justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center" }}
-                // onPress={()=>{signInWithGoogle(); Vibration.vibrate(10)}}
-                onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+                onPress={()=>{signInWithGoogle(); Vibration.vibrate(10)}}
+                // onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
                 title={"Sign In With Google"}
               />
@@ -214,8 +214,8 @@ if(loading){
                 Icon={()=><Image style={{width:24, height:24}}  source={fb} />}
                 buttonTextStyle={{ fontSize: scale(14) }}
                 buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" ,justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center"}}
-                // onPress={()=>{onFacebookButtonPress();  Vibration.vibrate(10)}}
-                onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+                onPress={()=>{onFacebookButtonPress();  Vibration.vibrate(10)}}
+                // onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
                 title={"Sign In With Facebook"}
               />

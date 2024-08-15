@@ -30,19 +30,20 @@ const useAxios = () => {
       if (error?.response?.status === 480) {
         dispatch(
           handleAuth({
-              "token": null,
-              "uid": null,
-              "name": null,
-              "email": null,
-              "provider":null,
-              "type":null,
-              "status":null,
-              "_id": null,
+            "token": null,
+            "uid": null,
+            "name": null,
+            "email": null,
+            "provider": null,
+            "type": null,
+            "status": null,
+            "_id": null,
+            "url":null,
+            "authenticated": false,
+            "welcome":false,
           })
         );
         navigation.navigate("SignIn");
-      
-        
       }
       
     }

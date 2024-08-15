@@ -117,10 +117,10 @@ const UserDetailsModal = ({
                   source={profilePicture}
                 />
                   </Lightbox>
-                  <DetailKeyValue Key="Name:" value={name} />
+                  <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={name} />
                     </View>
                   <DetailKeyValue Key="Email:" value={email} />
-                  <DetailKeyValue Key="Email:" value={number} />
+                  <DetailKeyValue Key="Number:" value={number} />
 
                 </View>
               </TouchableOpacity>

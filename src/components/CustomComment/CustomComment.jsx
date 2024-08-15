@@ -197,6 +197,7 @@ const CustomComment = ({
             }}>
               
                 {replies?.map(item => <CustomComment
+                cb={cb}
                 
                     isReply={true}
                     showBorder={false}

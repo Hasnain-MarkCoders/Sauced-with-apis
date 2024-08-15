@@ -88,10 +88,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('sauced-debug.keystore')
-            storePassword 'android1'
-            keyAlias 'debug'
-            keyPassword 'android1'
+            storeFile file('sauced-d.keystore')
+            storePassword '123456'
+            keyAlias 'sauced-d'
+            keyPassword '123456'
         }
         release{
             storeFile file(SAUCED_RELEASE_STORE_FILE)

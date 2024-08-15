@@ -29,6 +29,7 @@ const UploadImage = () => {
                      dispatch(handleAuth({
                         url
                     }))
+                    setImageUri(url)
                     Snackbar.show({
                         text: 'Picuture Uploaded Successfully.',
                         duration: Snackbar.LENGTH_SHORT,
@@ -41,7 +42,7 @@ const UploadImage = () => {
             })
             .catch((error) => {
                 console.log('error', error);
-                Alert.alert(error)
+                Alert.alert('Upload Error', `An error occurred: ${error.toString()}`);
             });
     }
 
@@ -77,16 +78,16 @@ const UploadImage = () => {
     return (
         <View style={styles.container}>
             <TouchableOpacity
-            //  onPress={handleImagePicker}
+             onPress={handleImagePicker}
              >
                 <Image
                     style={styles.image}
-                    // source={{ uri: imageUri }}
-                    source={user}
+                    source={{ uri: imageUri }}
+                    // source={user}
                 />
             </TouchableOpacity>
             <TouchableOpacity 
-            // onPress={handleImagePicker}
+            onPress={handleImagePicker}
             >
                 <Text style={styles.text}>Change Profile Picture</Text>
             </TouchableOpacity>

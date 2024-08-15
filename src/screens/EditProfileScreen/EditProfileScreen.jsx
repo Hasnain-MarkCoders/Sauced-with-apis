@@ -12,13 +12,15 @@ import UploadImage from '../../components/UploadImage/UploadImage';
 import useAxios from '../../../Axios/useAxios';
 import CustomEditModal from '../../components/EditModal.jsx/EditModal';
 import CustomChangePasswordModal from '../../components/CustomChangePasswordModal/CustomChangePasswordModal';
+import auth from '@react-native-firebase/auth';
+import Snackbar from 'react-native-snackbar';
 
 const EditProfileScreen = () => {
-    const auth = useSelector(state => state.auth)
+    const Auth = useSelector(state => state.auth)
     const [showModal, setShowModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const [isEnabled, setIsEnabled] = useState(true)
-    const [value, setValue] = useState({ Name: auth?.name })
+    const [value, setValue] = useState({ Name: Auth?.name })
     const [showPasswordModal, setShowPasswordModal] = useState(false)
     const navigation = useNavigation()
 
@@ -50,7 +52,38 @@ const EditProfileScreen = () => {
         }
     };
 
+    const handleChangePassword = async () => {
+        try {
+            setLoading(true)
+            setIsEnabled(false)
+            // await new Promise(resolve => setTimeout(resolve, 2000));
+             await auth().sendPasswordResetEmail(Auth.email)
+             setShowPasswordModal(false)
+             setTimeout(()=>{
+                 Snackbar.show({
+                    text: "Please check your email to reset your password.",
+                    duration: Snackbar.LENGTH_SHORT,
+                });
 
+             },1000)
+
+        } catch {
+            console.log(error)
+            setTimeout(()=>{
+            Snackbar.show({
+                text: "Error: Failed to reset your password.",
+                duration: Snackbar.LENGTH_SHORT,
+            });
+        },1000)
+        }
+
+        finally {
+            setLoading(false)
+            setIsEnabled(true)
+            setShowPasswordModal(false)
+
+        }
+    };
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -75,7 +108,7 @@ const EditProfileScreen = () => {
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => setShowModal(true)}
+                                onPress={() => setShowModal(true)}
                                 title={"Edit Name"}
                             />
                             <CustomButtom
@@ -83,7 +116,7 @@ const EditProfileScreen = () => {
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => setShowPasswordModal(true)}
+                                onPress={() => setShowPasswordModal(true)}
                                 title={"Change Password"}
                             />
 
@@ -92,7 +125,7 @@ const EditProfileScreen = () => {
                     <CustomEditModal
                         isEnabled={isEnabled}
                         loading={loading}
-                        initialValue={"hasnain"}
+                        initialValue={""}
                         placeholder={"Change your name..."}
                         title={"Name"}
                         modalVisible={showModal} setModalVisible={setShowModal}
@@ -104,11 +137,11 @@ const EditProfileScreen = () => {
                     <CustomChangePasswordModal
                         isEnabled={isEnabled}
                         loading={loading}
-                        initialValue={"hasnain"}
+                        initialValue={""}
                         placeholder={"Change your name..."}
-                        title={"Name"}
+                        title={"Change Password"}
                         modalVisible={showPasswordModal} setModalVisible={setShowPasswordModal}
-                        cb={handleChangeName}
+                        cb={handleChangePassword}
                         setValue={setValue}
                         value={value?.Name}
                     />

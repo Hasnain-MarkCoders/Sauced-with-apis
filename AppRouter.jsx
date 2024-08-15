@@ -23,24 +23,26 @@ import YoutubeScreen from './src/screens/YoutubeScreen/YoutubeScreen';
 import RequestASauceScreen from './src/screens/RequestASauceScreen/RequestASauceScreen';
 import AddEventScreen from './src/screens/AddEventScreen/AddEventScreen';
 import MyReviewSauces from './src/screens/MyReviewSauces/MyReviewSauces';
+import Welcome from './src/screens/Welcome/Welcome';
+import MainNavigation from './src/screens/MainNavigation/MainNavigation';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [initialState, setInitialState] = React.useState(true)
-  const userAUth  = useSelector(state=>state.auth)
-  // React.useEffect(() => {
-  //   const subscriber = auth().onAuthStateChanged(user => {
-  //     if (user && userAUth?.authenticated) {
-  //       setIsAuthenticated(true)
-  //       setInitialState(false)
-  //     } else {
-  //       setIsAuthenticated(false)
-  //       setInitialState(false)
-  //     }
-  //   });
-  //   return subscriber; // unsubscribe on unmount
-  // }, [userAUth?.authenticated]);
+  const userAuth = useSelector(state => state.auth)
+  React.useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(user => {
+      if (user && userAuth?.authenticated) {
+        setIsAuthenticated(true)
+        setInitialState(false)
+      } else {
+        setIsAuthenticated(false)
+        setInitialState(false)
+      }
+    });
+    return subscriber; // unsubscribe on unmount
+  }, [userAuth?.authenticated]);
 
 
   // React.useEffect(() => {
@@ -60,18 +62,18 @@ function AppRouter() {
     const init = async () => {
       // …do multiple sync or async tasks
     };
-  
+
     init().finally(async () => {
       await BootSplash.hide({ fade: true });
     });
   }, []);
 
-  
-  // if (initialState) {
-  //   return <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>
-  //   <ActivityIndicator color="#FFA100" size="large" />
-  // </ImageBackground>
-  // }
+
+  if (initialState) {
+    return <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>
+    <ActivityIndicator color="#FFA100" size="large" />
+  </ImageBackground>
+  }
 
   return (
     // <GestureHandlerRootView>
@@ -100,12 +102,38 @@ function AppRouter() {
 
 
     <GestureHandlerRootView>
-    <NavigationContainer
-     onReady={() => BootSplash.hide({ fade: true })}
-    >
-      <Stack.Navigator screenOptions={{ headerShown: false,  animationEnabled: false }}>
-        
-          <Stack.Screen name="Public" component={PublicStack} />
+      <NavigationContainer
+        onReady={() => BootSplash.hide({ fade: true })}
+      >
+        <Stack.Navigator screenOptions={{ headerShown: false, animationEnabled: false }}>
+          {
+            isAuthenticated ?
+              <>
+              
+              <Stack.Screen name="Main" component={MainNavigation} />
+                <Stack.Screen name="Drawer" component={DrawerStack} />
+                <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
+                <Stack.Screen name="QRScreen" component={QRScreen} />
+                <Stack.Screen name="Checkin" component={CheckinScreen} />
+                <Stack.Screen name="AddReview" component={AddReview} />
+                <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
+                <Stack.Screen name="SauceDetails" component={SouceDetails} />
+                <Stack.Screen name="Youtube" component={YoutubeScreen} />
+                <Stack.Screen name="EventPage" component={EventPage} />
+                <Stack.Screen name="Map" component={MapScreen} />
+                <Stack.Screen name="ProductDetail" component={Product} />
+                <Stack.Screen name="RequestASauceScreen" component={RequestASauceScreen} />
+                <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
+                <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
+                <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
+                <Stack.Screen name="Welcome" component={Welcome} />
+              </>
+              :
+              <Stack.Screen name="Public" component={PublicStack} />
+
+
+          }
+          {/* <Stack.Screen name="Public" component={PublicStack} />
           <Stack.Screen name="Drawer" component={DrawerStack} />
           <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
           <Stack.Screen name="QRScreen" component={QRScreen} />
@@ -114,16 +142,16 @@ function AppRouter() {
           <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
           <Stack.Screen name="SauceDetails" component={SouceDetails} />
           <Stack.Screen name="Youtube" component={YoutubeScreen} />
-          <Stack.Screen  name="EventPage" component={EventPage} />
-          <Stack.Screen  name="Map" component={MapScreen} />
-      <Stack.Screen name="ProductDetail" component={Product} />
-          <Stack.Screen  name="RequestASauceScreen" component={RequestASauceScreen} />
+          <Stack.Screen name="EventPage" component={EventPage} />
+          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="ProductDetail" component={Product} />
+          <Stack.Screen name="RequestASauceScreen" component={RequestASauceScreen} />
           <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
-      <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
-      <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  </GestureHandlerRootView>
+          <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
+          <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
 
   );
 }
