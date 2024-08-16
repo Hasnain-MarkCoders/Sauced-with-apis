@@ -373,6 +373,27 @@ export const FriendListImages = [
 }
 
 
+export function formatDate(date) {
+  // Ensure the input is a Date object
+  if (!(date instanceof Date)) {
+      return 'Invalid input: Please provide a valid Date object.';
+  }
+  const monthNames = ["January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"]
+  // Get the year, month, day, hours, minutes, seconds, and milliseconds
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth(); // months are zero-indexed
+  console.log(date.getUTCMonth())
+  const day = date.getUTCDate().toString().padStart(2, '0');
+  // Format the date and time in ISO 8601 format
+  return `${monthNames[month]}-${day}-${year}`;
+}
+
+// Example usage:
+const exampleDate = new Date('August 14, 2024 21:45:36.776');
+console.log(formatDate(exampleDate));
+
+
 
   export function generateRandomText(num=400) {
     const words = ["lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit"];

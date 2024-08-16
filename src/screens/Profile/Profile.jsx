@@ -16,7 +16,7 @@ import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import moreIcon from "./../../../assets/images/more.png"
 import { useSelector } from 'react-redux';
 const ProfileScreen = () => {
-    const auth = useSelector(state=>state.auth)
+    const auth = useSelector(state => state.auth)
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
@@ -96,11 +96,11 @@ const ProfileScreen = () => {
         };
         // fetchPhotos();
     }, [page]);
+    useEffect(() => {
+        console.log(auth.token)
+    }, [])
 
 
-    useEffect(()=>{
-console.log("auth.token", auth.token)
-    },[auth])
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(90) }}>
@@ -149,7 +149,7 @@ console.log("auth.token", auth.token)
                                             marginVertical: scale(30)
                                         }}>
                                             <CustomInput
-                                                imageStyles={{ top: "50%", resizeMode: 'contain',transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                                                imageStyles={{ top: "50%", resizeMode: 'contain', transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
                                                 isURL={false}
                                                 showImage={true}
                                                 uri={search}
@@ -173,64 +173,71 @@ console.log("auth.token", auth.token)
                                                 }} />
                                         </View>
                                         <View style={{
-                                            flexDirection:"row",
-                                            alignItems:"center",
-                                            justifyContent:"space-between",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
                                             marginBottom: scale(20)
 
                                         }}>
-                                        <Text style={{
-                                            color: "white",
-                                            fontWeight: 600,
-                                            fontSize: scale(24),
-                                            lineHeight: scale(28),
+                                            <Text style={{
+                                                color: "white",
+                                                fontWeight: 600,
+                                                fontSize: scale(24),
+                                                lineHeight: scale(28),
 
-                                        }}>
-                                            Add Friends
-                                        </Text>
-                                        <TouchableOpacity
-                    onPress={() => {
-                        // Linking.openURL(url)
-                        navigation.navigate("MyReviewedSauces", {route :"check-ins"})
+                                            }}>
+                                                Add Friends
+                                            </Text>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    // Linking.openURL(url)
+                                                    navigation.navigate("MyReviewedSauces", { route: "check-ins" })
 
-                    }}
-                    style={{
-                        paddingHorizontal: scale(10),
-                        paddingVertical: scale(6),
-                        backgroundColor: "#FFA100",
-                        borderRadius: scale(5),
-                        elevation: scale(5),
-                        alignSelf: "flex-end",
+                                                }}
+                                                style={{
+                                                    paddingHorizontal: scale(10),
+                                                    paddingVertical: scale(6),
+                                                    backgroundColor: "#FFA100",
+                                                    borderRadius: scale(5),
+                                                    elevation: scale(5),
+                                                    alignSelf: "flex-end",
 
-                    }}>
-                    <Text style={{
-                        color: "black",
-                        fontWeight: "700"
+                                                }}>
+                                                <Text style={{
+                                                    color: "black",
+                                                    fontWeight: "700"
 
-                    }}>All Check-ins</Text>
+                                                }}>All Check-ins</Text>
 
 
-                </TouchableOpacity>
+                                            </TouchableOpacity>
                                         </View>
-                                        <HorizontalUsersList horizontal={true} loading={loading} hasMore={hasMore} setPage={setPage} 
-                                        
-                                        
-                                        
-                                        // data={data}
-                                        data={FriendListImages}
-                                        
+                                        <HorizontalUsersList horizontal={true} loading={loading} hasMore={hasMore} setPage={setPage}
+
+
+
+                                            // data={data}
+                                            data={FriendListImages}
+
                                         />
                                     </View>
                                 }
                                 {
                                     index == 2 && <View style={{
-                                        marginTop: scale(50),
+                                        // marginTop: scale(50),
                                         gap: scale(40)
                                     }}>
 
-                                        <SauceList title='My Favorites' data={topRatedSauces} />
-                                        <SauceList title='Checked-in Sauces' data={topRatedSauces} />
-                                        <SauceList cb={()=>{navigation.navigate("MyReviewedSauces", {route:"review"})}} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
+                                        <SauceList
+                                            type="favourite"
+                                            title='My Favorites' data={topRatedSauces}
+                                        />
+                                        {/* <SauceList
+                                        type="checkedin"
+                                        title='Checked-in Sauces' data={topRatedSauces} /> */}
+                                        <SauceList
+                                            type="reviewed"
+                                            cb={() => { navigation.navigate("MyReviewedSauces", { route: "review" }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
 
                                     </View>
 

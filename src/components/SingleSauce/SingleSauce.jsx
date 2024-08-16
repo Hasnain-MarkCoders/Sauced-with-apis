@@ -12,7 +12,9 @@ const SingleSauce = ({
     customStyles={},
     showPopup=false,
     setProductDetails=()=>{},
-    setAlertModal=()=>{}
+    setAlertModal=()=>{},
+    endpoint="",
+    item={}
 }) => {
 
 const navigation = useNavigation()
@@ -24,7 +26,7 @@ const handleOnPress = ()=>{
     setAlertModal(true)
 }else{
 
-    navigation.navigate("ProductDetail", {url, title})
+    navigation.navigate("ProductDetail", {url, title, item})
 }
 }
     return (
@@ -53,10 +55,13 @@ const handleOnPress = ()=>{
             
         ]}>
             <Image
-            //   source={{uri:url}}
-            source={url}
+         
+              source={{uri:url}}
+            // source={url}
 
+                // style={[styles.image, {objectFit:"cover"}]}
                 style={[styles.image, {objectFit:"contain"}]}
+
             />
             <Text
                 ellipsizeMode='tail'

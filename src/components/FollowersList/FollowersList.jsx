@@ -4,18 +4,24 @@ import { FlatList } from 'react-native-gesture-handler';
 import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal';
+import useAxios from '../../../Axios/useAxios';
 
 const FollowersList = ({
-    data=[],
-    hasMore=true,
-    setPage=()=>{},
-    loading=false,
+    // data=[],
+    // hasMore=true,
+    // setPage=()=>{},
+    // loading=false,
     numColumns=2,
     title="",
 }) => {
 const [modalVisible, setModalVisible] = useState(false)
 const [modalLoading, setModalLoading] = useState(false)
 const [modalTitle, setModalTitle]=useState("")
+const [data, setData] = useState([])
+const [page, setPage] = useState(1)
+const [hasMore, setHasMore] = useState(true)
+const [loading, setLoading] = useState(false);
+const axiosInstance = useAxios()
   const handleOpenModal =  (item)=>{
     setModalTitle(`${title}  ${item.user.username}`)
     setModalVisible(true)
@@ -27,6 +33,38 @@ const [modalTitle, setModalTitle]=useState("")
      },2000)
   }
  
+
+  const fetchPhotos = async () => {
+    if (!hasMore || loading) return;
+
+    setLoading(true);
+    try {
+        const res = await axiosInstance.get(`/get-followers`, {
+            params: {
+                page: page
+            }
+        });
+
+        if (res?.data?.length === 0) {
+            setHasMore(false);
+        } else {
+            if(res?.data && res?.data?.followers && res?.data?.followers?.length>0){
+                setData(prevData => [...prevData, ...res?.data?.followers]);;
+            }
+        }
+        console.log(res?.data?.followers)
+    } catch (error) {
+        console.error('Failed to fetch photos:', error);
+    } finally {
+        setLoading(false);
+    }
+};
+
+useEffect(() => {
+    fetchPhotos();
+}, [page]);
+
+
   return (
     
    <View style={{
@@ -47,11 +85,11 @@ const [modalTitle, setModalTitle]=useState("")
       }}
        keyExtractor={(item, index) => index.toString()}
        renderItem={({ item }) => <UserCard
-        // cb={handleOpenModal}
-         item={item}
+        cb={handleOpenModal}
+         item={item?.followGiverDetails}
        title={title}
-       url={item?.url}
-       name={item?.title} 
+       url={item?.followGiverDetails?.image}
+       name={item?.followGiverDetails?.name} 
       //  url={item?.urls?.small}
       //  name={item?.user?.username} 
          showText={false} />}

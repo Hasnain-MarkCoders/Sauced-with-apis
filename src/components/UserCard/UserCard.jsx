@@ -5,12 +5,27 @@ import CustomButtom from '../CustomButtom/CustomButtom'
 import Lightbox from 'react-native-lightbox';
 import { useNavigation } from '@react-navigation/native';
 import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal';
+import useAxios from '../../../Axios/useAxios';
 
 const UserCard = ({url="",item={} ,name="", title="",cb=()=>{} }) => {
   const [LightBox, setLightBox] = useState(false)
   const [toggledTitle, setToggledTitle] = useState(title)
 const navigation = useNavigation()
-const handleToggleTitle = ()=>{
+const [ loading, setLoading] = useState(false)
+const axiosInstance = useAxios()
+
+const handleToggleTitle = async()=>{
+  setLoading(true);
+  try {
+      const res = await axiosInstance.post(`${toggledTitle=="Follow"?"/unfollow":"/follow"}`, {_id:item?._id});
+
+  console.log(res.data)
+
+  } catch (error) {
+      console.error('Failed to fetch photos:', error);
+  } finally {
+      setLoading(false);
+  }
  setToggledTitle(toggledTitle=="Follow"?"Unfollow":"Follow")
 }
   return (
@@ -25,8 +40,6 @@ const handleToggleTitle = ()=>{
     >
 
     <View
-    
-   
     
     style={{
         minWidth:scale(140),
@@ -54,8 +67,8 @@ const handleToggleTitle = ()=>{
         borderRadius:LightBox?0:scale(50),
 
       }}
-      // source={{uri:url}}
-      source={url}
+      source={{uri:url}}
+      // source={url}
 
       
       ></Image>}
@@ -70,7 +83,10 @@ const handleToggleTitle = ()=>{
       }}>{name}</Text>
       
     
-       <CustomButtom buttonTextStyle={{ fontSize: scale(12) }}
+       <CustomButtom
+       loading={loading}
+       
+       buttonTextStyle={{ fontSize: scale(12) }}
               buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}
               // onPress={()=>{cb(item)}}
               onPress={()=>{handleToggleTitle()}}

@@ -3,7 +3,7 @@ import { View, SafeAreaView, ImageBackground, ScrollView, Alert, Image, Text, To
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleAuth } from '../../../android/app/Redux/userReducer';
@@ -77,6 +77,8 @@ const CheckinScreen = () => {
         select: "", 
         location:""
     });
+    const route = useRoute()
+    const product = route?.params?.product
     const dispatch = useDispatch()
     const axiosInstance = useAxios()
 
@@ -189,99 +191,197 @@ const CheckinScreen = () => {
     };
 
 
-    const handleImage = async (file) => {
-        const data = new FormData()
-        data.append('image', file);
-        var postData = {
+    // const handleImage = async (file) => {
+    //     const data = new FormData()
+    //     data.append('image', file);
+    //     var postData = {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'multipart/form-data',
+    //             'Authorization': 'Bearer ' + auth?.token
+    //         },
+    //         body: {
+    //             ...data,
+    //                 text:data.description,
+    //                 latitude:"21321",
+    //                 longitude:"32131",
+    //                 sauceId:prodcut._id
+    //         },
+    //     }
+    //     return fetch(`${host}/checkin`, postData)
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             // console.log('responseJson', responseJson);
+    //             //      dispatch(handleAuth({
+    //             //         url
+    //             //     }))
+    //             console.log("responseJson====>", responseJson)
+    //             if (responseJson.code > 200) {
+    //                 Alert.alert(responseJson?.error)
+    //             }
+    //             return responseJson;
+    //         })
+    //         .catch((error) => {
+    //             console.log('error', error);
+    //             Alert.alert(error)
+    //         });
+    // }
+
+
+    // const handleSubmit = () => {
+    //     if(!data.description){
+    //           setMessage("Please write description.")
+    //           return setAlertModal(true)
+    //     }
+    //     if(!data.location){
+    //         setMessage("Please slect an option from list.")
+    //         return setAlertModal(true)
+    //   }
+    //     Vibration.vibrate(10)
+    //     setLoading(true)
+
+    //     // if (imageUri.length<1){
+           
+    //     //     setTimeout(()=>{
+    //     //         setMessage("Check complete.")
+    //     //         setAlertModal(true)
+    //     //         setTimeout(()=>{
+    //     //             setLoading(false)
+    //     //             navigation.navigate("AllCheckinsScreen", {routerNumber:2})
+    //     //         },1000)
+    //     //     },2000)
+    //     //     return
+    //     // }
+    //     const uploadPromises = imageUris.map(uri => {
+    //         return handleImage({
+    //             uri,
+    //             type: 'image/jpeg', // Assuming JPEG for simplicity; adjust as needed
+    //             name: uri.split('/').pop(), // Extract filename from URI
+    //         });
+    //     });
+
+    //     Promise.allSettled(uploadPromises).then(results => {
+    //         results.forEach((result, index) => {
+    //             if (result.status === 'fulfilled') {
+    //                 setMessage("Check complete.")
+    //                 setAlertModal(true)
+    //                 // setTimeout(()=>{
+    //                 setLoading(false)
+    //                 //     navigation.navigate("AllCheckinsScreen")
+    //                 // },2000)
+    //                 // setImageUris([])
+    //     setLoading(false)
+
+    //             } else {
+    //                 console.error(`Failed to upload image ${index + 1}: ${result?.reason}`);
+    //                 setMessage(`Check Failed: Failed to upload image ${index + 1}: ${result?.reason}`)
+    //                 setAlertModal(true)
+    //                   setLoading(false)
+
+    //             }
+    //         });
+    //     }).catch(error => {
+    //         setMessage(error?.message)
+    //         setAlertModal(true)
+    //         console.error('An error occurred during uploads:', error);
+    //         // Alert.alert('Upload Error', 'An error occurred while uploading images.');
+    //         setLoading(false)
+
+    //     });
+     
+    // }
+
+
+
+
+
+    const handleImage = async (file, additionalData) => {
+        const formData = new FormData();
+        formData.append('images', file);
+        formData.append('text', additionalData.description);
+        formData.append('latitude', additionalData.latitude);
+        formData.append('longitude', additionalData.longitude);
+        formData.append('sauceId', additionalData.sauceId);
+    
+        const postData = {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + auth?.token
+                'Authorization': 'Bearer ' + auth?.token // Auth token assumed to be necessary
             },
-            body: data,
+            body: formData
+        };
+        console.log(formData)
+    
+        try {
+            const response = await fetch(`${host}/checkin`, postData);
+            const responseJson = await response.json();
+            console.log(response)
+            if (!response.ok) {
+                throw new Error(responseJson.error || "An unknown error occurred");
+            }
+            return responseJson;
+        } catch (error) {
+            console.error('Upload error:', error);
+            throw error; // Allows error handling in the calling function
         }
-        return fetch(`${host}/change-image`, postData)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                // console.log('responseJson', responseJson);
-                //      dispatch(handleAuth({
-                //         url
-                //     }))
-                console.log("responseJson", responseJson)
-                if (responseJson.code > 200) {
-                    Alert.alert(responseJson?.error)
-                }
-                return responseJson;
-            })
-            .catch((error) => {
-                console.log('error', error);
-                Alert.alert(error)
-            });
-    }
+    };
+    
 
 
-    const handleSubmit = () => {
-        if(!data.description){
-              setMessage("Please write description.")
-              return setAlertModal(true)
+
+
+
+
+
+
+    const handleSubmit = async () => {
+        if (!data.description) {
+            setMessage("Please write a description.");
+            return setAlertModal(true);
         }
-        if(!data.location){
-            setMessage("Please slect an option from list.")
-            return setAlertModal(true)
-      }
-        Vibration.vibrate(10)
-        setLoading(true)
-
-        if (imageUri.length<1){
-           
-            setTimeout(()=>{
-                setMessage("Check complete.")
-                setAlertModal(true)
-                setTimeout(()=>{
-                    setLoading(false)
-                    navigation.navigate("AllCheckinsScreen", {routerNumber:2})
-                },1000)
-            },2000)
-            return
+        if (!data.location) {
+            setMessage("Please select an option from the list.");
+            return setAlertModal(true);
         }
-        const uploadPromises = imageUris.map(uri => {
-            return handleImage({
-                uri,
-                type: 'image/jpeg', // Assuming JPEG for simplicity; adjust as needed
-                name: uri.split('/').pop(), // Extract filename from URI
-            });
-        });
-
-        Promise.allSettled(uploadPromises).then(results => {
-            results.forEach((result, index) => {
-                if (result.status === 'fulfilled') {
-                    setMessage("Check complete.")
-                    setAlertModal(true)
-                    setTimeout(()=>{
-                    setLoading(false)
-                        navigation.navigate("AllCheckinsScreen")
-                    },2000)
-                    setImageUris([])
-        setLoading(false)
-
-                } else {
-                    console.error(`Failed to upload image ${index + 1}: ${result?.reason}`);
-                    setMessage(`Check Failed: Failed to upload image ${index + 1}: ${result?.reason}`)
-                    setAlertModal(true)
-                      setLoading(false)
-
-                }
-            });
-        }).catch(error => {
-            setMessage(error?.message)
-            setAlertModal(true)
+        Vibration.vibrate(10);
+        setLoading(true);
+    
+        const additionalData = {
+            description: data.description,
+            latitude: "21321",
+            longitude: "32131",
+            sauceId: product._id // Assuming product._id is available and correct
+        };
+    
+        const uploadPromises = imageUris.map(uri => handleImage({
+            uri,
+            type: 'image/jpeg', // Assuming JPEG; adjust as needed
+            name: uri.split('/').pop(), // Extract filename from URI
+        }, additionalData));
+    
+        try {
+            const results = await Promise.allSettled(uploadPromises);
+            const uploadErrors = results.filter(result => result.status === 'rejected');
+    
+            if (uploadErrors.length > 0) {
+                const errorMessage = `Failed to upload ${uploadErrors.length} image(s).`;
+                console.error(errorMessage, uploadErrors);
+                setMessage(errorMessage);
+                setAlertModal(true);
+            } else {
+                setMessage("Check complete.");
+                setAlertModal(true);
+                // navigation.navigate("AllCheckinsScreen");
+            }
+        } catch (error) {
             console.error('An error occurred during uploads:', error);
-            // Alert.alert('Upload Error', 'An error occurred while uploading images.');
-            setLoading(false)
-
-        });
-     
-    }
+            setMessage("Upload error: " + error.message);
+            setAlertModal(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     ;
     const filterfn = (search="")=>{
         if(search){
@@ -295,6 +395,10 @@ const CheckinScreen = () => {
     }
 
     useEffect(()=>{console.log(data?.location)},[data?.location])
+
+useEffect(()=>{
+    console.log("prodcut===>", product)
+},[product])
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>

@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleAuth } from '../../../android/app/Redux/userReducer';
 import CustomConfirmModal from '../../components/CustomConfirmModal/CustomConfirmModal';
 import auth from '@react-native-firebase/auth';
+import useAxios from '../../../Axios/useAxios';
 
 const SettingScreen = () => {
     const navigation = useNavigation()
@@ -17,6 +18,8 @@ const SettingScreen = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [loading, setLoading] = useState(false)
     const [isEnabled, setIsEnabled] = useState(true)
+    const axiosInstance = useAxios()
+
  const dispatch = useDispatch()
 
     const handleLogout= async()=>{
@@ -64,6 +67,8 @@ const SettingScreen = () => {
         try{
             setLoading(true)
             setIsEnabled(false)
+            // const res = await axiosInstance.post(`/delete-user`, {
+            // });
             await new Promise(resolve => setTimeout(resolve, 2000));
           setShowDeleteModal(false)
         }catch{

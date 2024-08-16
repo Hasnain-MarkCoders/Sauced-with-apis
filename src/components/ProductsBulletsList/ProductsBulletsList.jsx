@@ -20,7 +20,7 @@ const ProductsBulletsList = ({
         <FlatList
           showsHorizontalScrollIndicator={false} 
           showsVerticalScrollIndicator={false}
-          data={welcomeLists}
+          data={data}
           renderItem={(props)=>renderItem({...props, textStyles, bulletStyle})}
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent={() => <View style={styles.separator} />}

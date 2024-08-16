@@ -17,7 +17,8 @@ import { useNavigation } from '@react-navigation/native'
 const ProductCard = ({
     url = "",
     title = "",
-    setshowListModal = () => { }
+    setshowListModal = () => { },
+    product={}
 }) => {
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
@@ -56,8 +57,8 @@ const ProductCard = ({
                                 borderColor: LightBox ? 0 : "#FFA100",
                                 borderWidth: LightBox ? 0 : scale(1)
                             }}
-                            // source={{ uri: url }}
-                            source={url}
+                            source={{ uri: url }}
+                            // source={url}
 
                         />
                     </Lightbox>
@@ -126,7 +127,7 @@ const ProductCard = ({
                                         fontWeight: 600,
                                         fontSize: scale(30),
                                         lineHeight: scale(36),
-                                    }}>30</Text>
+                                    }}>{product?.checkIn}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
@@ -233,7 +234,7 @@ const ProductCard = ({
                                 fontWeight: 600,
                                 fontSize: scale(12),
                                 lineHeight: scale(25),
-                            }}>www.unsplash.com</Text>
+                            }}>{product?.websiteLink}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{
@@ -257,7 +258,7 @@ const ProductCard = ({
                                 fontWeight: 600,
                                 fontSize: scale(12),
                                 lineHeight: scale(25),
-                            }}>www.hotsauce.com</Text>
+                            }}>{product?.productLink}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -289,7 +290,7 @@ const ProductCard = ({
                 <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)
-                        navigation.navigate("Checkin")
+                        navigation.navigate("Checkin", {product})
 
                     }}
                     style={{

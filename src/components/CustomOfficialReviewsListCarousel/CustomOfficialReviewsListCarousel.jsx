@@ -9,79 +9,47 @@ import useAxios from '../../../Axios/useAxios';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
-const CustomCarousel = ({
+const CustomOfficialReviewsListCarousel = ({
     // data=[],
     showText=false
 }) => {
-   const [selected, setSelected] = React.useState(0)
- const navigation = useNavigation()
 
- const axiosInstance = useAxios()
- const [data, setData] = React.useState([])
- const [page, setPage] = React.useState(1)
- const [hasMore, setHasMore] = React.useState(true)
- const [loading, setLoading] = React.useState(false);
+    const navigation = useNavigation()
+    const axiosInstance = useAxios()
+    const [selected, setSelected] = React.useState(0)
+    const [data, setData] = React.useState([])
+    const [page, setPage] = React.useState(1)
+    const [hasMore, setHasMore] = React.useState(true)
+    const [loading, setLoading] = React.useState(false);
 
-// React.useEffect(() => {
-//  const fetchPhotos = async () => {
-//      if (!hasMore || loading) return;
-
-//      setLoading(true);
-//      try {
-//          const res = await axiosInstance.get(`/get-sauces`, {
-//              params: {
-//                  type:"toprated",
-//                  page: page
-//              }
-//          });
-//          console.log(res.data)
-
-//          if (res?.data.length === 0) {
-//              setHasMore(false);
-//          } else {
-//              console.log(res?.data)
-//              // setData([...res.data]);
-//          }
-//      } catch (error) {
-//          console.error('Failed to fetch reviews:', error);
-//      } finally {
-//          setLoading(false);
-//      }
-//  };
-
-//  fetchPhotos();
-// }, [page]);
-
-
-
- React.useEffect(() => {
-     const fetchEvents = async () => {
-         if (!hasMore || loading) return;
-    
-         setLoading(true);
-         try {
-             const res = await axiosInstance.get(`/get-all-events`, {
-                 params: {
-                     page: page
-                 }
-             });
-             console.log(res?.data?.events)
-    
-             if (res?.data?.events?.length === 0) {
-                 setHasMore(false);
-             } else {
-                 console.log(res?.data?.events)
-                 setData([...res.data?.events]);
-             }
-         } catch (error) {
-             console.error('Failed to fetch reviews:', error);
-         } finally {
-             setLoading(false);
-         }
-     };
-    
-     fetchEvents();
-    }, [page]);
+    React.useEffect(() => {
+        const fetchOfficalReviews = async () => {
+            if (!hasMore || loading) return;
+       
+            setLoading(true);
+            try {
+                const res = await axiosInstance.get(`/get-official-reviews`, {
+                    params: {
+                        page: page
+                    }
+                });
+                console.log(res?.data?.officialReviews)
+       
+                if (res?.data?.officialReviews?.length === 0) {
+                    setHasMore(false);
+                } else {
+                    console.log(res?.data?.officialReviews)
+                    setData([...res.data?.officialReviews]);
+                }
+            } catch (error) {
+                console.error('Failed to fetch reviews:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+       
+        fetchOfficalReviews();
+       }, [page]);
   return (
     <View style={{}}>
     <Carousel
@@ -98,12 +66,12 @@ const CustomCarousel = ({
                         showText={showText}
                         //   title={item?.user?.username}
                         //    url={item?.urls?.small}
+                        videoId={item?.videoId}
                         // title={item?.user?.username}
                         url={item?.bannerImage}
                         infoText={""} />
                 
-        </>)
-        }
+        </>)}
     />
         <View style={{
                     flexDirection: "row",
@@ -146,4 +114,4 @@ const CustomCarousel = ({
   )
 }
 
-export default CustomCarousel
+export default CustomOfficialReviewsListCarousel

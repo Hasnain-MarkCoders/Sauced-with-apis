@@ -8,12 +8,12 @@ const SingleBrand = ({
     return (
         <View style={styles.container}>
             <Image
-                source={url}
+                source={{uri:url}}
                 style={{
                     width:"100%",
                     height:"100%",
                     borderRadius: scale(6),
-                    objectFit:"contain"
+                    // objectFit:"contain"
 
                 }}
             />

@@ -5,8 +5,10 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../components/Header/Header';
 import { scale } from 'react-native-size-matters';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 const YoutubeScreen = () => {
+  const route = useRoute()
+  const videoId = route?.params?.videoId
   const navigation = useNavigation()
   const [initialLoading, setInitialLoading] = useState(true)
 
@@ -37,7 +39,7 @@ const YoutubeScreen = () => {
           onReady={() => setInitialLoading(false)}
           height={300}
           width={"100%"}
-          videoId={"U9DyHthJ6LA"}
+          videoId={videoId}
           // play={!initialLoading} // Ensures the video plays only when loading is done
         />
     </SafeAreaView>

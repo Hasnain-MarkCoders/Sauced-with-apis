@@ -166,7 +166,9 @@ const FollowerScreen = () => {
                                         All Followers
                                     </Text>
                                     
-                                     <FollowersList title="Follow"  loading={loading} hasMore={hasMore} setPage={setPage} 
+                                     <FollowersList
+                                      title="Follow"
+                                      loading={loading} hasMore={hasMore} setPage={setPage} 
                                     //  data={data}
                                     data={FriendListImages}
                                       /></View>

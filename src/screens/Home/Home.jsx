@@ -13,10 +13,12 @@ import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import BannerList from '../../components/BannerList/BannerList';
 import arrow from "./../../../assets/images/arrow.png";
 import axios from 'axios';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
+import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY, VITE_BASE_URL } from "@env"
 import { useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
+import useAxios from '../../../Axios/useAxios';
+import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
 
 const Home = () => {
     const navigation = useNavigation()
@@ -26,7 +28,7 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const [alertModal, setAlertModal] = useState(false)
   const [initialLoading, setInitialLoading]=useState(true)
-
+  const axiosInstance = useAxios()
     const [data, setData] = useState({
         search: "",
     });
@@ -62,6 +64,70 @@ useEffect(()=>{
         setInitialLoading(false)
     },1000)
 })
+
+
+// 
+// fetching sauces
+useEffect(() => {
+    const fetchPhotos = async () => {
+        if (!hasMore || loading) return;
+
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/get-sauces`, {
+                params: {
+                    type:"toprated",
+                    page: page
+                }
+            });
+            console.log(res.data)
+
+            if (res.data.length === 0) {
+                setHasMore(false);
+            } else {
+                setBanners([...res.data]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch photos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+   
+    fetchPhotos();
+}, [page]);
+useEffect(() => {
+    const fetchPhotos = async () => {
+        if (!hasMore || loading) return;
+
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/get-all-events`, {
+                params: {
+                    page: page
+                }
+            });
+            console.log(res.data)
+
+            if (res.data.length === 0) {
+                setHasMore(false);
+            } else {
+                setBanners([...res.data]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch photos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+   
+    fetchPhotos();
+}, [page]);
+
+
+
+
+// 
 
     if (initialLoading) {
         return (
@@ -135,9 +201,14 @@ useEffect(()=>{
                             </View>
                             <View style={styles.contentContainer}>
 
-                                <SauceList title='Featured Sauces' data={featuredSauces} />
+                                <SauceList
+                                 type="featured"
+                                   title='Featured Sauces' data={featuredSauces} />
 
-                                <SauceList title='Top Rated Sauces' data={topRatedSauces} />
+
+                                <SauceList
+                                 type="toprated"
+                                  title='Top Rated Sauces' data={topRatedSauces} />
 
                                 <CustomButtom
                                     Icon={() => <Image source={arrow} />}
@@ -161,8 +232,8 @@ useEffect(()=>{
                                     }>
                                         Official Reviews
                                     </Text>
-                            <CustomCarousel
-                             data={banners}
+                            <CustomOfficialReviewsListCarousel
+                            //  data={banners}
                              showText={false}
                             />
                                 </View>

@@ -1,18 +1,52 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
-import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
+import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import user from "./../../../assets/images/userWithFlames.png"
+import useAxios from '../../../Axios/useAxios'
 
 const ProfileCard = () => {
     const auth = useSelector(state => state.auth)
+    const axiosInstance = useAxios()
     const navigation = useNavigation()
     const url = auth?.url || ""
+    const [loading, setLoading] = React.useState(false);
+    const [user, setUser] = useState(null)
+
     // const url = user
     const name = auth?.user?.user?.displayName || auth?.name
     const circles = [1, 1, 1, 1, 1]
+
+
+    React.useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            try {
+                const res = await axiosInstance.get(`/get-user`);
+                console.log(res?.data?.user);
+                setUser(res?.data?.user)
+            } catch (error) {
+                console.error('Failed to fetch user:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        // Initial fetch
+        fetchUser();
+    
+        // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
+        const interval = setInterval(fetchUser, 10000); // 10000 milliseconds = 10 seconds
+    
+        // Cleanup function to clear interval when component unmounts
+        return () => clearInterval(interval);
+    }, []);
+    
+
+
+
     return (
         <View style={{
             width: "100%",
@@ -70,7 +104,7 @@ const ProfileCard = () => {
                         flexBasis:"80%",
                         fontSize: scale(20),
                         lineHeight: scale(24),
-                    }}>{name}</Text>
+                    }}>{user?.name||name}</Text>
                     <View style={{
                         maxWidth:"80%",
                     }}>
@@ -93,7 +127,7 @@ const ProfileCard = () => {
                                         fontWeight: 600,
                                         fontSize: scale(20),
                                         lineHeight: scale(30),
-                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    }}>{user?.followers}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
@@ -118,7 +152,7 @@ const ProfileCard = () => {
                                         fontWeight: 600,
                                         fontSize: scale(20),
                                         lineHeight: scale(30),
-                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    }}>{user?.following}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
@@ -142,7 +176,7 @@ const ProfileCard = () => {
                                         fontWeight: 600,
                                         fontSize: scale(20),
                                         lineHeight: scale(30),
-                                    }}>{generateThreeDigitRandomNumber()}</Text>
+                                    }}>{user?.checkins}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
@@ -175,7 +209,7 @@ const ProfileCard = () => {
                         color: "#FFA100",
                         fontSize: scale(10)
                     }}>
-                        {getRandomDate()}
+                        {user?.date &&formatDate(new Date(user?.date))}
                     </Text>
                 </View>
                 <View style={{

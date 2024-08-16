@@ -5,10 +5,13 @@ import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
 import moreIcon from "./../../../assets/images/more.png"
+import useAxios from '../../../Axios/useAxios';
 
-const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMoreIcon = false, cb = () => { } }) => {
-    // const [data, setData] = useState([])
+const SauceList = ({ title = "",  name = "",isCheckedIn=false, searchTerm = "", showMoreIcon = false, cb = () => { }, type="toprated" }) => {
+    const [data, setData] = useState([])
     const [page, setPage] = useState(1)
+  const axiosInstance = useAxios()
+
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
@@ -87,8 +90,45 @@ const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMore
     //     fetchPhotos();
     // }, [page]);
 
+    const fetchPhotos = async () => {
+        if (!hasMore || loading) return;
+        console.log(type)
+
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/get-sauces`, {
+                params: {
+                    type,
+                    page: page
+                }
+            });
+            console.log("res?.data?.sauces=====>", res?.data?.sauces)
+
+            if (res?.data?.length === 0) {
+                setHasMore(false);
+            } else {
+                if(res?.data && res?.data?.sauces&& res?.data?.sauces?.length){
+                    setData(prevData => [...prevData, ...res?.data?.sauces]);;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch photos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPhotos();
+    }, [page]);
+
+
+
     return (
-        <View style={styles.container}>
+        <>
+        {
+
+data?.length>0&&<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -129,10 +169,14 @@ const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMore
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    item={item}
+
                         // url={item?.urls?.small} 
-                        url={item.url}
+                        // url={item.url}
+                        url={item?.image}
+
                         // title={item?.user?.username}
-                        title={item?.title}
+                        title={item?.name}
 
 
                     />}
@@ -145,6 +189,7 @@ const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMore
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
+                        <TouchableOpacity onPress={fetchPhotos}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",
@@ -159,6 +204,8 @@ const SauceList = ({ title = "", data = [], name = "", searchTerm = "", showMore
                 loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
             }
         </View>
+        }
+        </>
     );
 };
 

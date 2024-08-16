@@ -5,22 +5,55 @@ import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
 import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
+import useAxios from '../../../Axios/useAxios';
 
 const ProductSearchList = ({
     title = "" , 
-    setPage =()=>{},
-    data=[],
-    loading=false,
-    hasMore=true,
     setProductDetails=()=>{},
     setAlertModal=()=>{},
     style={}
 }) => {
+    const axiosInstance = useAxios()
+    const [data, setData] = useState([])
+    const [page, setPage] = useState(1)
+    const [hasMore, setHasMore] = useState(true)
+    const [loading, setLoading] = useState(false);
+
+
+    useEffect(() => {
+        const fetchPhotos = async () => {
+            if (!hasMore || loading) return;
+    
+            setLoading(true);
+            try {
+                const res = await axiosInstance.get(`/get-sauces`, {
+                    params: {
+                        type:"toprated",
+                        page: page
+                    }
+                });
+                console.log(res.data.sauces.length)
+    
+                if (res.data.length === 0) {
+                    setHasMore(false);
+                } else {
+                    setData(prevData => [...prevData, ...res?.data?.sauces]);;
+                }
+            } catch (error) {
+                console.error('Failed to fetch photos:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+       
+        fetchPhotos();
+    }, [page]);
+
 
     return (
         <View style={{
             flex: 1,
-            ...style
+            ...style,
         }}>
             <FlatList
                 data={data}
@@ -41,17 +74,17 @@ const ProductSearchList = ({
                 customStyles={
                     
             {
-                width: "31%",  // Each item takes up 30% of the grid width
-                marginHorizontal: "auto",  // Consistent spacing between items
-                // marginBottom: scale(10)  // Vertical spacing
+                width: "31%", 
+                marginHorizontal: "auto",  
                 marginBottom:-20
             }
                 }
                 index={index} customWidth={"30%"} 
                 // url={item?.urls?.small}
                 //  title={item?.user?.username}  
-                 url={item?.url}
-                 title={item?.title} 
+                //  url={item?.url}
+                url={item?.image}
+                 title={item?.name} 
                  
                  />}
                 contentContainerStyle={{

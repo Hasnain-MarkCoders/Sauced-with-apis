@@ -92,6 +92,9 @@ const MyReviewSauces = () => {
 
         // fetchPhotos();
     }, [query.search, page]);
+    useEffect(()=>{
+        console.log("hasnain")
+            },[])
 
     return (
         

@@ -92,8 +92,22 @@ const CustomChangePasswordModal = ({
                 height: scale(20)
               }} source={closeIcon} />
             </TouchableOpacity>
+            <View style={{
+                borderColor: "#FFA100",
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 15,
+                marginTop: scale(30),
 
-            <CustomInput
+              }}>
+              <Text style={{
+                color:"white"
+              }}>
+              {auth.email}
+              </Text>
+            </View>
+
+            {/* <CustomInput
               title={title}
               name={title}
               readOnly={true}
@@ -116,7 +130,7 @@ const CustomChangePasswordModal = ({
                 marginTop: scale(10)
 
               }}
-            />
+            /> */}
               <CustomButtom
               loading={loading}
                 buttonTextStyle={{ fontSize: scale(12) }}

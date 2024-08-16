@@ -22,6 +22,7 @@ import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal
 const Product = () => {
   const route = useRoute()
   const { url = "", title = "" } = route?.params
+  const product = route?.params?.item
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -154,6 +155,7 @@ const handleAddMessage = ()=>{
     navigation.navigate("ExternalProfileScreen", {url:data.profileUri, name:data.name})
 }
 
+
   if (initialLoading) {
     return (
       <ImageBackground source={getStartedbackground} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -161,6 +163,7 @@ const handleAddMessage = ()=>{
       </ImageBackground>
     );
   }
+
   return (
     <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={getStartedbackground}>
       <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
@@ -169,7 +172,7 @@ const handleAddMessage = ()=>{
           showMenu={false}
           cb={() => navigation.goBack()} showProfilePic={false} headerContainerStyle={{
             paddingBottom: scale(20)
-          }} title={"Followers"} showText={false} />
+          }} title={""} showText={false} />
 
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -192,6 +195,7 @@ const handleAddMessage = ()=>{
                     marginBottom: scale(20)
                   }}>
                     <ProductCard
+                    product={product}
                       setshowListModal={setModalVisible}
                       url={url} title={title} />
                   </View>
@@ -210,7 +214,7 @@ const handleAddMessage = ()=>{
                       fontSize: moderateScale(24),
                       fontWeight: 600,
                     }}>
-                      About Hot Sauce
+                      About {product?.name}
 
                     </Text>
 
@@ -222,11 +226,7 @@ const handleAddMessage = ()=>{
                       lineHeight: 20,
 
                     }}>
-                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.
-                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh,
-                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh 
-                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno, Poblano, Habanero, Or A Mix.1 lb. Fresh 
-
+                      {product?.description}
                     </Text>
 
 
@@ -242,6 +242,7 @@ const handleAddMessage = ()=>{
                     </Text>
 
                     <ProductsBulletsList
+                    data={product.ingredients}
                     bulletStyle={{
                       backgroundColor:"#FFA100"
                     }}

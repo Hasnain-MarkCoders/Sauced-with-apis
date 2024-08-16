@@ -9,7 +9,8 @@ const Banner = ({
     infoText = "",
     showText = true,
     title = "",
-    cb = () => { }
+    cb = () => { },
+    videoId=""
 }) => {
 
   
@@ -17,7 +18,7 @@ const Banner = ({
     return (
         <TouchableOpacity style={{
             width:"100%",
-        }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title }) }}>
+        }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title, videoId }) }}>
 
             <ImageBackground
             borderRadius={10}
@@ -26,8 +27,8 @@ const Banner = ({
 
             }}
                 // imageStyle={{ borderRadius: 15, width:"100%", height:scale(130) }}
-                // source={{ uri: url }}
-                source={  url }
+                source={{ uri: url }}
+                // source={  url }
                 >
                 {
                     showText && <View style={{ paddingVertical: scale(5), paddingHorizontal: scale(20), gap: scale(5) }}>

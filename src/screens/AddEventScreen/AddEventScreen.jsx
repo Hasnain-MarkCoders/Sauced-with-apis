@@ -10,20 +10,26 @@ import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import CustomListItem from '../../components/CustomListItem/CustomListItem.jsx';
 import DatePicker from 'react-native-date-picker'
 import arrow from "./../../../assets/images/arrow.png";
+import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
+import useAxios from '../../../Axios/useAxios.js';
 
 const AddEventScreen = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const [openDate, setOpenDate] = useState(false)
-    const [alertModal, setAlertModal] = useState(false)
+    const [alertModal, setAlertModal] = useState({
+        open: false,
+        message: ""
+    })
     const [points, setPoints]  = useState([])
     const [query, setQuery] = useState({
         title: "",
         eventOrganizer: "",
         date: new Date(),
-        destinationTitle: "",
+        address: "",
         destinationDetails: "",
         coordinates: ""
     });
+    const axiosInstance = useAxios()
     const navigation = useNavigation()
     const handleAddBullet=(value)=>{
         if (value.trim()){
@@ -47,6 +53,61 @@ const AddEventScreen = () => {
     useEffect(()=>{
         console.log(query.date)
     },[query])
+
+
+    const handleAddEvent=()=>{
+        if (!query?.title) {
+            return setAlertModal({
+                open: true,
+                message: "Title is required!"
+            })
+
+        }
+
+        else if (!query?.eventOrganizer) {
+            return setAlertModal({
+                open: true,
+                message: "Event Organizer is required!"
+            })
+
+        }
+
+
+        else if (!query?.date) {
+            return setAlertModal({
+                open: true,
+                message: "Date is required!"
+            })
+
+        }
+
+
+        else if (!query?.address) {
+            return setAlertModal({
+                open: true,
+                message: "Address is required!"
+            })
+
+        }
+
+
+        else if (!query?.destinationDetails) {
+            return setAlertModal({
+                open: true,
+                message: "Details is required!"
+            })
+
+        }
+
+        else if (!query?.coordinates) {
+            return setAlertModal({
+                open: true,
+                message: "coordinates are required!"
+            })
+
+        }
+        console.log(query)
+    }
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -82,6 +143,16 @@ const AddEventScreen = () => {
                         <View style={{
                             gap: scale(20)
                         }}>
+
+                            <View style={{
+                                gap:scale(10)
+                            }}>
+                            <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Title
+                            </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
                                 name="title"
@@ -102,7 +173,16 @@ const AddEventScreen = () => {
                                     padding: 15,
 
                                 }} />
-
+                            </View>
+                            <View style={{
+                                gap:scale(10)
+                            }}>
+                            <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Event Organizer
+                            </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
                                 name="eventOrganizer"
@@ -123,6 +203,16 @@ const AddEventScreen = () => {
                                     padding: 15,
 
                                 }} />
+                            </View>
+                                    <View style={{
+                                gap:scale(10)
+                            }}>
+                                         <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Date
+                            </Text>
                                     <CustomButtom
                                     Icon={() => <Image source={arrow} />}
                                     showIcon={false}
@@ -135,15 +225,24 @@ const AddEventScreen = () => {
                                     }}
                                     title={query.date.toDateString()}
                                 />
+                                    </View>
 
                            
-
+                                    <View style={{
+                                gap:scale(10)
+                            }}>
+                                    <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Address
+                            </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
-                                name="destinationTitle"
+                                name="address"
                                 onChange={handleText}
                                 updaterFn={setQuery}
-                                value={query.destinationTitle}
+                                value={query.address}
                                 showTitle={false}
                                 placeholder="Address"
                                 containterStyle={{
@@ -158,8 +257,17 @@ const AddEventScreen = () => {
                                     padding: 15,
 
                                 }} />
+                                    </View>
                             <View>
-
+                                <View style={{
+                                gap:scale(10)
+                            }}>
+                                <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Details
+                            </Text>
                                 <CustomInput
                                     // cb={() => setPage(1)}
                                     multiline={true}
@@ -185,14 +293,20 @@ const AddEventScreen = () => {
 
 
                                     }} />
-                              
-                        
-
+                                </View>
                             </View>
 
 
 
-
+                                    <View style={{
+                                gap:scale(10)
+                            }}>
+                                    <Text style={{
+                                fontSize:scale(17),
+                                color:"white"
+                            }}>
+                                Location
+                            </Text>
                             <CustomInput
                                 // cb={() => {}}
                                 name="coordinates"
@@ -213,6 +327,7 @@ const AddEventScreen = () => {
                                     padding: 15,
 
                                 }} />
+                                    </View>
 
                         </View>
                         <View>
@@ -222,6 +337,7 @@ const AddEventScreen = () => {
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
                                 // onPress={() => {Vibration.vibrate(10) ;setAlertModal(true)}}
+                                onPress={handleAddEvent}
                                 title={"Submit"}
                             />
                         </View>
@@ -241,6 +357,16 @@ const AddEventScreen = () => {
             setOpenDate(false)
         }}
       />
+
+
+<CustomAlertModal
+                    title={alertModal?.message}
+                    modalVisible={alertModal?.open}
+                    setModalVisible={() => setAlertModal({
+                        alertModal: false,
+                        messsage: ""
+                    })}
+                />
             </SafeAreaView>
         </ImageBackground>
     )
