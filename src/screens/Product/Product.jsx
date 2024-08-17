@@ -18,6 +18,7 @@ import CommentsList from '../../components/CommentsList/CommentsList.jsx';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import user1 from "./../../../assets/images/user1.png"
 import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
+import useAxios from '../../../Axios/useAxios.js';
 
 const Product = () => {
   const route = useRoute()
@@ -40,6 +41,7 @@ const Product = () => {
   const [isEnabled, setisEnabled] = useState(true)
   const navigation = useNavigation()
   const [isNewMsg, setNewMsg] = useState(false)
+  const axiosInstance = useAxios()
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -56,7 +58,6 @@ const Product = () => {
   }, []);
 
   const handleSubmitMessage = (data)=>{
-    console.log("hasnain")
     setIsKeyBoard(true)
 }
 const getId = (id=0)=>{
@@ -116,6 +117,7 @@ const handleAddMessage = ()=>{
   }, [page]);
   const handleLoading = (listNumber, action) => {
     if (listNumber == 1) {
+
       return setLoading1(action)
     }
     if (listNumber == 2) {
@@ -126,30 +128,37 @@ const handleAddMessage = ()=>{
     }
 
   }
-  addToList = (listNumber) => {
-    handleLoading(listNumber, true)
-    Snackbar.show({
-      text: `sauce adding in List ${listNumber}`,
-      duration: Snackbar.LENGTH_SHORT,
-      action: {
-        text: 'UNDO',
-        textColor: '#FFA100',
+  addToList = async(listNumber) => {
+  
 
-        onPress: () => {
-          Snackbar.show({
-            text: `sauce remove from List ${listNumber}`,
-            duration: Snackbar.LENGTH_SHORT,
-          });
-        },
-      },
-    });
-    setTimeout(() => {
+      try {
+        handleLoading(listNumber, true)
+        Snackbar.show({
+          text: `sauce adding in List ${listNumber}`,
+          duration: Snackbar.LENGTH_SHORT,
+          action: {
+            text: 'UNDO',
+            textColor: '#FFA100',
+    
+            onPress: () => {
+              Snackbar.show({
+                text: `sauce remove from List ${listNumber}`,
+                duration: Snackbar.LENGTH_SHORT,
+              });
+            },
+          },
+        });
+        
+        const type=listNumber==1?"triedSauces":listNumber==2?"toTrySauces":"favoriteSauces"
+          const res = await axiosInstance.post(`/bookmark`, {sauceId:product?._id, listType:type});
+          console.log("res================================>", res?.data)
+      } catch (error) {
+          console.error('Failed to like / dislike:', error);
+      } finally {
       handleLoading(listNumber, false)
       setModalVisible(false)
       setisEnabled(true)
-    }, 2000)
-
-
+      }
   }
   const handleUserProfileView = (data)=>{
     navigation.navigate("ExternalProfileScreen", {url:data.profileUri, name:data.name})
@@ -302,7 +311,7 @@ const handleAddMessage = ()=>{
                       </View>
 
                       {/* <CommentsList setPage={setPage} data={data} loading={loading} hasMore={hasMore} /> */}
-                      <CommentsList cb={handleUserProfileView} getId={getId} setNewMsg={setNewMsg} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
+                      <CommentsList product={product} cb={handleUserProfileView} getId={getId} setNewMsg={setNewMsg} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
                                         //  data={data} 
                                          data={messagesData}
                                         

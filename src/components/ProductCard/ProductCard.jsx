@@ -14,19 +14,35 @@ import wishlist_filled from "./../../../assets/images/wishlist_filled.png"
 import CustomRating from '../CustomRating/CustomRating'
 import Snackbar from 'react-native-snackbar'
 import { useNavigation } from '@react-navigation/native'
+import useAxios from '../../../Axios/useAxios'
 const ProductCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
     product={}
 }) => {
+    const axiosInstance = useAxios()
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [productStatus, setproductStatus] = useState({
         isChecked: false,
         isAddedToWishList: false,
         isAddedToList: false
     })
+
+const handleToggleLike=async()=>{
+        setLoading(true);
+        try {
+            const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
+            console.log("res================================>", res.data)
+        } catch (error) {
+            console.error('Failed to like / dislike:', error);
+        } finally {
+            setLoading(false);
+        }
+}
+
     return (
         <View style={{
             width: "100%",
@@ -143,6 +159,7 @@ const ProductCard = ({
 
                                     <TouchableOpacity
                                         onPress={() => {
+
                                             setproductStatus(prev => ({
                                                 ...prev,
                                                 isChecked: !prev.isChecked
@@ -163,6 +180,8 @@ const ProductCard = ({
                                                     },
                                                 },
                                             });
+                                            handleToggleLike()
+
                                         }}
                                     >
                                         <Image style={{
@@ -227,9 +246,13 @@ const ProductCard = ({
                             Website Link:
                         </Text>
                         <TouchableOpacity onPress={() => {
-                            // Linking.openURL(url)
+                            Linking.openURL(product?.websiteLink)
                         }}>
-                            <Text style={{
+                            <Text 
+                             numberOfLines={1}
+                            ellipsizeMode='tail'
+                            style={{
+                                maxWidth:scale(155),
                                 color: "#FFA100",
                                 fontWeight: 600,
                                 fontSize: scale(12),
@@ -251,9 +274,13 @@ const ProductCard = ({
                             Product Link:
                         </Text>
                         <TouchableOpacity onPress={() => {
-                            // Linking.openURL(url)
+                            Linking.openURL(product?.productLink)
                         }}>
-                            <Text style={{
+                            <Text 
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                            style={{
+                                maxWidth:scale(155),
                                 color: "#FFA100",
                                 fontWeight: 600,
                                 fontSize: scale(12),
@@ -267,7 +294,8 @@ const ProductCard = ({
                 <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)
-                        navigation.navigate("AddReview")
+                        console.log(product?._id)
+                        navigation.navigate("AddReview", {sauceId:product?._id})
 
                     }}
                     style={{

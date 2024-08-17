@@ -1,12 +1,22 @@
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FlatList } from 'react-native-gesture-handler';
 import CustomComment from '../CustomComment/CustomComment';
 import { scale } from 'react-native-size-matters';
 import foodImage from "./../../../assets/images/sauce1.png"
 import { messagesData } from '../../../utils';
 
-const CommentsList = ({ data = [], cb=()=>{},setNewMsg=()=>{},getId=getId, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
+const CommentsList = ({ data = [],product={}, cb=()=>{},setNewMsg=()=>{},getId=getId, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
+
+
+
+
+
+useEffect(()=>{
+
+  console.log("<========&&&&&&&&&&&&&&&&===============product===================&&&&&&&&&&&&&======>", product)
+},[])
+
   return (
     <>
      <TouchableOpacity style={{

@@ -15,11 +15,8 @@ const HorizontalUsersList = ({
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const axiosInstance = useAxios()
-
-
     const fetchPhotos = async () => {
       if (!hasMore || loading) return;
- 
       setLoading(true);
       try {
           const res = await axiosInstance.get(`/get-random-users`, {
@@ -28,7 +25,7 @@ const HorizontalUsersList = ({
               }
           });
 
-          if (res?.data?.length === 0) {
+          if (res?.data?.randomUsers?.length === 0) {
               setHasMore(false);
           } else {
               if(res?.data && res?.data?.randomUsers && res?.data?.randomUsers?.length>0){
@@ -51,7 +48,6 @@ const HorizontalUsersList = ({
         gap:scale(20),
         flex:1
     }}>
-
         <FlatList
         showsHorizontalScrollIndicator={false} 
         showsVerticalScrollIndicator={false}
@@ -65,13 +61,14 @@ const HorizontalUsersList = ({
           }}
            keyExtractor={(item, index) => index.toString()}
            renderItem={({ item }) => <UserCard 
-          //  url={item?.urls?.small} 
-            // name={item?.user?.username}
-            item={item}
-          url={item.image}
-          name={item?.name}
-           title={"Follow"}
-             showText={false} />}
+        //  url={item?.urls?.small} 
+        // name={item?.user?.username}
+        item={item}
+        url={item.image}
+        name={item?.name}
+        title={"Follow"}
+        showText={false}
+         />}
     
        />{
 

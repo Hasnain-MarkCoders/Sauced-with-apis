@@ -10,54 +10,18 @@ const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
 const CustomCarousel = ({
-    // data=[],
     showText=false
 }) => {
-   const [selected, setSelected] = React.useState(0)
+const [selected, setSelected] = React.useState(0)
  const navigation = useNavigation()
-
  const axiosInstance = useAxios()
  const [data, setData] = React.useState([])
  const [page, setPage] = React.useState(1)
  const [hasMore, setHasMore] = React.useState(true)
  const [loading, setLoading] = React.useState(false);
-
-// React.useEffect(() => {
-//  const fetchPhotos = async () => {
-//      if (!hasMore || loading) return;
-
-//      setLoading(true);
-//      try {
-//          const res = await axiosInstance.get(`/get-sauces`, {
-//              params: {
-//                  type:"toprated",
-//                  page: page
-//              }
-//          });
-//          console.log(res.data)
-
-//          if (res?.data.length === 0) {
-//              setHasMore(false);
-//          } else {
-//              console.log(res?.data)
-//              // setData([...res.data]);
-//          }
-//      } catch (error) {
-//          console.error('Failed to fetch reviews:', error);
-//      } finally {
-//          setLoading(false);
-//      }
-//  };
-
-//  fetchPhotos();
-// }, [page]);
-
-
-
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;
-    
          setLoading(true);
          try {
              const res = await axiosInstance.get(`/get-all-events`, {
@@ -70,7 +34,6 @@ const CustomCarousel = ({
              if (res?.data?.events?.length === 0) {
                  setHasMore(false);
              } else {
-                 console.log(res?.data?.events)
                  setData([...res.data?.events]);
              }
          } catch (error) {
@@ -82,6 +45,12 @@ const CustomCarousel = ({
     
      fetchEvents();
     }, [page]);
+    const handleSnapToItem = (index) => {
+        setSelected(index);
+        if (index === data.length - 1) {
+            setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
+        }
+    };
   return (
     <View style={{}}>
     <Carousel
@@ -92,10 +61,12 @@ const CustomCarousel = ({
         autoPlay={true}
         data={data}
         scrollAnimationDuration={1000}
-        onSnapToItem={(index) => setSelected(index)}
+       
+        onSnapToItem={(index) =>{ handleSnapToItem(index)}}
         renderItem={({ item, index }) => (<>
           <Banner
                         showText={showText}
+                        event={item}
                         //   title={item?.user?.username}
                         //    url={item?.urls?.small}
                         // title={item?.user?.username}

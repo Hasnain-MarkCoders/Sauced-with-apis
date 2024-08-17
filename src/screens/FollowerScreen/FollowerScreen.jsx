@@ -12,93 +12,14 @@ import { FriendListImages, handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList } from 'react-native-gesture-handler';
 const FollowerScreen = () => {
-    const [data, setData] = useState([])
-    const [page, setPage] = useState(1)
-    const [hasMore, setHasMore] = useState(true)
-    const [loading, setLoading] = useState(false)
-    const [isKeyBoard, setIsKeyBoard]= useState(false)
+   
     const [query, setQuery] = useState({
         search: "",
     });
     const navigation = useNavigation()
-    
-
-    useEffect(() => {
-        const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-            setIsKeyBoard(true)
-        });
-        const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-            setIsKeyBoard(false)
-        });
-    
-        // Cleanup function
-        return () => {
-          showSubscription.remove();
-          hideSubscription.remove();
-        };
-      }, []);
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!query?.search?.trim()) {
-                return
-            }
-            if (loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page,
-                        query: query?.search
-                    }
-                });
-
-                setData(prev=>[...res?.data?.results,...prev]);
-
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // fetchPhotos();
-    }, [query.search, page]);
-
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (query?.search.trim()) {
-                return
-            }
-            if (!hasMore || loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page
-                    }
-                });
-
-                if (res.data.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prevData => [...res.data,...prevData]);
-                }
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                    setLoading(false);
-
-            }
-        };
-        // fetchPhotos();
-    }, [page]);
-
-
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
-            <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 :verticalScale(0) }}>
+            <SafeAreaView style={{ flex: 1, paddingBottom:verticalScale(0) }}>
                 <Header cb={() => navigation.goBack()} showMenu={true} showProfilePic={false} headerContainerStyle={{
                     paddingBottom: scale(20)
                 }} title={"Followers"} showText={false} />
@@ -131,7 +52,7 @@ const FollowerScreen = () => {
                                       isURL={false}
                                       showImage={true}
                                       uri={search}
-                                        cb={() => setPage(1)}
+                                        // cb={() => setPage(1)}
                                         name="search"
                                         onChange={handleText}
                                         updaterFn={setQuery}
@@ -167,10 +88,8 @@ const FollowerScreen = () => {
                                     </Text>
                                     
                                      <FollowersList
-                                      title="Follow"
-                                      loading={loading} hasMore={hasMore} setPage={setPage} 
-                                    //  data={data}
-                                    data={FriendListImages}
+                                     endpoint="/get-followers"
+                                    //   title="Follow"
                                       /></View>
                                    
                                 }

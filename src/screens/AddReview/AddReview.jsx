@@ -3,15 +3,27 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import SwipeableRating from 'react-native-swipeable-rating';
 import CustomRating from '../../components/CustomRating/CustomRating.jsx';
+import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
+import useAxios from '../../../Axios/useAxios.js';
 const AddReview = () => {
+    const route = useRoute()
+    const sauceId = route?.params?.sauceId
     const [isKeyBoard, setIsKeyBoard] = useState(false)
+    const axiosInstance = useAxios()
+    const [loading , setLoading] = useState(false)
+    const [alertModal, setAlertModal] = useState({
+        open: false,
+        message: ""
+    })
+
+
     const [data, setData] = useState({
         review: "",
         rating: ""
@@ -34,10 +46,47 @@ const AddReview = () => {
         };
     }, []);
 
-    useEffect(()=>{
-console.log(data)
-    },[data])
+ 
 
+    const handleSubmit = async() => {
+        try{
+            setLoading(true)
+            Vibration.vibrate(10)
+            if (!data?.review) {
+                return setAlertModal({
+                    open: true,
+                    message: "Review is required!"
+                })
+            }
+            else if (!data?.rating) {
+                return setAlertModal({
+                    open: true,
+                    message: "Rating is required!"
+                })
+            }
+            const response = await axiosInstance.post("/create-review", {sauceId, star:data?.rating, text:data?.review});
+            console.log("response======>",  response)
+
+            if(response && response?.data &&  response?.data?.message){
+                setAlertModal({
+                    open: true,
+                    message: response?.data.message
+                })
+                setData({})
+            }
+
+        }catch(error){
+            console.log(error)
+            setAlertModal({
+                open: true,
+                message: error?.response?.data?.message || "An error occurred. Please try again."
+            });
+        }finally{
+            setLoading(false)
+        }
+
+     
+    }
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
@@ -133,7 +182,9 @@ console.log(data)
                                             buttonTextStyle={{ fontSize: scale(14) }}
                                             buttonstyle={{ width: "100%", marginTop: scale(60), borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
                                             // onPress={() => { Vibration.vibrate(10); Alert.alert("Review submitted."), navigation.navigate("AllReviews") }}
-                                            onPress={() => { Vibration.vibrate(10); navigation.navigate("AllReviews") }}
+                                            // onPress={() => { Vibration.vibrate(10); navigation.navigate("AllReviews") }}
+                                            loading={loading}
+                                            onPress={handleSubmit}
 
                                             title={"Submit"}
                                         />
@@ -147,6 +198,14 @@ console.log(data)
                     }}
                 />
             </SafeAreaView>
+            <CustomAlertModal
+                    title={alertModal?.message}
+                    modalVisible={alertModal?.open}
+                    setModalVisible={() => setAlertModal({
+                        open: false,
+                        messsage: ""
+                    })}
+                />
         </ImageBackground>
     )
 }

@@ -112,9 +112,10 @@ const UserDetailsModal = ({
                   style={{
                     resizeMode: 'contain',
                     width:lightBox?"100%": scale(50),
+                    borderRadius:lightBox?"100%": scale(50),
                     height:lightBox?scale(200): scale(50),
                   }}
-                  source={profilePicture}
+                  source={{uri:profilePicture}}
                 />
                   </Lightbox>
                   <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={name} />

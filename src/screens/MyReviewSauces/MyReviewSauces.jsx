@@ -13,46 +13,40 @@ import axios from 'axios'
 import Header from '../../components/Header/Header'
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal'
 import CustomProductReviewModal from '../../components/CustomProductReviewModal/CustomProductReviewModal'
+import useAxios from '../../../Axios/useAxios'
 
 
 const MyReviewSauces = () => {
     const route = useRoute()
     const userComeFrom = route?.params?.route
-    
-    console.log(userComeFrom)
+  const axiosInstance = useAxios()
+
     const [data, setData] = useState([]);
-    const [searchListData, setSeachListData] = useState([...featuredSauces,...topRatedSauces, ...featuredSauces,
-        ...topRatedSauces])
+    // const [searchListData, setSeachListData] = useState([...featuredSauces,...topRatedSauces, ...featuredSauces,
+    //     ...topRatedSauces])
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [query, setQuery] = useState({
-        search: "",
-    });
     const [alertModal, setAlertModal] =useState(false)
-    const [message, setMessage] = useState("")
     const [productDetails, setProductDetails] = useState({})
-    const [showQRCode, setShowQRCode] = useState(false)
     const navigation = useNavigation()
-
-
-
     useEffect(() => {
         const fetchPhotos = async () => {
             if (!hasMore || loading) return;
-
+    
             setLoading(true);
             try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
+                const res = await axiosInstance.get(`/get-sauces`, {
                     params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
+                        type:"checkedin",
                         page: page
                     }
                 });
-                if (res.data.length === 0) {
+    
+                if (res?.data?.sauces?.length === 0) {
                     setHasMore(false);
                 } else {
-                    setData(prevData => [...prevData, ...res.data]);
+                    setData(prev=>[...prev, ...res?.data?.sauces]);
                 }
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
@@ -60,41 +54,9 @@ const MyReviewSauces = () => {
                 setLoading(false);
             }
         };
-
-        // fetchPhotos();
+       
+        fetchPhotos();
     }, [page]);
-
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!query?.search?.trim()) {
-                return
-            }
-            console.log("query.search", query.search)
-            if (loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page,
-                        query: query?.search
-                    }
-                });
-
-                setData(prev=>[...res?.data?.results,...prev]);
-
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // fetchPhotos();
-    }, [query.search, page]);
-    useEffect(()=>{
-        console.log("hasnain")
-            },[])
 
     return (
         
@@ -113,17 +75,17 @@ const MyReviewSauces = () => {
                 <Header showText={false} showMenu={false} showProfilePic={false} cb={()=>{navigation.goBack();  Vibration.vibrate(10)}} headerContainerStyle={{paddingTop:scale(0), paddingHorizontal:0}} title="Reviewed Sauces" showDescription={false} description="" /> 
                 </View>
                 <ProductSearchList 
+                type="checkedin"
                 style={{
                     paddingVertical:scale(10),
                     paddingHorizontal:scale(20),
                 }}
                 setProductDetails={setProductDetails}
                 setAlertModal={setAlertModal}
-                loading={loading} hasMore={hasMore} setPage={setPage} data={searchListData}/>
+                loading={loading} hasMore={hasMore} setPage={setPage} data={data}/>
                  <CustomProductReviewModal
                             userComeFrom = {userComeFrom}
                             data={productDetails}
-                            title={message}
                             modalVisible={alertModal}
                             setModalVisible={()=>setAlertModal(false)}
                             />

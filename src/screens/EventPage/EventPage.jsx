@@ -19,7 +19,7 @@ import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {FlatList, TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
-import {topRatedSauces} from '../../../utils.js';
+import {formatDate, formatEventDate, topRatedSauces} from '../../../utils.js';
 import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
 import ProductCard from '../../components/ProductCard/ProductCard.jsx';
 import {useRoute} from '@react-navigation/native';
@@ -36,6 +36,7 @@ import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal
 import emma from "./../../../assets/images/friend2.png"
 const EventPage = () => {
   const route = useRoute();
+  const event =  route?.params?.event
   // const { url = "", title = "" } = route?.params
   // const url
   let url,
@@ -55,84 +56,112 @@ const EventPage = () => {
   const [isEnabled, setisEnabled] = useState(true);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyBoard(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyBoard(false);
-    });
+  // useEffect(() => {
+  //   const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+  //     setIsKeyBoard(true);
+  //   });
+  //   const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+  //     setIsKeyBoard(false);
+  //   });
 
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
+  //   return () => {
+  //     showSubscription.remove();
+  //     hideSubscription.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
-    const fetchPhotos = async () => {
-      if (!hasMore || loading) return;
-      setLoading(true);
-      try {
-        const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-          params: {
-            client_id: VITE_UNSPLASH_ACCESSKEY,
-            page: page,
-          },
-        });
-        if (res.data.length === 0) {
-          setHasMore(false);
-        } else {
-          setData(prevData => [...prevData, ...res.data]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch photos:', error);
-      } finally {
-        setLoading(false);
+    const fakeFetch = async () => {
+      // if (!hasMore || loading) return;
+      // setLoading(true);
+      // try {
+      //   const res = await axios.get(`${UNSPLASH_URL}/photos`, {
+      //     params: {
+      //       client_id: VITE_UNSPLASH_ACCESSKEY,
+      //       page: page,
+      //     },
+      //   });
+      //   if (res.data.length === 0) {
+      //     setHasMore(false);
+      //   } else {
+      //     setData(prevData => [...prevData, ...res.data]);
+      //   }
+      // } catch (error) {
+      //   console.error('Failed to fetch photos:', error);
+      // } finally {
+      //   setLoading(false);
+      //   setInitialLoading(false);
+      // }
+      setTimeout(()=>{
         setInitialLoading(false);
-      }
+
+      },1000)
     };
-    fetchPhotos();
+    fakeFetch();
   }, [page]);
-  const handleLoading = (listNumber, action) => {
-    if (listNumber == 1) {
-      return setLoading1(action);
-    }
-    if (listNumber == 2) {
-      return setLoading2(action);
-    }
-    if (listNumber == 3) {
-      return setLoading3(action);
-    }
-  };
-  addToList = listNumber => {
-    handleLoading(listNumber, true);
-    Snackbar.show({
-      text: `sauce adding in List ${listNumber}`,
-      duration: Snackbar.LENGTH_SHORT,
-      action: {
-        text: 'UNDO',
-        textColor: '#FFA100',
-        onPress: () => {
-          Snackbar.show({
-            text: `sauce remove from List ${listNumber}`,
-            duration: Snackbar.LENGTH_SHORT,
-          });
-        },
-      },
-    });
-    setTimeout(() => {
-      handleLoading(listNumber, false);
-      setModalVisible(false);
-      setisEnabled(true);
-    }, 2000);
-  };
-  const checkIfClickOutside = (e) => {
-    console.log(e)
-    // if (dropDown.current && !dropDown.current.contains(e.target)) {
-        // setModalVisible(false);
-    // }
+
+
+
+
+
+//   const handleLoading = (listNumber, action) => {
+//     if (listNumber == 1) {
+//       return setLoading1(action);
+//     }
+//     if (listNumber == 2) {
+//       return setLoading2(action);
+//     }
+//     if (listNumber == 3) {
+//       return setLoading3(action);
+//     }
+//   };
+//   addToList = listNumber => {
+//     handleLoading(listNumber, true);
+//     Snackbar.show({
+//       text: `sauce adding in List ${listNumber}`,
+//       duration: Snackbar.LENGTH_SHORT,
+//       action: {
+//         text: 'UNDO',
+//         textColor: '#FFA100',
+//         onPress: () => {
+//           Snackbar.show({
+//             text: `sauce remove from List ${listNumber}`,
+//             duration: Snackbar.LENGTH_SHORT,
+//           });
+//         },
+//       },
+//     });
+//     setTimeout(() => {
+//       handleLoading(listNumber, false);
+//       setModalVisible(false);
+//       setisEnabled(true);
+//     }, 2000);
+//   };
+//   const checkIfClickOutside = (e) => {
+//     console.log(e)
+//     // if (dropDown.current && !dropDown.current.contains(e.target)) {
+//         // setModalVisible(false);
+//     // }
+// };
+
+
+
+useEffect(()=>{
+  console.log("**********************************event?.eventDate**********************************", event?.eventDate)
+    
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
 };
+formatDate(event.eventDate)
+
+
+},[])
+
+
   if (initialLoading) {
     return (
       <ImageBackground
@@ -142,6 +171,9 @@ const EventPage = () => {
       </ImageBackground>
     );
   }
+
+
+
   return (
    
     <ImageBackground
@@ -157,7 +189,7 @@ const EventPage = () => {
           headerContainerStyle={{
             paddingBottom: scale(20),
           }}
-          title={'Followers'}
+          title={'Event'}
           showText={false}
         />
 
@@ -188,7 +220,7 @@ const EventPage = () => {
                         style={{
                           marginBottom: scale(30),
                         }}>
-                        <CustomTimer />
+                        <CustomTimer eventTime={event?.eventDate} />
                       </View>
                       <View
                         style={{
@@ -199,15 +231,21 @@ const EventPage = () => {
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                           }}>
+                            {
+                            event?.eventName&&
                           <Text
+                            ellipsizeMode='tail'
+                              numberOfLines={1}
                             style={{
-                              fontSize: scale(28),
+                              maxWidth:scale(200),
+                              fontSize: scale(25),
                               fontWeight: 800,
                               lineHeight: scale(33),
                               color: 'white',
                             }}>
-                            Hot Sauce Event
+                            {event?.eventName}
                           </Text>
+                            }
                           <TouchableOpacity
                             onPress={() => {
                               // Linking.openURL(url)
@@ -242,6 +280,8 @@ const EventPage = () => {
                             }}>
                             Organized by
                           </Text>
+                          {
+                               event?.owner?.name&&
                           <TouchableOpacity onPress={()=>{
                             setOpenUserDetailsModal(true)
                           }}>
@@ -250,9 +290,10 @@ const EventPage = () => {
                             style={{
                               color: '#FFA100',
                             }}>
-                            Emma Williams
+                            {event?.owner?.name}
                           </Text>
                           </TouchableOpacity>
+                          }
                         </View>
                       </View>
                     </View>
@@ -261,6 +302,8 @@ const EventPage = () => {
                       style={{
                         gap: scale(25),
                       }}>
+                        {
+                      event?.eventDate&&
                       <View
                         style={{
                           flexDirection: 'row',
@@ -282,10 +325,14 @@ const EventPage = () => {
                             color: 'white',
                             flexShrink:1
                           }}>
-                          Wed July 31, 2024 at 3:00 PM - Thu, August 01, 2024 at
-                          3:00 PM
+                        {
+                              formatEventDate(event?.eventDate)
+                            }
                         </Text>
                       </View>
+                        }
+                      {
+                    event?.venueName&&
                       <View
                         style={{
                           flexDirection: 'row',
@@ -303,12 +350,15 @@ const EventPage = () => {
                             gap: scale(6),
                           }}>
                           <Text
+                          ellipsizeMode='tail'
+                          numberOfLines={1}
                             style={{
+                              maxWidth:scale(100),
                               fontSize: scale(16),
                               lineHeight: scale(22),
                               color: '#FFA100',
                             }}>
-                            Lorem Hall
+                           {event?.venueName?.charAt(0).toUpperCase()+event?.venueName?.slice(1).toLowerCase()}
                           </Text>
                           <Text
                             style={{
@@ -318,11 +368,12 @@ const EventPage = () => {
                             flexShrink:1
 
                             }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit.
+                            {event?.venueDescription}
                           </Text>
                         </View>
                       </View>
+                      }
+                      
                     </View>
                   </View>
                 )}
@@ -345,6 +396,7 @@ const EventPage = () => {
                     </Text>
 
                     <ProductsBulletsList
+                    data={event?.eventDetails}
                       textStyles={{
                         fontWeight: 700,
                         color: 'white',
@@ -427,12 +479,12 @@ const EventPage = () => {
             );
           }}
         />
-        <CustomSelectListModal
+        {/* <CustomSelectListModal
           modalVisible={modalVisible}
           setModalVisible={() => {
             setModalVisible(false);
           }}
-          cb={addToList}
+          // cb={addToList}
           isEnabled={isEnabled}
           loading1={loading1}
           loading2={loading2}
@@ -441,12 +493,12 @@ const EventPage = () => {
           title2="List 2"
           title3="List 3"
         />
-   
+    */}
       </SafeAreaView>
       <UserDetailsModal
-          name= 'Emma william'
-          email='Emma@gmail.com'
-          profilePicture= {emma}
+          name= {event?.owner?.name}
+          email={event?.owner?.email}
+          profilePicture= {event?.owner?.image}
           number={"+1 234-567-0890"}
         modalVisible={openUserDetailsModal}
         setModalVisible={setOpenUserDetailsModal}

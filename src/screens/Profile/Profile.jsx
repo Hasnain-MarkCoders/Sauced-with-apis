@@ -15,9 +15,13 @@ import ProfileCard from '../../components/ProfileCard/ProfileCard.jsx';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import moreIcon from "./../../../assets/images/more.png"
 import { useSelector } from 'react-redux';
+import useAxios from '../../../Axios/useAxios.js';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
+  const axiosInstance = useAxios()
+
     const [data, setData] = useState([])
+    const [checkedInSauces, setCheckedInSauces] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
@@ -40,53 +44,83 @@ const ProfileScreen = () => {
             hideSubscription.remove();
         };
     }, []);
+    // useEffect(() => {
+    //     const fetchPhotos = async () => {
+    //         if (!query?.search?.trim()) {
+    //             return
+    //         }
+    //         console.log("query.search", query.search)
+    //         if (loading) return;
+    //         setLoading(true);
+    //         try {
+    //             const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
+    //                 params: {
+    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
+    //                     page: page,
+    //                     query: query?.search
+    //                 }
+    //             });
+
+    //             setData(prev => [...res.data.results, ...prev]);
+
+    //         } catch (error) {
+    //             console.error('Failed to fetch photos:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     // fetchPhotos();
+    // }, [query.search, page]);
+
+    // useEffect(() => {
+    //     const fetchPhotos = async () => {
+    //         if (query?.search.trim()) {
+    //             return
+    //         }
+    //         if (!hasMore || loading) return;
+    //         setLoading(true);
+    //         try {
+    //             const res = await axios.get(`${UNSPLASH_URL}/photos`, {
+    //                 params: {
+    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
+    //                     page: page
+    //                 }
+    //             });
+    //             if (res.data.length === 0) {
+    //                 setHasMore(false);
+    //             } else {
+    //                 setData(prevData => [...res.data, ...prevData]);
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch photos:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     // fetchPhotos();
+    // }, [page]);
+    // useEffect(() => {
+    //     console.log(auth.token)
+    // }, [])
+
+
     useEffect(() => {
         const fetchPhotos = async () => {
-            if (!query?.search?.trim()) {
-                return
-            }
-            console.log("query.search", query.search)
-            if (loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page,
-                        query: query?.search
-                    }
-                });
-
-                setData(prev => [...res.data.results, ...prev]);
-
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // fetchPhotos();
-    }, [query.search, page]);
-
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (query?.search.trim()) {
-                return
-            }
             if (!hasMore || loading) return;
+    
             setLoading(true);
             try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
+                const res = await axiosInstance.get(`/get-sauces`, {
                     params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
+                        type:"checkedin",
                         page: page
                     }
                 });
-                if (res.data.length === 0) {
+                if (res.data.sauces.length === 0) {
                     setHasMore(false);
                 } else {
-                    setData(prevData => [...res.data, ...prevData]);
+                    setCheckedInSauces([...res.data.sauces]);
                 }
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
@@ -94,11 +128,11 @@ const ProfileScreen = () => {
                 setLoading(false);
             }
         };
-        // fetchPhotos();
+       
+        fetchPhotos();
     }, [page]);
-    useEffect(() => {
-        console.log(auth.token)
-    }, [])
+
+
 
 
     return (
@@ -191,7 +225,7 @@ const ProfileScreen = () => {
                                             <TouchableOpacity
                                                 onPress={() => {
                                                     // Linking.openURL(url)
-                                                    navigation.navigate("MyReviewedSauces", { route: "check-ins" })
+                                                    navigation.navigate("MyReviewedSauces", { route: "check-ins" }, {data: checkedInSauces, setData:setCheckedInSauces})
 
                                                 }}
                                                 style={{
@@ -207,19 +241,22 @@ const ProfileScreen = () => {
                                                     color: "black",
                                                     fontWeight: "700"
 
-                                                }}>All Check-ins</Text>
+                                                }}>All Reviews</Text>
 
 
                                             </TouchableOpacity>
                                         </View>
-                                        <HorizontalUsersList horizontal={true} loading={loading} hasMore={hasMore} setPage={setPage}
+                                        <View style={{
+                                                marginBottom:scale(30)
+                                        }}>
 
-
-
-                                            // data={data}
-                                            data={FriendListImages}
-
+                                        <HorizontalUsersList 
+                                        horizontal={true}
+                                        loading={loading}
+                                        hasMore={hasMore}
+                                        setPage={setPage}
                                         />
+                                        </View>
                                     </View>
                                 }
                                 {

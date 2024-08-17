@@ -10,8 +10,10 @@ const Banner = ({
     showText = true,
     title = "",
     cb = () => { },
-    videoId=""
+    videoId="",
+    event={}
 }) => {
+    useEffect(()=>{console.log("event===============================>", event)},[])
 
   
     const navigation = useNavigation()
@@ -32,7 +34,12 @@ const Banner = ({
                 >
                 {
                     showText && <View style={{ paddingVertical: scale(5), paddingHorizontal: scale(20), gap: scale(5) }}>
-                        <Text style={styles.bannerText}>Hot Sauce Event</Text>
+                        <Text style={[styles.bannerText, {  color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 10}]}>{event?.eventName}</Text>
                         <View style={{
                             gap: scale(10)
                         }}>
@@ -43,10 +50,15 @@ const Banner = ({
                                 fontFamily: "Montserrat",
                                 maxWidth: "80%",
                                 fontWeight: '700',
+                                color: 'white',
+                                    fontWeight: 'bold',
+                                    textShadowColor: 'rgba(0, 0, 0, 1)',
+                                    textShadowOffset: { width: 1, height: 1 },
+                                    textShadowRadius: 10
                                
                             }}>
 
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ad
+                                {event?.venueDescription}
 
                             </Text>
                             <View style={{
@@ -57,7 +69,7 @@ const Banner = ({
                                 <TouchableOpacity
                                     onPress={() => {
                                         // Linking.openURL(url)
-                                       navigation.navigate("EventPage")
+                                       navigation.navigate("EventPage", {event})
                                     }}
                                     style={{
                                         paddingHorizontal: scale(10),

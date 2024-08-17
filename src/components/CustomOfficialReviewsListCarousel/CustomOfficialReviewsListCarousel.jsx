@@ -10,7 +10,6 @@ const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
 const CustomOfficialReviewsListCarousel = ({
-    // data=[],
     showText=false
 }) => {
 
@@ -38,7 +37,6 @@ const CustomOfficialReviewsListCarousel = ({
                 if (res?.data?.officialReviews?.length === 0) {
                     setHasMore(false);
                 } else {
-                    console.log(res?.data?.officialReviews)
                     setData([...res.data?.officialReviews]);
                 }
             } catch (error) {
@@ -50,6 +48,16 @@ const CustomOfficialReviewsListCarousel = ({
        
         fetchOfficalReviews();
        }, [page]);
+
+
+
+       const handleSnapToItem = (index) => {
+        setSelected(index);
+        if (index === data.length - 1) {
+            setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
+        }
+    };
+
   return (
     <View style={{}}>
     <Carousel
@@ -60,9 +68,10 @@ const CustomOfficialReviewsListCarousel = ({
         autoPlay={true}
         data={data}
         scrollAnimationDuration={1000}
-        onSnapToItem={(index) => setSelected(index)}
+        onSnapToItem={(index) => handleSnapToItem(index)}
         renderItem={({ item, index }) => (<>
           <Banner
+                        item={item}
                         showText={showText}
                         //   title={item?.user?.username}
                         //    url={item?.urls?.small}

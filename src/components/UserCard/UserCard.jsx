@@ -1,5 +1,5 @@
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomButtom from '../CustomButtom/CustomButtom'
 import Lightbox from 'react-native-lightbox';
@@ -16,18 +16,17 @@ const axiosInstance = useAxios()
 
 const handleToggleTitle = async()=>{
   setLoading(true);
-  try {
-      const res = await axiosInstance.post(`${toggledTitle=="Follow"?"/unfollow":"/follow"}`, {_id:item?._id});
-
-  console.log(res.data)
-
-  } catch (error) {
-      console.error('Failed to fetch photos:', error);
-  } finally {
-      setLoading(false);
-  }
+  // try {
+  //     const res = await axiosInstance.post(`${toggledTitle=="Follow"?"/unfollow":"/follow"}`, {_id:item?._id});
+  //     console.log("<======================================checking==================================>", res.data)
+  // } catch (error) {
+  //     console.error('Failed to fetch photos:', error);
+  // } finally {
+  //     setLoading(false);
+  // }
  setToggledTitle(toggledTitle=="Follow"?"Unfollow":"Follow")
 }
+
   return (
   
     <TouchableOpacity
@@ -95,10 +94,11 @@ const handleToggleTitle = async()=>{
 
     </View>
     </TouchableOpacity>
+    // <></>
     
   )
 }
 
-export default UserCard
+export default memo(UserCard)
 
 const styles = StyleSheet.create({})

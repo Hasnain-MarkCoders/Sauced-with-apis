@@ -11,7 +11,8 @@ const ProductSearchList = ({
     title = "" , 
     setProductDetails=()=>{},
     setAlertModal=()=>{},
-    style={}
+    style={},
+    type=""
 }) => {
     const axiosInstance = useAxios()
     const [data, setData] = useState([])
@@ -32,9 +33,8 @@ const ProductSearchList = ({
                         page: page
                     }
                 });
-                console.log(res.data.sauces.length)
     
-                if (res.data.length === 0) {
+                if (res?.data?.sauces?.length === 0) {
                     setHasMore(false);
                 } else {
                     setData(prevData => [...prevData, ...res?.data?.sauces]);;
@@ -48,7 +48,6 @@ const ProductSearchList = ({
        
         fetchPhotos();
     }, [page]);
-
 
     return (
         <View style={{

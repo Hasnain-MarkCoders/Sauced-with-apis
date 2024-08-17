@@ -102,7 +102,6 @@ const SauceList = ({ title = "",  name = "",isCheckedIn=false, searchTerm = "", 
                     page: page
                 }
             });
-            console.log("res?.data?.sauces=====>", res?.data?.sauces)
 
             if (res?.data?.length === 0) {
                 setHasMore(false);
