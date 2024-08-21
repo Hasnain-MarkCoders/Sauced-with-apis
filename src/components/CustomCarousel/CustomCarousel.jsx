@@ -29,13 +29,8 @@ const [selected, setSelected] = React.useState(0)
                      page: page
                  }
              });
-             console.log(res?.data?.events)
-    
-             if (res?.data?.events?.length === 0) {
-                 setHasMore(false);
-             } else {
+                 setHasMore(res.data.pagination.hasNextPage);
                  setData([...res.data?.events]);
-             }
          } catch (error) {
              console.error('Failed to fetch reviews:', error);
          } finally {

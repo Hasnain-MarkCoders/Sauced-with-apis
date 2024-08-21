@@ -65,7 +65,7 @@ const AddReview = () => {
                 })
             }
             const response = await axiosInstance.post("/create-review", {sauceId, star:data?.rating, text:data?.review});
-            console.log("response======>",  response)
+            console.log("response====================>", response.data)
 
             if(response && response?.data &&  response?.data?.message){
                 setAlertModal({

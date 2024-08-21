@@ -32,13 +32,8 @@ const CustomOfficialReviewsListCarousel = ({
                         page: page
                     }
                 });
-                console.log(res?.data?.officialReviews)
-       
-                if (res?.data?.officialReviews?.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData([...res.data?.officialReviews]);
-                }
+                    setHasMore(res.data.pagination.hasNextPage);
+                    setData(res?.data?.officialReviews);
             } catch (error) {
                 console.error('Failed to fetch reviews:', error);
             } finally {

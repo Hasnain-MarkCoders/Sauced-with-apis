@@ -147,8 +147,6 @@ const EventPage = () => {
 
 
 useEffect(()=>{
-  console.log("**********************************event?.eventDate**********************************", event?.eventDate)
-    
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");

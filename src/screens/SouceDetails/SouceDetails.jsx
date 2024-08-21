@@ -5,7 +5,6 @@ import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import axios from 'axios';
-import FollowersList from '../../components/FollowersList/FollowersList.jsx';
 import { useNavigation } from '@react-navigation/native';
 import { handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';

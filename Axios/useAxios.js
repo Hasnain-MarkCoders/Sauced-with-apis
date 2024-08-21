@@ -4,6 +4,8 @@ import { handleAuth } from '../android/app/Redux/userReducer';
 import { useNavigation } from "@react-navigation/native";
 //export const host =  "http://localhost:5000"
 export const host =  "https://aws.markcoders.com/sauced-backend/api"
+// export const host =  "https://59455wwt-6000.inc1.devtunnels.ms/"
+
 
 const useAxios = () => {
   const auth = useSelector((state) => state?.auth);

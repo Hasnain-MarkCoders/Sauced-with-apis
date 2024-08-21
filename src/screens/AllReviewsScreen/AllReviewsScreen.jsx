@@ -1,13 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import { scale } from 'react-native-size-matters';
 import SingleReview from '../../components/SingleReview/SingleReview.jsx';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import useAxios from '../../../Axios/useAxios.js';
+import { FlatList } from 'react-native-gesture-handler';
 
 const AllReviewsScreen = () => {
+    const axiosInstance = useAxios()
+    const route = useRoute()
+    const _id = route?.params?._id
+    const [hasMore, setHasMore] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [data, setData] = useState([])
+    const [page, setPage] = useState(1)
+    
     const navigation = useNavigation()
+useEffect(()=>{
+console.log(_id)
+},[_id])
+
+    React.useEffect(() => {
+        const fetchReviews = async () => {
+            setLoading(true);
+            try {
+                const res = await axiosInstance.get(`/get-sauce-reviews`, {
+                    params:{
+                        sauceId:_id,
+                        page
+                    }
+                });
+                setHasMore(res.data.pagination.hasNextPage)
+                setData(res?.data?.reviews)
+                console.log(res?.data?.reviews)
+                console.log(res)
+            } catch (error) {
+                console.error('Failed to fetch reviews:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        // Initial fetch
+        fetchReviews();
+        // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
+        const interval = setInterval(fetchReviews, 10000); // 10000 milliseconds = 10 seconds
+        // Cleanup function to clear interval when component unmounts
+        return () => clearInterval(interval);
+    }, [page, _id]);
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -52,9 +93,48 @@ const AllReviewsScreen = () => {
                                         Add Review +
                                     </Text></TouchableOpacity>
                             </View>
-                            {
+
+
+                            <FlatList
+                            contentContainerStyle={{
+                                gap:scale(10)
+                            }}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                data={data}
+                onEndReachedThreshold={1}
+                onEndReached={() => {
+                    if (!loading && hasMore) {
+                        setPage(currentPage => currentPage + 1);
+                    }
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => 
+                    // <></>
+                // <UserCard
+                // //     cb={handleOpenModal}
+                // //     // item={endpoint.includes("followers") ? item?.followGiverDetails : item?.followRecieverDetails}
+                // //     // title={item?.followGiverDetails ?"Follow":"Unfollow"}
+                // //     // url={endpoint.includes("followers") ? item?.followGiverDetails?.image : item?.followRecieverDetails?.image}
+                // //     // name={endpoint.includes("followers") ? item?.followGiverDetails?.name : item?.followRecieverDetails?.name}
+                // //     //  url={item?.urls?.small}
+                // //     //  name={item?.user?.username} 
+                // //     showText={false}
+                // title={item?.isFollowing?"Unfollow":"Follow"}
+                // _id={item?._id}
+                // item={item}
+                // url={item.image}
+                // name={item?.name}
+                // showText={false}
+                //      />
+                <SingleReview  />
+                    
+                    }
+
+            />
+                            {/* {
                                 Array.from({ length: 10 }, (_, index) => (<SingleReview key={index} />))
-                            }
+                            } */}
                         </View>
                     </View>
                 </ScrollView>

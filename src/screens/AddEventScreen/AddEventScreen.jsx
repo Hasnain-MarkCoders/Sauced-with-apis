@@ -50,10 +50,6 @@ const AddEventScreen = () => {
             hideSubscription.remove();
         };
     }, []);
-    useEffect(()=>{
-        console.log(query.date)
-    },[query])
-
 
     const handleAddEvent=()=>{
         if (!query?.title) {
@@ -106,7 +102,6 @@ const AddEventScreen = () => {
             })
 
         }
-        console.log(query)
     }
 
     return (

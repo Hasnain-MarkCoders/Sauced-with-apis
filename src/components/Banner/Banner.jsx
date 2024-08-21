@@ -13,9 +13,6 @@ const Banner = ({
     videoId="",
     event={}
 }) => {
-    useEffect(()=>{console.log("event===============================>", event)},[])
-
-  
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={{
@@ -35,11 +32,11 @@ const Banner = ({
                 {
                     showText && <View style={{ paddingVertical: scale(5), paddingHorizontal: scale(20), gap: scale(5) }}>
                         <Text style={[styles.bannerText, {  color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 1)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 10}]}>{event?.eventName}</Text>
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    textShadowColor: 'rgba(0, 0, 0, 1)',
+                    textShadowOffset: { width: 1, height: 1 },
+                    textShadowRadius: 10}]}>{event?.eventName}</Text>
                         <View style={{
                             gap: scale(10)
                         }}>
@@ -123,12 +120,6 @@ const Banner = ({
 export default Banner
 
 const styles = StyleSheet.create({
-    // infoText: {
-    //     color: "white",
-    //     fontSize: moderateScale(10),
-    //     lineHeight: verticalScale(13),
-    //     fontFamily: "Montserrat",
-    // },
     mainBanner: {
         position: "relative",
         gap: verticalScale(10),

@@ -4,7 +4,7 @@ import SingleBrand from '../SingleBrand/SingleBrand';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 
-const BrandList = ({  title = "" }) => {
+const BrandList = ({  title = null }) => {
 
     
     const [data, setData] = useState([])
@@ -26,14 +26,8 @@ const BrandList = ({  title = "" }) => {
                   page: page
               }
           });
-
-          if (res?.data?.brands?.length === 0) {
-              setHasMore(false);
-          } else {
-              if(res?.data && res?.data?.brands && res?.data?.brands?.length>0){
-                  setData(prevData => [...prevData, ...res?.data?.brands]);;
-              }
-          }
+                setHasMore(res.data.pagination.hasNextPage);
+                setData(prevData => [...prevData, ...res?.data?.brands]);;
       } catch (error) {
           console.error('Failed to fetch photos:', error);
       } finally {
@@ -43,7 +37,7 @@ const BrandList = ({  title = "" }) => {
 
   useEffect(() => {
       fetchTopBrands();
-  }, [page]);
+  }, [data]);
 
     return (
         <View style={styles.container}>
@@ -51,22 +45,21 @@ const BrandList = ({  title = "" }) => {
             <View style={{
                 gap: scale(7)
             }}>
-
-                <FlatList 
+                <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     horizontal
                     data={data1}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => <SingleBrand url={item?.brand?.image} title={item.title} />}
+                    renderItem={({ item }) => <SingleBrand item={item} url={item?.brand?.image} title={item?.brand?.name} />}
                 />
-                <FlatList
+                     <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     horizontal
                     data={data2}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => <SingleBrand url={item?.brand?.image} title={item.title} />}
+                    renderItem={({ item }) => <SingleBrand item={item} url={item?.brand?.image} title={item?.brand?.name} />}
                 />
             </View>
         </View>

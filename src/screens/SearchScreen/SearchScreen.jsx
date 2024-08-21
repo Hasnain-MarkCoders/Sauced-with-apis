@@ -13,73 +13,10 @@ import axios from 'axios'
 
 const SearchScreen = () => {
 
-    const [data, setData] = useState([]);
-    const [searchListData, setSeachListData] = useState([...featuredSauces,...topRatedSauces, ...featuredSauces,
-        ...topRatedSauces])
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState({
         search: "",
     });
-    const [showQRCode, setShowQRCode] = useState(false)
     const navigation = useNavigation()
-
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!hasMore || loading) return;
-
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page
-                    }
-                });
-                if (res.data.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prevData => [...prevData, ...res.data]);
-                }
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPhotos();
-    }, [page]);
-
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!query?.search?.trim()) {
-                return
-            }
-            console.log("query.search", query.search)
-            if (loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page,
-                        query: query?.search
-                    }
-                });
-
-                setData(prev=>[...res?.data?.results,...prev]);
-
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPhotos();
-    }, [query.search, page]);
     return (
 
    <ImageBackground
@@ -158,7 +95,7 @@ const SearchScreen = () => {
             <View style={{
                 flex:1,
             }}>
-                <ProductSearchList  loading={loading} hasMore={hasMore} setPage={setPage} data={searchListData}/>
+                <ProductSearchList/>
 
             </View>
 </KeyboardAvoidingView>

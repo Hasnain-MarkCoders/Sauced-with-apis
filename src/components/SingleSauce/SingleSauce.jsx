@@ -5,6 +5,7 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import filledHeart from "./../../../assets/images/filledHeart.png"
 import emptyheart from "./../../../assets/images/heart.png"
 import Snackbar from 'react-native-snackbar';
+import useAxios from '../../../Axios/useAxios';
 
 const SingleSauce = ({
     url = "",
@@ -14,11 +15,11 @@ const SingleSauce = ({
     setProductDetails=()=>{},
     setAlertModal=()=>{},
     endpoint="",
-    item={}
+    item={},
 }) => {
-
+    const axiosInstance = useAxios()
 const navigation = useNavigation()
-const [selected, setSelected] = useState(false)
+const [selected, setSelected] = useState(item["hasLiked"])
 const handleOnPress = ()=>{
     
     if(showPopup){
@@ -29,11 +30,23 @@ const handleOnPress = ()=>{
     navigation.navigate("ProductDetail", {url, title, item})
 }
 }
+
+
+const handleToggleLike=async()=>{
+    try {
+        const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
+    } catch (error) {
+        console.error('Failed to like / dislike:', error);
+    } finally {
+    }
+}
+
     return (
         <TouchableOpacity
         activeOpacity={.8}
         onPress={()=>{handleOnPress()}}
         onLongPress={()=>{
+            handleToggleLike()
             setSelected(prev=>!prev)
             Snackbar.show({
                 text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
@@ -42,24 +55,19 @@ const handleOnPress = ()=>{
                     text: 'UNDO',
                     textColor: '#FFA100',
                     onPress: () => {
-
+                        handleToggleLike()
                         setSelected(prev => !prev)
                     },
                 },
             });
         
         }}
-        
         style={[styles.container,
             {width:scale(110), ...customStyles},
-            
         ]}>
             <Image
          
               source={{uri:url}}
-            // source={url}
-
-                // style={[styles.image, {objectFit:"cover"}]}
                 style={[styles.image, {objectFit:"contain"}]}
 
             />
@@ -71,12 +79,6 @@ const handleOnPress = ()=>{
             </Text>
 
         {selected?  <Image
-            // onPress={()=>{
-            //     setSelected(prev=> !prev)
-            // }
-
-            // }
-        
         style={{
                 width:scale(17),
                 height:scale(15),
@@ -84,8 +86,6 @@ const handleOnPress = ()=>{
                 bottom:scale(20),
                 right:scale(10),
             }} source={filledHeart}/>
-            
-            
             : <Image
             style={{
                 width:scale(17),
@@ -94,8 +94,6 @@ const handleOnPress = ()=>{
                 bottom:scale(20),
                 right:scale(10),
             }} source={emptyheart}/>
-            
-            
             }
           
            

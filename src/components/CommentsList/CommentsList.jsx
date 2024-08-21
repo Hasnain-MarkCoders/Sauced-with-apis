@@ -8,15 +8,6 @@ import { messagesData } from '../../../utils';
 
 const CommentsList = ({ data = [],product={}, cb=()=>{},setNewMsg=()=>{},getId=getId, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
 
-
-
-
-
-useEffect(()=>{
-
-  console.log("<========&&&&&&&&&&&&&&&&===============product===================&&&&&&&&&&&&&======>", product)
-},[])
-
   return (
     <>
      <TouchableOpacity style={{

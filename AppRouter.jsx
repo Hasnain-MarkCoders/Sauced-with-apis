@@ -25,6 +25,7 @@ import AddEventScreen from './src/screens/AddEventScreen/AddEventScreen';
 import MyReviewSauces from './src/screens/MyReviewSauces/MyReviewSauces';
 import Welcome from './src/screens/Welcome/Welcome';
 import MainNavigation from './src/screens/MainNavigation/MainNavigation';
+import BrandScreen from './src/screens/BrandScreen/BrandScreen';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -126,6 +127,8 @@ function AppRouter() {
                 <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
                 <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
                 <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
+                <Stack.Screen name="BrandScreen" component={BrandScreen} />
+
                 <Stack.Screen name="Welcome" component={Welcome} />
               </>
               :

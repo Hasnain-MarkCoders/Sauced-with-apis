@@ -21,33 +21,33 @@ const ProductSearchList = ({
     const [loading, setLoading] = useState(false);
 
 
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!hasMore || loading) return;
+    const fetchSuaces = async () => {
+        // Return early if there is no more data to fetch or if it's currently loading.
+        if (!hasMore || loading) return;
     
-            setLoading(true);
-            try {
-                const res = await axiosInstance.get(`/get-sauces`, {
-                    params: {
-                        type:"toprated",
-                        page: page
-                    }
-                });
+        // Set loading state to true at the beginning of the operation.
+        setLoading(true);
     
-                if (res?.data?.sauces?.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prevData => [...prevData, ...res?.data?.sauces]);;
+        try {
+            const res = await axiosInstance.get(`/get-sauces`, {
+                params: {
+                    type,
+                    page
                 }
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-       
-        fetchPhotos();
-    }, [page]);
+            });
+                setHasMore(res.data.pagination.hasNextPage);
+                setData(prevData => [...prevData, ...res.data.sauces]);
+        } catch (error) {
+            console.error('Failed to fetch photos:', error);
+        } finally {
+            // Set loading state to false after the operation is complete.
+            setLoading(false);
+        }
+    };
+    
+    useEffect(() => {
+        fetchSuaces();
+    }, [page, type]);
 
     return (
         <View style={{

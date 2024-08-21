@@ -12,7 +12,6 @@ const CustomRating = ({
 }) => {
     const [rating, setRating] = useState(initialRating);
     const ratingCompleted = (rating) => {
-        console.log(rating)
         setRating(rating)
         cb(rating)
     }

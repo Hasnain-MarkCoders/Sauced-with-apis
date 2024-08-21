@@ -1,12 +1,27 @@
-import React from 'react';
-import { Image, StyleSheet, View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const SingleBrand = ({
     url = "",
+    title="",
+    item=null
 }) => {
+    const navigation = useNavigation()
+
     return (
-        <View style={styles.container}>
+
+        <TouchableOpacity
+        onPress={
+           ()=>{
+            navigation.navigate("BrandScreen", {url, title, item})
+           }
+        }
+        >
+        <View
+        
+        style={styles.container}>
             <Image
                 source={{uri:url}}
                 style={{
@@ -19,6 +34,7 @@ const SingleBrand = ({
             />
            
         </View>
+        </TouchableOpacity>
     );
 };
 

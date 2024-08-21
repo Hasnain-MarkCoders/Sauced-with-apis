@@ -6,120 +6,41 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import axios from 'axios';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
+import { useSelector } from 'react-redux';
 
-const SauceList = ({ title = "",  name = "",isCheckedIn=false, searchTerm = "", showMoreIcon = false, cb = () => { }, type="toprated" }) => {
+const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/get-sauces",searchTerm = "", showMoreIcon = false, cb = () => { }, type="" }) => {
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
-  const axiosInstance = useAxios()
-
+    const axiosInstance = useAxios()
+    const refetch = useSelector(state=>state.refetch)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
 
-    const [isEndReached, setIsEndReached] = useState(false);
-    const flatListRef = useRef(); // Reference to the FlatList
-
-    const handleScroll = (event) => {
-        const scrollPosition = event.nativeEvent.contentOffset.x;
-        const flatListWidth = event.nativeEvent.layoutMeasurement.width;
-        const contentWidth = event.nativeEvent.contentSize.width;
-
-        // Check if the end of the flat list is reached
-        if (scrollPosition + flatListWidth >= contentWidth - 100) { // 100 can be adjusted based on when you want to trigger the end
-            setIsEndReached(true);
-        } else {
-            setIsEndReached(false);
-        }
-    };
-
-
-
-
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (!searchTerm?.trim()) {
-    //             return
-    //         }
-    //         if (loading) return;
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page,
-    //                     query: searchTerm
-    //                 }
-    //             });
-
-    //             setData(prev => [ ...res.data.results,...prev]);
-
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchPhotos();
-    // }, [searchTerm, page]);
-
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (!hasMore || loading) return;
-
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page
-    //                 }
-    //             });
-    //             if (res.data.length === 0) {
-    //                 setHasMore(false);
-    //             } else {
-    //                 setData(prevData => [...prevData, ...res.data]);
-    //             }
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchPhotos();
-    // }, [page]);
-
-    const fetchPhotos = async () => {
+    const fetchSuaces = async () => {
         if (!hasMore || loading) return;
-        console.log(type)
-
         setLoading(true);
+    
         try {
-            const res = await axiosInstance.get(`/get-sauces`, {
+            const res = await axiosInstance.get(endpoint, {
                 params: {
                     type,
-                    page: page
+                    _id,
+                    page
                 }
             });
-
-            if (res?.data?.length === 0) {
-                setHasMore(false);
-            } else {
-                if(res?.data && res?.data?.sauces&& res?.data?.sauces?.length){
-                    setData(prevData => [...prevData, ...res?.data?.sauces]);;
-                }
-            }
+                setHasMore(res.data.pagination.hasNextPage);
+                setData(prevData => [...prevData, ...res.data.sauces]);
         } catch (error) {
             console.error('Failed to fetch photos:', error);
         } finally {
             setLoading(false);
         }
     };
-
+    
     useEffect(() => {
-        fetchPhotos();
-    }, [page]);
+        fetchSuaces();
+    }, [page, type, _id, refetch]);
 
 
 
@@ -149,7 +70,6 @@ data?.length>0&&<View style={styles.container}>
                         paddingRight: selected ? scale(60) : scale(0)
                     }}
                     horizontal
-                    onScroll={handleScroll}
                     onViewableItemsChanged={({ viewableItems }) => {
 
                         if (viewableItems.length > 0) {
@@ -188,7 +108,7 @@ data?.length>0&&<View style={styles.container}>
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchPhotos}><Text>refresh</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={fetchSuaces}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",

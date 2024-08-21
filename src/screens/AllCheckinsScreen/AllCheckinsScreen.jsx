@@ -23,7 +23,6 @@ const AllCheckinsScreen = ({
     const name = route?.params?.name
     const url = route?.params?.url
     const numberOfRoutesBack = route?.params?.routerNumber
-    console.log(numberOfRoutesBack)
     const auth = useSelector(state => state.auth)
 
     const uri = auth.url
@@ -90,7 +89,6 @@ const AllCheckinsScreen = ({
             if (!query?.search?.trim()) {
                 return
             }
-            console.log("query.search", query.search)
             if (loading) return;
             setLoading(true);
             try {

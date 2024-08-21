@@ -1,7 +1,7 @@
 import { Image, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React, { useState } from 'react'
 import { scale } from 'react-native-size-matters'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
 import filledHeart from "./../../../assets/images/filledHeart.png"
 
@@ -15,18 +15,21 @@ import CustomRating from '../CustomRating/CustomRating'
 import Snackbar from 'react-native-snackbar'
 import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
+import { handleRefetch } from '../../../android/app/Redux/reFetchReducer'
 const ProductCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
-    product={}
+    product={},
 }) => {
     const axiosInstance = useAxios()
+    const refetch = useSelector(state=>state.refetch)
+    const dispatch =useDispatch()
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
     const [loading, setLoading] = useState(false)
     const [productStatus, setproductStatus] = useState({
-        isChecked: false,
+        isChecked: product["hasLiked"],
         isAddedToWishList: false,
         isAddedToList: false
     })
@@ -35,7 +38,7 @@ const handleToggleLike=async()=>{
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
-            console.log("res================================>", res.data)
+            dispatch(handleRefetch(!refetch))
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {
@@ -104,15 +107,17 @@ const handleToggleLike=async()=>{
                                 }}>{title}</Text>
                         </View>
                         <TouchableOpacity onPress={() => {
-                            navigation.navigate("AllReviews")
+                            navigation.navigate("AllReviews", {_id:product?._id})
                         }}>
                             <Text style={{
                                 color: "white",
                                 fontWeight: 500,
                                 fontSize: scale(12),
                                 lineHeight: scale(14),
-                            }}>212 Reviews</Text>
-                            <CustomRating ratingContainerStyle={{
+                            }}>{product?.reviewCount>1?`${product?.reviewCount} Reviews`:`${product?.reviewCount} Review` }</Text>
+                            <CustomRating 
+                            initialRating={product?.averageRating}
+                            ratingContainerStyle={{
                                 pointerEvents: "none",
                             }
 
@@ -294,7 +299,6 @@ const handleToggleLike=async()=>{
                 <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)
-                        console.log(product?._id)
                         navigation.navigate("AddReview", {sauceId:product?._id})
 
                     }}

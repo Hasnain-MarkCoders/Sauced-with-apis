@@ -4,14 +4,15 @@ import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
-import FollowersList from '../../components/FollowersList/FollowersList.jsx';
+import FollowListToggle from '../../components/FollowListToggle/FollowListToggle.jsx';
 import { useNavigation } from '@react-navigation/native';
-import { FriendListImages, handleText } from '../../../utils.js';
+import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList } from 'react-native-gesture-handler';
-const FollowingScreen = () => {
+const FollowingScreen = ({
+    endpoint=""
+
+}) => {
     const [query, setQuery] = useState({
         search: "",
     });
@@ -94,10 +95,13 @@ const FollowingScreen = () => {
                                         alignSelf:"flex-start"
                                     }}>
                                         All Following
-                                    </Text><FollowersList
+                                    </Text>
+                                    <FollowListToggle
                                         endpoint="/get-following"
                                     // title="Unfollow" 
-                                     /></View>
+                                     />
+                                     
+                                     </View>
                                    
                                     
                                 }

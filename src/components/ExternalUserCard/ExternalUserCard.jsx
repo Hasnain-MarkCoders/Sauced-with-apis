@@ -2,12 +2,16 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
-import { generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
+import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import flames from "./../../../assets/images/flames.png"
 const ExternalUserCard = ({
-    url = "",
-    name = ""
+    totalCheckIns=0,
+    totalFollowersCount=0,
+    totalFollowingCount=0,
+    url="",
+    name="",
+    date="",
 }) => {
     const auth = useSelector(state => state.auth)
     const navigation = useNavigation()
@@ -39,7 +43,7 @@ const ExternalUserCard = ({
                         borderWidth: scale(1)
                     }}
                     // source={{ uri: url }}
-                    source={url}
+                    source={{uri:url}}
 
                 />
                 <View style={{
@@ -78,7 +82,7 @@ const ExternalUserCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(20),
                                     lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
+                                }}>{totalFollowingCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -101,7 +105,7 @@ const ExternalUserCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(20),
                                     lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
+                                }}>{totalFollowingCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -125,7 +129,7 @@ const ExternalUserCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(20),
                                     lineHeight: scale(36),
-                                }}>{generateThreeDigitRandomNumber()}</Text>
+                                }}>{totalCheckIns}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -157,7 +161,7 @@ const ExternalUserCard = ({
                         color: "#FFA100",
                         fontSize: scale(10)
                     }}>
-                        {getRandomDate()}
+                        {date &&formatDate(new Date(date))}
                     </Text>
                 </View>
                 <View style={{

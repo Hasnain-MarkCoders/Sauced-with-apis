@@ -24,6 +24,7 @@ const Product = () => {
   const route = useRoute()
   const { url = "", title = "" } = route?.params
   const product = route?.params?.item
+  const fetchSuaces = route.params.fetchSuaces
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -60,6 +61,9 @@ const Product = () => {
   const handleSubmitMessage = (data)=>{
     setIsKeyBoard(true)
 }
+
+
+
 const getId = (id=0)=>{
     return setId(id)
 }
@@ -76,9 +80,6 @@ const handleAddMessage = ()=>{
       setNewMsg(false)
       return
   }
-
-  console.log(messagesData[id])
-  console.log(id)
   messagesData[id].replies.unshift({
           url: user1,
           title: "Mike Smith",
@@ -151,7 +152,6 @@ const handleAddMessage = ()=>{
         
         const type=listNumber==1?"triedSauces":listNumber==2?"toTrySauces":"favoriteSauces"
           const res = await axiosInstance.post(`/bookmark`, {sauceId:product?._id, listType:type});
-          console.log("res================================>", res?.data)
       } catch (error) {
           console.error('Failed to like / dislike:', error);
       } finally {
@@ -205,6 +205,7 @@ const handleAddMessage = ()=>{
                   }}>
                     <ProductCard
                     product={product}
+                    fetchSuaces={fetchSuaces}
                       setshowListModal={setModalVisible}
                       url={url} title={title} />
                   </View>
@@ -251,7 +252,7 @@ const handleAddMessage = ()=>{
                     </Text>
 
                     <ProductsBulletsList
-                    data={product.ingredients}
+                    data={product?.chilli}
                     bulletStyle={{
                       backgroundColor:"#FFA100"
                     }}

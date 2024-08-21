@@ -6,7 +6,7 @@ import { scale } from 'react-native-size-matters';
 import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal';
 import useAxios from '../../../Axios/useAxios';
 
-const FollowersList = ({
+const FollowListToggle = ({
     endpoint = "",
     numColumns = 2,
     title = "",
@@ -40,26 +40,9 @@ const FollowersList = ({
                     page: page
                 }
             });
-            if (endpoint?.toLocaleLowerCase().includes("followers")) {
-                if (res?.data?.followers?.length === 0) {
-                    setHasMore(false);
-                }
-                else {
-                    if (res?.data && res?.data?.followers && res?.data?.followers?.length > 0) {
-                        setData(prevData => [...prevData, ...res?.data?.followers]);
-                    }
-                }
-            }
-            if (endpoint?.toLocaleLowerCase().includes("following")) {
-                if (res?.data?.following?.length === 0) {
-                    setHasMore(false);
-                }
-                else {
-                    if (res?.data && res?.data?.following && res?.data?.following?.length > 0) {
-                        setData(prevData => [...prevData, ...res?.data?.following]);
-                    }
-                }
-            }
+            setHasMore(res.data.pagination.hasNextPage)
+            setData(prevData => [...prevData, ...res?.data?.data])
+            
         } catch (error) {
             console.error('Failed to fetch followers:', error);
         } finally {
@@ -92,15 +75,26 @@ const FollowersList = ({
                     }
                 }}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => <UserCard
-                    cb={handleOpenModal}
-                    item={endpoint.includes("followers") ? item?.followGiverDetails : item?.followRecieverDetails}
-                    // title={item?.followGiverDetails ?"Follow":"Unfollow"}
-                    url={endpoint.includes("followers") ? item?.followGiverDetails?.image : item?.followRecieverDetails?.image}
-                    name={endpoint.includes("followers") ? item?.followGiverDetails?.name : item?.followRecieverDetails?.name}
-                    //  url={item?.urls?.small}
-                    //  name={item?.user?.username} 
-                    showText={false} />}
+                renderItem={({ item }) => 
+                    // <></>
+                <UserCard
+                //     cb={handleOpenModal}
+                //     // item={endpoint.includes("followers") ? item?.followGiverDetails : item?.followRecieverDetails}
+                //     // title={item?.followGiverDetails ?"Follow":"Unfollow"}
+                //     // url={endpoint.includes("followers") ? item?.followGiverDetails?.image : item?.followRecieverDetails?.image}
+                //     // name={endpoint.includes("followers") ? item?.followGiverDetails?.name : item?.followRecieverDetails?.name}
+                //     //  url={item?.urls?.small}
+                //     //  name={item?.user?.username} 
+                //     showText={false}
+                title={item?.isFollowing?"Unfollow":"Follow"}
+                _id={item?._id}
+                item={item}
+                url={item.image}
+                name={item?.name}
+                showText={false}
+                     />
+                    
+                    }
 
             />
             {
@@ -114,6 +108,6 @@ const FollowersList = ({
     )
 }
 
-export default memo(FollowersList)
+export default memo(FollowListToggle)
 
 const styles = StyleSheet.create({})

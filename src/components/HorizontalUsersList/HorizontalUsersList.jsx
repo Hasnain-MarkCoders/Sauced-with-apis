@@ -5,17 +5,14 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 const HorizontalUsersList = ({
-    // data=[],
-    // hasMore=true,
-    // setPage=()=>{},
-    // loading=false,
+ 
 }) => {
   const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const axiosInstance = useAxios()
-    const fetchPhotos = async () => {
+    const fetchUsers = async () => {
       if (!hasMore || loading) return;
       setLoading(true);
       try {
@@ -24,14 +21,8 @@ const HorizontalUsersList = ({
                   page: page
               }
           });
-
-          if (res?.data?.randomUsers?.length === 0) {
-              setHasMore(false);
-          } else {
-              if(res?.data && res?.data?.randomUsers && res?.data?.randomUsers?.length>0){
-                  setData(prevData => [...prevData, ...res?.data?.randomUsers]);;
-              }
-          }
+                setHasMore(res.data.pagination.hasNextPage);
+                setData(prevData => [...prevData, ...res?.data?.randomUsers]);;
       } catch (error) {
           console.error('Failed to fetch photos:', error);
       } finally {
@@ -40,7 +31,7 @@ const HorizontalUsersList = ({
   };
 
   useEffect(() => {
-      fetchPhotos();
+      fetchUsers();
   }, [page]);
 
   return (
@@ -61,12 +52,14 @@ const HorizontalUsersList = ({
           }}
            keyExtractor={(item, index) => index.toString()}
            renderItem={({ item }) => <UserCard 
+           _id={item?._id}
+           title={item?.isFollowing?"Unfollow":"Follow"}
         //  url={item?.urls?.small} 
         // name={item?.user?.username}
         item={item}
         url={item.image}
         name={item?.name}
-        title={"Follow"}
+        // title={"Follow"}
         showText={false}
          />}
     
