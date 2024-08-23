@@ -24,7 +24,8 @@ const YoutubeScreen = () => {
  
 
     <ImageBackground style={{
-      flex:1
+      flex:1,
+      position:"relative"
     }} source={getStartedbackground} >
       <Header showMenu={false} cb={()=>{navigation.goBack()}} showProfilePic={false} showText={false}/>
       <SafeAreaView style={{
@@ -33,9 +34,15 @@ const YoutubeScreen = () => {
 
   
     }}>
-      {initialLoading && <ActivityIndicator size="large" color="#FFA100" />}
+      {initialLoading && 
+        <ActivityIndicator style={{marginTop:scale(200)}} size="large" color="#FFA100" />
+       }
+        
         <YoutubePlayer
-        contentScale={{}}
+       webViewStyle={{
+        display:initialLoading ?"none":"flex"
+       }}
+      
           onReady={() => setInitialLoading(false)}
           height={300}
           width={"100%"}

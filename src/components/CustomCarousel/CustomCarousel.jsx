@@ -60,6 +60,8 @@ const [selected, setSelected] = React.useState(0)
         onSnapToItem={(index) =>{ handleSnapToItem(index)}}
         renderItem={({ item, index }) => (<>
           <Banner
+
+                        showOverlay={true}
                         showText={showText}
                         event={item}
                         //   title={item?.user?.username}

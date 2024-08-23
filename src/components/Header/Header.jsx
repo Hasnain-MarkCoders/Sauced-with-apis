@@ -44,10 +44,12 @@ let url = ""
     }}>
       {showBackButton && <View style={{
       }}>
-        <TouchableOpacity onPress={()=>(cb(), Vibration.vibrate(10))} >
+        <TouchableOpacity style={{
+            // paddingVertical:scale(10)
+        }} onPress={()=>(cb(), Vibration.vibrate(10))} >
           <Image style={{
             display: "flex",
-            resizeMode:"contain"
+            resizeMode:"contain",
           }} source={back} />
         </TouchableOpacity>
 

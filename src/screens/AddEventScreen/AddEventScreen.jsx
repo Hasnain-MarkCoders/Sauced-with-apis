@@ -12,6 +12,7 @@ import DatePicker from 'react-native-date-picker'
 import arrow from "./../../../assets/images/arrow.png";
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import useAxios from '../../../Axios/useAxios.js';
+import axios from 'axios';
 
 const AddEventScreen = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
@@ -20,7 +21,6 @@ const AddEventScreen = () => {
         open: false,
         message: ""
     })
-    const [points, setPoints]  = useState([])
     const [query, setQuery] = useState({
         title: "",
         eventOrganizer: "",
@@ -31,13 +31,7 @@ const AddEventScreen = () => {
     });
     const axiosInstance = useAxios()
     const navigation = useNavigation()
-    const handleAddBullet=(value)=>{
-        if (value.trim()){
-            setPoints(prev=>[...prev, value])
-            setQuery(prev=>({...prev, destinationDetails:""}))
-
-        }
-    }
+ 
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
             setIsKeyBoard(true)
@@ -51,7 +45,7 @@ const AddEventScreen = () => {
         };
     }, []);
 
-    const handleAddEvent=()=>{
+    const handleAddEvent=async()=>{
         if (!query?.title) {
             return setAlertModal({
                 open: true,
@@ -60,22 +54,22 @@ const AddEventScreen = () => {
 
         }
 
-        else if (!query?.eventOrganizer) {
-            return setAlertModal({
-                open: true,
-                message: "Event Organizer is required!"
-            })
+        // else if (!query?.eventOrganizer) {
+        //     return setAlertModal({
+        //         open: true,
+        //         message: "Event Organizer is required!"
+        //     })
 
-        }
+        // }
 
 
-        else if (!query?.date) {
-            return setAlertModal({
-                open: true,
-                message: "Date is required!"
-            })
+        // else if (!query?.date) {
+        //     return setAlertModal({
+        //         open: true,
+        //         message: "Date is required!"
+        //     })
 
-        }
+        // }
 
 
         else if (!query?.address) {
@@ -87,22 +81,48 @@ const AddEventScreen = () => {
         }
 
 
-        else if (!query?.destinationDetails) {
-            return setAlertModal({
-                open: true,
-                message: "Details is required!"
-            })
+        // else if (!query?.destinationDetails) {
+        //     return setAlertModal({
+        //         open: true,
+        //         message: "Details is required!"
+        //     })
 
-        }
+        // }
 
-        else if (!query?.coordinates) {
-            return setAlertModal({
-                open: true,
-                message: "coordinates are required!"
-            })
+        // else if (!query?.coordinates) {
+        //     return setAlertModal({
+        //         open: true,
+        //         message: "coordinates are required!"
+        //     })
 
-        }
+        // }
+        
+            try{
+
+                
+        const res = await axiosInstance.post("/request-event", {
+            "eventName": query?.title,
+            "eventDetails": query?.destinationDetails,
+            "eventDate": query?.date,
+            "venueName": query?.address,
+            "venueDescription": query?.destinationDetails,
+            "venueLocation.longitude": "12.4964",
+            "venueLocation.latitude": "41.9028"}
+        )
+         console.log("<==============================================res============================================>", res.data)
+            }catch(error){
+                console.log(error)
+
+            }
+
+
+
+
     }
+
+
+
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -127,7 +147,7 @@ const AddEventScreen = () => {
                         lineHeight: scale(50),
                         marginBottom: scale(20)
                     }}>
-                        Add Event
+                        Add Events
                     </Text>
                     <View style={{
                         gap: scale(20),

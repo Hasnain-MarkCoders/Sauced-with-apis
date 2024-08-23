@@ -1,18 +1,16 @@
-import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions } from 'react-native'
+import React, {  useState } from 'react'
 import home from "./../../../assets/images/home.png"
-import { featuredSauces, handleText, topRatedSauces } from '../../../utils'
+import {  handleText } from '../../../utils'
 import { scale } from 'react-native-size-matters'
 import qr from "./../../../assets/images/qr.png"
 import CustomInput from '../../components/CustomInput/CustomInput'
 import { useNavigation } from '@react-navigation/native'
 import search from "./../../../assets/images/search_icon.png";
 import ProductSearchList from '../../components/ProductSearchList/ProductSearchList'
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios'
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const SearchScreen = () => {
-
     const [query, setQuery] = useState({
         search: "",
     });
@@ -27,6 +25,21 @@ const SearchScreen = () => {
                 paddingHorizontal:scale(20),
                 paddingTop:scale(32),
             }}>
+        {/* <SkeletonPlaceholder speed={1600} backgroundColor='#FFA100' highlightColor={"#ffffff"} borderRadius={4}>
+        <View style={{gap:scale(10), maxWidth:scale(110) }}>
+            <View style={{  height: 20, borderRadius: 4 }} />
+            <View style={{  height: 20, borderRadius: 4 }} />
+            <View style={{  height: 20, borderRadius: 4 }} />
+            <View style={{gap:scale(10), flexDirection:"row", justifyContent:"space-between"}}>
+
+            <View style={{ marginTop: 6,flexBasis:scale(20), flexGrow:1, height: 20, borderRadius: 4 }} />
+            <View style={{ marginTop: 6, width: 20, height: 20, borderRadius: 4 }} />
+            </View>
+
+
+        </View>
+      </SkeletonPlaceholder> */}
+
                 <KeyboardAvoidingView
                 style={{
                     flex:1

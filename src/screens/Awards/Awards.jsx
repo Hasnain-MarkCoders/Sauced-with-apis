@@ -128,7 +128,7 @@ const Awards = () => {
                                             fontSize:scale(10),
                                             fontWeight:700
                                         }}>
-                                        Awards
+                                        Badges
                                         </Text>
 
                                         <Text style={{
@@ -168,7 +168,7 @@ const Awards = () => {
                                         fontWeight: 600,
                                         fontSize: 35,
                                         lineHeight: 50
-                                    }}>Awards</Text>
+                                    }}>Badges</Text>
 
                                     
                                     </View>

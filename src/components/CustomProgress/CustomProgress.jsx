@@ -32,13 +32,13 @@ const CustomProgress = ({
 
       </View>
     </View>
-   { name&& <Text style={{
+   {/* { name&& <Text style={{
       alignSelf:"center",
       color:"white",
       ...nameStyle
     }}>
         {name}
-    </Text>}
+    </Text>} */}
       </View>
   )
 }

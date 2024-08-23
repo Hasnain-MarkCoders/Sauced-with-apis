@@ -29,7 +29,7 @@ const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/
                     page
                 }
             });
-                setHasMore(res.data.pagination.hasNextPage);
+                 setHasMore(res.data.pagination.hasNextPage);
                 setData(prevData => [...prevData, ...res.data.sauces]);
         } catch (error) {
             console.error('Failed to fetch photos:', error);
@@ -41,7 +41,6 @@ const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/
     useEffect(() => {
         fetchSuaces();
     }, [page, type, _id, refetch]);
-
 
 
     return (
@@ -88,6 +87,7 @@ data?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    refetch={refetch}
                     item={item}
 
                         // url={item?.urls?.small} 

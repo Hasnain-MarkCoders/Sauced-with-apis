@@ -5,7 +5,7 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import home from './../../../assets/images/home.png';
 import search from "./../../../assets/images/search_icon.png";
 import qr from "./../../../assets/images/qr.png";
-import { Brands, featuredSauces, handleText, topRatedSauces } from '../../../utils';
+import { Brands, handleText } from '../../../utils';
 import SauceList from '../../components/SauceList/SauceList';
 import BrandList from '../../components/BrandList/BrandList';
 import CustomInput from '../../components/CustomInput/CustomInput';
@@ -19,154 +19,168 @@ import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialRe
 const Home = () => {
     const navigation = useNavigation()
     const [alertModal, setAlertModal] = useState(false)
-  const [initialLoading, setInitialLoading]=useState(true)
+    const [initialLoading, setInitialLoading] = useState(true)
     const [data, setData] = useState({
         search: "",
     });
 
 
-useEffect(()=>{
-    setTimeout(()=>{
-        setInitialLoading(false)
-    },1000)
-})
+    useEffect(() => {
+        setTimeout(() => {
+            setInitialLoading(false)
+        }, 1000)
+    })
 
     if (initialLoading) {
         return (
-          <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#FFA100" />
-          </ImageBackground>
+            <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#FFA100" />
+            </ImageBackground>
         );
-      }
+    }
 
     return (
 
-       <ImageBackground source={home} style={styles.background}>
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.scrollView}>
-                        <SafeAreaView style={styles.safeArea}>
-                            <View style={styles.searchContainer}>
-                                <View style={styles.searchBarContainer}>
-                                    <CustomInput
-                                            imageStyles={{top:"50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain',width:scale(25), height:scale(25), aspectRatio:"1/1"}}
-                                            isURL={false}
-                                            showImage={true}
-                                            uri={search}
-                                        name="search"
-                                        onChange={handleText}
-                                        updaterFn={setData}
-                                        value={data.search}
-                                        showTitle={false}
-                                        placeholder="Search For Sauce..."
-                                        containterStyle={{
-                                            flexGrow: 1,
-                                        }}
-                                        inputStyle={{
-                                            borderColor: "#FFA100",
-                                            borderWidth: 1,
-                                            borderRadius: 10,
-                                            padding: 15,
-                                            paddingLeft:scale(45)
+        <ImageBackground source={home} style={styles.background}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                style={styles.scrollView}>
+                <SafeAreaView style={styles.safeArea}>
+                    <View style={styles.searchContainer}>
+                        <View style={styles.searchBarContainer}>
+                            <CustomInput
+                                imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                                isURL={false}
+                                showImage={true}
+                                uri={search}
+                                name="search"
+                                onChange={handleText}
+                                updaterFn={setData}
+                                value={data.search}
+                                showTitle={false}
+                                placeholder="Search For Sauce..."
+                                containterStyle={{
+                                    flexGrow: 1,
+                                }}
+                                inputStyle={{
+                                    borderColor: "#FFA100",
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    padding: 15,
+                                    paddingLeft: scale(45)
 
-                                        }} />
+                                }} />
 
-                                    <TouchableOpacity onPress={() => { navigation.navigate("QRScreen")}}>
-                                        <View>
+                            {/* <TouchableOpacity onPress={() => { navigation.navigate("QRScreen") }}>
+                                <View>
 
-                                            <Image source={qr} style={styles.qrImage} />
-                                        </View>
-                                    </TouchableOpacity>
+                                    <Image source={qr} style={styles.qrImage} />
                                 </View>
-                                <TouchableOpacity onPress={() => {
-                                    Vibration.vibrate(10)
-                                    navigation.navigate("RequestASauceScreen")
-                                }}>
+                            </TouchableOpacity> */}
+                        </View>
+                        <TouchableOpacity onPress={() => {
+                            Vibration.vibrate(10)
+                            navigation.navigate("RequestASauceScreen")
+                        }}>
 
-                                    <Text style={[styles.infoText, {
-                                        textDecorationLine: "underline",fontWeight: 700,
-                                    }]}>
-                                        Don't see what you're looking for? Request a sauce or brand.
-                                    </Text>
-                                </TouchableOpacity>
+                            <Text style={[styles.infoText, {
+                                textDecorationLine: "underline", fontWeight: 700,
+                            }]}>
+                                Don't see what you're looking for? Request a sauce or brand.
+                            </Text>
+                        </TouchableOpacity>
 
-                            </View>
-                            <View style={{
-                                position:"relative",
-                            }}>
+                    </View>
 
-                            <CustomCarousel
-                             showText={true}
-                            />
-                            </View>
-                            <View style={styles.contentContainer}>
+                    
+                    <View style={{
+                        position: "relative",
+                        gap:scale(10)
+                    }}>
+                        <Text style={
+                        {
+                            color: "white",
+                            lineHeight: scale(29),
+                            fontSize: scale(24),
+                            fontWeight: "600",
+                        }
+                    }>
+                        Events
+                    </Text>
 
-                                <SauceList
-                                 type="featured"
-                                   title='Featured Sauces' 
-                                    />
+                        <CustomCarousel
+                            showText={true}
+                        />
+                    </View>
+                    <View style={styles.contentContainer}>
+
+                        <SauceList
+                            type="featured"
+                            title='Featured Sauces'
+                        />
 
 
-                                <SauceList
-                                 type="toprated"
-                                  title='Top Rated Sauces'
-                                    />
+                        <SauceList
+                            type="toprated"
+                            title='Top Rated Sauces'
+                        />
 
-                                <CustomButtom
-                                    Icon={() => <Image source={arrow} />}
-                                    showIcon={true}
-                                    buttonTextStyle={{ fontSize: scale(14) }}
-                                    buttonstyle={{ 
-                                    width: "100%", borderColor: "#FFA100", 
-                                    backgroundColor: "#2e210a", padding: 15, 
-                                    display: "flex", gap: 10, flexDirection: "row-reverse", 
-                                    alignItems: "center", justifyContent: "space-between" }}
-                                    onPress={() => navigation.navigate("Map")}
-                                    title={"Hot Sauce Map"}
-                                />
-                                <BrandList title='Top Rated Brands' data={Brands} />
-                                <View style={{
-                                    gap:scale(20)
-                                }}>
-                                    <Text style={
-                                        {
-                                            color: "white",
-                                            lineHeight: verticalScale(28.8),
-                                            fontSize: moderateScale(24),
-                                            fontWeight: "600",
-                                        }
-                                    }>
-                                        Official Reviews
-                                    </Text>
+                        <CustomButtom
+                            Icon={() => <Image source={arrow} />}
+                            showIcon={true}
+                            buttonTextStyle={{ fontSize: scale(14) }}
+                            buttonstyle={{
+                                width: "100%", borderColor: "#FFA100",
+                                backgroundColor: "#2e210a", padding: 15,
+                                display: "flex", gap: 10, flexDirection: "row-reverse",
+                                alignItems: "center", justifyContent: "space-between"
+                            }}
+                            onPress={() => navigation.navigate("Map")}
+                            title={"Hot Sauce Map"}
+                        />
+                        <BrandList title='Top Rated Brands' data={Brands} />
+                        <View style={{
+                            gap: scale(20)
+                        }}>
+                            <Text style={
+                                {
+                                    color: "white",
+                                    lineHeight: verticalScale(28.8),
+                                    fontSize: moderateScale(24),
+                                    fontWeight: "600",
+                                }
+                            }>
+                                Official Reviews
+                            </Text>
                             <CustomOfficialReviewsListCarousel
-                             showText={false}
+                                showText={false}
                             />
-                                </View>
+                        </View>
 
-                                <CustomButtom
-                                    Icon={() => <Image source={arrow} />}
-                                    showIcon={true}
-                                    buttonTextStyle={{ fontSize: scale(14) }}
-                                    buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                    onPress={() => {
-                                        Vibration.vibrate(10);
-                                        // navigation.navigate("SauceDetails")
-                                        navigation.navigate("RequestASauceScreen")
-                                    }}
-                                    title={"Want to List Sauce? "}
-                                />
+                        <CustomButtom
+                            Icon={() => <Image source={arrow} />}
+                            showIcon={true}
+                            buttonTextStyle={{ fontSize: scale(14) }}
+                            buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
+                            onPress={() => {
+                                Vibration.vibrate(10);
+                                // navigation.navigate("SauceDetails")
+                                navigation.navigate("RequestASauceScreen")
+                            }}
+                            title={"Want to List Sauce? "}
+                        />
 
-                            </View>
-                            <CustomAlertModal 
-                            title='Feature Coming Soon.'
-                            modalVisible={alertModal}
-                            setModalVisible={()=>setAlertModal(false)}
-                            />
-                        </SafeAreaView>
-                    </ScrollView>
-                </ImageBackground>
-    
+                    </View>
+                    <CustomAlertModal
+                        title='Feature Coming Soon.'
+                        modalVisible={alertModal}
+                        setModalVisible={() => setAlertModal(false)}
+                    />
+                </SafeAreaView>
+            </ScrollView>
+        </ImageBackground>
+
     );
 };
 

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import banner from "./../../../assets/images/banner.png";
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
+import CustonPlayIcon from '../CustonPlayIcon/CustonPlayIcon';
 const screenWidth = Dimensions.get('window').width;
 const Banner = ({
     url = "",
@@ -10,63 +11,70 @@ const Banner = ({
     showText = true,
     title = "",
     cb = () => { },
-    videoId="",
-    event={}
+    videoId = "",
+    event = {},
+    showOverlay=false
 }) => {
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={{
-            width:"100%",
+            width: "100%",
         }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title, videoId }) }}>
-
             <ImageBackground
-            borderRadius={10}
-            style={{
-            minHeight:scale(130),
-
-            }}
-                // imageStyle={{ borderRadius: 15, width:"100%", height:scale(130) }}
+                borderRadius={10}
+                style={{
+                    minHeight: scale(130),
+                    position: "relative",
+                  
+                }}
                 source={{ uri: url }}
-                // source={  url }
-                >
+            >
+
+                    {showOverlay &&<View style={styles.overlay}></View>}
                 {
-                    showText && <View style={{ paddingVertical: scale(5), paddingHorizontal: scale(20), gap: scale(5) }}>
-                        <Text style={[styles.bannerText, {  color: 'white',
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    textShadowColor: 'rgba(0, 0, 0, 1)',
-                    textShadowOffset: { width: 1, height: 1 },
-                    textShadowRadius: 10}]}>{event?.eventName}</Text>
-                        <View style={{
-                            gap: scale(10)
-                        }}>
-                            <Text style={{
-                                color: "white",
-                                fontSize: scale(10),
-                                lineHeight: scale(13),
-                                fontFamily: "Montserrat",
-                                maxWidth: "80%",
-                                fontWeight: '700',
+                    showText?
+                    <View style={{ paddingVertical: scale(10),paddingHorizontal: scale(10), gap: scale(5),flex:1,justifyContent:"space-between" }}>
+                        <View>
+                            <Text style={[styles.bannerText, {
                                 color: 'white',
+                                fontSize: 24,
+                                fontWeight: 'bold',
+                                textShadowColor: 'rgba(0, 0, 0, 1)',
+                                textShadowOffset: { width: 1, height: 1 },
+                                textShadowRadius: 10
+                            }]}>{event?.eventName}</Text>
+                            <View style={{
+                                gap: scale(10)
+                            }}>
+                                <Text style={{
+                                    color: "white",
+                                    fontSize: scale(10),
+                                    lineHeight: scale(13),
+                                    fontFamily: "Montserrat",
+                                    maxWidth: "80%",
+                                    fontWeight: '700',
+                                    color: 'white',
                                     fontWeight: 'bold',
                                     textShadowColor: 'rgba(0, 0, 0, 1)',
                                     textShadowOffset: { width: 1, height: 1 },
                                     textShadowRadius: 10
-                               
-                            }}>
 
-                                {event?.venueDescription}
+                                }}>
 
-                            </Text>
-                            <View style={{
+                                    {event?.venueDescription}
+
+                                </Text>
+                            
+                            </View>
+                        </View>
+                        <View style={{
                                 flexDirection: "row",
-                                gap: scale(10)
+                                gap: scale(10),
                             }}>
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // Linking.openURL(url)
-                                       navigation.navigate("EventPage", {event})
+                                        navigation.navigate("EventPage", { event })
                                     }}
                                     style={{
                                         paddingHorizontal: scale(10),
@@ -86,9 +94,6 @@ const Banner = ({
                                 <TouchableOpacity
 
                                     onPress={() => {
-                                        // Linking.openURL(url)
-                                    //    navigation.navigate("EventPage")
-
                                     }}
                                     style={{
                                         paddingHorizontal: scale(10),
@@ -107,9 +112,14 @@ const Banner = ({
 
                                 </TouchableOpacity>
                             </View>
-                        </View>
-
-                    </View>}
+                    </View>
+                    :
+                    <View style={{
+                        width:"100%",
+                        height:"100%"
+                    }}>
+                        <CustonPlayIcon/>
+                        </View>}
 
             </ImageBackground>
         </TouchableOpacity>
@@ -120,11 +130,17 @@ const Banner = ({
 export default Banner
 
 const styles = StyleSheet.create({
+    overlay:{
+         backgroundColor: 'rgba(0, 0, 0, .5)',
+         width:"100%",
+         height:"100%",
+         borderRadius:scale(10),
+         position:"absolute",
+    },
     mainBanner: {
         position: "relative",
         gap: verticalScale(10),
-        minWidth: verticalScale(250)
-
+        minWidth: verticalScale(250),
     },
     bannerContainer: {
         position: "relative",

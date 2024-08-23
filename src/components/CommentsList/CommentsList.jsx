@@ -10,14 +10,14 @@ const CommentsList = ({ data = [],product={}, cb=()=>{},setNewMsg=()=>{},getId=g
 
   return (
     <>
-     <TouchableOpacity style={{
+     {/* <TouchableOpacity style={{
         paddingVertical:scale(20),
         alignSelf:"flex-end"
       }} onPress={()=>{handleSubmitMessage(); getId(data?.length), setNewMsg(true)}} >
         <Text style={{
           color:"white"
         }}>Add Comment</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <FlatList
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}

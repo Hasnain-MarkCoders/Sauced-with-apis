@@ -145,6 +145,7 @@ const handleToggleLike=async()=>{
 
                                     <Text style={{
                                         color: "#FFA100",
+                                        textAlign:"center",
                                         fontWeight: 600,
                                         fontSize: scale(30),
                                         lineHeight: scale(36),
@@ -295,7 +296,7 @@ const handleToggleLike=async()=>{
                     </View>
                 </View>
             </View>
-            <View style={{flexDirection:"row",flexGrow:1, justifyContent:"space-between"}}>
+            <View style={{flexDirection:"row",flexGrow:1, gap:scale(10)}}>
                 <TouchableOpacity
                     onPress={() => {
                         // Linking.openURL(url)

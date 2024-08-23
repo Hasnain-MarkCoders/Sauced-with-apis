@@ -25,7 +25,7 @@ const CustomAlertModal = ({
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
+      backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
       width: '100%', // Ensure it covers the full screen width
       height: '100%', // Ensure it covers the full screen height
     }}>
@@ -47,17 +47,18 @@ const CustomAlertModal = ({
 
         <View style={{
           flex: 1,
+          width:"100%",
           justifyContent: 'center',
           alignItems: 'center',
         }}>
           <View style={{
             margin: 20,
-            borderWidth: scale(1),
+            borderWidth: scale(.5),
             borderColor: "#FFA100",
             borderRadius: scale(12),
             position: "relative",
             backgroundColor: '#2E210A',
-            borderRadius: 20,
+            borderRadius: scale(10),
             padding: scale(40),
             paddingVertical:scale(60),
             gap:scale(20),
@@ -70,8 +71,12 @@ const CustomAlertModal = ({
             shadowOpacity: 0.25,
             shadowRadius: 4,
             elevation: 5,
+            height:scale(200),
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center"
           }}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
 
               style={{
                 position: "absolute",
@@ -85,9 +90,8 @@ const CustomAlertModal = ({
                 width: scale(20),
                 height: scale(20)
               }} source={closeIcon} />
-            </TouchableOpacity>
-            <View style={{
-            }}>
+            </TouchableOpacity> */}
+         
                 <Text style={{
                     color:"white",
                     fontSize:scale(20),
@@ -98,7 +102,6 @@ const CustomAlertModal = ({
                   {title}  
                 </Text>
 
-            </View>
           </View>
         </View>
           </TouchableOpacity>

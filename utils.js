@@ -434,3 +434,17 @@ console.log(formatDate(exampleDate));
     }
     return text.trim();
   }
+
+
+
+  export const getFormattedName=(name)=>{
+    name = name.split(" ")
+    if (name.length>1){
+    name = name[0].slice(0,1).toUpperCase() + name[0].slice(1) + " " + name[1].slice(0,1).toUpperCase() + "."    
+    }
+    else{
+      name=name.join("") 
+    }
+    
+    return name
+}

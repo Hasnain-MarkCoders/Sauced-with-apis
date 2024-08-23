@@ -1,11 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useState } from 'react'
+import React, { memo } from 'react'
 import { scale } from 'react-native-size-matters'
-import { useSelector } from 'react-redux'
-import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
+import { formatDate, getFormattedName } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
-import user from "./../../../assets/images/userWithFlames.png"
-import useAxios from '../../../Axios/useAxios'
+import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -30,8 +28,10 @@ date=""
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
-                gap: scale(0),
-                alignItems:"center"
+                gap: scale(5),
+                overflow:"hidden",
+                alignItems:"center",
+
 
             }}>
                 <View style={{
@@ -57,10 +57,24 @@ date=""
                     // source={url}
 
                 />
+                 <Image
+                    style={{
+                        bottom:10,
+                        right:10,
+                        position:"absolute",
+                        zIndex:1,
+                        width:scale(30),
+                        height:scale(30)
+                    }}
+                    source={redFlameIndicator}
+                    // source={url}
+
+                />
                 </View>
                 <View style={{
                     flexGrow: 1,
-                    display:"flex"
+                    display:"flex",
+                    gap:scale(10)
                 }}>
 
                     <Text
@@ -74,13 +88,15 @@ date=""
                         flexBasis:"80%",
                         fontSize: scale(20),
                         lineHeight: scale(24),
-                    }}>{name}</Text>
+                    }}>{getFormattedName(name)}</Text>
                     <View style={{
                         maxWidth:"80%",
                     }}>
                         <View style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
+                            gap:scale(13)
+
                         }}>
 
                             <TouchableOpacity onPress={() => {
@@ -90,7 +106,7 @@ date=""
 
                                 <View style={{
                                     alignItems: "center",
-                                    justifyContent:"center"
+                                    justifyContent:"center",
                                 }}>
                                     <Text style={{
                                         color: "#FFA100",

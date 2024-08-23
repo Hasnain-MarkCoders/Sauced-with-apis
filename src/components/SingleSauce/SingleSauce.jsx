@@ -16,6 +16,7 @@ const SingleSauce = ({
     setAlertModal=()=>{},
     endpoint="",
     item={},
+    refetch=false
 }) => {
     const axiosInstance = useAxios()
 const navigation = useNavigation()
@@ -35,6 +36,7 @@ const handleOnPress = ()=>{
 const handleToggleLike=async()=>{
     try {
         const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
+        console.log(res.data)
     } catch (error) {
         console.error('Failed to like / dislike:', error);
     } finally {
