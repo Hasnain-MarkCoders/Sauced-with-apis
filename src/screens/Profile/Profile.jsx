@@ -238,7 +238,13 @@ const ProfileScreen = () => {
                                         <View style={{
                                             marginVertical: scale(30)
                                         }}>
+                                            <TouchableOpacity style={{
+                                                width:"100%"
+                                            }} onPress={()=>{
+                                                navigation.navigate("UserSearchScreen")
+                                            }}>
                                             <CustomInput
+                                            readOnly={true}
                                                 imageStyles={{ top: "50%", resizeMode: 'contain', transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
                                                 isURL={false}
                                                 showImage={true}
@@ -261,6 +267,7 @@ const ProfileScreen = () => {
                                                     paddingLeft: scale(45)
 
                                                 }} />
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={{
                                             flexDirection: "row",
@@ -281,7 +288,8 @@ const ProfileScreen = () => {
                                             <TouchableOpacity
                                                 onPress={() => {
                                                     // Linking.openURL(url)
-                                                    navigation.navigate("MyReviewedSauces", { route: "check-ins" }, {data: checkedInSauces, setData:setCheckedInSauces})
+                                                    // navigation.navigate("MyReviewedSauces", { route: "check-ins" }, {data: checkedInSauces, setData:setCheckedInSauces})
+                                                    navigation.navigate("MyReviewedSauces")
 
                                                 }}
                                                 style={{

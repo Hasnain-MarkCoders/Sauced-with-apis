@@ -5,7 +5,9 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 const HorizontalUsersList = ({
- 
+ numColumns=1,
+ horizontal=true
+
 }) => {
   const [data, setData] = useState([])
     const [page, setPage] = useState(1)
@@ -41,8 +43,9 @@ const HorizontalUsersList = ({
     }}>
         <FlatList
         showsHorizontalScrollIndicator={false} 
+        numColumns={numColumns}
         showsVerticalScrollIndicator={false}
-        horizontal={true}
+        horizontal={horizontal}
            data={data}
            onEndReachedThreshold={0.5}
            onEndReached={() => {

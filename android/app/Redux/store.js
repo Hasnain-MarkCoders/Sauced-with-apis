@@ -2,10 +2,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from './userReducer';
+import topRatedSaucesSlice from './topRatedSauces';
 import reFetchReducer from './reFetchReducer';
 
 const rootReducer = combineReducers({
     auth:userReducer,
+    topRatedSauces:topRatedSaucesSlice,
     refetch:reFetchReducer
 })
 const persistConfig = {

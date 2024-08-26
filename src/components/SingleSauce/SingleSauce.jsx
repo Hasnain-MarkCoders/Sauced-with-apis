@@ -16,19 +16,19 @@ const SingleSauce = ({
     setAlertModal=()=>{},
     endpoint="",
     item={},
-    refetch=false
+    refetch=false,
+    fetchSuaces=()=>{},
+    setSaucesData=()=>{}
 }) => {
-    const axiosInstance = useAxios()
+const axiosInstance = useAxios()
 const navigation = useNavigation()
 const [selected, setSelected] = useState(item["hasLiked"])
 const handleOnPress = ()=>{
-    console.log("pressed========>")
     if(showPopup){
     setProductDetails({url, title})
     setAlertModal(true)
 }else{
-
-    navigation.navigate("ProductDetail", {url, title, item})
+    navigation.navigate("ProductDetail", {url, title, item, fetchSuaces, setSaucesData})
 }
 }
 
@@ -36,12 +36,14 @@ const handleOnPress = ()=>{
 const handleToggleLike=async()=>{
     try {
         const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
-        console.log(res.data)
     } catch (error) {
         console.error('Failed to like / dislike:', error);
     } finally {
     }
 }
+
+
+
 
     return (
         <TouchableOpacity

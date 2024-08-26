@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
+import TopRatedSauces from '../../components/TopRatedSauces/TopRatedSauces';
 
 const Home = () => {
     const navigation = useNavigation()
@@ -23,7 +24,6 @@ const Home = () => {
     const [data, setData] = useState({
         search: "",
     });
-
 
     useEffect(() => {
         setTimeout(() => {
@@ -38,7 +38,6 @@ const Home = () => {
             </ImageBackground>
         );
     }
-
     return (
 
         <ImageBackground source={home} style={styles.background}>
@@ -123,6 +122,11 @@ const Home = () => {
                         />
                     </View>
                     <View style={styles.contentContainer}>
+
+                    {/* <TopRatedSauces
+                     type="toprated"
+                            title='Top Rated Sauces'
+                    /> */}
 
                         <SauceList
                             type="featured"

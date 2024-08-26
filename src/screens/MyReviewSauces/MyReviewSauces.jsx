@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView } from 'react-native'
+import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import home from "./../../../assets/images/home.png"
 import { featuredSauces, handleText, topRatedSauces } from '../../../utils'
@@ -14,6 +14,8 @@ import Header from '../../components/Header/Header'
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal'
 import CustomProductReviewModal from '../../components/CustomProductReviewModal/CustomProductReviewModal'
 import useAxios from '../../../Axios/useAxios'
+import SingleReview from '../../components/SingleReview/SingleReview'
+import { useSelector } from 'react-redux'
 
 
 const MyReviewSauces = () => {
@@ -30,24 +32,28 @@ const MyReviewSauces = () => {
     const [alertModal, setAlertModal] =useState(false)
     const [productDetails, setProductDetails] = useState({})
     const navigation = useNavigation()
+    const auth  = useSelector(state=>state.auth)
     useEffect(() => {
         const fetchPhotos = async () => {
             if (!hasMore || loading) return;
     
             setLoading(true);
             try {
-                const res = await axiosInstance.get(`/get-sauces`, {
+                const res = await axiosInstance.get(`/get-user-reviews`, {
                     params: {
-                        type:"checkedin",
-                        page: page
+                        page: page,
+                        _id:auth?._id
                     }
                 });
     
-                if (res?.data?.sauces?.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prev=>[...prev, ...res?.data?.sauces]);
-                }
+                // if (res?.data?.reviews?.length === 0) {
+                    // setHasMore(false);
+
+                    setHasMore(res?.data?.pagination?.hasNextPage);
+
+                // } else {
+                    setData(prev=>[...prev, ...res?.data?.reviews]);
+                // }
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
             } finally {
@@ -74,7 +80,61 @@ const MyReviewSauces = () => {
 
                 <Header showText={false} showMenu={false} showProfilePic={false} cb={()=>{navigation.goBack();  Vibration.vibrate(10)}} headerContainerStyle={{paddingTop:scale(0), paddingHorizontal:0}} title="Reviewed Sauces" showDescription={false} description="" /> 
                 </View>
-                <ProductSearchList 
+                <View style={{ paddingHorizontal: scale(20), flex: 1, justifyContent: "space-between",paddingBottom:scale(6), gap: scale(10) }}>
+                <Text style={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(35),
+                                    lineHeight: scale(50),
+                                }}>
+                                    Reviews
+                                </Text>
+
+
+                                    <FlatList
+                                                contentContainerStyle={{
+                                                    gap:scale(10)
+                                                }}
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                    data={data}
+                                    onEndReachedThreshold={1}
+                                    onEndReached={() => {
+                                        if (!loading && hasMore) {
+                                            setPage(currentPage => currentPage + 1);
+                                        }
+                                    }}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => 
+
+                                        // <></>
+                                    // <UserCard
+                                    // //     cb={handleOpenModal}
+                                    // //     // item={endpoint.includes("followers") ? item?.followGiverDetails : item?.followRecieverDetails}
+                                    // //     // title={item?.followGiverDetails ?"Follow":"Unfollow"}
+                                    // //     // url={endpoint.includes("followers") ? item?.followGiverDetails?.image : item?.followRecieverDetails?.image}
+                                    // //     // name={endpoint.includes("followers") ? item?.followGiverDetails?.name : item?.followRecieverDetails?.name}
+                                    // //     //  url={item?.urls?.small}
+                                    // //     //  name={item?.user?.username} 
+                                    // //     showText={false}
+                                    // title={item?.isFollowing?"Unfollow":"Follow"}
+                                    // _id={item?._id}
+                                    // item={item}
+                                    // url={item.image}
+                                    // name={item?.name}
+                                    // showText={false}
+                                    //      />
+                                    <SingleReview item={item} />
+                                        
+                                        }
+
+                                />
+                </View>
+
+
+                    
+
+                {/* <ProductSearchList 
                 type="checkedin"
                 style={{
                     paddingVertical:scale(10),
@@ -88,7 +148,7 @@ const MyReviewSauces = () => {
                             data={productDetails}
                             modalVisible={alertModal}
                             setModalVisible={()=>setAlertModal(false)}
-                            />
+                            /> */}
         </ImageBackground>
 
 

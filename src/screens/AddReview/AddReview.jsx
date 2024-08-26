@@ -15,6 +15,8 @@ import useAxios from '../../../Axios/useAxios.js';
 const AddReview = () => {
     const route = useRoute()
     const sauceId = route?.params?.sauceId
+    const setPage = route?.params?.setPage
+
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const axiosInstance = useAxios()
     const [loading , setLoading] = useState(false)
@@ -46,7 +48,7 @@ const AddReview = () => {
         };
     }, []);
 
- 
+
 
     const handleSubmit = async() => {
         try{
@@ -65,14 +67,13 @@ const AddReview = () => {
                 })
             }
             const response = await axiosInstance.post("/create-review", {sauceId, star:data?.rating, text:data?.review});
-            console.log("response====================>", response.data)
-
             if(response && response?.data &&  response?.data?.message){
                 setAlertModal({
                     open: true,
                     message: response?.data.message
                 })
                 setData({})
+                setPage(1)
             }
 
         }catch(error){

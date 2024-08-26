@@ -21,6 +21,8 @@ const ProductCard = ({
     title = "",
     setshowListModal = () => { },
     product={},
+    fetchSuaces=()=>{},
+    setSaucesData=()=>{}
 }) => {
     const axiosInstance = useAxios()
     const refetch = useSelector(state=>state.refetch)
@@ -38,7 +40,29 @@ const handleToggleLike=async()=>{
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
-            dispatch(handleRefetch(!refetch))
+
+
+            // setSaucesData(prev => {
+            //     return prev.map(item => {
+            //       if (item._id == product._id) {
+            //         console.log(item._id == product._id)
+            //         return { ...item, hasLiked: !product.hasLiked };  // Toggle the hasLiked property
+            //       }
+            //       return item;  // Return all other items unchanged
+            //     });
+            //   });
+            // setSaucesData(products=>{
+            //     products.map(item=>{
+            //         if(item._id==product?._id){
+            //             item["hasLiked"] = !product["hasLiked"]
+            //         }
+            //     })
+            // })
+            // setSaucesData(prev=>{
+            //     console.log("products=========>", prev)
+            // })
+            // dispatch(handleRefetch(!refetch))
+            // console.log("await fetchSuaces()===============================>await fetchSuaces()", await fetchSuaces())
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {

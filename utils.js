@@ -390,11 +390,9 @@ export function formatDate(date) {
 }
 
 
-export function formatEventDate(unixTimestamp) {
+export function formatEventDate(unixTimestamp, dayAndMonth) {
   // Ensure Unix timestamp is in milliseconds for JavaScript Date object
   const date = new Date(unixTimestamp * 1000);
-  console.log("Converted Date Object=======>", date);
-
   // Array of days and months for formatting
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["January", "February", "March", "April", "May", "June",
@@ -414,7 +412,9 @@ export function formatEventDate(unixTimestamp) {
 
   // Get the year
   const year = date.getUTCFullYear();
-
+if(dayAndMonth){
+  return `${day} ${monthName}`
+}
   // Format the string as requested
   return `${dayOfWeek}, ${monthName} ${day}, ${year} at ${hour}:${minute} ${amPm}`;
 }

@@ -2,14 +2,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
-import { generateRandomText } from '../../../utils'
+import { formatDate, formatEventDate, generateRandomText } from '../../../utils'
 
 const SingleReview = ({
+  item=null,
     // text=generateRandomText()
 }) => {
-    const text = useMemo(()=>generateRandomText(),[]) 
+console.log("item============>",item?.createdAt)
 
-    const[ readMore,setReadMore]=useState(text?.length>130)
+    const[ readMore,setReadMore]=useState(item?.text?.length>130)
+    
   return (
     <View style={{
         backgroundColor:"#2e210a",
@@ -27,9 +29,12 @@ const SingleReview = ({
         fontSize: scale(14),
         lineHeight: scale(17)
     }}>
-          Mike Smith
+          {item?.owner?.name}
         </Text>
-        <CustomRating ratingContainerStyle={{
+        <CustomRating 
+        initialRating={item?.star}
+        
+        ratingContainerStyle={{
           pointerEvents:"none"
         }}  size={10}/>
 
@@ -39,21 +44,30 @@ const SingleReview = ({
           <Text style={{
             color:"white"
           }}>
-            {!readMore ? text : `${text.slice(0, 130)}... `}
+            {!readMore ? item?.text : `${item?.text?.slice(0, 130)}... `}
           </Text>
-          <TouchableOpacity onPress={() => setReadMore(prev => !prev)}>
+
+          {
+            item?.text.length<130
+            ?null
+            :
+            <TouchableOpacity onPress={() => setReadMore(prev => !prev)}>
             <Text style={{ color: '#FFA100', textDecorationLine:"underline" }}>{!readMore ? 'See less' : 'See more'}</Text>
           </TouchableOpacity>
+          }
+          
         </View>
-        <Text style={{
+        {item?.createdAt && <Text style={{
             position:"absolute",
             top:scale(10),
             right:scale(10),
             fontSize:scale(11),
             color:"white"
         }}>
-          5 Mar
-        </Text>
+          {
+            formatEventDate(new Date(item?.createdAt)?.getTime(), true)
+          }
+        </Text>}
       </View>
   )
 }

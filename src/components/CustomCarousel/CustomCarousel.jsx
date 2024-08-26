@@ -49,6 +49,7 @@ const [selected, setSelected] = React.useState(0)
   return (
     <View style={{}}>
     <Carousel
+    
     autoPlayInterval={7000}
         loop
         width={effectiveWidth}

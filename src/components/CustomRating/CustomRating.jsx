@@ -6,7 +6,7 @@ const CustomRating = ({
     showRating = false,
     ratingContainerStyle = {},
     cb=()=>{},
-    initialRating=5,
+    initialRating=0,
     isDisabled=false,
     fractions=5
 }) => {

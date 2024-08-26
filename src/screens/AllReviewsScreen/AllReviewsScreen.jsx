@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, SafeAreaView, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
@@ -8,7 +8,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios.js';
 import { FlatList } from 'react-native-gesture-handler';
 
-const AllReviewsScreen = () => {
+const AllReviewsScreen = ({
+    showAddReviewButton=true
+}) => {
     const axiosInstance = useAxios()
     const route = useRoute()
     const _id = route?.params?._id
@@ -17,36 +19,33 @@ const AllReviewsScreen = () => {
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     
-    const navigation = useNavigation()
-useEffect(()=>{
-console.log(_id)
-},[_id])
+    const fetchReviews = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/get-sauce-reviews`, {
+                params:{
+                    sauceId:_id,
+                    page
+                }
+            });
+            setHasMore(res.data.pagination.hasNextPage)
+            setData(res?.data?.reviews)
+            console.log(res.data)
+        } catch (error) {
+            console.error('Failed to fetch reviews:', error);
+        } finally {
+            setLoading(false);
+        }
+    },[page, _id]);
 
+
+    const navigation = useNavigation()
     React.useEffect(() => {
-        const fetchReviews = async () => {
-            setLoading(true);
-            try {
-                const res = await axiosInstance.get(`/get-sauce-reviews`, {
-                    params:{
-                        sauceId:_id,
-                        page
-                    }
-                });
-                setHasMore(res.data.pagination.hasNextPage)
-                setData(res?.data?.reviews)
-                console.log(res?.data?.reviews)
-                console.log(res)
-            } catch (error) {
-                console.error('Failed to fetch reviews:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        // Initial fetch
         fetchReviews();
-        // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
-        const interval = setInterval(fetchReviews, 10000); // 10000 milliseconds = 10 seconds
-        // Cleanup function to clear interval when component unmounts
+        const interval = setInterval(()=>{
+            fetchReviews()
+            setPage(1)
+        }, 10000); // 10000 milliseconds = 10 seconds
         return () => clearInterval(interval);
     }, [page, _id]);
     return (
@@ -75,8 +74,8 @@ console.log(_id)
                                 }}>
                                     Reviews
                                 </Text>
-                                <TouchableOpacity
-                                    onPress={() => { navigation.navigate("AddReview") }}
+                              { showAddReviewButton && <TouchableOpacity
+                                    onPress={() => { navigation.navigate("AddReview", { sauceId:_id, setPage}) }}
 
                                     style={{
                                         backgroundColor: "#2e210a",
@@ -91,7 +90,7 @@ console.log(_id)
                                         color: "white"
                                     }}>
                                         Add Review +
-                                    </Text></TouchableOpacity>
+                                    </Text></TouchableOpacity>}
                             </View>
 
 
@@ -110,6 +109,7 @@ console.log(_id)
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => 
+
                     // <></>
                 // <UserCard
                 // //     cb={handleOpenModal}
@@ -127,7 +127,7 @@ console.log(_id)
                 // name={item?.name}
                 // showText={false}
                 //      />
-                <SingleReview  />
+                <SingleReview item={item} />
                     
                     }
 

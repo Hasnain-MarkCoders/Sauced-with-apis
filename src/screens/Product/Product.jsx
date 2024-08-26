@@ -25,6 +25,7 @@ const Product = () => {
   const { url = "", title = "" } = route?.params
   const product = route?.params?.item
   const fetchSuaces = route.params.fetchSuaces
+  const setSaucesData = route.params.setSaucesData
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -204,6 +205,7 @@ const handleAddMessage = ()=>{
                     marginBottom: scale(20)
                   }}>
                     <ProductCard
+                    setSaucesData={setSaucesData}
                     product={product}
                     fetchSuaces={fetchSuaces}
                       setshowListModal={setModalVisible}
