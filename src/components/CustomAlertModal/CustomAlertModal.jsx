@@ -71,7 +71,7 @@ const CustomAlertModal = ({
             shadowOpacity: 0.25,
             shadowRadius: 4,
             elevation: 5,
-            height:scale(200),
+            minHeight:scale(200),
             display:"flex",
             alignItems:"center",
             justifyContent:"center"

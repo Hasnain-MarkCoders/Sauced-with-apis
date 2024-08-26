@@ -4,7 +4,7 @@ import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
-import { handleText } from '../../../utils.js';
+import { handleText, isURL } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
@@ -42,20 +42,37 @@ const RequestASauceScreen = () => {
     }, []);
 
     const handleRequestSauce = async() => {
+        
+
+    
         try{
             setLoading(true)
 
             if (!query?.sauceName) {
-                return setAlertModal({
+                setAlertModal({
                     open: true,
                     message: "Sauce name is required!"
-                })
+                });
+                return;
             }
-            else if (!query?.brandName) {
-                return setAlertModal({
+    
+           else if (!query?.brandName) {
+                setAlertModal({
                     open: true,
                     message: "Brand name is required!"
-                })
+                });
+                return;
+            }
+    
+           else if (query.webLink) {
+            if(!isURL(query.webLink)){
+                return setAlertModal({
+                   open: true,
+                   message: "Website link must be a valid URL!"
+               });
+               
+            }
+              
             }
             const response = await axiosInstance.post("/list-sauce", {
                 sauceName:query.sauceName,

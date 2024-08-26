@@ -1,5 +1,5 @@
 import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions } from 'react-native'
-import React, {  useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import home from "./../../../assets/images/home.png"
 import {  handleText } from '../../../utils'
 import { scale } from 'react-native-size-matters'
@@ -15,6 +15,7 @@ const SearchScreen = () => {
         search: "",
     });
     const navigation = useNavigation()
+
     return (
 
    <ImageBackground
@@ -57,6 +58,7 @@ const SearchScreen = () => {
                     gap: 10
                 }}>
                     <CustomInput
+                    autoFocus={true}
                     imageStyles={{top:"50%", transform: [{ translateY: -0.5 * scale(25) }], width:scale(25), height:scale(25), aspectRatio:"1/1"}}
                       isURL={false}
                       showImage={true}
@@ -79,7 +81,7 @@ const SearchScreen = () => {
 
                         }} />
 
-                    <TouchableOpacity onPress={() => {navigation.navigate("QRScreen") }}>
+                    {/* <TouchableOpacity onPress={() => {navigation.navigate("QRScreen") }}>
                         <View>
 
                             <Image source={qr} style={{
@@ -88,11 +90,11 @@ const SearchScreen = () => {
                                  height: scale(50)
                             }} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <TouchableOpacity onPress={()=>{
                                     Vibration.vibrate(10)
-                                    navigation.navigate("SauceDetails")
+                                    navigation.navigate("RequestASauceScreen")
                                 }}>
 
                 <Text style={[{ color: "white",
@@ -108,7 +110,8 @@ const SearchScreen = () => {
             <View style={{
                 flex:1,
             }}>
-                <ProductSearchList/>
+                <ProductSearchList
+                searchTerm={query?.search}/>
 
             </View>
 </KeyboardAvoidingView>

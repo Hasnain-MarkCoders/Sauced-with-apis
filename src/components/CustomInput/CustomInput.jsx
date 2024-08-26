@@ -6,6 +6,7 @@ import closeEye from "./../../../assets/images/scaledCloseEye.png"
 const CustomInput = ({ readOnly=false,title = "",autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {} }) => {
   const [showPassord, setShowPassword] = useState(secureTextEntry)
   return (
+    
     <View style={{
       ...containterStyle,
 

@@ -22,7 +22,7 @@ const SingleSauce = ({
 const navigation = useNavigation()
 const [selected, setSelected] = useState(item["hasLiked"])
 const handleOnPress = ()=>{
-    
+    console.log("pressed========>")
     if(showPopup){
     setProductDetails({url, title})
     setAlertModal(true)

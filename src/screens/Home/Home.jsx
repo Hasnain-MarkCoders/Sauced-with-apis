@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration, ActivityIndicator } from 'react-native';
+import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import home from './../../../assets/images/home.png';
@@ -49,7 +49,15 @@ const Home = () => {
                 <SafeAreaView style={styles.safeArea}>
                     <View style={styles.searchContainer}>
                         <View style={styles.searchBarContainer}>
+                            <TouchableOpacity
+                            
+                            style={{width:"100%"}}
+                            onPress={()=>{
+                                navigation.navigate("Search")
+                            }}>
+
                             <CustomInput
+                            readOnly={true}
                                 imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
                                 isURL={false}
                                 showImage={true}
@@ -71,6 +79,7 @@ const Home = () => {
                                     paddingLeft: scale(45)
 
                                 }} />
+                            </TouchableOpacity>
 
                             {/* <TouchableOpacity onPress={() => { navigation.navigate("QRScreen") }}>
                                 <View>
