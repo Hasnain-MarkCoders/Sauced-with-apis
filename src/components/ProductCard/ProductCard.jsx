@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
 import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
+import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
+import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
 
 const ProductCard = ({
     url = "",
@@ -43,6 +45,12 @@ const handleToggleLike=async()=>{
             }
             if (sauceType=="featured"){
                 dispatch(handleToggleFeaturedSauce(product?._id))
+            }
+            if (sauceType=="favourite"){
+                dispatch(handleToggleFavoriteSauce(product?._id))
+            }
+            if (sauceType=="checkedin"){
+                dispatch(handleToggleCheckedInSauce(product?._id))
             }
         } catch (error) {
             console.error('Failed to like / dislike:', error);

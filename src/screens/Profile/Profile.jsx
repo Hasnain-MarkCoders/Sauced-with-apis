@@ -17,6 +17,8 @@ import moreIcon from "./../../../assets/images/more.png"
 import { useSelector } from 'react-redux';
 import useAxios from '../../../Axios/useAxios.js';
 import BookMarkSauceList from '../../components/BookMarkSauceList/BookMarkSauceList.jsx';
+import FavoriteSaucesList from '../../components/FavoriteSaucesList/FavoriteSaucesList.jsx';
+import CheckedInSaucesList from '../../components/CheckedInSaucesList/CheckedInSaucesList.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
   const axiosInstance = useAxios()
@@ -329,13 +331,17 @@ const ProfileScreen = () => {
                                         gap: scale(40)
                                     }}>
 
-                                        <SauceList
-                                            type="favourite"
-                                            title='My Favorites' data={topRatedSauces}
+                                        <FavoriteSaucesList
+                                            title='My Favorites'
                                         />
-                                        <SauceList
+
+
+                                        <CheckedInSaucesList
+                                            title='Checked-in Sauces'
+                                        />
+                                        {/* <SauceList
                                         type="checkedin"
-                                        title='Checked-in Sauces' data={topRatedSauces} />
+                                        title='Checked-in Sauces' data={topRatedSauces} /> */}
                                         <SauceList
                                             type="reviewed"
                                             cb={() => { navigation.navigate("MyReviewedSauces", { route: "review" }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />

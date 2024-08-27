@@ -10,7 +10,6 @@ const BookMarkSauceList = ({ title = "", _id="", name = "",endpoint="/bookmarks"
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
-    const refetch = useSelector(state=>state.refetch)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
@@ -39,7 +38,7 @@ const BookMarkSauceList = ({ title = "", _id="", name = "",endpoint="/bookmarks"
     
     useEffect(() => {
         fetchSuaces();
-    }, [page, type, _id, refetch]);
+    }, [page, type, _id]);
 
 
 

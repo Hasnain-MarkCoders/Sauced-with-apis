@@ -9,6 +9,8 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch } from 'react-redux';
 import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSauces';
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
+import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
 
 const SingleSauce = ({
     url = "",
@@ -49,6 +51,14 @@ const handleToggleLike=async()=>{
         if (sauceType=="featured"){
             dispatch(handleToggleFeaturedSauce(item?._id))
             setSelected(prev=>!prev)
+        }
+
+        if (sauceType=="favourite"){
+            dispatch(handleToggleFavoriteSauce(item?._id))
+        }
+        
+        if (sauceType=="checkedin"){
+            dispatch(handleToggleCheckedInSauce(item?._id))
         }
     } catch (error) {
         console.error('Failed to like / dislike:', error);

@@ -3,21 +3,23 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from './userReducer';
 import topRatedSaucesSlice from './topRatedSauces';
-import countSlice from './count';
 import featuredSaucesSlice from './featuredSauces';
-import reFetchReducer from './reFetchReducer';
+import favoriteSaucesSlice from './favoriteSauces';
+import checkedInSaucesSlice from './checkedInSauces';
 
 const rootReducer = combineReducers({
     auth:userReducer,
-    count:countSlice,
+    favoriteSauces:favoriteSaucesSlice,
     topRatedSauces:topRatedSaucesSlice,
     featuredSauces:featuredSaucesSlice,
-    refetch:reFetchReducer
+    favoriteSauces:favoriteSaucesSlice,
+    checkedInSauces:checkedInSaucesSlice,
+
 })
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth', 'topRatedSauces', 'featuredSauces']
+  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

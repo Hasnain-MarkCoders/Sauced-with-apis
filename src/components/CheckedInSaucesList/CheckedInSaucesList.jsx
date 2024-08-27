@@ -1,51 +1,48 @@
-import React, {  useEffect,  useState } from 'react';
+import React, { useCallback, useEffect,  useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
-const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/get-sauces",searchTerm = "", showMoreIcon = false, cb = () => { }, type="" }) => {
-    const [data, setData] = useState([])
+import { useDispatch, useSelector } from 'react-redux';
+import { handleCheckedInSauces } from '../../../android/app/Redux/checkedInSauces';
+const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
-
-    const fetchSuaces = async () => {
+    const dispatch = useDispatch()
+    const checkedInSauces = useSelector(state=>state.checkedInSauces)
+    
+    const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
-    
         try {
-            const res = await axiosInstance.get(endpoint, {
+            const res = await axiosInstance.get("/get-sauces", {
                 params: {
-                    type,
-                    _id,
+                    type:"checkedin",
                     page
                 }
             });
                  setHasMore(res.data.pagination.hasNextPage);
-                setData(prevData => [...prevData, ...res.data.sauces]);
+                 dispatch(handleCheckedInSauces(res?.data?.sauces))
         } catch (error) {
-            console.error('Failed to fetch photos:', error);
+            console.error('Failed to fetch sauces:', error);
         } finally {
             setLoading(false);
         }
-
-
-        return data
-    };
+    },[page,hasMore]);
     
     useEffect(() => {
-        fetchSuaces();
-    }, [page, type, _id]);
-
+        fetchSauces();
+    }, [fetchSauces]);
 
     return (
         <>
         {
 
-data?.length>0&&<View style={styles.container}>
+checkedInSauces?.length>0&&<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -74,7 +71,7 @@ data?.length>0&&<View style={styles.container}>
                         }
 
                     }}
-                    data={data}
+                    data={checkedInSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -85,28 +82,21 @@ data?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    sauceType="checkedin"
                     item={item}
-                    fetchSuaces={fetchSuaces}
-                    setSaucesData={setData}
-                        // url={item?.urls?.small} 
-                        // url={item.url}
                         url={item?.image}
-
-                        // title={item?.user?.username}
                         title={item?.name}
-
-
                     />}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
-                {(showMoreIcon && selected == data?.length - 1) && <TouchableOpacity
+                {(showMoreIcon && selected == checkedInSauces?.length - 1) && <TouchableOpacity
                     style={{
                         position: "absolute",
                         right: "0%",
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchSuaces}><Text>refresh</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={fetchSauces}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",
@@ -126,7 +116,7 @@ data?.length>0&&<View style={styles.container}>
     );
 };
 
-export default SauceList;
+export default CheckedInSaucesList;
 
 const styles = StyleSheet.create({
     container: {
