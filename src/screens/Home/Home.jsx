@@ -16,6 +16,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
 import TopRatedSaucesList from '../../components/TopRatedSaucesList/TopRatedSaucesList';
+import FeaturedSaucesList from '../../components/FeaturedSaucesList/FeaturedSaucesList';
 
 const Home = () => {
     const navigation = useNavigation()
@@ -122,23 +123,12 @@ const Home = () => {
                         />
                     </View>
                     <View style={styles.contentContainer}>
-
+                    <FeaturedSaucesList
+                            title='Featured Sauces'
+                    />
                     <TopRatedSaucesList
-                     type="toprated"
                             title='Top Rated Sauces'
                     />
-
-                        {/* <SauceList
-                            type="featured"
-                            title='Featured Sauces'
-                        />
-
-
-                        <SauceList
-                            type="toprated"
-                            title='Top Rated Sauces'
-                        /> */}
-
                         <CustomButtom
                             Icon={() => <Image source={arrow} />}
                             showIcon={true}
@@ -152,7 +142,7 @@ const Home = () => {
                             onPress={() => navigation.navigate("Map")}
                             title={"Hot Sauce Map"}
                         />
-                        {/* <BrandList title='Top Rated Brands' data={Brands} /> */}
+                        <BrandList title='Top Rated Brands' data={Brands} />
                         <View style={{
                             gap: scale(20)
                         }}>

@@ -1,13 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { scale } from 'react-native-size-matters';
 import filledHeart from "./../../../assets/images/filledHeart.png"
 import emptyheart from "./../../../assets/images/heart.png"
 import Snackbar from 'react-native-snackbar';
 import useAxios from '../../../Axios/useAxios';
-import { useDispatch, useSelector } from 'react-redux';
-import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
+import { useDispatch } from 'react-redux';
+import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSauces';
+import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
 
 const SingleSauce = ({
     url = "",
@@ -16,13 +17,8 @@ const SingleSauce = ({
     showPopup=false,
     setProductDetails=()=>{},
     setAlertModal=()=>{},
-    endpoint="",
     item={},
-    refetch=false,
-    fetchSuaces=()=>{},
-    setSaucesData=()=>{},
     sauceType="",
-    count
 }) => {
 
 const axiosInstance = useAxios()
@@ -46,6 +42,12 @@ const handleToggleLike=async()=>{
 
         if (sauceType=="toprated"){
             dispatch(handleToggleTopRatedSauce(item?._id))
+            setSelected(prev=>!prev)
+        }
+
+
+        if (sauceType=="featured"){
+            dispatch(handleToggleFeaturedSauce(item?._id))
             setSelected(prev=>!prev)
         }
     } catch (error) {
@@ -91,23 +93,7 @@ const handleToggleLike=async()=>{
             style={styles.text}>
               {title}
             </Text>
-
-            {/* <Text
-                ellipsizeMode='tail'
-                numberOfLines={1}
-                style={{
-                    top:scale(10),
-                    left:scale(10),
-                    position:"absolute",
-                    color:"white",
-                    fontSize:scale(20)
-                }}
-            >
-                {count?.count}
-              
-            </Text> */}
-
-        {item["hasLiked"]?  <Image
+        {item["hasLiked"]?<Image
         style={{
                 width:scale(17),
                 height:scale(15),
@@ -124,8 +110,6 @@ const handleToggleLike=async()=>{
                 right:scale(10),
             }} source={emptyheart}/>
             }
-          
-           
         </TouchableOpacity>
     );
 };

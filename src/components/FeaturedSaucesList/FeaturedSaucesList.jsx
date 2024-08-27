@@ -1,57 +1,48 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
-import axios from 'axios';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
-
-const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+import { handleFeaturedSauces } from '../../../android/app/Redux/featuredSauces';
+const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
-    const topRatedSauces = useSelector(state=>state.topRatedSauces)
+    const featuredSauces = useSelector(state=>state.featuredSauces)
     
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
-
         setLoading(true);
-    
         try {
             const res = await axiosInstance.get("/get-sauces", {
                 params: {
-                    type:"toprated",
+                    type:"featured",
                     page
                 }
             });
                  setHasMore(res.data.pagination.hasNextPage);
-                 dispatch(handleTopRatedSauces(res?.data?.sauces))
+                 dispatch(handleFeaturedSauces(res?.data?.sauces))
         } catch (error) {
-            console.error('Failed to fetch photos:', error);
+            console.error('Failed to fetch sauces:', error);
         } finally {
             setLoading(false);
         }
-    },[page,hasMore , topRatedSauces]);
+    },[page,hasMore , featuredSauces]);
     
     useEffect(() => {
         fetchSauces();
     }, [fetchSauces]);
-  
-
-
-
 
     return (
         <>
         {
 
-topRatedSauces?.length>0&&<View style={styles.container}>
+featuredSauces?.length>0&&<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -80,7 +71,7 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                         }
 
                     }}
-                    data={topRatedSauces}
+                    data={featuredSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -91,14 +82,14 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
-                    sauceType="toprated"
+                    sauceType="featured"
                     item={item}
                         url={item?.image}
                         title={item?.name}
                     />}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
-                {(showMoreIcon && selected == topRatedSauces?.length - 1) && <TouchableOpacity
+                {(showMoreIcon && selected == featuredSauces?.length - 1) && <TouchableOpacity
                     style={{
                         position: "absolute",
                         right: "0%",
@@ -125,7 +116,7 @@ topRatedSauces?.length>0&&<View style={styles.container}>
     );
 };
 
-export default TopRatedSaucesList;
+export default FeaturedSaucesList;
 
 const styles = StyleSheet.create({
     container: {

@@ -4,20 +4,15 @@ import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
 import filledHeart from "./../../../assets/images/filledHeart.png"
-
 import Lightbox from 'react-native-lightbox';
 import wishlist_icon from "./../../../assets/images/wishlist_icon.png"
-import star from "./../../../assets/images/star.png"
 import wishlist_filled from "./../../../assets/images/wishlist_filled.png"
-
-
 import CustomRating from '../CustomRating/CustomRating'
 import Snackbar from 'react-native-snackbar'
 import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
-import { handleRefetch } from '../../../android/app/Redux/reFetchReducer'
 import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
-import { setCount } from '../../../android/app/Redux/count'
+import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
 
 const ProductCard = ({
     url = "",
@@ -46,6 +41,9 @@ const handleToggleLike=async()=>{
             if (sauceType=="toprated"){
                 dispatch(handleToggleTopRatedSauce(product?._id))
             }
+            if (sauceType=="featured"){
+                dispatch(handleToggleFeaturedSauce(product?._id))
+            }
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {
@@ -59,7 +57,6 @@ const handleToggleLike=async()=>{
             paddingVertical: scale(20),
             gap: scale(20),
         }}>
-            {/* <Text style={{color:"white", fontSize:scale(20)}}>{count.count}</Text> */}
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
@@ -85,8 +82,6 @@ const handleToggleLike=async()=>{
                                 borderWidth: LightBox ? 0 : scale(1)
                             }}
                             source={{ uri: url }}
-                            // source={url}
-
                         />
                     </Lightbox>
                 </View>
@@ -308,7 +303,6 @@ const handleToggleLike=async()=>{
             <View style={{flexDirection:"row",flexGrow:1, gap:scale(10)}}>
                 <TouchableOpacity
                     onPress={() => {
-                        // Linking.openURL(url)
                         navigation.navigate("AddReview", {sauceId:product?._id})
 
                     }}
@@ -331,7 +325,6 @@ const handleToggleLike=async()=>{
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        // Linking.openURL(url)
                         navigation.navigate("Checkin", {product})
 
                     }}
