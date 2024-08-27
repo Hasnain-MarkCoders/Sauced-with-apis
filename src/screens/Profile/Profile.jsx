@@ -19,6 +19,9 @@ import useAxios from '../../../Axios/useAxios.js';
 import BookMarkSauceList from '../../components/BookMarkSauceList/BookMarkSauceList.jsx';
 import FavoriteSaucesList from '../../components/FavoriteSaucesList/FavoriteSaucesList.jsx';
 import CheckedInSaucesList from '../../components/CheckedInSaucesList/CheckedInSaucesList.jsx';
+import SaucesListOne from '../../components/SaucesListOne/SaucesListOne.jsx';
+import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
+import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
   const axiosInstance = useAxios()
@@ -355,10 +358,19 @@ const ProfileScreen = () => {
                                         marginTop: scale(50),
                                         gap:scale(50)
                                     }}>
+                                        <SaucesListOne
+                                        title='My List 1'
+                                        />
+                                         <SaucesListTwo
+                                        title='My List 2'
+                                        />
+                                         <SaucesListThree
+                                        title='My List 3'
+                                        />
 
-                                        <BookMarkSauceList type={1} title='My List 1' />
+                                        {/* <BookMarkSauceList type={1} title='My List 1' />
                                         <BookMarkSauceList type={2} title='My List 2' />
-                                        <BookMarkSauceList type={3} title='My List 3' />
+                                        <BookMarkSauceList type={3} title='My List 3' /> */}
 
                                     </View>
 

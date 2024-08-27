@@ -15,6 +15,9 @@ import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../androi
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
 import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
 import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
+import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
+import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
+import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree'
 
 const ProductCard = ({
     url = "",
@@ -40,6 +43,7 @@ const handleToggleLike=async()=>{
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
+            console.log(res.data)
             if (sauceType=="toprated"){
                 dispatch(handleToggleTopRatedSauce(product?._id))
             }
@@ -51,6 +55,15 @@ const handleToggleLike=async()=>{
             }
             if (sauceType=="checkedin"){
                 dispatch(handleToggleCheckedInSauce(product?._id))
+            }
+            if (sauceType==1){
+                dispatch(handleToggleSauceListOne(product?._id))
+            }
+            if (sauceType==2){
+                dispatch(handleToggleSauceListTwo(product?._id))
+            }
+            if (sauceType==3){
+                dispatch(handleToggleSauceListThree(product?._id))
             }
         } catch (error) {
             console.error('Failed to like / dislike:', error);

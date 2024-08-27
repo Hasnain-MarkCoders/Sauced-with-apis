@@ -6,10 +6,18 @@ import topRatedSaucesSlice from './topRatedSauces';
 import featuredSaucesSlice from './featuredSauces';
 import favoriteSaucesSlice from './favoriteSauces';
 import checkedInSaucesSlice from './checkedInSauces';
+import saucesListOneSlice from './saucesListOne';
+import saucesListTwoSlice from './saucesListTwo';
+import saucesListThreeSlice from './saucesListThree';
+
+
 
 const rootReducer = combineReducers({
     auth:userReducer,
     favoriteSauces:favoriteSaucesSlice,
+    saucesListOne:saucesListOneSlice,
+    saucesListTwo:saucesListTwoSlice,
+    saucesListThree:saucesListThreeSlice,
     topRatedSauces:topRatedSaucesSlice,
     featuredSauces:featuredSaucesSlice,
     favoriteSauces:favoriteSaucesSlice,
@@ -19,7 +27,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces']
+  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces','saucesListOne', 'saucesListTwo', 'saucesListThree']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

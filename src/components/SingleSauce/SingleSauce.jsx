@@ -11,6 +11,9 @@ import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSa
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
 import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
 import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
+import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne';
+import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
+import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree';
 
 const SingleSauce = ({
     url = "",
@@ -59,6 +62,16 @@ const handleToggleLike=async()=>{
         
         if (sauceType=="checkedin"){
             dispatch(handleToggleCheckedInSauce(item?._id))
+        }
+        if (sauceType==1){
+            dispatch(handleToggleSauceListOne(item?._id))
+        }
+
+        if (sauceType==2){
+            dispatch(handleToggleSauceListTwo(item?._id))
+        }
+        if (sauceType==3){
+            dispatch(handleToggleSauceListThree(item?._id))
         }
     } catch (error) {
         console.error('Failed to like / dislike:', error);
