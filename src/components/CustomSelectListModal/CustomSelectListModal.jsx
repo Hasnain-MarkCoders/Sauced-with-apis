@@ -27,7 +27,7 @@ const CustomSelectListModal = ({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
+    backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
     width: '100%', // Ensure it covers the full screen width
     height: '100%', // Ensure it covers the full screen height
   }}>
@@ -58,7 +58,7 @@ const CustomSelectListModal = ({
         }}>
           <View style={{
             margin: 20,
-            borderWidth: scale(1),
+            borderWidth: scale(.5),
             borderColor: "#FFA100",
             borderRadius: scale(12),
             position: "relative",
@@ -66,6 +66,7 @@ const CustomSelectListModal = ({
             borderRadius: 20,
             padding: 35,
             shadowColor: '#000',
+            minHeight:scale(200),
             width: "90%",
             shadowOffset: {
               width: 0,
@@ -75,7 +76,7 @@ const CustomSelectListModal = ({
             shadowRadius: 4,
             elevation: 5,
           }}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
 
               style={{
                 position: "absolute",
@@ -89,11 +90,11 @@ const CustomSelectListModal = ({
                 width: scale(20),
                 height: scale(20)
               }} source={closeIcon} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
               <CustomButtom
               loading={loading1}
                 buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, marginTop:scale(20),backgroundColor: "#2E210A" }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A", borderWidth:scale(.5) }}
                 onPress={() => isEnabled ? cb(1) : null}
                 title={title1}
               />
@@ -101,14 +102,14 @@ const CustomSelectListModal = ({
               <CustomButtom
               loading={loading2}
                 buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, marginTop:scale(20),backgroundColor: "#2E210A" }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A", borderWidth:scale(.5) }}
                 onPress={() => isEnabled ? cb(2) : null}
                 title={title2}
               />
                <CustomButtom
               loading={loading3}
                 buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, marginTop:scale(20),backgroundColor: "#2E210A" }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A" , borderWidth:scale(.5)}}
                 onPress={() => isEnabled ? cb(3) : null}
                 title={title3}
               />

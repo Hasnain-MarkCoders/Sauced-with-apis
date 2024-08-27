@@ -43,7 +43,7 @@ const CustomChangePasswordModal = ({
           <TouchableOpacity style={{
                 flex: 1,
                 
-          backgroundColor: 'rgba(0,0,0,0.5)', 
+                backgroundColor: 'rgba(33, 22, 10, .85)',
 
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -59,7 +59,7 @@ const CustomChangePasswordModal = ({
         }}>
           <View style={{
             margin: 20,
-            borderWidth: scale(1),
+            borderWidth: scale(.5),
             borderColor: "#FFA100",
             borderRadius: scale(12),
             position: "relative",

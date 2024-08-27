@@ -29,7 +29,7 @@ const UserDetailsModal = ({
             justifyContent: 'center',
             alignItems: 'center',
             position: 'absolute',
-            backgroundColor: 'rgba(0,0,0,0.5)', // Black overlay with transparency
+            backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
             width: '100%', // Ensure it covers the full screen width
             height: '100%', // Ensure it covers the full screen height
           }}>
@@ -53,7 +53,7 @@ const UserDetailsModal = ({
                 activeOpacity={1}
                 style={{
                   margin: 20,
-                  borderWidth: scale(1),
+                  borderWidth: scale(.5),
                   borderColor: '#FFA100',
                   borderRadius: scale(12),
                   backgroundColor: '#2E210A',
