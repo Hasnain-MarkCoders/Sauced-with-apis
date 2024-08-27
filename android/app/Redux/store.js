@@ -3,17 +3,19 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from './userReducer';
 import topRatedSaucesSlice from './topRatedSauces';
+import countSlice from './count';
 import reFetchReducer from './reFetchReducer';
 
 const rootReducer = combineReducers({
     auth:userReducer,
+    count:countSlice,
     topRatedSauces:topRatedSaucesSlice,
     refetch:reFetchReducer
 })
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth']
+  whitelist: ['auth', 'topRatedSauces', 'count']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

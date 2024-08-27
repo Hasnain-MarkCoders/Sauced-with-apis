@@ -9,7 +9,7 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
-const TopRatedSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     // const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
@@ -18,9 +18,11 @@ const TopRatedSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const topRatedSauces = useSelector(state=>state.topRatedSauces)
+    const count= useSelector(state=>state.count)
     
-    const fetchSuaces = async () => {
+    const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
+
         setLoading(true);
     
         try {
@@ -31,22 +33,22 @@ const TopRatedSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
                 }
             });
                  setHasMore(res.data.pagination.hasNextPage);
-                 dispatch(handleTopRatedSauces(res.data.sauces))
-                // setData(prevData => [...prevData, ...res.data.sauces]);
+                 dispatch(handleTopRatedSauces(res?.data?.sauces))
         } catch (error) {
             console.error('Failed to fetch photos:', error);
         } finally {
             setLoading(false);
         }
-    };
+    },[page,hasMore , topRatedSauces]);
     
     useEffect(() => {
-        fetchSuaces();
-    }, [page]);
+        fetchSauces();
+    }, [fetchSauces]);
+  
 
-useEffect(()=>{
-console.log("topRatedSauces============>", topRatedSauces.length)
-},[topRatedSauces])
+
+
+
     return (
         <>
         {
@@ -91,16 +93,11 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    count={count}
+                    sauceType="toprated"
                     item={item}
-
-                        // url={item?.urls?.small} 
-                        // url={item.url}
                         url={item?.image}
-
-                        // title={item?.user?.username}
                         title={item?.name}
-
-
                     />}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
@@ -111,7 +108,7 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchSuaces}><Text>refresh</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={fetchSauces}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",
@@ -131,7 +128,7 @@ topRatedSauces?.length>0&&<View style={styles.container}>
     );
 };
 
-export default TopRatedSauces;
+export default TopRatedSaucesList;
 
 const styles = StyleSheet.create({
     container: {

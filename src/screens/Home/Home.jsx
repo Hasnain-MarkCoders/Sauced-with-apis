@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
-import TopRatedSauces from '../../components/TopRatedSauces/TopRatedSauces';
+import TopRatedSaucesList from '../../components/TopRatedSaucesList/TopRatedSaucesList';
 
 const Home = () => {
     const navigation = useNavigation()
@@ -123,12 +123,12 @@ const Home = () => {
                     </View>
                     <View style={styles.contentContainer}>
 
-                    {/* <TopRatedSauces
+                    <TopRatedSaucesList
                      type="toprated"
                             title='Top Rated Sauces'
-                    /> */}
+                    />
 
-                        <SauceList
+                        {/* <SauceList
                             type="featured"
                             title='Featured Sauces'
                         />
@@ -137,7 +137,7 @@ const Home = () => {
                         <SauceList
                             type="toprated"
                             title='Top Rated Sauces'
-                        />
+                        /> */}
 
                         <CustomButtom
                             Icon={() => <Image source={arrow} />}
@@ -152,7 +152,7 @@ const Home = () => {
                             onPress={() => navigation.navigate("Map")}
                             title={"Hot Sauce Map"}
                         />
-                        <BrandList title='Top Rated Brands' data={Brands} />
+                        {/* <BrandList title='Top Rated Brands' data={Brands} /> */}
                         <View style={{
                             gap: scale(20)
                         }}>

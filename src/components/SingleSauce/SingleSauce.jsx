@@ -6,6 +6,8 @@ import filledHeart from "./../../../assets/images/filledHeart.png"
 import emptyheart from "./../../../assets/images/heart.png"
 import Snackbar from 'react-native-snackbar';
 import useAxios from '../../../Axios/useAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
 const SingleSauce = ({
     url = "",
@@ -18,17 +20,21 @@ const SingleSauce = ({
     item={},
     refetch=false,
     fetchSuaces=()=>{},
-    setSaucesData=()=>{}
+    setSaucesData=()=>{},
+    sauceType="",
+    count
 }) => {
+
 const axiosInstance = useAxios()
 const navigation = useNavigation()
+const dispatch = useDispatch()
 const [selected, setSelected] = useState(item["hasLiked"])
 const handleOnPress = ()=>{
     if(showPopup){
     setProductDetails({url, title})
     setAlertModal(true)
 }else{
-    navigation.navigate("ProductDetail", {url, title, item, fetchSuaces, setSaucesData})
+    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected})
 }
 }
 
@@ -36,13 +42,17 @@ const handleOnPress = ()=>{
 const handleToggleLike=async()=>{
     try {
         const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
+
+
+        if (sauceType=="toprated"){
+            dispatch(handleToggleTopRatedSauce(item?._id))
+            setSelected(prev=>!prev)
+        }
     } catch (error) {
         console.error('Failed to like / dislike:', error);
     } finally {
     }
 }
-
-
 
 
     return (
@@ -82,7 +92,22 @@ const handleToggleLike=async()=>{
               {title}
             </Text>
 
-        {selected?  <Image
+            {/* <Text
+                ellipsizeMode='tail'
+                numberOfLines={1}
+                style={{
+                    top:scale(10),
+                    left:scale(10),
+                    position:"absolute",
+                    color:"white",
+                    fontSize:scale(20)
+                }}
+            >
+                {count?.count}
+              
+            </Text> */}
+
+        {item["hasLiked"]?  <Image
         style={{
                 width:scale(17),
                 height:scale(15),

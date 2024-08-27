@@ -16,16 +16,19 @@ import Snackbar from 'react-native-snackbar'
 import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
 import { handleRefetch } from '../../../android/app/Redux/reFetchReducer'
+import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
+import { setCount } from '../../../android/app/Redux/count'
+
 const ProductCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
     product={},
-    fetchSuaces=()=>{},
-    setSaucesData=()=>{}
+    sauceType="",
 }) => {
+    const topRatedSauces = useSelector(state=>state?.topRatedSauces)
+    // const count = useSelector(state=>state?.count)
     const axiosInstance = useAxios()
-    const refetch = useSelector(state=>state.refetch)
     const dispatch =useDispatch()
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
@@ -40,29 +43,9 @@ const handleToggleLike=async()=>{
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
-
-
-            // setSaucesData(prev => {
-            //     return prev.map(item => {
-            //       if (item._id == product._id) {
-            //         console.log(item._id == product._id)
-            //         return { ...item, hasLiked: !product.hasLiked };  // Toggle the hasLiked property
-            //       }
-            //       return item;  // Return all other items unchanged
-            //     });
-            //   });
-            // setSaucesData(products=>{
-            //     products.map(item=>{
-            //         if(item._id==product?._id){
-            //             item["hasLiked"] = !product["hasLiked"]
-            //         }
-            //     })
-            // })
-            // setSaucesData(prev=>{
-            //     console.log("products=========>", prev)
-            // })
-            // dispatch(handleRefetch(!refetch))
-            // console.log("await fetchSuaces()===============================>await fetchSuaces()", await fetchSuaces())
+            if (sauceType=="toprated"){
+                dispatch(handleToggleTopRatedSauce(product?._id))
+            }
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {
@@ -76,6 +59,7 @@ const handleToggleLike=async()=>{
             paddingVertical: scale(20),
             gap: scale(20),
         }}>
+            {/* <Text style={{color:"white", fontSize:scale(20)}}>{count.count}</Text> */}
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
@@ -207,6 +191,7 @@ const handleToggleLike=async()=>{
                                                             isChecked: !prev.isChecked
 
                                                         }))
+                                                        handleToggleLike()
                                                     },
                                                 },
                                             });
