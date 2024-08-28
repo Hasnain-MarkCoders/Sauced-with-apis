@@ -9,6 +9,8 @@ import checkedInSaucesSlice from './checkedInSauces';
 import saucesListOneSlice from './saucesListOne';
 import saucesListTwoSlice from './saucesListTwo';
 import saucesListThreeSlice from './saucesListThree';
+import interestedEventsSlice from './InterestedEvents';
+
 
 
 
@@ -22,7 +24,7 @@ const rootReducer = combineReducers({
     featuredSauces:featuredSaucesSlice,
     favoriteSauces:favoriteSaucesSlice,
     checkedInSauces:checkedInSaucesSlice,
-
+    interestedEvents:interestedEventsSlice
 })
 const persistConfig = {
   key: 'root',

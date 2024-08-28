@@ -23,9 +23,12 @@ const saucesListTwoSlice = createSlice({
         sauce.hasLiked  =!sauce.hasLiked
       }
       
-    }
+    },
+    handleRemoveSauceFromListTwo: (state, action) => {
+      return state.filter(x => x._id !== action.payload);
+    },
   },
 });
 
-export const { handleSaucesListTwo, handleToggleSauceListTwo } = saucesListTwoSlice.actions;
+export const { handleSaucesListTwo, handleToggleSauceListTwo, handleRemoveSauceFromListTwo } = saucesListTwoSlice.actions;
 export default saucesListTwoSlice.reducer;

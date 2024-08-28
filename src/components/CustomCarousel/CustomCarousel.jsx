@@ -6,6 +6,9 @@ import Banner from '../Banner/Banner';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
+import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
+import { useDispatch, useSelector } from 'react-redux';
+import { current } from '@reduxjs/toolkit';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -19,6 +22,8 @@ const [selected, setSelected] = React.useState(0)
  const [page, setPage] = React.useState(1)
  const [hasMore, setHasMore] = React.useState(true)
  const [loading, setLoading] = React.useState(false);
+ const dispatch=useDispatch()
+ const interestedEvents = useSelector(state=>state?.interestedEvents)
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;
@@ -46,6 +51,22 @@ const [selected, setSelected] = React.useState(0)
             setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
         }
     };
+
+  
+
+
+    const handleInterestedEvent = async(event)=>{
+        const x = interestedEvents?.find(item=>item?._id==event?._id)
+        if(x){
+            return dispatch(handleRemoveInterestedEvents(event?._id))
+        }
+        dispatch(handleInterestedEvents([event]))
+        const res = await axiosInstance.post(`/interest-event`, {
+            eventId:event?._id
+        });
+
+    }
+
   return (
     <View style={{}}>
     <Carousel
@@ -61,13 +82,10 @@ const [selected, setSelected] = React.useState(0)
         onSnapToItem={(index) =>{ handleSnapToItem(index)}}
         renderItem={({ item, index }) => (<>
           <Banner
-
+                        cb={handleInterestedEvent}
                         showOverlay={true}
                         showText={showText}
                         event={item}
-                        //   title={item?.user?.username}
-                        //    url={item?.urls?.small}
-                        // title={item?.user?.username}
                         url={item?.bannerImage}
                         infoText={""} />
                 

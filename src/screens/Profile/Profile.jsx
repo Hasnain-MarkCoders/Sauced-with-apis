@@ -22,6 +22,7 @@ import CheckedInSaucesList from '../../components/CheckedInSaucesList/CheckedInS
 import SaucesListOne from '../../components/SaucesListOne/SaucesListOne.jsx';
 import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
 import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
+import InterestedEvents from '../../components/InterestedEvents/InterestedEvents.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
   const axiosInstance = useAxios()
@@ -161,34 +162,6 @@ const ProfileScreen = () => {
 
 
 
-    // useEffect(() => {
-    //     const fetchBookMarkSauces = async () => {
-    //         if (!hasMore || loading) return;
-    
-    //         setLoading(true);
-    //         try {
-    //             const res = await axiosInstance.get(`/bookmarks`, {
-    //                 params: {
-    //                     // type:"checkedin",
-    //                     page: page
-    //                 }
-    //             });
-    //                 setHasMore(res.data.pagination.hasNextPage);
-    //                 // setCheckedInSauces(prev=>[...prev,...res.data.sauces]);
-    //                 console.log(res.data.sauces)
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-       
-    //     fetchBookMarkSauces();
-    // }, [page]);
-
-
-
-
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(90) }}>
@@ -200,7 +173,7 @@ const ProfileScreen = () => {
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
-                    data={[1, 1, 1, 1]}
+                    data={[1, 1, 1, 1,5]}
                     renderItem={({ item, index }) => {
                         return (
                             <View style={{
@@ -330,7 +303,6 @@ const ProfileScreen = () => {
                                 }
                                 {
                                     index == 2 && <View style={{
-                                        // marginTop: scale(50),
                                         gap: scale(40)
                                     }}>
 
@@ -374,6 +346,9 @@ const ProfileScreen = () => {
 
                                     </View>
 
+                                }
+                                {
+                                    index==4 &&<InterestedEvents/>
                                 }
                             </View>
                         )

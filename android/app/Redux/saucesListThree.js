@@ -23,9 +23,12 @@ const saucesListThreeSlice = createSlice({
         sauce.hasLiked  =!sauce.hasLiked
       }
       
-    }
+    },
+    handleRemoveSauceFromListThree: (state, action) => {
+      return state.filter(x => x._id !== action.payload);
+    },
   },
 });
 
-export const { handleSaucesListThree, handleToggleSauceListThree } = saucesListThreeSlice.actions;
+export const { handleSaucesListThree, handleToggleSauceListThree, handleRemoveSauceFromListThree } = saucesListThreeSlice.actions;
 export default saucesListThreeSlice.reducer;

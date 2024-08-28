@@ -18,44 +18,6 @@ const ProductSearchList = ({
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
 
-    // const fetchSuaces = async () => {
-    //  const tempEndPoint = searchTerm?"/search-sauces":"/get-sauces"
-    //     if (!hasMore || loading) return;
-    //      setLoading(true);
-
-    //      try {
-    //          const res = await axiosInstance.get(tempEndPoint, {
-    //              params: {
-    //                  type,
-    //                  page,
-    //                  searchTerm
-    //              }
-    //          });
-
-    //              setHasMore(res.data.pagination.hasNextPage);
-    //              setData(prev=>[...prev, ...res.data.sauces]);
-
-    //      } catch (error) {
-    //          console.error('Failed to fetch photos:', error);
-    //      } finally {
-    //          setLoading(false);
-    //  }
-    // };
-
-    // useEffect(() => {
-    //     fetchSuaces();
-    //     if(searchTerm){
-    //         setData([])
-    //         setHasMore(true)
-    //         setPage(1)
-    //     }
-    // }, [page, type, searchTerm]);
-
-
-
-
-
-
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
 

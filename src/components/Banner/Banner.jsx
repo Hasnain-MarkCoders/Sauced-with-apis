@@ -1,5 +1,5 @@
 import { Linking, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import banner from "./../../../assets/images/banner.png";
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +13,10 @@ const Banner = ({
     cb = () => { },
     videoId = "",
     event = {},
-    showOverlay=false
+    showOverlay=false,
+    isInterested=false
 }) => {
+    const [tempIsInterested, setTempIsInterested] = useState(false)
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={{
@@ -25,7 +27,6 @@ const Banner = ({
                 style={{
                     minHeight: scale(130),
                     position: "relative",
-                  
                 }}
                 source={{ uri: url }}
             >
@@ -93,8 +94,7 @@ const Banner = ({
                                 </TouchableOpacity>
                                 <TouchableOpacity
 
-                                    onPress={() => {
-                                    }}
+                                    onPress={()=>{cb(event); setTempIsInterested(prev=>!prev)}}
                                     style={{
                                         paddingHorizontal: scale(10),
                                         paddingVertical: scale(6),
@@ -107,7 +107,7 @@ const Banner = ({
                                         fontWeight: "700"
 
 
-                                    }}>Interested</Text>
+                                    }}>{isInterested || tempIsInterested?"Disinterested":"Interested"}</Text>
 
 
                                 </TouchableOpacity>

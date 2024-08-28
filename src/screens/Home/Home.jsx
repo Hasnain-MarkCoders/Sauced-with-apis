@@ -142,7 +142,7 @@ const Home = () => {
                             onPress={() => navigation.navigate("Map")}
                             title={"Hot Sauce Map"}
                         />
-                        {/* <BrandList title='Top Rated Brands' /> */}
+                        <BrandList title='Top Rated Brands' />
                         <View style={{
                             gap: scale(20)
                         }}>

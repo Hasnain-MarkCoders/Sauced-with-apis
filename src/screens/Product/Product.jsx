@@ -19,6 +19,10 @@ import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import user1 from "./../../../assets/images/user1.png"
 import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
 import useAxios from '../../../Axios/useAxios.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleRemoveSauceFromListOne, handleSaucesListOne } from '../../../android/app/Redux/saucesListOne.js';
+import { handleRemoveSauceFromListThree, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree.js';
+import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../../android/app/Redux/saucesListTwo.js';
 
 const Product = () => {
   const route = useRoute()
@@ -42,7 +46,20 @@ const Product = () => {
   const [isEnabled, setisEnabled] = useState(true)
   const navigation = useNavigation()
   const [isNewMsg, setNewMsg] = useState(false)
+  const [isAlreadyInList, setAlreadyInList] = useState({
+    list1:false,
+    list2:false,
+    list3:false
+  })
+  const dispatch = useDispatch()
   const axiosInstance = useAxios()
+  const list1  = useSelector(state=>state?.saucesListOne)
+  const list2  = useSelector(state=>state?.saucesListTwo)
+  const list3  = useSelector(state=>state?.saucesListThree)
+
+
+
+
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -85,6 +102,35 @@ const handleAddMessage = ()=>{
       })
       setQuery({search:""})
 }
+
+
+useEffect(()=>{
+if (list1.find(item=>item?._id==product?._id)){
+  setAlreadyInList(prev=>({...prev, list1:true}))
+
+}
+if (list2.find(item=>item?._id==product?._id)){
+  setAlreadyInList(prev=>({...prev, list2:true}))
+
+  
+}
+if (list3.find(item=>item?._id==product?._id)){
+  setAlreadyInList(prev=>({...prev, list3:true}))
+
+  
+}
+
+return()=>{
+  setAlreadyInList(prev=>({list1:false, list2:false, list3:false}))
+}
+
+},[product])
+
+useEffect(()=>{
+  console.log("isAlreadyInList================>", isAlreadyInList)
+
+},[isAlreadyInList])
+
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -149,7 +195,40 @@ const handleAddMessage = ()=>{
         });
         
         const type=listNumber==1?"triedSauces":listNumber==2?"toTrySauces":"favoriteSauces"
+        //adding sauces
+        if(listNumber==1 && !isAlreadyInList?.list1){
+            dispatch(handleSaucesListOne([product]))
+        }
+        
+
+        if(listNumber==2 && !isAlreadyInList?.list2){
+          dispatch(handleSaucesListTwo([product]))
+
+          
+        }
+
+        if(listNumber==3 && !isAlreadyInList?.list3){
+          dispatch(handleSaucesListThree([product]))
+        }
+
+        // removeing sauces
+        if(listNumber==1 && isAlreadyInList?.list1){
+          dispatch(handleRemoveSauceFromListOne(product?._id))
+      }
+      
+
+      if(listNumber==2 && isAlreadyInList?.list2){
+        dispatch(handleRemoveSauceFromListTwo(product?._id))
+
+        
+      }
+
+      if(listNumber==3 && isAlreadyInList?.list3){
+        dispatch(handleRemoveSauceFromListThree(product?._id))
+      }
+
           const res = await axiosInstance.post(`/bookmark`, {sauceId:product?._id, listType:type});
+          console.log("res.data.message================================================>", res.data.message)
       } catch (error) {
           console.error('Failed to like / dislike:', error);
       } finally {
@@ -335,9 +414,9 @@ const handleAddMessage = ()=>{
           loading1={loading1}
           loading2={loading2}
           loading3={loading3}
-          title1="List 1"
-          title2="List 2"
-          title3="List 3"
+          title1={isAlreadyInList.list1?"Remove from list 1":"Add in List 1"}
+          title2={isAlreadyInList.list2?"Remove from list 2":"Add in List 2"}
+          title3={isAlreadyInList.list3?"Remove from list 3":"Add in List 3"}
 
         />
       </SafeAreaView>
