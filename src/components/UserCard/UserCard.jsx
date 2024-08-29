@@ -1,43 +1,45 @@
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomButtom from '../CustomButtom/CustomButtom'
 import Lightbox from 'react-native-lightbox';
 import { useNavigation } from '@react-navigation/native';
-import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal';
 import useAxios from '../../../Axios/useAxios';
 
 const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { } }) => {
   const [LightBox, setLightBox] = useState(false)
   const [toggledTitle, setToggledTitle] = useState(title)
-  // useEffect(()=>{
-  // },[title])
+
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
   const axiosInstance = useAxios()
-useEffect(()=>{
-  
-},[toggledTitle])
-  const handleToggleTitle = async () => {
-    setLoading(true);
-    try {
-        const res = await axiosInstance.post("/follow", {_id});
-        console.log("<=====================res.message===============>", res?.message)
-            if(res.data.isFollowing){
-              setToggledTitle("Unfollow")
-            }
-            else{
-              setToggledTitle("Follow")
-            }
-        console.log("<======================================checking==================================>", res.data)
-    } catch (error) {
-        console.error('Failed to fetch photos:', error);
-    } finally {
-        setLoading(false);
-    }
-   
-  }
 
+  const handleToggleUserStatus =useCallback( async () => {
+    // setLoading(true);
+    // try {
+    //     const res = await axiosInstance.post("/follow", {_id});
+    //     // console.log("<=====================res.message===============>", res?.message)
+    //         if(res.data.isFollowing){
+    //           // setToggledTitle("Unfollow")
+    //            cb(item) 
+
+    //         }
+    //         else{
+    //           // setToggledTitle("Follow")
+    //           cb(item) 
+
+    //         }
+    //     // console.log("<======================================checking==================================>", res.data)
+    // } catch (error) {
+    //     console.error('Failed to fetch photos:', error);
+    // } finally {
+    //     setLoading(false);
+    // }
+   
+  },[])
+useEffect(()=>{
+
+},[item])
   return (
 
     <TouchableOpacity
@@ -99,10 +101,10 @@ useEffect(()=>{
 
           buttonTextStyle={{ fontSize: scale(12) }}
           buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}
-          // onPress={()=>{cb(item)}}
-          onPress={() => { handleToggleTitle() }}
+          onPress={()=>{cb(item)}}
+          // onPress={() => { handleToggleUserStatus()}}
 
-          title={toggledTitle} />
+          title={title} />
 
       </View>
     </TouchableOpacity>
@@ -111,6 +113,6 @@ useEffect(()=>{
   )
 }
 
-export default memo(UserCard)
+export default UserCard
 
 const styles = StyleSheet.create({})

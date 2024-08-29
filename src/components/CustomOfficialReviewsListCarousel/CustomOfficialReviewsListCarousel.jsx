@@ -6,6 +6,7 @@ import Banner from '../Banner/Banner';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
+import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -14,6 +15,7 @@ const CustomOfficialReviewsListCarousel = ({
 }) => {
 
     const navigation = useNavigation()
+    const [initialLoading, setInitialLoading] = React.useState(true)
     const axiosInstance = useAxios()
     const [selected, setSelected] = React.useState(0)
     const [data, setData] = React.useState([])
@@ -49,34 +51,44 @@ const CustomOfficialReviewsListCarousel = ({
        const handleSnapToItem = (index) => {
         setSelected(index);
         if (index === data.length - 1) {
-            setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
+            // setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
         }
     };
+    React.useEffect(()=>{
+        setTimeout(()=>{
+            setInitialLoading(false)
+        }, 3000)
+            },[])
 
   return (
     <View style={{}}>
-    <Carousel
-    autoPlayInterval={7000}
-        loop
-        width={effectiveWidth}
-        height={155}
-        autoPlay={true}
-        data={data}
-        scrollAnimationDuration={1000}
-        onSnapToItem={(index) => handleSnapToItem(index)}
-        renderItem={({ item, index }) => (<>
-          <Banner
-                        item={item}
-                        showText={showText}
-                        //   title={item?.user?.username}
-                        //    url={item?.urls?.small}
-                        videoId={item?.videoId}
-                        // title={item?.user?.username}
-                        url={item?.bannerImage}
-                        infoText={""} />
-                
-        </>)}
-    />
+
+
+        {
+            initialLoading?
+            <CarouselSkeleton/>
+            :
+            <Carousel
+            autoPlayInterval={7000}
+                loop
+                width={effectiveWidth}
+                height={190}
+                autoPlay={true}
+                data={data}
+                scrollAnimationDuration={1000}
+                onSnapToItem={(index) => handleSnapToItem(index)}
+                renderItem={({ item, index }) => (<>
+                  <Banner
+                                item={item}
+                                showText={showText}
+                                videoId={item?.videoId}
+                                url={item?.bannerImage}
+                                infoText={""} />
+                        
+                </>)}
+            />
+
+        }
         <View style={{
                     flexDirection: "row",
                     justifyContent: showText ? "space-between" : "flex-end"

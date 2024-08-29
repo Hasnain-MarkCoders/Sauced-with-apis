@@ -81,6 +81,9 @@ const handleToggleLike=async()=>{
 
 
     return (
+        <>
+        {
+        url?
         <TouchableOpacity
         activeOpacity={.8}
         onPress={()=>{handleOnPress()}}
@@ -134,6 +137,9 @@ const handleToggleLike=async()=>{
             }} source={emptyheart}/>
             }
         </TouchableOpacity>
+        :null
+        }
+        </>
     );
 };
 

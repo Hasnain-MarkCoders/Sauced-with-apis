@@ -4,7 +4,9 @@ import banner from "./../../../assets/images/banner.png";
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import CustonPlayIcon from '../CustonPlayIcon/CustonPlayIcon';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const screenWidth = Dimensions.get('window').width;
+
 const Banner = ({
     url = "",
     infoText = "",
@@ -14,115 +16,143 @@ const Banner = ({
     videoId = "",
     event = {},
     showOverlay=false,
-    isInterested=false
+    isInterested=false,
+    loading=false
 }) => {
     const [tempIsInterested, setTempIsInterested] = useState(false)
     const navigation = useNavigation()
-    return (
-        <TouchableOpacity style={{
-            width: "100%",
-        }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title, videoId }) }}>
-            <ImageBackground
-                borderRadius={10}
-                style={{
-                    minHeight: scale(130),
-                    position: "relative",
-                }}
-                source={{ uri: url }}
-            >
 
-                    {showOverlay &&<View style={styles.overlay}></View>}
-                {
-                    showText?
-                    <View style={{ paddingVertical: scale(10),paddingHorizontal: scale(10), gap: scale(5),flex:1,justifyContent:"space-between" }}>
-                        <View>
-                            <Text style={[styles.bannerText, {
+    useEffect(()=>{
+        console.log("+++++++++++++++++++++++++++++++++++++++++++++++")
+        console.log("loading", loading)
+        console.log("+++++++++++++++++++++++++++++++++++++++++++++++")
+    },[loading])
+    return (
+        <>{
+            loading
+            ?
+             <SkeletonPlaceholder speed={1600} backgroundColor='#2E210A' style={{height:"100%"}} highlightColor={"#fff"} borderRadius={4}>
+                
+                <View style={{
+                    gap:scale(10)
+                }}>
+                        <View style={{width:"70%", height: scale(20) }}>
+                        </View>
+                <View style={{width:"90%", height: scale(20) }}>
+                </View>
+                <View style={{ width:"80%", height: scale(20) }}>
+                </View>
+                <View style={{width:"50%", height: scale(20) }}>
+                </View>
+                </View>
+      </SkeletonPlaceholder> 
+      :<TouchableOpacity style={{
+        width: "100%",
+    }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title, videoId }) }}>
+        <ImageBackground
+            borderRadius={10}
+            style={{
+                minHeight: scale(130),
+                position: "relative",
+            }}
+            source={{ uri: url }}
+        >
+
+                {showOverlay &&<View style={styles.overlay}></View>}
+            {
+                showText?
+                <View style={{ paddingVertical: scale(10),paddingHorizontal: scale(10), gap: scale(5),flex:1,justifyContent:"space-between" }}>
+                    <View>
+                        <Text style={[styles.bannerText, {
+                            color: 'white',
+                            fontSize: 24,
+                            fontWeight: 'bold',
+                            textShadowColor: 'rgba(0, 0, 0, 1)',
+                            textShadowOffset: { width: 1, height: 1 },
+                            textShadowRadius: 10
+                        }]}>{event?.eventName}</Text>
+                        <View style={{
+                            gap: scale(10)
+                        }}>
+                            <Text style={{
+                                color: "white",
+                                fontSize: scale(10),
+                                lineHeight: scale(13),
+                                fontFamily: "Montserrat",
+                                maxWidth: "80%",
+                                fontWeight: '700',
                                 color: 'white',
-                                fontSize: 24,
                                 fontWeight: 'bold',
                                 textShadowColor: 'rgba(0, 0, 0, 1)',
                                 textShadowOffset: { width: 1, height: 1 },
                                 textShadowRadius: 10
-                            }]}>{event?.eventName}</Text>
-                            <View style={{
-                                gap: scale(10)
+
                             }}>
-                                <Text style={{
-                                    color: "white",
-                                    fontSize: scale(10),
-                                    lineHeight: scale(13),
-                                    fontFamily: "Montserrat",
-                                    maxWidth: "80%",
-                                    fontWeight: '700',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    textShadowColor: 'rgba(0, 0, 0, 1)',
-                                    textShadowOffset: { width: 1, height: 1 },
-                                    textShadowRadius: 10
 
-                                }}>
+                                {event?.venueDescription}
 
-                                    {event?.venueDescription}
-
-                                </Text>
-                            
-                            </View>
+                            </Text>
+                        
                         </View>
-                        <View style={{
-                                flexDirection: "row",
-                                gap: scale(10),
-                            }}>
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        navigation.navigate("EventPage", { event })
-                                    }}
-                                    style={{
-                                        paddingHorizontal: scale(10),
-                                        paddingVertical: scale(6),
-                                        backgroundColor: "white",
-                                        borderRadius: scale(5),
-                                        elevation: scale(5)
-                                    }}>
-                                    <Text style={{
-                                        color: "black",
-                                        fontWeight: "700"
-
-                                    }}>Details</Text>
-
-
-                                </TouchableOpacity>
-                                <TouchableOpacity
-
-                                    onPress={()=>{cb(event); setTempIsInterested(prev=>!prev)}}
-                                    style={{
-                                        paddingHorizontal: scale(10),
-                                        paddingVertical: scale(6),
-
-                                        backgroundColor: "white",
-                                        borderRadius: scale(5),
-                                    }}>
-                                    <Text style={{
-                                        color: "black",
-                                        fontWeight: "700"
-
-
-                                    }}>{isInterested || tempIsInterested?"Disinterested":"Interested"}</Text>
-
-
-                                </TouchableOpacity>
-                            </View>
                     </View>
-                    :
                     <View style={{
-                        width:"100%",
-                        height:"100%"
-                    }}>
-                        <CustonPlayIcon/>
-                        </View>}
+                            flexDirection: "row",
+                            gap: scale(10),
+                        }}>
 
-            </ImageBackground>
-        </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate("EventPage", { event })
+                                }}
+                                style={{
+                                    paddingHorizontal: scale(10),
+                                    paddingVertical: scale(6),
+                                    backgroundColor: "white",
+                                    borderRadius: scale(5),
+                                    elevation: scale(5)
+                                }}>
+                                <Text style={{
+                                    color: "black",
+                                    fontWeight: "700"
+
+                                }}>Details</Text>
+
+
+                            </TouchableOpacity>
+                            <TouchableOpacity
+
+                                onPress={()=>{cb(event); setTempIsInterested(prev=>!prev)}}
+                                style={{
+                                    paddingHorizontal: scale(10),
+                                    paddingVertical: scale(6),
+
+                                    backgroundColor: "white",
+                                    borderRadius: scale(5),
+                                }}>
+                                <Text style={{
+                                    color: "black",
+                                    fontWeight: "700"
+
+
+                                }}>{isInterested || tempIsInterested?"Disinterested":"Interested"}</Text>
+
+
+                            </TouchableOpacity>
+                        </View>
+                </View>
+                :
+                <View style={{
+                    width:"100%",
+                    height:"100%"
+                }}>
+                    <CustonPlayIcon/>
+                    </View>}
+
+        </ImageBackground>
+    </TouchableOpacity>
+        }
+        
+        </>
 
     )
 }

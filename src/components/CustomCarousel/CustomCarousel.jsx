@@ -9,13 +9,17 @@ import useAxios from '../../../Axios/useAxios';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
 import { useDispatch, useSelector } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
+
 const CustomCarousel = ({
-    showText=false
+    showText=false,
 }) => {
 const [selected, setSelected] = React.useState(0)
+const [initialLoading, setInitialLoading] = React.useState(true)
  const navigation = useNavigation()
  const axiosInstance = useAxios()
  const [data, setData] = React.useState([])
@@ -67,31 +71,44 @@ const [selected, setSelected] = React.useState(0)
 
     }
 
+    React.useEffect(()=>{
+setTimeout(()=>{
+    setInitialLoading(false)
+}, 3000)
+    },[])
   return (
-    <View style={{}}>
-    <Carousel
-    
-    autoPlayInterval={7000}
-        loop
-        width={effectiveWidth}
-        height={155}
-        autoPlay={true}
-        data={data}
-        scrollAnimationDuration={1000}
-       
-        onSnapToItem={(index) =>{ handleSnapToItem(index)}}
-        renderItem={({ item, index }) => (<>
-          <Banner
-                        cb={handleInterestedEvent}
-                        showOverlay={true}
-                        showText={showText}
-                        event={item}
-                        url={item?.bannerImage}
-                        infoText={""} />
-                
-        </>)
+    <View style={{gap:scale(20)}}>
+        {
+            initialLoading
+            ?
+            <CarouselSkeleton/>
+            :<Carousel
+            
+            autoPlayInterval={7000}
+                loop
+                width={effectiveWidth}
+                height={155}
+                autoPlay={true}
+                data={data}
+                scrollAnimationDuration={1000}
+               
+                onSnapToItem={(index) =>{ handleSnapToItem(index)}}
+                renderItem={({ item, index }) => (<>
+                  <Banner
+        
+                                loading={false}
+                                cb={handleInterestedEvent}
+                                showOverlay={true}
+                                showText={showText}
+                                event={item}
+                                url={item?.bannerImage}
+                                infoText={""} />
+                        
+                </>)
+                }
+            />
+
         }
-    />
         <View style={{
                     flexDirection: "row",
                     justifyContent: showText ? "space-between" : "flex-end"
@@ -109,7 +126,8 @@ const [selected, setSelected] = React.useState(0)
                             }}>
                                 Don't see your event, suggest it to us
                             </Text>
-                        </TouchableOpacity>}
+                        </TouchableOpacity>
+                        }
                     <View style={{
                         flexDirection: "row",
                         paddingVertical: scale(10),
@@ -129,7 +147,7 @@ const [selected, setSelected] = React.useState(0)
                         ))}
                     </View>
                 </View>
-</View>
+    </View>
   )
 }
 

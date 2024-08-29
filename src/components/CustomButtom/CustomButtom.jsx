@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 
 const CustomButtom = ({
     showIcon=false,
@@ -8,12 +8,13 @@ const CustomButtom = ({
     buttonTextStyle={},
     onPress=()=>{},
     Icon=()=>null,
-    loading=false
+    loading=false,
+    disabled=false
 }) => {
   return (
     <TouchableOpacity
     onPress={onPress}
-    
+    disabled={disabled}
     style={{
         borderWidth:1,
         padding:20, 
@@ -35,6 +36,6 @@ const CustomButtom = ({
   )
 }
 
-export default CustomButtom
+export default memo(CustomButtom)
 
 const styles = StyleSheet.create({})

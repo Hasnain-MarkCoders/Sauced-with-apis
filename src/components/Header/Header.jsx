@@ -21,11 +21,8 @@ const Header = ({
   const navigation = useNavigation()
 let url = ""
   const auth = useSelector(state => state.auth)
-  // const { user, authenticated } = auth
-  const { authenticated } = auth
 
-  // url = auth?.url
-  url = user
+  const userStats = useSelector(state=>state?.userStats)
 
   const titleArray = title?.split(" ")
   return (
@@ -37,7 +34,6 @@ let url = ""
     }}>
 
     <View style={{
-          //  flexDirection:authenticated?"row":"column",
            flexDirection:"row",
 
            justifyContent:"space-between",
@@ -45,7 +41,6 @@ let url = ""
       {showBackButton && <View style={{
       }}>
         <TouchableOpacity style={{
-            // paddingVertical:scale(10)
         }} onPress={()=>(cb(), Vibration.vibrate(10))} >
           <Image style={{
             display: "flex",
@@ -56,23 +51,6 @@ let url = ""
       </View>}
 
 {  
-
-
-// (authenticated && showProfilePic)?  
-//       <TouchableOpacity onPress={()=>{navigation.navigate("Main")}}>
-
-//         <Image
-//          style={{
-//            width: scale(40),
-//            height: scale(40),
-//            borderRadius: scale(50),
-//            resizeMode:"contain"
-//          }}
-//          source={{ uri: url }}
-
-//        />
-//       </TouchableOpacity>
-      
          ( showProfilePic)?  
          <TouchableOpacity onPress={()=>{navigation.navigate("Main")}}>
    
@@ -81,17 +59,12 @@ let url = ""
               width: scale(40),
               height: scale(40),
               borderRadius: scale(50),
-              resizeMode:"contain"
             }}
-            source={url }
+            source={{uri:userStats?.uri||auth?.image} }
    
           />
          </TouchableOpacity>
-      
-      
       :
-      // (authenticated && showMenu)?<TouchableOpacity onPress={() => (navigation.dispatch(DrawerActions.openDrawer(), Vibration.vibrate(10)))}>
-      //   <Image source={menu}/>
       ( showMenu)?<TouchableOpacity onPress={() => (navigation.dispatch(DrawerActions.openDrawer(), Vibration.vibrate(10)))}>
         <Image style={{
           width:scale(25),
@@ -101,8 +74,6 @@ let url = ""
       </TouchableOpacity>:null
 }
     </View>
-
-    
 {
   showText ?
 

@@ -23,13 +23,13 @@ const ProductCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
-    product={},
-    sauceType="",
+    product = {},
+    sauceType = "",
 }) => {
-    const topRatedSauces = useSelector(state=>state?.topRatedSauces)
+    const topRatedSauces = useSelector(state => state?.topRatedSauces)
     // const count = useSelector(state=>state?.count)
     const axiosInstance = useAxios()
-    const dispatch =useDispatch()
+    const dispatch = useDispatch()
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -39,30 +39,30 @@ const ProductCard = ({
         isAddedToList: false
     })
 
-const handleToggleLike=async()=>{
+    const handleToggleLike = async () => {
         setLoading(true);
         try {
-            const res = await axiosInstance.post(`/like-sauce`, {sauceId:product?._id});
+            const res = await axiosInstance.post(`/like-sauce`, { sauceId: product?._id });
             console.log(res.data)
-            if (sauceType=="toprated"){
+            if (sauceType == "toprated") {
                 dispatch(handleToggleTopRatedSauce(product?._id))
             }
-            if (sauceType=="featured"){
+            if (sauceType == "featured") {
                 dispatch(handleToggleFeaturedSauce(product?._id))
             }
-            if (sauceType=="favourite"){
+            if (sauceType == "favourite") {
                 dispatch(handleToggleFavoriteSauce(product?._id))
             }
-            if (sauceType=="checkedin"){
+            if (sauceType == "checkedin") {
                 dispatch(handleToggleCheckedInSauce(product?._id))
             }
-            if (sauceType==1){
+            if (sauceType == 1) {
                 dispatch(handleToggleSauceListOne(product?._id))
             }
-            if (sauceType==2){
+            if (sauceType == 2) {
                 dispatch(handleToggleSauceListTwo(product?._id))
             }
-            if (sauceType==3){
+            if (sauceType == 3) {
                 dispatch(handleToggleSauceListThree(product?._id))
             }
         } catch (error) {
@@ -70,7 +70,7 @@ const handleToggleLike=async()=>{
         } finally {
             setLoading(false);
         }
-}
+    }
 
     return (
         <View style={{
@@ -116,215 +116,223 @@ const handleToggleLike=async()=>{
                 }}>
 
                     <View style={{
-                        gap: scale(10),
-                        flexBasis: "50%"
+                        gap: scale(20),
+                        flexShrink: 0,
+                        flexGrow: 1,
                     }}>
                         <View>
                             <Text
 
-                                numberOfLines={1} ellipsizeMode="tail"
                                 style={{
                                     color: "white",
                                     fontWeight: 600,
-                                    fontSize: scale(20),
+                                    fontSize: scale(17),
                                     lineHeight: scale(24),
                                 }}>{title}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => {
-                            navigation.navigate("AllReviews", {_id:product?._id})
-                        }}>
-                            <Text style={{
-                                color: "white",
-                                fontWeight: 500,
-                                fontSize: scale(12),
-                                lineHeight: scale(14),
-                            }}>{product?.reviewCount>1?`${product?.reviewCount} Reviews`:`${product?.reviewCount} Review` }</Text>
-                            <CustomRating 
-                            initialRating={product?.averageRating}
-                            ratingContainerStyle={{
-                                pointerEvents: "none",
-                            }
 
-                            } />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={
-                        {
-
-                        }
-                    }>
                         <View style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
+                            justifyContent: "space-between"
                         }}>
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate("AllReviews", { _id: product?._id })
+                            }}>
+                                <Text style={{
+                                    color: "white",
+                                    fontWeight: 500,
+                                    fontSize: scale(12),
+                                    lineHeight: scale(14),
+                                }}>{product?.reviewCount > 1 ? `${product?.reviewCount} Reviews` : `${product?.reviewCount} Review`}</Text>
+                                <CustomRating
+                                    initialRating={product?.averageRating}
+                                    ratingContainerStyle={{
+                                        pointerEvents: "none",
+                                    }
+
+                                    } />
+                            </TouchableOpacity>
+
                             <View style={{
-                                alignItems: "center",
+                                flexDirection: "row",
                                 gap: scale(10)
                             }}>
-                                <View style={{
-                                    gap: scale(1),
 
-                                }}>
+                                <TouchableOpacity
+                                    onPress={() => {
 
-                                    <Text style={{
-                                        color: "#FFA100",
-                                        textAlign:"center",
-                                        fontWeight: 600,
-                                        fontSize: scale(30),
-                                        lineHeight: scale(36),
-                                    }}>{product?.checkIn}</Text>
-                                    <Text style={{
-                                        color: "white",
-                                        fontWeight: 600,
-                                        fontSize: scale(10),
-                                        lineHeight: scale(25),
-                                        marginTop: scale(-6)
-                                    }}>Check-ins</Text>
-                                </View>
-                                <View style={{
-                                    flexDirection: "row",
-                                    gap: scale(10)
-                                }}>
+                                        setproductStatus(prev => ({
+                                            ...prev,
+                                            isChecked: !prev.isChecked
+                                        }));
+                                        Snackbar.show({
+                                            text: !productStatus.isChecked ? 'You love this product.' : "You unlove this product.",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                            action: {
+                                                text: 'UNDO',
+                                                textColor: '#FFA100',
+                                                onPress: () => {
 
-                                    <TouchableOpacity
-                                        onPress={() => {
+                                                    setproductStatus(prev => ({
+                                                        ...prev,
+                                                        isChecked: !prev.isChecked
 
-                                            setproductStatus(prev => ({
-                                                ...prev,
-                                                isChecked: !prev.isChecked
-                                            }));
-                                            Snackbar.show({
-                                                text: !productStatus.isChecked ? 'You love this product.' : "You unlove this product.",
-                                                duration: Snackbar.LENGTH_SHORT,
-                                                action: {
-                                                    text: 'UNDO',
-                                                    textColor: '#FFA100',
-                                                    onPress: () => {
-
-                                                        setproductStatus(prev => ({
-                                                            ...prev,
-                                                            isChecked: !prev.isChecked
-
-                                                        }))
-                                                        handleToggleLike()
-                                                    },
+                                                    }))
+                                                    handleToggleLike()
                                                 },
-                                            });
-                                            handleToggleLike()
+                                            },
+                                        });
+                                        handleToggleLike()
 
-                                        }}
-                                    >
-                                        <Image style={{
-                                            width: scale(25),
-                                            height: scale(25),
-                                            objectFit: "contain"
-                                        }} source={productStatus.isChecked ? filledHeart : emptyheart} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onLongPress={() => {
-                                            setshowListModal(true)
-                                        }}
-                                        onPress={() => {
-                                            setproductStatus(prev => ({
-                                                ...prev,
-                                                isAddedToWishList: !prev.isAddedToWishList
+                                    }}
+                                >
+                                    <Image style={{
+                                        width: scale(15),
+                                        height: scale(15),
+                                        objectFit: "contain"
+                                    }} source={productStatus.isChecked ? filledHeart : emptyheart} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onLongPress={() => {
+                                        setshowListModal(true)
+                                    }}
+                                    onPress={() => {
+                                        setproductStatus(prev => ({
+                                            ...prev,
+                                            isAddedToWishList: !prev.isAddedToWishList
 
-                                            }));
-                                            Snackbar.show({
-                                                text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product in Wishlist.",
-                                                duration: Snackbar.LENGTH_SHORT,
-                                                action: {
-                                                    text: 'UNDO',
-                                                    textColor: '#FFA100',
-                                                    onPress: () => {
-                                                        setproductStatus(prev => ({
-                                                            ...prev,
-                                                            isAddedToWishList: false
+                                        }));
+                                        Snackbar.show({
+                                            text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product in Wishlist.",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                            action: {
+                                                text: 'UNDO',
+                                                textColor: '#FFA100',
+                                                onPress: () => {
+                                                    setproductStatus(prev => ({
+                                                        ...prev,
+                                                        isAddedToWishList: false
 
-                                                        }));
+                                                    }));
 
-                                                    },
                                                 },
-                                            });
-                                        }}
-                                    >
-                                        <Image style={{
-                                             width: scale(23),
-                                             height: scale(23),
-                                             objectFit: "contain"
-                                        }} source={productStatus.isAddedToWishList ? wishlist_filled : wishlist_icon} />
-                                    </TouchableOpacity>
-                                </View>
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <Image style={{
+                                        width: scale(15),
+                                        height: scale(15),
+                                        objectFit: "contain"
+                                    }} source={productStatus.isAddedToWishList ? wishlist_filled : wishlist_icon} />
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
                 </View>
             </View>
 
-
             <View style={{
-                alignItems: "flex-start",
-                gap: scale(20),
+                flexDirection: "row",
+                gap: scale(10),
+                flex: 1, alignItems: "center",
+                justifyContent: "space-between"
             }}>
+                <View style={{
+                    alignItems: "flex-start",
+                    gap: scale(20),
+                }}>
 
-                <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start", }}>
+                    <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start", }}>
 
-                    <View>
-                        <Text style={{
-                            color:"white"
+                        <View>
+                            <Text style={{
+                                color: "white"
+                            }}>
+                                Website Link:
+                            </Text>
+                            <TouchableOpacity onPress={() => {
+                                Linking.openURL(product?.websiteLink)
+                            }}>
+                                <Text
+                                    numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    style={{
+                                        maxWidth: scale(110),
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(12),
+                                        lineHeight: scale(25),
+                                    }}>{product?.websiteLink}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{
+                            width: scale(1),
+                            height: "80%",
+                            backgroundColor: "#FFA100",
                         }}>
-                            Website Link:
-                        </Text>
-                        <TouchableOpacity onPress={() => {
-                            Linking.openURL(product?.websiteLink)
-                        }}>
-                            <Text 
-                             numberOfLines={1}
-                            ellipsizeMode='tail'
-                            style={{
-                                maxWidth:scale(155),
-                                color: "#FFA100",
-                                fontWeight: 600,
-                                fontSize: scale(12),
-                                lineHeight: scale(25),
-                            }}>{product?.websiteLink}</Text>
-                        </TouchableOpacity>
+
+                        </View>
+                        <View>
+                            <Text style={{
+                                color: "white"
+                            }}>
+                                Product Link:
+                            </Text>
+                            <TouchableOpacity onPress={() => {
+                                Linking.openURL(product?.productLink)
+                            }}>
+                                <Text
+                                    numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    style={{
+                                        maxWidth: scale(110),
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(12),
+                                        lineHeight: scale(25),
+                                    }}>{product?.productLink}</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                </View>
+                <View >
                     <View style={{
-                        width: scale(1),
-                        height: "80%",
-                        backgroundColor: "#FFA100",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
                     }}>
+                        <View style={{
+                            alignItems: "center",
+                            gap: scale(10)
+                        }}>
+                            <View style={{
+                                gap: scale(1),
 
-                    </View>
-                    <View>
-                        <Text  style={{
-                            color:"white"
-                        }}>
-                            Product Link:
-                        </Text>
-                        <TouchableOpacity onPress={() => {
-                            Linking.openURL(product?.productLink)
-                        }}>
-                            <Text 
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                            style={{
-                                maxWidth:scale(155),
-                                color: "#FFA100",
-                                fontWeight: 600,
-                                fontSize: scale(12),
-                                lineHeight: scale(25),
-                            }}>{product?.productLink}</Text>
-                        </TouchableOpacity>
+                            }}>
+
+                                <Text style={{
+                                    color: "#FFA100",
+                                    textAlign: "center",
+                                    fontWeight: 600,
+                                    fontSize: scale(30),
+                                    lineHeight: scale(36),
+                                }}>{product?.checkIn}</Text>
+                                <Text style={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(10),
+                                    lineHeight: scale(25),
+                                    marginTop: scale(-6)
+                                }}>Check-ins</Text>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </View>
-            <View style={{flexDirection:"row",flexGrow:1, gap:scale(10)}}>
+            <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", {sauceId:product?._id})
+                        navigation.navigate("AddReview", { sauceId: product?._id })
 
                     }}
                     style={{
@@ -346,7 +354,7 @@ const handleToggleLike=async()=>{
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", {product})
+                        navigation.navigate("Checkin", { product })
 
                     }}
                     style={{
@@ -366,8 +374,8 @@ const handleToggleLike=async()=>{
 
 
                 </TouchableOpacity>
-            
-                </View>
+
+            </View>
 
 
         </View>

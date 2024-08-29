@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions } from 'react-native'
+import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions, ActivityIndicator } from 'react-native'
 import React, {  useEffect, useState } from 'react'
 import home from "./../../../assets/images/home.png"
 import {  handleText } from '../../../utils'
@@ -14,7 +14,23 @@ const SearchScreen = () => {
     const [query, setQuery] = useState({
         search: "",
     });
+    const [initialLoading, setInitialLoading] = useState(true)
+
     const navigation = useNavigation()
+
+    useEffect(()=>{
+        setTimeout(()=>{
+        setInitialLoading(false)
+        },1000)
+        },[])
+        if (initialLoading) {
+            return (
+                <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#FFA100" />
+                </ImageBackground>
+            );
+        }
+        
 
     return (
 
@@ -26,21 +42,6 @@ const SearchScreen = () => {
                 paddingHorizontal:scale(20),
                 paddingTop:scale(32),
             }}>
-        {/* <SkeletonPlaceholder speed={1600} backgroundColor='#FFA100' highlightColor={"#ffffff"} borderRadius={4}>
-        <View style={{gap:scale(10), maxWidth:scale(110) }}>
-            <View style={{  height: 20, borderRadius: 4 }} />
-            <View style={{  height: 20, borderRadius: 4 }} />
-            <View style={{  height: 20, borderRadius: 4 }} />
-            <View style={{gap:scale(10), flexDirection:"row", justifyContent:"space-between"}}>
-
-            <View style={{ marginTop: 6,flexBasis:scale(20), flexGrow:1, height: 20, borderRadius: 4 }} />
-            <View style={{ marginTop: 6, width: 20, height: 20, borderRadius: 4 }} />
-            </View>
-
-
-        </View>
-      </SkeletonPlaceholder> */}
-
                 <KeyboardAvoidingView
                 style={{
                     flex:1

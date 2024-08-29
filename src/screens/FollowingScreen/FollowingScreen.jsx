@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList } from 'react-native-gesture-handler';
+import FollowingList from '../../components/FollowingList/FollowingList.jsx';
 const FollowingScreen = ({
     endpoint=""
 
@@ -17,6 +18,19 @@ const FollowingScreen = ({
         search: "",
     });
     const navigation = useNavigation()
+    const [initialLoading, setInitialLoading] = useState(true)
+    useEffect(()=>{
+        setTimeout(()=>{
+        setInitialLoading(false)
+        },1000)
+        },[])
+        if (initialLoading) {
+            return (
+                <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#FFA100" />
+                </ImageBackground>
+            );
+        }
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: verticalScale(0) }}>
@@ -96,14 +110,8 @@ const FollowingScreen = ({
                                     }}>
                                         All Following
                                     </Text>
-                                    <FollowListToggle
-                                        endpoint="/get-following"
-                                    // title="Unfollow" 
-                                     />
-                                     
+                                    <FollowingList endpoint="/get-following"/>
                                      </View>
-                                   
-                                    
                                 }
                             </View>
 

@@ -388,7 +388,6 @@ useEffect(()=>{
                         </Text>
                       </View>
 
-                      {/* <CommentsList setPage={setPage} data={data} loading={loading} hasMore={hasMore} /> */}
                       <CommentsList product={product} cb={handleUserProfileView} getId={getId} setNewMsg={setNewMsg} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
                                         //  data={data} 
                                          data={messagesData}

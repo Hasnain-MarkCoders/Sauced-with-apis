@@ -1,5 +1,5 @@
 import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Vibration, Image, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -8,13 +8,17 @@ import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
-import { handleText, topRatedSauces } from '../../../utils.js';
+import { getFormattedName, handleText, topRatedSauces } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import ExternalUserCard from '../../components/ExternalUserCard/ExternalUserCard.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import arrow from "./../../../assets/images/arrow.png";
 import useAxios from '../../../Axios/useAxios.js';
 import Snackbar from 'react-native-snackbar';
+import { handleRemoveUserFromUsers } from '../../../android/app/Redux/users.js';
+import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings.js';
+import { handleStatsChange } from '../../../android/app/Redux/userStats.js';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ExternalProfileScreen = ({
 }) => {
@@ -22,6 +26,7 @@ const ExternalProfileScreen = ({
     const name = route?.params?.name
     const url = route?.params?.url
     const _id = route?.params?._id
+    const followings = useSelector(state=>state?.followings)
     const [user, setUser] = useState(null)
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
@@ -31,6 +36,7 @@ const ExternalProfileScreen = ({
         blockLoading:false,
         initialLoading:true,
     });
+    const dispatch = useDispatch()
     const [titles, setTitles] = useState({
         blockTitle:"Block",
         reportTitle:""
@@ -54,66 +60,15 @@ const ExternalProfileScreen = ({
             hideSubscription.remove();
         };
     }, []);
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (!query?.search?.trim()) {
-    //             return
-    //         }
-    //         if (loading) return;
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page,
-    //                     query: query?.search
-    //                 }
-    //             });
-
-    //             setData(prev => [...res.data.results, ...prev]);
-
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchPhotos();
-    // }, [query.search, page]);
-
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (query?.search.trim()) {
-    //             return
-    //         }
-    //         if (!hasMore || loading) return;
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page
-    //                 }
-    //             });
-    //             if (res.data.length === 0) {
-    //                 setHasMore(false);
-    //             } else {
-    //                 setData(prevData => [...prevData, ...res.data]);
-    //             }
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchPhotos();
-    // }, [page]);
+   
 
 
     React.useEffect(() => {
         const fetchUser = async () => {
-            setLoading(true);
+            setLoading(prev=>({
+                ...prev,
+                initialLoading:true,
+            }));
             try {
                 const res = await axiosInstance.get(`/get-user`, {
                     params:{
@@ -125,7 +80,10 @@ const ExternalProfileScreen = ({
             } catch (error) {
                 console.error('Failed to fetch user:', error);
             } finally {
-                setLoading(false);
+                setLoading(prev=>({
+                    ...prev,
+                    initialLoading:false,
+                }));
             }
         };
         // Initial fetch
@@ -136,6 +94,27 @@ const ExternalProfileScreen = ({
         return () => clearInterval(interval);
     }, []);
 
+
+    const handleUser =  useCallback(async(user)=>{
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
+        console.log("user_id", user?._id)
+        console.log(user)
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
+        if(user){
+            dispatch(handleRemoveUserFromUsers(user?._id))
+
+            if(user?.isFollowing){
+                dispatch(handleRemoveUserFromFollowings(user?._id))
+                dispatch(handleStatsChange({
+                    followings:-1,
+                    }))
+                    await axiosInstance.post("/follow", {_id:user?._id});
+            }
+        }
+
+        
+          },[])
+
     const handleBlock = async()=>{
         setLoading(prev=>({
             ...prev,
@@ -144,12 +123,15 @@ const ExternalProfileScreen = ({
         try{
             
             const res = await axiosInstance.post(`/block`, {_id});
+            await handleUser(user)
+
             if(res?.data?.message){
                 setTitles(prev=>({...prev, blockTitle:"Blocked"}))
                 Snackbar.show({
                     text: `${name } is blocked.`,
                     duration: Snackbar.LENGTH_SHORT,
                 });
+
             }
         }catch(error){
 
@@ -206,10 +188,10 @@ const ExternalProfileScreen = ({
                                                     fontSize: scale(35),
                                                     lineHeight: scale(50),
                                                     marginBottom: scale(20),
-                                                    maxWidth: scale(130)
+                                                    maxWidth: scale(200)
 
                                                 }}>
-                                                {name}
+                                                {getFormattedName(user?.name?user?.name:"")}
 
                                             </Text>
 
@@ -230,7 +212,7 @@ const ExternalProfileScreen = ({
                                           totalFollowersCount={user?.followers||0}
                                           totalFollowingCount={user?.following||0}
                                           url={user?.image||""}
-                                          name={user?.name||""}
+                                          name={getFormattedName(user?.name?user?.name:"")}
                                           date={user?.date||""}
                                            />
 
@@ -306,6 +288,7 @@ const ExternalProfileScreen = ({
                                             gap: scale(20)
                                         }}>
                                             <CustomButtom
+                                            disabled={loading?.initialLoading}
                                             loading={loading?.blockLoading}
                                                 Icon={() => <Image source={arrow} />}
                                                 showIcon={true}
@@ -322,7 +305,9 @@ const ExternalProfileScreen = ({
                                             />
 
 
-                                            <CustomButtom
+                                            {/* <CustomButtom
+                                            disabled={loading}
+
                                                 Icon={() => <Image source={arrow} />}
                                                 showIcon={true}
                                                 buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
@@ -334,10 +319,13 @@ const ExternalProfileScreen = ({
                                                 // }}
                                                 title={`Report`}
 
-                                            />
+                                            /> */}
 
 
                                             <CustomButtom
+                                             disabled={loading?.initialLoading}
+
+
                                                 Icon={() => <Image source={arrow} />}
                                                 showIcon={true}
                                                 buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}

@@ -28,7 +28,6 @@ const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () 
                 }
             });
 
-            console.log("res?.data?.sauces========================================>", res?.data?.items)
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleSaucesListThree(res?.data?.items))
         } catch (error) {

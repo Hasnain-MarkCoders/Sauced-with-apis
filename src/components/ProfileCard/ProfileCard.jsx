@@ -4,6 +4,7 @@ import { scale } from 'react-native-size-matters'
 import { formatDate, getFormattedName } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
+import { useSelector } from 'react-redux'
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -13,6 +14,7 @@ url="",
 name="",
 date=""
 }) => {
+
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
     return (

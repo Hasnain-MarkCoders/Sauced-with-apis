@@ -29,7 +29,6 @@ const SaucesListOne = ({ title = "", name = "", showMoreIcon = false, cb = () =>
             });
 
                  setHasMore(res.data.pagination.hasNextPage);
-                 console.log("res?.data?.sauces==============================>", res?.data?.items)
                  dispatch(handleSaucesListOne(res?.data?.items))
         } catch (error) {
             console.error('Failed to fetch sauces:', error);

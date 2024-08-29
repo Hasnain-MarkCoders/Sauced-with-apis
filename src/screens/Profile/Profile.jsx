@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -14,7 +14,7 @@ import { FriendListImages, handleText, topRatedSauces } from '../../../utils.js'
 import ProfileCard from '../../components/ProfileCard/ProfileCard.jsx';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import moreIcon from "./../../../assets/images/more.png"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useAxios from '../../../Axios/useAxios.js';
 import BookMarkSauceList from '../../components/BookMarkSauceList/BookMarkSauceList.jsx';
 import FavoriteSaucesList from '../../components/FavoriteSaucesList/FavoriteSaucesList.jsx';
@@ -23,8 +23,10 @@ import SaucesListOne from '../../components/SaucesListOne/SaucesListOne.jsx';
 import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
 import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
 import InterestedEvents from '../../components/InterestedEvents/InterestedEvents.jsx';
+import { handleStats } from '../../../android/app/Redux/userStats.js';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
+    const [initialLoading, setInitialLoading] = useState(true)
   const axiosInstance = useAxios()
 
     const [data, setData] = useState([])
@@ -34,6 +36,11 @@ const ProfileScreen = () => {
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [isKeyBoard, setIsKeyBoard] = useState(false)
+    const users = useSelector(state=>state?.users)
+    const followings = useSelector(state=>state?.followings)
+    const followers = useSelector(state=>state?.followers)
+    const userStats = useSelector(state=>state?.userStats)
+    const dispatch = useDispatch()
     const [query, setQuery] = useState({
         search: "",
     });
@@ -52,72 +59,19 @@ const ProfileScreen = () => {
             hideSubscription.remove();
         };
     }, []);
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (!query?.search?.trim()) {
-    //             return
-    //         }
-    //         console.log("query.search", query.search)
-    //         if (loading) return;
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page,
-    //                     query: query?.search
-    //                 }
-    //             });
-
-    //             setData(prev => [...res.data.results, ...prev]);
-
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     // fetchPhotos();
-    // }, [query.search, page]);
-
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (query?.search.trim()) {
-    //             return
-    //         }
-    //         if (!hasMore || loading) return;
-    //         setLoading(true);
-    //         try {
-    //             const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-    //                 params: {
-    //                     client_id: VITE_UNSPLASH_ACCESSKEY,
-    //                     page: page
-    //                 }
-    //             });
-    //             if (res.data.length === 0) {
-    //                 setHasMore(false);
-    //             } else {
-    //                 setData(prevData => [...res.data, ...prevData]);
-    //             }
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     // fetchPhotos();
-    // }, [page]);
-    // useEffect(() => {
-    //     console.log(auth.token)
-    // }, [])
-
     React.useEffect(() => {
         const fetchUser = async () => {
             setLoading(true);
             try {
                 const res = await axiosInstance.get(`/get-user`);
-                setUser(res?.data?.user)
+                dispatch(handleStats({
+                    followers:res?.data?.user?.followers,
+                    followings:res?.data?.user?.following,
+                    checkins:res?.data?.user?.checkins?.length,
+                    uri:res?.data?.user?.image,
+                    name:res?.data?.user?.name,
+                    date:res?.data?.user?.date
+                }))
             } catch (error) {
                 console.error('Failed to fetch user:', error);
             } finally {
@@ -159,8 +113,18 @@ const ProfileScreen = () => {
        
         fetchPhotos();
     }, [page]);
-
-
+useEffect(()=>{
+setTimeout(()=>{
+setInitialLoading(false)
+},1000)
+},[])
+if (initialLoading) {
+    return (
+        <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#FFA100" />
+        </ImageBackground>
+    );
+}
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -200,12 +164,12 @@ const ProfileScreen = () => {
 
                                         </Text>
                                         <ProfileCard
-                                        totalCheckIns ={user?.checkinsCount||0}
-                                        totalFollowersCount={user?.followers||0}
-                                        totalFollowingCount={user?.following||0}
-                                        url={user?.image||""}
-                                        name={user?.name||""}
-                                        date={user?.date||""}
+                                        totalCheckIns ={userStats?.checkins}
+                                        totalFollowersCount={userStats?.followers}
+                                        totalFollowingCount={userStats?.followings}
+                                        url={user?.image||userStats?.uri}
+                                        name={user?.name||userStats?.name}
+                                        date={user?.date||userStats?.date}
                                             />
 
 
@@ -254,21 +218,21 @@ const ProfileScreen = () => {
                                             marginBottom: scale(20)
 
                                         }}>
-                                            <Text style={{
-                                                color: "white",
-                                                fontWeight: 600,
-                                                fontSize: scale(24),
-                                                lineHeight: scale(28),
-
-                                            }}>
-                                                Add Friends
-                                            </Text>
+                                            {
+                                                users?.length>0 &&  <Text style={{
+                                                    color: "white",
+                                                    fontWeight: 600,
+                                                    fontSize: scale(24),
+                                                    lineHeight: scale(28),
+    
+                                                }}>
+                                                    Add Friends
+                                                </Text>
+                                            }
+                                           
                                             <TouchableOpacity
                                                 onPress={() => {
-                                                    // Linking.openURL(url)
-                                                    // navigation.navigate("MyReviewedSauces", { route: "check-ins" }, {data: checkedInSauces, setData:setCheckedInSauces})
                                                     navigation.navigate("MyReviewedSauces")
-
                                                 }}
                                                 style={{
                                                     paddingHorizontal: scale(10),

@@ -1,0 +1,103 @@
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import React, { memo, useCallback, useEffect, useState } from 'react'
+import { FlatList } from 'react-native-gesture-handler';
+import UserCard from '../UserCard/UserCard';
+import { scale } from 'react-native-size-matters';
+import useAxios from '../../../Axios/useAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleUsers } from '../../../android/app/Redux/users';
+import { handleFollowings, handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
+import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
+
+const FollowingList = ({
+    numColumns = 2,
+}) => {
+    const [page, setPage] = useState(1)
+    const [hasMore, setHasMore] = useState(true)
+    const [loading, setLoading] = useState(false);
+    const axiosInstance = useAxios()
+    const followings = useSelector(state=>state?.followings)
+    const dispatch = useDispatch()
+
+    const fetchFollowings = useCallback(async () => {
+        if (!hasMore || loading) return;
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get("/get-following", {
+                params: {
+                    page: page
+                }
+            });
+            setHasMore(res.data.pagination.hasNextPage)
+            dispatch(handleFollowings(res?.data?.data))
+            
+        } catch (error) {
+            console.error('Failed to fetch followers:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [hasMore, page]); // Include all relevant dependencies here
+
+
+    useEffect(() => {
+        fetchFollowings();
+    }, [fetchFollowings]);
+
+
+    useEffect(()=>{
+console.log("followings=======>", followings)
+    },[])
+
+    const handleUser =  useCallback(async(user)=>{
+        dispatch(handleUsers([user]))
+        dispatch(handleRemoveUserFromFollowings(user?._id))
+        dispatch(handleStatsChange({
+            followings:-1,
+            }))
+        await axiosInstance.post("/follow", {_id:user?._id});
+          },[])
+
+    return (
+
+        <View style={{
+            gap: scale(20),
+            flex: 1
+        }}>
+
+            <FlatList
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                numColumns={numColumns}
+                data={followings}
+                onEndReachedThreshold={1}
+                onEndReached={() => {
+                    if (!loading && hasMore) {
+                        setPage(currentPage => currentPage + 1);
+                    }
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => 
+                <UserCard
+                cb={handleUser}
+                title={"Unfollow"}
+                _id={item?._id}
+                item={item}
+                url={item.image}
+                name={item?.name}
+                showText={false}
+                     />
+                    
+                    }
+            />
+            {
+
+                loading && <ActivityIndicator size="small" color="#FFA100" />
+            }
+        </View>
+
+    )
+}
+
+export default memo(FollowingList)
+
+const styles = StyleSheet.create({})
