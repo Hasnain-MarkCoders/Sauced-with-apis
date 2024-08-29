@@ -68,6 +68,7 @@ const CheckinScreen = () => {
     });
     const route = useRoute()
     const product = route?.params?.product
+    const routerNumber = route?.params?.routerNumber
     const axiosInstance = useAxios()
 
 
@@ -187,7 +188,7 @@ const CheckinScreen = () => {
                     open:true,
                     message:"Check complete."
                 })
-                if(results[0].status=="fulfilled")
+                if(results[0]?.status=="fulfilled")
                     setAlertModal({
                         open:true,
                         message:results[0]?.value?.message
@@ -200,7 +201,7 @@ const CheckinScreen = () => {
                         }
                     )
                     setImageUris([])
-                navigation.navigate("AllCheckinsScreen");
+                navigation.navigate("AllCheckinsScreen", {_id:product?._id, routerNumber});
             }
         } catch (error) {
             console.error('An error occurred during uploads:', error);

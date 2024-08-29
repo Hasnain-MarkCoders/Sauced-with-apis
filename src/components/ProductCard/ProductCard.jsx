@@ -354,7 +354,7 @@ const ProductCard = ({
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", { product })
+                        navigation.navigate("Checkin", { product,routerNumber:2                        })
 
                     }}
                     style={{

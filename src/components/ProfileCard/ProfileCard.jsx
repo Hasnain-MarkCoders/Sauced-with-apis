@@ -12,7 +12,8 @@ totalFollowersCount=0,
 totalFollowingCount=0,
 url="",
 name="",
-date=""
+date="",
+_id
 }) => {
 
     const navigation = useNavigation()
@@ -151,7 +152,7 @@ date=""
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllCheckinsScreen", {routerNumber:1})
+                                navigation.navigate("AllCheckinsScreen", {routerNumber:1, _id})
 
                             }}>
 

@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Vibration, Image, Alert } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Vibration, Image, Alert, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -32,6 +32,7 @@ const ExternalProfileScreen = ({
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
+    const [initialLoading, setInitialLoading] = useState(true)
     const [loading, setLoading] = useState({
         blockLoading:false,
         initialLoading:true,
@@ -84,6 +85,9 @@ const ExternalProfileScreen = ({
                     ...prev,
                     initialLoading:false,
                 }));
+                if (initialLoading){
+                    setInitialLoading(false)
+                }
             }
         };
         // Initial fetch
@@ -96,13 +100,8 @@ const ExternalProfileScreen = ({
 
 
     const handleUser =  useCallback(async(user)=>{
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
-        console.log("user_id", user?._id)
-        console.log(user)
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++=")
         if(user){
             dispatch(handleRemoveUserFromUsers(user?._id))
-
             if(user?.isFollowing){
                 dispatch(handleRemoveUserFromFollowings(user?._id))
                 dispatch(handleStatsChange({
@@ -147,6 +146,13 @@ const ExternalProfileScreen = ({
 
     }
 
+    if (initialLoading) {
+        return (
+            <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#FFA100" />
+            </ImageBackground>
+        );
+    }
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
@@ -208,6 +214,7 @@ const ExternalProfileScreen = ({
                                             </Text>
                                         </View>
                                         <ExternalUserCard
+                                        _id={_id}
                                           totalCheckIns ={user?.checkinsCount||0}
                                           totalFollowersCount={user?.followers||0}
                                           totalFollowingCount={user?.following||0}
@@ -253,7 +260,7 @@ const ExternalProfileScreen = ({
                                         </View>
                                         <TouchableOpacity onPress={() => {
                                             Vibration.vibrate(10)
-                                            navigation.navigate("AllReviews")
+                                            navigation.navigate("AllUserReviews", {_id})
 
                                         }}>
 

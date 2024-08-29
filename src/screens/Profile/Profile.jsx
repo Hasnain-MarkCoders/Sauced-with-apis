@@ -164,6 +164,7 @@ if (initialLoading) {
 
                                         </Text>
                                         <ProfileCard
+                                        _id={auth?._id}
                                         totalCheckIns ={userStats?.checkins}
                                         totalFollowersCount={userStats?.followers}
                                         totalFollowingCount={userStats?.followings}
@@ -232,7 +233,7 @@ if (initialLoading) {
                                            
                                             <TouchableOpacity
                                                 onPress={() => {
-                                                    navigation.navigate("MyReviewedSauces")
+                                                    navigation.navigate("AllUserReviews", {_id:auth?._id})
                                                 }}
                                                 style={{
                                                     paddingHorizontal: scale(10),
@@ -278,12 +279,9 @@ if (initialLoading) {
                                         <CheckedInSaucesList
                                             title='Checked-in Sauces'
                                         />
-                                        {/* <SauceList
-                                        type="checkedin"
-                                        title='Checked-in Sauces' data={topRatedSauces} /> */}
                                         <SauceList
                                             type="reviewed"
-                                            cb={() => { navigation.navigate("MyReviewedSauces", { route: "review" }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
+                                            cb={() => { navigation.navigate("AllReviews", { route: "review" }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
 
                                     </View>
 

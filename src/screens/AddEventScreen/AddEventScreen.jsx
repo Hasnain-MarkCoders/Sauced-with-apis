@@ -107,7 +107,8 @@ const AddEventScreen = () => {
             "venueName": query?.address,
             "venueDescription": query?.destinationDetails,
             "venueLocation.longitude": "12.4964",
-            "venueLocation.latitude": "41.9028"}
+            "venueLocation.latitude": "41.9028"
+        }
         )
          console.log("<==============================================res============================================>", res.data)
             }catch(error){

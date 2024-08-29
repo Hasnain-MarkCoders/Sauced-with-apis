@@ -15,6 +15,7 @@ import { handleText } from '../../../utils.js';
 import { messagesData } from '../../../utils';
 import user1 from "./../../../assets/images/user1.png"
 import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
+import useAxios from '../../../Axios/useAxios.js';
 
 const AllCheckinsScreen = ({
 }) => {
@@ -28,6 +29,7 @@ const AllCheckinsScreen = ({
     const uri = auth.url
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
+    const _id = route?.params?._id
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [isKeyBoard, setIsKeyBoard] = useState(false)
@@ -37,36 +39,31 @@ const AllCheckinsScreen = ({
         search: "",
     });
     const navigation = useNavigation()
-
-    const handleSubmitMessage = (data)=>{
+    const axiosInstance = useAxios()
+    const handleSubmitMessage = (data) => {
         setIsKeyBoard(true)
     }
-    const getId = (id=0)=>{
+    const getId = (id = 0) => {
         return setId(id)
     }
-    const handleUserProfileView = (data)=>{
-        navigation.navigate("ExternalProfileScreen", {url:data.profileUri, name:data.name})
+    const handleUserProfileView = (data) => {
+        navigation.navigate("ExternalProfileScreen", { url: data.profileUri, name: data.name })
     }
-    const handleAddMessage = ()=>{
-        if(isNewMsg){
-            messagesData.unshift({
-                url: user1,
-                title: "Mike Smith",
-                text:query.search,
-                assets:[],
-                replies:[]
+    const handleAddMessage = async () => {
+        const existingMessage = data.find(item => item?._id == id)
+        if (existingMessage) {
+            existingMessage?.comments?.unshift({
+                user: { image: uri, name: auth?.name }, text: query.search
             })
-            setQuery({search:""})
-            setNewMsg(false)
-            return
+            setQuery({ search: "" })
+            const res = await axiosInstance.post(`/create-comment`, {
+                "checkinId": id,
+                "text": query.search
+            });
         }
 
-        messagesData[id].replies.unshift({
-                url: user1,
-                title: "Mike Smith",
-                text:query.search,
-            })
-            setQuery({search:""})
+
+
     }
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -84,63 +81,30 @@ const AllCheckinsScreen = ({
             hideSubscription.remove();
         };
     }, []);
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!query?.search?.trim()) {
-                return
-            }
-            if (loading) return;
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/search/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page,
-                        query: query?.search
-                    }
-                });
-
-                setData(prev => [...prev, ...res.data.results]);
-
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPhotos();
-    }, [query.search, page]);
 
     useEffect(() => {
-        const fetchPhotos = async () => {
-            if (query?.search.trim()) {
-                return
-            }
+        const fetchCheckings = async () => {
             if (!hasMore || loading) return;
             setLoading(true);
             try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
+                const res = await axiosInstance.get(`/get-checkins`, {
                     params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page
+                        page: page,
+                        _id
                     }
                 });
-                if (res.data.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prevData => [...prevData, ...res.data]);
-                }
+                setHasMore(res?.data?.pagination?.hasNextPage);
+                setData(prev => [...prev, ...res?.data?.checkins]);
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchPhotos();
+
+        fetchCheckings();
     }, [page]);
-  
-  
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -183,80 +147,82 @@ const AllCheckinsScreen = ({
                                 {
                                     index == 1 && <View style={{
                                     }}>
-                
-                <CommentsList  cb={handleUserProfileView} setNewMsg={setNewMsg} getId={getId} handleSubmitMessage = {handleSubmitMessage} setPage={setPage}
-                                        //  data={data} 
-                                         data={messagesData}
-                                        
-                                        loading={loading} hasMore={hasMore} />
+
+                                        <CommentsList
+                                            commentsData={data}
+                                            cb={handleUserProfileView} setNewMsg={setNewMsg} getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
+                                            data={messagesData}
+                                            loading={loading} hasMore={hasMore} />
                                     </View>
                                 }
                             </View>
                         )
                     }}
                 />
-               { isKeyBoard &&
-               <View style={{
-                marginBottom:scale(10)
-               }}>
-               <CustomInput
-               autoFocus ={isKeyBoard}
-                    imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
-                    isURL={false}
-                    showImage={true}
-                    uri={""}
-                    name="search"
-                    multiline={true}
-                    numberOfLines={3}
-                    onChange={handleText}
-                    updaterFn={setQuery}
-                    value={query.search}
-                    showTitle={false}
-                    placeholder="Write a comment."
-                    containterStyle={{
-                        flexGrow: 1,
-                        background:"red",
-                        width:"95%",
-                        margin:"auto",
-                        marginBottom:scale(10)
-                    }}
-                    inputStyle={{
-                        borderColor: "#FFA100",
-                        borderWidth: 1,
-                        borderRadius: 10,
-                        padding: 15,
-                        paddingLeft: scale(10),
-                        textAlignVertical:"top"
-
-                    }} />  
-                    <TouchableOpacity
-                    onPress={() => {
-                        handleAddMessage()
-                        // Linking.openURL(url)
-                        setIsKeyBoard(false)
-
-                    }}
-                    style={{
-                        paddingHorizontal: scale(10),
-                        paddingVertical: scale(10),
-                        backgroundColor: "#FFA100",
-                        borderRadius: scale(5),
-                        elevation: scale(5),
-                        alignSelf: "flex-end",
-                        width:"95%",
-                        margin:"auto"
-
+                {isKeyBoard &&
+                    <View style={{
+                        marginBottom: scale(10)
                     }}>
-                    <Text style={{
-                        color: "black",
-                        fontWeight: "700",
-                        textAlign:"center"
+                        <CustomInput
+                            autoFocus={isKeyBoard}
+                            imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                            isURL={false}
+                            showImage={true}
+                            uri={""}
+                            name="search"
+                            multiline={true}
+                            numberOfLines={3}
+                            onChange={handleText}
+                            updaterFn={setQuery}
+                            value={query.search}
+                            showTitle={false}
+                            placeholder="Write a comment."
+                            containterStyle={{
+                                flexGrow: 1,
+                                background: "red",
+                                width: "95%",
+                                margin: "auto",
+                                marginBottom: scale(10)
+                            }}
+                            inputStyle={{
+                                borderColor: "#FFA100",
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                padding: 15,
+                                paddingLeft: scale(10),
+                                textAlignVertical: "top"
 
-                    }}>Submit</Text>
+                            }} />
+                        <TouchableOpacity
+                            disabled={query?.search ? false : true}
+
+                            onPress={() => {
+                                handleAddMessage()
+                                // Linking.openURL(url)
+                                setIsKeyBoard(false)
+
+                            }}
+                            style={{
+                                paddingHorizontal: scale(10),
+                                paddingVertical: scale(10),
+                                backgroundColor: "#FFA100",
+                                borderRadius: scale(5),
+                                elevation: scale(5),
+                                alignSelf: "flex-end",
+                                width: "95%",
+                                margin: "auto"
+
+                            }}>
+                            <Text style={{
+                                color: "black",
+                                fontWeight: "700",
+                                textAlign: "center"
+
+                            }}>Submit</Text>
 
 
-                </TouchableOpacity></View> }
-               
+                        </TouchableOpacity></View>}
+
             </SafeAreaView>
         </ImageBackground>
     )

@@ -1,27 +1,11 @@
-import { ActivityIndicator, ImageBackground, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, ImageBackground, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-import auth from '@react-native-firebase/auth';
 import DrawerStack from '../DrawerStack/DrawerStack';
 import Welcome from '../Welcome/Welcome';
 import home from './../../../assets/images/home.png';
 import useAxios from '../../../Axios/useAxios';
-import PublicStack from '../PublicStack/PublicStack';
-import AllReviewsScreen from '../AllReviewsScreen/AllReviewsScreen';
-import QRScreen from '../QRScreen/QRScreen';
-import CheckinScreen from '../CheckinScreen/CheckinScreen';
-import AddReview from '../AddReview/AddReview';
-import ExternalProfileScreen from '../ExternalProfileScreen/ExternalProfileScreen';
-import SouceDetails from '../SouceDetails/SouceDetails';
-import YoutubeScreen from '../YoutubeScreen/YoutubeScreen';
-import EventPage from '../EventPage/EventPage';
-import MapScreen from '../MapScreen/MapScreen';
-import Product from '../Product/Product';
-import RequestASauceScreen from '../RequestASauceScreen/RequestASauceScreen';
-import AddEventScreen from '../AddEventScreen/AddEventScreen';
-import MyReviewSauces from '../MyReviewSauces/MyReviewSauces';
-import AllCheckinsScreen from '../AllCheckinsScreen/AllCheckinsScreen';
 
 const Stack = createNativeStackNavigator();
 import axios from 'axios';

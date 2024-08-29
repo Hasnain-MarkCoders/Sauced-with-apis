@@ -22,11 +22,11 @@ import MapScreen from './src/screens/MapScreen/MapScreen';
 import YoutubeScreen from './src/screens/YoutubeScreen/YoutubeScreen';
 import RequestASauceScreen from './src/screens/RequestASauceScreen/RequestASauceScreen';
 import AddEventScreen from './src/screens/AddEventScreen/AddEventScreen';
-import MyReviewSauces from './src/screens/MyReviewSauces/MyReviewSauces';
 import Welcome from './src/screens/Welcome/Welcome';
 import MainNavigation from './src/screens/MainNavigation/MainNavigation';
 import BrandScreen from './src/screens/BrandScreen/BrandScreen';
 import UserSearchScreen from './src/screens/UserSearchScreen/UserSearchScreen';
+import AllUserReviews from './src/screens/AllUserReviews/AllUserReviews';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -78,29 +78,7 @@ function AppRouter() {
   }
 
   return (
-    // <GestureHandlerRootView>
-    //   <NavigationContainer
-    //    onReady={() => BootSplash.hide({ fade: true })}
-    //   >
-    //     <Stack.Navigator screenOptions={{ headerShown: false,  animationEnabled: false }}>{
-
-    //       isAuthenticated ? <>
-
-    //         <Stack.Screen name="Drawer" component={DrawerStack} />
-    //         <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
-    //         <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
-    //         <Stack.Screen name="QRScreen" component={QRScreen} />
-    //         <Stack.Screen name="Checkin" component={CheckinScreen} />
-    //         <Stack.Screen name="AddReview" component={AddReview} />
-    //         <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
-    //         <Stack.Screen name="SauceDetails" component={SouceDetails} />
-    //         <Stack.Screen name="ProductDetail" component={Product} />
-    //       </>
-    //         :
-    //         <Stack.Screen name="Public" component={PublicStack} />}
-    //     </Stack.Navigator>
-    //   </NavigationContainer>
-    // </GestureHandlerRootView>
+  
 
 
     <GestureHandlerRootView>
@@ -126,7 +104,7 @@ function AppRouter() {
                 <Stack.Screen name="ProductDetail" component={Product} />
                 <Stack.Screen name="RequestASauceScreen" component={RequestASauceScreen} />
                 <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
-                <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
+                <Stack.Screen name="AllUserReviews" component={AllUserReviews} />
                 <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
                 <Stack.Screen name="BrandScreen" component={BrandScreen} />
                 <Stack.Screen name="UserSearchScreen" component={UserSearchScreen} />
@@ -139,22 +117,6 @@ function AppRouter() {
 
 
           }
-          {/* <Stack.Screen name="Public" component={PublicStack} />
-          <Stack.Screen name="Drawer" component={DrawerStack} />
-          <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
-          <Stack.Screen name="QRScreen" component={QRScreen} />
-          <Stack.Screen name="Checkin" component={CheckinScreen} />
-          <Stack.Screen name="AddReview" component={AddReview} />
-          <Stack.Screen name="ExternalProfileScreen" component={ExternalProfileScreen} />
-          <Stack.Screen name="SauceDetails" component={SouceDetails} />
-          <Stack.Screen name="Youtube" component={YoutubeScreen} />
-          <Stack.Screen name="EventPage" component={EventPage} />
-          <Stack.Screen name="Map" component={MapScreen} />
-          <Stack.Screen name="ProductDetail" component={Product} />
-          <Stack.Screen name="RequestASauceScreen" component={RequestASauceScreen} />
-          <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
-          <Stack.Screen name="MyReviewedSauces" component={MyReviewSauces} />
-          <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

@@ -23,7 +23,8 @@ const CustomComment = ({
     isReply = false,
     count=0,
     index=0,
-    cb=()=>{}
+    cb=()=>{},
+    _id=""
 }) => {
     const [commentStatus, setCommentStatus] = useState(false)
     const [LightBox, setLightBox] = useState(false)
@@ -60,8 +61,7 @@ const CustomComment = ({
                                 borderColor: "#FFA100",
                                 borderWidth: scale(1)
                             }}
-                            // source={{ uri: profileUri }}
-                            source={profileUri}
+                            source={{ uri: profileUri }}
 
                         />
                     </View>
@@ -162,9 +162,7 @@ const CustomComment = ({
                                 borderColor: LightBox ? 0 : "#FFA100",
                                 borderWidth: LightBox ? 0 : scale(1)
                             }}
-                            // source={{ uri: url }}
-                            source={uri}
-
+                            source={{ uri }}
                         />
                     </Lightbox>)
                 }
@@ -181,7 +179,7 @@ const CustomComment = ({
                 }}
                 onPress={() => {
                     handleSubmitMessage()
-                    getId(index)
+                    getId(_id)
                 }}>
 
                 <Text style={{
@@ -202,11 +200,9 @@ const CustomComment = ({
                     isReply={true}
                     showBorder={false}
                     handleSubmitMessage={handleSubmitMessage}
-                    profileUri={item.url}
-                    assets={item.assets}
-                    title={item.title}
+                    profileUri={item?.user?.image}
+                    title={item?.user?.name}
                     text={item.text}
-                    replies={item.replies}
                 />)}
 
             </View>:null
@@ -228,17 +224,7 @@ const CustomComment = ({
                     color:"white"
                 }}>{showReplies ? "Hide Replies":"Show replies"}</Text>}
             </TouchableOpacity>}
-            
-        
-
-
-            {/* <UserDetailsModal
-                name='Mike Smith'
-                email='MikeSmith@gmail.com'
-                prfilePicture={profileUri}
-                modalVisible={openUserDetailsModal}
-                setModalVisible={setOpenUserDetailsModal}
-            /> */}
+           
         </View>
 
     )

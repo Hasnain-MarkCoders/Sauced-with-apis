@@ -18,19 +18,16 @@ import SingleReview from '../../components/SingleReview/SingleReview'
 import { useSelector } from 'react-redux'
 
 
-const MyReviewSauces = () => {
+const AllUserReviews = () => {
     const route = useRoute()
     const userComeFrom = route?.params?.route
-  const axiosInstance = useAxios()
-
+    const axiosInstance = useAxios()
+    
+    const _id = route?.params?._id
     const [data, setData] = useState([]);
-    // const [searchListData, setSeachListData] = useState([...featuredSauces,...topRatedSauces, ...featuredSauces,
-    //     ...topRatedSauces])
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [alertModal, setAlertModal] =useState(false)
-    const [productDetails, setProductDetails] = useState({})
     const navigation = useNavigation()
     const auth  = useSelector(state=>state.auth)
     useEffect(() => {
@@ -42,18 +39,11 @@ const MyReviewSauces = () => {
                 const res = await axiosInstance.get(`/get-user-reviews`, {
                     params: {
                         page: page,
-                        _id:auth?._id
+                        _id
                     }
                 });
-    
-                // if (res?.data?.reviews?.length === 0) {
-                    // setHasMore(false);
-
                     setHasMore(res?.data?.pagination?.hasNextPage);
-
-                // } else {
                     setData(prev=>[...prev, ...res?.data?.reviews]);
-                // }
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
             } finally {
@@ -106,53 +96,15 @@ const MyReviewSauces = () => {
                                     }}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) => 
-
-                                        // <></>
-                                    // <UserCard
-                                    // //     cb={handleOpenModal}
-                                    // //     // item={endpoint.includes("followers") ? item?.followGiverDetails : item?.followRecieverDetails}
-                                    // //     // title={item?.followGiverDetails ?"Follow":"Unfollow"}
-                                    // //     // url={endpoint.includes("followers") ? item?.followGiverDetails?.image : item?.followRecieverDetails?.image}
-                                    // //     // name={endpoint.includes("followers") ? item?.followGiverDetails?.name : item?.followRecieverDetails?.name}
-                                    // //     //  url={item?.urls?.small}
-                                    // //     //  name={item?.user?.username} 
-                                    // //     showText={false}
-                                    // title={item?.isFollowing?"Unfollow":"Follow"}
-                                    // _id={item?._id}
-                                    // item={item}
-                                    // url={item.image}
-                                    // name={item?.name}
-                                    // showText={false}
-                                    //      />
                                     <SingleReview item={item} />
                                         
                                         }
-
                                 />
                 </View>
-
-
-                    
-
-                {/* <ProductSearchList 
-                type="checkedin"
-                style={{
-                    paddingVertical:scale(10),
-                    paddingHorizontal:scale(20),
-                }}
-                setProductDetails={setProductDetails}
-                setAlertModal={setAlertModal}
-                loading={loading} hasMore={hasMore} setPage={setPage} data={data}/>
-                 <CustomProductReviewModal
-                            userComeFrom = {userComeFrom}
-                            data={productDetails}
-                            modalVisible={alertModal}
-                            setModalVisible={()=>setAlertModal(false)}
-                            /> */}
         </ImageBackground>
 
 
     )
 }
 
-export default MyReviewSauces
+export default AllUserReviews
