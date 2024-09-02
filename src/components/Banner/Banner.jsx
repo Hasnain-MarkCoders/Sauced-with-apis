@@ -5,8 +5,7 @@ import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import CustonPlayIcon from '../CustonPlayIcon/CustonPlayIcon';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-const screenWidth = Dimensions.get('window').width;
-
+import { useSelector } from 'react-redux';
 const Banner = ({
     url = "",
     infoText = "",
@@ -19,7 +18,10 @@ const Banner = ({
     isInterested=false,
     loading=false
 }) => {
-    const [tempIsInterested, setTempIsInterested] = useState(false)
+    const interestedEvents = useSelector(state=>state?.interestedEvents)
+    const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
+    const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
+
     const navigation = useNavigation()
     return (
         <>{

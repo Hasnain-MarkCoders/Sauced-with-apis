@@ -44,8 +44,7 @@ import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../a
         const res = await axiosInstance.post(`/interest-event`, {
             eventId:event?._id
         });
-    },[]
-)
+    },[])
     return (
         
         <FlatList

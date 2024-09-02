@@ -24,6 +24,7 @@ import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
 import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
 import InterestedEvents from '../../components/InterestedEvents/InterestedEvents.jsx';
 import { handleStats } from '../../../android/app/Redux/userStats.js';
+import InterestedEventsCarousel from '../../components/InterestedEventsCarousel/InterestedEventsCarousel.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
     const [initialLoading, setInitialLoading] = useState(true)
@@ -137,7 +138,7 @@ if (initialLoading) {
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
-                    data={[1, 1, 1, 1,5]}
+                    data={[1, 1, 1, 1,1, 1]}
                     renderItem={({ item, index }) => {
                         return (
                             <View style={{
@@ -290,6 +291,8 @@ if (initialLoading) {
                                 {
                                     index == 3 && <View style={{
                                         marginTop: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(50),
+                                        marginBottom: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(30),
+
                                         gap:scale(50)
                                     }}>
                                         <SaucesListOne
@@ -304,8 +307,16 @@ if (initialLoading) {
                                     </View>
 
                                 }
-                                {
+                                {/* {
                                     index==4 &&<InterestedEvents/>
+                                } */}
+                                {
+                                    index==5&& 
+                                    
+                                    <InterestedEventsCarousel
+                                    
+                                    showText={true}
+                                    />
                                 }
                             </View>
                         )
