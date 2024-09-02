@@ -112,6 +112,7 @@ const SearchScreen = () => {
                 flex:1,
             }}>
                 <ProductSearchList
+                showHeart={false}
                 searchTerm={query?.search}/>
 
             </View>

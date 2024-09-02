@@ -4,6 +4,13 @@ const followingsSlice = createSlice({
   name: 'followings',
   initialState: [],
   reducers: {
+
+
+      handleFollowingSearch:(state, action)=>{
+        return action.payload
+
+      },
+
     handleFollowings: (state, action) => {
       // Create a map of existing state items by their _id
       const stateMap = new Map(state.map(item => [item._id, item]));
@@ -28,5 +35,5 @@ const followingsSlice = createSlice({
   },
 });
 
-export const { handleFollowings, handleRemoveUserFromFollowings, handleFollowingCount } = followingsSlice.actions;
+export const { handleFollowings, handleRemoveUserFromFollowings, handleFollowingCount ,handleFollowingSearch} = followingsSlice.actions;
 export default followingsSlice.reducer;

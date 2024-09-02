@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import SingleBrand from '../SingleBrand/SingleBrand';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';

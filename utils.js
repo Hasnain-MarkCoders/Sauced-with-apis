@@ -439,7 +439,7 @@ console.log(formatDate(exampleDate));
 
   export const getFormattedName=(name)=>{
     name = name?.split(" ")
-    if (name.length>1){
+    if (name?.length>1){
     name = name[0]?.slice(0,1)?.toUpperCase() + name[0]?.slice(1) + " " + name[1]?.slice(0,1)?.toUpperCase() + "."    
     }
     else{

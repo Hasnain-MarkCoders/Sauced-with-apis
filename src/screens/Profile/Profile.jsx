@@ -27,8 +27,8 @@ import { handleStats } from '../../../android/app/Redux/userStats.js';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
     const [initialLoading, setInitialLoading] = useState(true)
-  const axiosInstance = useAxios()
-
+    const axiosInstance = useAxios()
+    const saucesListOne = useSelector(state=>state.saucesListOne)
     const [data, setData] = useState([])
     const [checkedInSauces, setCheckedInSauces] = useState([])
     const [user, setUser] = useState(null)
@@ -90,29 +90,29 @@ const ProfileScreen = () => {
     }, []);
 
 
-    useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!hasMore || loading) return;
+    // useEffect(() => {
+    //     const fetchPhotos = async () => {
+    //         if (!hasMore || loading) return;
     
-            setLoading(true);
-            try {
-                const res = await axiosInstance.get(`/get-sauces`, {
-                    params: {
-                        type:"checkedin",
-                        page: page
-                    }
-                });
-                    setHasMore(res.data.pagination.hasNextPage);
-                    setCheckedInSauces(prev=>[...prev,...res.data.sauces]);
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    //         setLoading(true);
+    //         try {
+    //             const res = await axiosInstance.get(`/get-sauces`, {
+    //                 params: {
+    //                     type:"checkedin",
+    //                     page: page
+    //                 }
+    //             });
+    //                 setHasMore(res.data.pagination.hasNextPage);
+    //                 setCheckedInSauces(prev=>[...prev,...res.data.sauces]);
+    //         } catch (error) {
+    //             console.error('Failed to fetch photos:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
        
-        fetchPhotos();
-    }, [page]);
+    //     fetchPhotos();
+    // }, [page]);
 useEffect(()=>{
 setTimeout(()=>{
 setInitialLoading(false)
@@ -168,9 +168,9 @@ if (initialLoading) {
                                         totalCheckIns ={userStats?.checkins}
                                         totalFollowersCount={userStats?.followers}
                                         totalFollowingCount={userStats?.followings}
-                                        url={user?.image||userStats?.uri}
-                                        name={user?.name||userStats?.name}
-                                        date={user?.date||userStats?.date}
+                                        url={userStats?.uri}
+                                        name={userStats?.name}
+                                        date={userStats?.date}
                                             />
 
 
@@ -254,7 +254,7 @@ if (initialLoading) {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{
-                                                marginBottom:scale(30)
+                                                marginBottom: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(30)
                                         }}>
 
                                         <HorizontalUsersList 
@@ -289,7 +289,7 @@ if (initialLoading) {
 
                                 {
                                     index == 3 && <View style={{
-                                        marginTop: scale(50),
+                                        marginTop: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(50),
                                         gap:scale(50)
                                     }}>
                                         <SaucesListOne
@@ -301,11 +301,6 @@ if (initialLoading) {
                                          <SaucesListThree
                                         title='My List 3'
                                         />
-
-                                        {/* <BookMarkSauceList type={1} title='My List 1' />
-                                        <BookMarkSauceList type={2} title='My List 2' />
-                                        <BookMarkSauceList type={3} title='My List 3' /> */}
-
                                     </View>
 
                                 }

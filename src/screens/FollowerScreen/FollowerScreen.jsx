@@ -15,6 +15,7 @@ const FollowerScreen = () => {
     const [query, setQuery] = useState({
         search: "",
     });
+
     const navigation = useNavigation()
 
     const [initialLoading, setInitialLoading] = useState(true)
@@ -100,7 +101,10 @@ const FollowerScreen = () => {
                                         All Followers
                                     </Text>
                                     
-                                      <FollowersList/>
+                                      <FollowersList
+                                      
+                                      searchTerm={query?.search}
+                                      />
                                       
                                       </View>
                                    

@@ -146,13 +146,13 @@ const CustomComment = ({
             }}>
 
                 {
-                    assets.map(uri => <Lightbox
+                    assets.map(uri =>uri&& <Lightbox
                         activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
                         springConfig={{ tension: 30, friction: 7 }}
                         onOpen={() => setLightBox(true)}
                         willClose={() => setLightBox(false)}
                     >
-                        <Image
+                      {uri&&  <Image
                             style={{
                                 width: LightBox ? "100%" : scale(120),
                                 height: LightBox ? "100%" : scale(100),
@@ -163,7 +163,7 @@ const CustomComment = ({
                                 borderWidth: LightBox ? 0 : scale(1)
                             }}
                             source={{ uri }}
-                        />
+                        />}
                     </Lightbox>)
                 }
 

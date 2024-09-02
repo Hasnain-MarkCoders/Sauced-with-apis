@@ -35,10 +35,12 @@ const [initialLoading, setInitialLoading] = React.useState(true)
          try {
              const res = await axiosInstance.get(`/get-all-events`, {
                  params: {
-                     page: page
+                     page: page,
+                     type:"allExceptInterested"
                  }
              });
                  setHasMore(res.data.pagination.hasNextPage);
+                 console.log("res?.data?.events=============================>", res?.data?.events.length)
                  setData([...res.data?.events]);
          } catch (error) {
              console.error('Failed to fetch reviews:', error);
@@ -77,7 +79,7 @@ setTimeout(()=>{
 }, 3000)
     },[])
   return (
-    <View style={{gap:scale(20)}}>
+    <View style={{gap:scale(10)}}>
         {
             initialLoading
             ?

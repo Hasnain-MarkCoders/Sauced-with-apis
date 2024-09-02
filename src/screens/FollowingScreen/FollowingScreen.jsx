@@ -1,10 +1,9 @@
 import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import FollowListToggle from '../../components/FollowListToggle/FollowListToggle.jsx';
 import { useNavigation } from '@react-navigation/native';
 import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
@@ -31,6 +30,7 @@ const FollowingScreen = ({
                 </ImageBackground>
             );
         }
+
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: verticalScale(0) }}>
@@ -67,7 +67,7 @@ const FollowingScreen = ({
                                             marginBottom: scale(20)
 
                                         }}>
-                                            Following
+                                            Following 
 
                                         </Text>
 
@@ -76,7 +76,7 @@ const FollowingScreen = ({
                                           isURL={false}
                                           showImage={true}
                                           uri={search}
-                                            cb={() => setPage(1)}
+                                            // cb={() => setPage(1)}
                                             name="search"
                                             onChange={handleText}
                                             updaterFn={setQuery}
@@ -110,7 +110,9 @@ const FollowingScreen = ({
                                     }}>
                                         All Following
                                     </Text>
-                                    <FollowingList endpoint="/get-following"/>
+                                    <FollowingList
+                                    searchTerm={query?.search}
+                                    endpoint="/get-following"/>
                                      </View>
                                 }
                             </View>

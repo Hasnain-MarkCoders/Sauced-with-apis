@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 //export const host =  "http://localhost:5000"
 export const host =  "https://aws.markcoders.com/sauced-backend/api"
 // export const host =  "https://59455wwt-6000.inc1.devtunnels.ms/"
+// export const host =  "https://s4v6lgbv-6000.uks1.devtunnels.ms/api"
 
 
 const useAxios = () => {

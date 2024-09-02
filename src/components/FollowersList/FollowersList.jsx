@@ -6,19 +6,22 @@ import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleUsers } from '../../../android/app/Redux/users';
-import { handleFollowers, handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
-
+import { handleFollowers, handleFollowersSearch, handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
+import {debounce} from 'lodash'
 const FollowersList = ({
     numColumns = 2,
+    searchTerm=""
 }) => {
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const axiosInstance = useAxios()
-    const followings = useSelector(state=>state?.followings)
+    const followers = useSelector(state=>state?.followers)
     const dispatch = useDispatch()
  
     const fetchFollowers = useCallback(async () => {
+        if(searchTerm) return
+
         if (!hasMore || loading) return;
         setLoading(true);
         try {
@@ -36,6 +39,37 @@ const FollowersList = ({
             setLoading(false);
         }
     }, [hasMore, page]); // Include all relevant dependencies here
+
+
+
+    const fetchFollowersWithSearchTerm = useCallback(debounce(async () => {
+        if(!searchTerm) return
+
+        if (!hasMore || loading) return;
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/search-followers`, {
+                params: {
+                    page: page,
+                    searchTerm
+                }
+            });
+            console.log("hasnain hon na yr")
+            setHasMore(res?.data?.pagination?.hasNextPage);
+            console.log("res?.data?.data==========================================>", res?.data?.data)
+            dispatch(handleFollowersSearch(res?.data?.data));
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        } finally {
+            setLoading(false);
+        }
+      }, 1000, { trailing: true }), [page, searchTerm]); // Include all dependencies here
+      
+      useEffect(() => {
+          setHasMore(true);
+          setPage(1);
+          fetchFollowersWithSearchTerm();
+      }, [fetchFollowersWithSearchTerm]);
 
 
     useEffect(() => {
@@ -59,7 +93,7 @@ const FollowersList = ({
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 numColumns={numColumns}
-                data={followings}
+                data={followers}
                 onEndReachedThreshold={1}
                 onEndReached={() => {
                     if (!loading && hasMore) {

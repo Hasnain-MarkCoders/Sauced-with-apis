@@ -17,11 +17,17 @@ const MainNavigation = () => {
     useEffect(()=>{
         (async()=>{
             try{
-                const response = await axios.get("https://aws.markcoders.com/sauced-backend/api/welcome", {
-                    headers:{
-                        "Authorization":`Bearer ${auth.token}`
-                    }
-                })
+                // const response = await axios.get("https://aws.markcoders.com/sauced-backend/api/welcome", {
+                    const response = await axiosInstance.get("/welcome"
+                        
+                //         , {
+
+                //     headers:{
+                //         "Authorization":`Bearer ${auth.token}`
+                //     }
+                // }
+            
+            )
                 setIsWelcome(response?.data?.welcome)
                 setInitialState(false)
                 console.log(isWelcome)

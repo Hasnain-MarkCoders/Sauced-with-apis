@@ -4,6 +4,12 @@ const followersSlice = createSlice({
   name: 'followers',
   initialState: [],
   reducers: {
+
+    handleFollowersSearch:(state, action)=>{
+      return action.payload
+
+    }
+    ,
     handleFollowers: (state, action) => {
       // Create a map of existing state items by their _id
       const stateMap = new Map(state.map(item => [item._id, item]));
@@ -28,5 +34,5 @@ const followersSlice = createSlice({
   },
 });
 
-export const { handleFollowers, handleRemoveUserFromFollowers, handleFollowersCount } = followersSlice.actions;
+export const { handleFollowers, handleRemoveUserFromFollowers, handleFollowersCount, handleFollowersSearch } = followersSlice.actions;
 export default followersSlice.reducer;

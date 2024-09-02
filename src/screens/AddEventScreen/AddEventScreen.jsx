@@ -111,8 +111,16 @@ const AddEventScreen = () => {
         }
         )
          console.log("<==============================================res============================================>", res.data)
+         setAlertModal({
+            alertModal: true,
+            messsage: res?.data?.message
+        })
             }catch(error){
                 console.log(error)
+                setAlertModal({
+                    alertModal: true,
+                    messsage: error?.message
+                })
 
             }
 
@@ -167,7 +175,7 @@ const AddEventScreen = () => {
                                 fontSize:scale(17),
                                 color:"white"
                             }}>
-                                Title
+                                Title *
                             </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
@@ -251,7 +259,7 @@ const AddEventScreen = () => {
                                 fontSize:scale(17),
                                 color:"white"
                             }}>
-                                Address
+                                Address *
                             </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}

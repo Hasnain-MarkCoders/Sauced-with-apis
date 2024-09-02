@@ -15,8 +15,6 @@ import useAxios from '../../../Axios/useAxios.js';
 const AddReview = () => {
     const route = useRoute()
     const sauceId = route?.params?.sauceId
-    const setPage = route?.params?.setPage
-
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const axiosInstance = useAxios()
     const [loading , setLoading] = useState(false)
@@ -24,15 +22,11 @@ const AddReview = () => {
         open: false,
         message: ""
     })
-
-
     const [data, setData] = useState({
         review: "",
         rating: ""
     });
     const navigation = useNavigation()
-
-
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
             setIsKeyBoard(true)
@@ -40,18 +34,14 @@ const AddReview = () => {
         const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
             setIsKeyBoard(false)
         });
-
-        // Cleanup function
         return () => {
             showSubscription.remove();
             hideSubscription.remove();
         };
     }, []);
-
-
-
     const handleSubmit = async() => {
         try{
+            Vibration.vibrate(10)
             setLoading(true)
             Vibration.vibrate(10)
             if (!data?.review) {
@@ -73,7 +63,6 @@ const AddReview = () => {
                     message: response?.data.message
                 })
                 setData({})
-                setPage(1)
             }
 
         }catch(error){
@@ -149,22 +138,6 @@ const AddReview = () => {
 
                                             }} />
 
-                                        {/* <TouchableOpacity style={{
-                                            backgroundColor:"#2e210a",
-                                            borderRadius:scale(10),
-                                            paddingVertical:scale(13),
-                                            paddingHorizontal:scale(10),
-                                            borderColor:"#FFA100",
-                                            borderWidth:1,
-                                            flexDirection:"row",
-                                            justifyContent:"space-between"
-                                        }}>
-                                            <Text style={{ fontSize: scale(16), color:"white" }}>
-                                                Rating
-                                            </Text>
-                                            <CustomRating initialRating={1} cb={(e)=>{setData(prev=>({...prev, rating:e}))}} size={18}/>
-     
-                                        </TouchableOpacity> */}
                                         <SwipeableRating
                                             rating={data.rating}
                                             allowHalves={true}
@@ -182,8 +155,6 @@ const AddReview = () => {
                                             showIcon={false}
                                             buttonTextStyle={{ fontSize: scale(14) }}
                                             buttonstyle={{ width: "100%", marginTop: scale(60), borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
-                                            // onPress={() => { Vibration.vibrate(10); Alert.alert("Review submitted."), navigation.navigate("AllReviews") }}
-                                            // onPress={() => { Vibration.vibrate(10); navigation.navigate("AllReviews") }}
                                             loading={loading}
                                             onPress={handleSubmit}
 

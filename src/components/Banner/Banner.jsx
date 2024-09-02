@@ -21,12 +21,6 @@ const Banner = ({
 }) => {
     const [tempIsInterested, setTempIsInterested] = useState(false)
     const navigation = useNavigation()
-
-    useEffect(()=>{
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++")
-        console.log("loading", loading)
-        console.log("+++++++++++++++++++++++++++++++++++++++++++++++")
-    },[loading])
     return (
         <>{
             loading
@@ -98,6 +92,7 @@ const Banner = ({
                     <View style={{
                             flexDirection: "row",
                             gap: scale(10),
+                            width:"70%"
                         }}>
 
                             <TouchableOpacity
@@ -109,11 +104,17 @@ const Banner = ({
                                     paddingVertical: scale(6),
                                     backgroundColor: "white",
                                     borderRadius: scale(5),
-                                    elevation: scale(5)
+                                    elevation: scale(5),
+                                    minWidth:scale(80),
+                                    flexGrow:1,
+                                    flexShrink:0,
+                                    minWidth:scale(100)
                                 }}>
                                 <Text style={{
                                     color: "black",
-                                    fontWeight: "700"
+                                    fontWeight: "700",
+                                    textAlign:"center"
+
 
                                 }}>Details</Text>
 
@@ -125,16 +126,22 @@ const Banner = ({
                                 style={{
                                     paddingHorizontal: scale(10),
                                     paddingVertical: scale(6),
-
-                                    backgroundColor: "white",
+                                    backgroundColor: tempIsInterested?"#FFA100":"white",
                                     borderRadius: scale(5),
+                                    flexGrow:1,
+                                    flexShrink:0,
+                                    minWidth:scale(100)
+
                                 }}>
                                 <Text style={{
                                     color: "black",
-                                    fontWeight: "700"
+                                    fontWeight: "700",
+                                    textAlign:"center",
+                                    
 
 
-                                }}>{isInterested || tempIsInterested?"Disinterested":"Interested"}</Text>
+
+                                }}>{isInterested || tempIsInterested?"Not-Interested":"Interested"}</Text>
 
 
                             </TouchableOpacity>

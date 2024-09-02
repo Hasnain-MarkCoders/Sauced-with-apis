@@ -14,6 +14,8 @@ import usersSlice from './users';
 import followersSlice from './followers';
 import followingsSlice from './followings';
 import userStatsSlice from './userStats';
+import searchedUsersSlice from './searchedUsers';
+
 const rootReducer = combineReducers({
     auth:userReducer,
     favoriteSauces:favoriteSaucesSlice,
@@ -27,12 +29,14 @@ const rootReducer = combineReducers({
     users:usersSlice,
     followers:followersSlice,
     followings:followingsSlice,
-    userStats:userStatsSlice
+    userStats:userStatsSlice,
+    searchedUsers:searchedUsersSlice
+
 })
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces','saucesListOne', 'saucesListTwo', 'saucesListThree', 'interestedEvents', 'users', 'followers', 'followings', 'userStats']
+  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces','saucesListOne', 'saucesListTwo', 'saucesListThree', 'interestedEvents', 'users', 'followers', 'followings', 'userStats', 'searchedUsers']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

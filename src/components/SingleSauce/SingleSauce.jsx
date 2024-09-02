@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import filledHeart from "./../../../assets/images/filledHeart.png"
 import emptyheart from "./../../../assets/images/heart.png"
@@ -14,6 +14,7 @@ import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedIn
 import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne';
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
 import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const SingleSauce = ({
     url = "",
@@ -24,8 +25,10 @@ const SingleSauce = ({
     setAlertModal=()=>{},
     item={},
     sauceType="",
+    showHeart=true,
+    searchPageStyle=false
 }) => {
-
+ const [isLoading, setIsLoading] = useState(true);
 const axiosInstance = useAxios()
 const navigation = useNavigation()
 const dispatch = useDispatch()
@@ -85,6 +88,7 @@ const handleToggleLike=async()=>{
         {
         url?
         <TouchableOpacity
+        
         activeOpacity={.8}
         onPress={()=>{handleOnPress()}}
         onLongPress={()=>{
@@ -107,19 +111,24 @@ const handleToggleLike=async()=>{
         style={[styles.container,
             {width:scale(110), ...customStyles},
         ]}>
-            <Image
-         
-              source={{uri:url}}
-                style={[styles.image, {objectFit:"contain"}]}
 
-            />
+{isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item  width="100%" height={searchPageStyle?scale(140):"100%"} marginTop={searchPageStyle?20:0} borderRadius={10}  />
+        </SkeletonPlaceholder>
+      )}
+      <Image
+        source={{ uri: url }}
+        style={[styles.image, { objectFit: "contain" }]}
+        onLoad={() => setIsLoading(false)}
+      />
             <Text
                 ellipsizeMode='tail'
                 numberOfLines={1}
             style={styles.text}>
               {title}
             </Text>
-        {item["hasLiked"]?<Image
+        {   showHeart&& (item["hasLiked"]?<Image
         style={{
                 width:scale(17),
                 height:scale(15),
@@ -134,7 +143,7 @@ const handleToggleLike=async()=>{
                 position:"absolute",
                 bottom:scale(20),
                 right:scale(10),
-            }} source={emptyheart}/>
+            }} source={emptyheart}/>)
             }
         </TouchableOpacity>
         :null

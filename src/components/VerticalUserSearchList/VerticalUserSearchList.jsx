@@ -8,39 +8,74 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleRemoveUserFromUsers, handleUsers } from '../../../android/app/Redux/users';
 import { handleFollowings } from '../../../android/app/Redux/followings';
 import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
-const HorizontalUsersList = ({
+import { handleRemoveSearchedUsers, handleSearchedUsers } from '../../../android/app/Redux/searchedUsers';
+import { debounce } from 'lodash';
+const VerticalUserSearchList = ({
  numColumns=1,
- horizontal=true
+ horizontal=true,
+ searchTerm=""
 
 }) => {
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const axiosInstance = useAxios()
-    const users = useSelector(state=>state?.users)
+    const users = useSelector(state=>state?.searchedUsers)
+
     const dispatch = useDispatch()
-    const fetchUsers = useCallback(async () => {
-      if (!hasMore || loading) return;
-      setLoading(true);
-      try {
-          const res = await axiosInstance.get(`/get-random-users`, {
-              params: {
-                  page: page
-              }
-          });
-                setHasMore(res.data.pagination.hasNextPage);
-                dispatch(handleUsers(res?.data?.randomUsers))
-      } catch (error) {
-          console.error('Failed to fetch photos:', error);
-      } finally {
-          setLoading(false);
-      }
-  },[page]);
+//   const fetchUsersWithSearchTerm = useCallback(async () => {
+//   if (!hasMore || loading) return;
+//   setLoading(true);
+//   try {
+//       const res = await axiosInstance.get(`/search`, {
+//           params: {
+//               page: page,
+//               searchTerm
 
+//           }
+//       });
+
+//             setHasMore(res?.data?.pagination?.hasNextPage);
+//             dispatch(handleSearchedUsers(res?.data?.results))
+//   } catch (error) {
+//       console.error('Failed to fetch photos:', error);
+//   } finally {
+//       setLoading(false);
+//   }
+// },[page, searchTerm, hasMore]);
+
+//   useEffect(() => {
+//     setHasMore(true)
+//     setPage(1)
+//       fetchUsersWithSearchTerm();
+//   }, [fetchUsersWithSearchTerm]);
+
+
+const fetchUsersWithSearchTerm = useCallback(debounce(async () => {
+    if (!hasMore || loading) return;
+    setLoading(true);
+    try {
+        const res = await axiosInstance.get(`/search`, {
+            params: {
+                page: page,
+                searchTerm
+            }
+        });
+  
+        setHasMore(res?.data?.pagination?.hasNextPage);
+        dispatch(handleSearchedUsers(res?.data?.results));
+    } catch (error) {
+        console.error('Failed to fetch users:', error);
+    } finally {
+        setLoading(false);
+    }
+  }, 1000), [page, searchTerm, hasMore]); // Include all dependencies here
+  
   useEffect(() => {
-      fetchUsers();
-  }, [fetchUsers]);
-
+      setHasMore(true);
+      setPage(1);
+      fetchUsersWithSearchTerm();
+  }, [fetchUsersWithSearchTerm]);
 
 const handleUser =  useCallback(async(user)=>{
     dispatch(handleStatsChange({
@@ -49,6 +84,8 @@ followings:1,
 
 dispatch(handleFollowings([user]))
 dispatch(handleRemoveUserFromUsers(user?._id))
+dispatch(handleRemoveSearchedUsers(user?._id))
+
 
  await axiosInstance.post("/follow", {_id:user?._id});
   },[])
@@ -89,4 +126,4 @@ dispatch(handleRemoveUserFromUsers(user?._id))
   )
 }
 
-export default HorizontalUsersList
+export default VerticalUserSearchList

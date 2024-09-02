@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
-
+const windowWidth = Dimensions.get('window').width;
 const ProductSearchList = ({
     title = "",
     setProductDetails = () => { },
     setAlertModal = () => { },
     style = {},
     type = "",
+    showHeart=false,
     searchTerm = "",
 }) => {
     const axiosInstance = useAxios()
@@ -62,6 +63,7 @@ const ProductSearchList = ({
             <FlatList
                 data={data}
                 showsVerticalScrollIndicator={false}
+                contentContainerStyle={{paddingBottom:scale(150), gap:scale(10)}}
                 showsHorizontalScrollIndicator={false}
                 numColumns={3}
                 onEndReachedThreshold={0.5}
@@ -72,31 +74,25 @@ const ProductSearchList = ({
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => <SingleSauce
+                searchPageStyle={true}
+                showHeart={showHeart}
                     setProductDetails={setProductDetails}
                     setAlertModal={setAlertModal}
                     showPopup={false}
                     customStyles={
 
                         {
-                            width: "31%",
+                            width: scale((windowWidth))/4.3,
+                            marginBottom:scale(-20),
                             marginHorizontal: "auto",
-                            marginBottom: -20
                         }
                     }
-                    index={index} customWidth={"30%"}
+                    index={index}
                     item={item}
-
-                    // url={item?.urls?.small}
-                    //  title={item?.user?.username}  
-                    //  url={item?.url}
                     url={item?.image}
                     title={item?.name}
 
                 />}
-                contentContainerStyle={{
-                    justifyContent: 'space-between',
-                    paddingBottom: scale(120)
-                }}
             />
             {loading && (
                 <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />

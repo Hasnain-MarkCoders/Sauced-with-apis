@@ -6,11 +6,12 @@ import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleUsers } from '../../../android/app/Redux/users';
-import { handleFollowings, handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
+import { handleFollowingSearch, handleFollowings, handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
 import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
-
+import {debounce} from 'lodash'
 const FollowingList = ({
     numColumns = 2,
+    searchTerm=""
 }) => {
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
@@ -21,6 +22,8 @@ const FollowingList = ({
 
     const fetchFollowings = useCallback(async () => {
         if (!hasMore || loading) return;
+        if(searchTerm) return
+
         setLoading(true);
         try {
             const res = await axiosInstance.get("/get-following", {
@@ -39,14 +42,43 @@ const FollowingList = ({
     }, [hasMore, page]); // Include all relevant dependencies here
 
 
+
+    const fetchFollowingWithSearchTerm = useCallback(debounce(async () => {
+        if(!searchTerm) return
+        if (!hasMore || loading) return;
+        
+        setLoading(true);
+        try {
+            const res = await axiosInstance.get(`/search-following`, {
+                params: {
+                    page: page,
+                    searchTerm
+                }
+            });
+      
+            setHasMore(res?.data?.pagination?.hasNextPage);
+            dispatch(handleFollowingSearch(res?.data?.data));
+            console.log(res?.data?.data)
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        } finally {
+            setLoading(false);
+            console.log(searchTerm)
+        }
+      }, 1000, {  trailing: true }), [page, searchTerm, hasMore]); // Include all dependencies here
+      
+      useEffect(() => {
+          setHasMore(true);
+          setPage(1);
+          fetchFollowingWithSearchTerm();
+      }, [fetchFollowingWithSearchTerm]);
+
     useEffect(() => {
         fetchFollowings();
     }, [fetchFollowings]);
 
 
-    useEffect(()=>{
-console.log("followings=======>", followings)
-    },[])
+
 
     const handleUser =  useCallback(async(user)=>{
         dispatch(handleUsers([user]))

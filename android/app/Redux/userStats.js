@@ -12,8 +12,8 @@ const userStatsSlice = createSlice({
   },
   reducers: {
     handleStatsChange: (state, action) => {
-           state.followings += action.payload.followings||0;
-          state.followers += action.payload.followers || 0; // Example for handling followers
+           state.followings +=  action.payload.followings>0?action.payload.followings:0;
+          state.followers += action.payload.followers>0?action.payload.followers:0; // Example for handling followers
           state.checkins += action.payload.checkins || 0
       },
       handleStats:(state, action)=>{

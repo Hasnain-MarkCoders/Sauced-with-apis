@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions, ScrollView,Vibration, Image, ActivityIndicator } from 'react-native';
+import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions, ScrollView,Vibration, Image, ActivityIndicator, Alert } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomInput from '../../components/CustomInput/CustomInput';
@@ -61,8 +61,7 @@ const SignIn = () => {
         // Your API authentication
 
         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: token })
-        console.log("<==*myuser*==>", myuser)
-        console.log("<==*firebasetoken*==>", token)
+     
         if (myuser) {
           dispatch(
             handleAuth({
@@ -120,7 +119,6 @@ const SignIn = () => {
 
 
   async function onFacebookButtonPress() {
-    console.log("hasnian")
     // Attempt login with permissions
     try{
       setAuthLoading(true)
@@ -150,8 +148,6 @@ const SignIn = () => {
         const firebaseIdToken = await userCredential.user.getIdToken();
         console.log("firebaseIdToken=================>", firebaseIdToken)
         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseIdToken });
-        console.log("myuser=================>", myuser)
-
         if (myuser) {
           dispatch(
             handleAuth({
@@ -205,7 +201,6 @@ const SignIn = () => {
       const res =   await auth().signInWithCredential(googleCredential)
       const firebaseToken = await res.user.getIdToken();
       const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
-      console.log("<========myuser==========>", typeof myuser)
       if (myuser ) {
         dispatch(
           handleAuth({
@@ -251,6 +246,9 @@ const SignIn = () => {
  setAuthLoading(false)
 
 }
+
+
+
 
  };
 

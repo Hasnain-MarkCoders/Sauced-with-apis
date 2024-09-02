@@ -90,7 +90,9 @@ function AppRouter() {
             isAuthenticated ?
               <>
               
+              <Stack.Screen name="Map" component={MapScreen} />
               <Stack.Screen name="Main" component={MainNavigation} />
+
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
                 <Stack.Screen name="QRScreen" component={QRScreen} />
@@ -100,7 +102,7 @@ function AppRouter() {
                 <Stack.Screen name="SauceDetails" component={SouceDetails} />
                 <Stack.Screen name="Youtube" component={YoutubeScreen} />
                 <Stack.Screen name="EventPage" component={EventPage} />
-                <Stack.Screen name="Map" component={MapScreen} />
+                {/* <Stack.Screen name="Map" component={MapScreen} /> */}
                 <Stack.Screen name="ProductDetail" component={Product} />
                 <Stack.Screen name="RequestASauceScreen" component={RequestASauceScreen} />
                 <Stack.Screen name="AddEventScreen" component={AddEventScreen} />
