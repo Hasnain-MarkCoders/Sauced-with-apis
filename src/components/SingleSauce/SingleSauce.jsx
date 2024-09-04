@@ -26,7 +26,8 @@ const SingleSauce = ({
     item={},
     sauceType="",
     showHeart=true,
-    searchPageStyle=false
+    searchPageStyle=false,
+    fullWidthText= false
 }) => {
  const [isLoading, setIsLoading] = useState(true);
 const axiosInstance = useAxios()
@@ -123,9 +124,7 @@ const handleToggleLike=async()=>{
         onLoad={() => setIsLoading(false)}
       />
             <Text
-                ellipsizeMode='tail'
-                numberOfLines={1}
-            style={styles.text}>
+            style={[styles.text, {width:fullWidthText?"90%":"60%"}]}>
               {title}
             </Text>
         {   showHeart&& (item["hasLiked"]?<Image

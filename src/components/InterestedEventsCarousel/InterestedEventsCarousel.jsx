@@ -9,6 +9,7 @@ import useAxios from '../../../Axios/useAxios';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
 import { useDispatch, useSelector } from 'react-redux';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
+import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -26,20 +27,30 @@ const [initialLoading, setInitialLoading] = React.useState(true)
  const [loading, setLoading] = React.useState(false);
  const dispatch=useDispatch()
  const interestedEvents = useSelector(state=>state?.interestedEvents)
+ const auth  = useSelector(state=>state.auth)
+ const [limit,setLimit] = React.useState(null)
+ const [ paginationBullets, setPaginationBullets] = React.useState(null)
+
+ //  console.log(auth?.token)
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;
          setLoading(true);
          try {
-             const res = await axiosInstance.get(`/get-all-events`, {
+             const res = await axiosInstance.get(`/get-interested-event`, {
                  params: {
                      page: page,
-                     type:"allExceptInterested"
+                    //  type:"allExceptInterested"
                  }
              });
-                 setHasMore(res.data.pagination.hasNextPage);
-                 console.log("res?.data?.events=============================>", res?.data?.events.length)
-                 setData([...res.data?.events]);
+                 setHasMore(res?.data?.pagination?.hasNextPage);
+                 setLimit(res?.data?.pagination?.limit)
+                //  console.log("res?.data?.events=============================>", res?.data?.events.length)
+                // //  setData([...res.data?.events]);
+
+                dispatch(handleInterestedEvents(res?.data?.interestedEvents))
+                console.log("res?.data?.interestedEvents?.length====================================================>", res?.data?.interestedEvents?.length)
+                setPaginationBullets(res?.data?.interestedEvents?.length)
          } catch (error) {
              console.error('Failed to fetch reviews:', error);
          } finally {
@@ -51,23 +62,32 @@ const [initialLoading, setInitialLoading] = React.useState(true)
     }, [page]);
     const handleSnapToItem = (index) => {
         setSelected(index);
-        if (index === data.length - 1) {
+        if (index === interestedEvents.length - 1) {
             setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
         }
-    };
 
-  
+    };
 
 
     const handleInterestedEvent = async(event)=>{
         const x = interestedEvents?.find(item=>item?._id==event?._id)
-        if(x){
-            return dispatch(handleRemoveInterestedEvents(event?._id))
+
+        if(!!x){
+                   dispatch(handleRemoveInterestedEvents(event?._id))
+                // dispatch(handleRemoveAllEventsExceptInterested(event?._id))
+                   handleAllEventsExceptInterested([event])
+                    const res = await axiosInstance.post(`/interest-event`, {
+                        eventId:event?._id
+                    });
+
+                    console.log("res.data", res.data)
         }
-        dispatch(handleInterestedEvents([event]))
-        const res = await axiosInstance.post(`/interest-event`, {
-            eventId:event?._id
-        });
+        // else{
+        //     dispatch(handleInterestedEvents([event]))
+        //     const res = await axiosInstance.post(`/interest-event`, {
+        //         eventId:event?._id
+        //     });
+        // }
 
     }
 
@@ -82,8 +102,9 @@ setTimeout(()=>{
             initialLoading
             ?
             <CarouselSkeleton/>
-            :<Carousel
+            :
             
+            <Carousel
             autoPlayInterval={7000}
                 loop
                 width={effectiveWidth}
@@ -134,7 +155,7 @@ setTimeout(()=>{
                         justifyContent: "flex-start",
                         gap: scale(3),
                     }}>
-                        {Array.from({ length: 8 }).map((_, index) => (  // Only create 8 dots
+                        {Array.from({ length: paginationBullets }).map((_, index) => (  // Only create 8 dots
                             <View
                                 key={index}
                                 style={{

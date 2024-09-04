@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
+import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -28,6 +29,7 @@ const [initialLoading, setInitialLoading] = React.useState(true)
  const [loading, setLoading] = React.useState(false);
  const dispatch=useDispatch()
  const interestedEvents = useSelector(state=>state?.interestedEvents)
+ const allEventsExceptInterested =useSelector(state=>state?.allEventsExceptInterested)
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;
@@ -40,8 +42,8 @@ const [initialLoading, setInitialLoading] = React.useState(true)
                  }
              });
                  setHasMore(res.data.pagination.hasNextPage);
-                 console.log("res?.data?.events=============================>", res?.data?.events.length)
-                 setData([...res.data?.events]);
+                 console.log("res?.data?.events=============================>", res?.data?.events?.length)
+                 dispatch(handleAllEventsExceptInterested([...res.data?.events]));
          } catch (error) {
              console.error('Failed to fetch reviews:', error);
          } finally {
@@ -63,13 +65,15 @@ const [initialLoading, setInitialLoading] = React.useState(true)
 
     const handleInterestedEvent = async(event)=>{
         const x = interestedEvents?.find(item=>item?._id==event?._id)
-        if(x){
-            return dispatch(handleRemoveInterestedEvents(event?._id))
+        if(!x){
+                //  dispatch(handleRemoveAllEventsExceptInterested(event?._id))
+            // return dispatch(handleRemoveInterestedEvents(event?._id))
+            dispatch(handleInterestedEvents([event]))
+            const res = await axiosInstance.post(`/interest-event`, {
+                eventId:event?._id
+            });
         }
-        dispatch(handleInterestedEvents([event]))
-        const res = await axiosInstance.post(`/interest-event`, {
-            eventId:event?._id
-        });
+      
 
     }
 
@@ -91,7 +95,7 @@ setTimeout(()=>{
                 width={effectiveWidth}
                 height={155}
                 autoPlay={true}
-                data={data}
+                data={allEventsExceptInterested}
                 scrollAnimationDuration={1000}
                
                 onSnapToItem={(index) =>{ handleSnapToItem(index)}}

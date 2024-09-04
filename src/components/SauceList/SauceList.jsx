@@ -106,7 +106,6 @@ data?.length>0&&<View style={styles.container}>
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchSuaces}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",

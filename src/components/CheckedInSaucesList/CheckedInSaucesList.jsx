@@ -96,7 +96,6 @@ checkedInSauces?.length>0&&<View style={styles.container}>
                         zIndex: 111
                     }}
                     onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchSauces}><Text>refresh</Text></TouchableOpacity>
                     <Image style={{
 
                         resizeMode: "contain",

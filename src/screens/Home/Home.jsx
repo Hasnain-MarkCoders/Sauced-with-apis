@@ -67,7 +67,7 @@ const Home = () => {
                                 updaterFn={setData}
                                 value={data.search}
                                 showTitle={false}
-                                placeholder="Search For Sauce..."
+                                placeholder="Search for a sauce..."
                                 containterStyle={{
                                     flexGrow: 1,
                                 }}
@@ -127,8 +127,12 @@ const Home = () => {
                             title='Featured Sauces'
                     />
                     <TopRatedSaucesList
-                            title='Top Rated Sauces'
+                            title='Recently Popular Sauces'
                     />
+                    <View style={{
+                        gap:scale(10)
+                    }}>
+
                         <CustomButtom
                             Icon={() => <Image source={arrow} />}
                             showIcon={true}
@@ -140,9 +144,23 @@ const Home = () => {
                                 alignItems: "center", justifyContent: "space-between"
                             }}
                             onPress={() => navigation.navigate("Map")}
-                            title={"Hot Sauce Map"}
+                            title={"Find a hot sauce store near me"}
                         />
-                        <BrandList title='Top Rated Brands' />
+                         <TouchableOpacity onPress={() => {
+                            Vibration.vibrate(10)
+                            navigation.navigate("RequestASauceScreen")
+                        }}>
+
+                            <Text style={[styles.infoText, {
+                                textDecorationLine: "underline", fontWeight: 700,
+                                marginLeft:scale(2)
+                            }]}>
+                                Want to recomend a local store?
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                        <BrandList title='Popular Brands' />
                         <View style={{
                             gap: scale(20)
                         }}>
@@ -171,7 +189,7 @@ const Home = () => {
                                 // navigation.navigate("SauceDetails")
                                 navigation.navigate("RequestASauceScreen")
                             }}
-                            title={"Want to List Sauce? "}
+                            title={"Suggest a sauce not listed "}
                         />
 
                     </View>

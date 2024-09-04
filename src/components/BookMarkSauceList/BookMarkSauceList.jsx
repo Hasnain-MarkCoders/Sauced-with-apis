@@ -115,7 +115,6 @@ const BookMarkSauceList = ({ title = "", _id="", name = "",endpoint="/bookmarks"
                                             zIndex: 111
                                         }}
                                         onPress={() => { cb() }}>
-                                            <TouchableOpacity onPress={fetchSuaces}><Text>refresh</Text></TouchableOpacity>
                                         <Image style={{
                     
                                             resizeMode: "contain",

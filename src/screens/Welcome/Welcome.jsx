@@ -67,7 +67,7 @@ const userAuth = useSelector(state=>state.auth)
               // onPress={() =>{ handleWelcome(); navigation.navigate("Drawer")}}
               onPress={() =>{ handleWelcome()}}
 
-              title={"Next"}
+              title={"Get Started"}
               />
           </View>
 

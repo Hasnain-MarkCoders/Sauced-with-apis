@@ -74,6 +74,7 @@ const ProductSearchList = ({
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => <SingleSauce
+                fullWidthText={true}
                 searchPageStyle={true}
                 showHeart={showHeart}
                     setProductDetails={setProductDetails}

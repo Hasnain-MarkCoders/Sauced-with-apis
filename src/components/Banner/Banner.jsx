@@ -1,7 +1,8 @@
 import { Linking, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import banner from "./../../../assets/images/banner.png";
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import youtubeIcon from "./../../../assets/images/youtubeIcon.png";
+import {  scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import CustonPlayIcon from '../CustonPlayIcon/CustonPlayIcon';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -16,12 +17,12 @@ const Banner = ({
     event = {},
     showOverlay=false,
     isInterested=false,
-    loading=false
+    loading=false,
+    item
 }) => {
     const interestedEvents = useSelector(state=>state?.interestedEvents)
     const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
     const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
-
     const navigation = useNavigation()
     return (
         <>{
@@ -44,6 +45,8 @@ const Banner = ({
       </SkeletonPlaceholder> 
       :<TouchableOpacity style={{
         width: "100%",
+        borderRadius:scale(10),
+
     }} activeOpacity={.9} onPress={() => { !showText && navigation.navigate("Youtube", { url, title, videoId }) }}>
         <ImageBackground
             borderRadius={10}
@@ -152,9 +155,47 @@ const Banner = ({
                 :
                 <View style={{
                     width:"100%",
-                    height:"100%"
+                    height:"100%",
+                    position:"relative",
+
                 }}>
-                    <CustonPlayIcon/>
+                        <Text
+                        numberOfLines={1}
+                        ellipsizeMode='tail'
+                        style={{
+                            color: "white",
+                            fontSize: scale(15),
+                            fontFamily: "Montserrat",
+                            maxWidth: "80%",
+                            fontWeight: '700',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            textShadowColor: 'rgba(0, 0, 0, 1)',
+                            textShadowOffset: { width: 1, height: 1 },
+                            textShadowRadius: 10,
+                            top:scale(15),
+                            left:scale(20),
+                            position:"absolute"
+                        }} 
+                        
+                        >{item?.videoTitle}</Text>
+                        <View style={{
+                            width:scale(80),
+                            height:scale(70),
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: [{ translateX: -45 }, { translateY: -45 }], 
+                        }}>
+
+                        <Image 
+                        style={{
+                            width:"100%",
+                            height:"100%",
+                            resizeMode:"contain"
+                        }}
+                        source={youtubeIcon}/>
+                        </View>
                     </View>}
 
         </ImageBackground>

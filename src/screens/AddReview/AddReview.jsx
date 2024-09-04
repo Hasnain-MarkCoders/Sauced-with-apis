@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, Alert, Vibration } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, Vibration, AppRegistry } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -9,15 +9,20 @@ import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import SwipeableRating from 'react-native-swipeable-rating';
-import CustomRating from '../../components/CustomRating/CustomRating.jsx';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import useAxios from '../../../Axios/useAxios.js';
+import { Slider } from 'react-native-awesome-slider';
+import { useSharedValue } from 'react-native-reanimated';
 const AddReview = () => {
     const route = useRoute()
     const sauceId = route?.params?.sauceId
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const axiosInstance = useAxios()
     const [loading , setLoading] = useState(false)
+    const progress = useSharedValue(0);
+    const min = useSharedValue(0);
+    const max = useSharedValue(100);
+    // const []
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: ""
@@ -77,6 +82,11 @@ const AddReview = () => {
 
      
     }
+
+
+    useEffect(()=>{
+        console.log(progress)
+    },[progress])
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
@@ -151,6 +161,28 @@ const AddReview = () => {
                                             onPress={(e) => { setData(prev => ({ ...prev, rating: e })) }}
                                             xOffset={30}
                                         />
+
+
+
+
+
+                                    <Slider
+                                    heartbeat={true}
+                                    onValueChange={(e)=>{console.log(Math.round(e))}}
+                                    theme={{
+                                        disableMinTrackTintColor: '#FFA100',
+                                        maximumTrackTintColor: '#FFA100',
+                                        minimumTrackTintColor: '#FFA100',
+                                        cacheTrackTintColor: '#FFA100',
+                                        bubbleBackgroundColor: '#FFA100',
+                                        heartbeatColor: '#FFA100',
+                                      }}
+                                        progress={progress}
+                                        minimumValue={min}
+                                        maximumValue={max}
+                                        />
+
+
                                         <CustomButtom
                                             showIcon={false}
                                             buttonTextStyle={{ fontSize: scale(14) }}

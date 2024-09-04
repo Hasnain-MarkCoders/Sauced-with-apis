@@ -345,7 +345,7 @@ if(authLoading){
                 color:"#C1C1C1",
                 fontSize:scale(12),
                 lineHeight:scale(25),
-              }}>Please create strong password</Text>
+              }}>Please create a strong password</Text>
               </TouchableOpacity>
               </View>
             </View>

@@ -69,7 +69,7 @@ const SearchScreen = () => {
                         updaterFn={setQuery}
                         value={query.search}
                         showTitle={false}
-                        placeholder="Hot Sauce..."
+                        placeholder="Search for a sauce..."
                         containterStyle={{
                             flexGrow: 1,
                         }}

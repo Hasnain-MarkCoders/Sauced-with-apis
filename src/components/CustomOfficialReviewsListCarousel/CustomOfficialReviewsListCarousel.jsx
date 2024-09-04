@@ -79,6 +79,7 @@ const CustomOfficialReviewsListCarousel = ({
                 onSnapToItem={(index) => handleSnapToItem(index)}
                 renderItem={({ item, index }) => (<>
                   <Banner
+                                showOverlay={true}
                                 item={item}
                                 showText={showText}
                                 videoId={item?.videoId}

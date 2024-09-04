@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image, ActivityIndicator, Vibration } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -41,6 +41,7 @@ const ProfileScreen = () => {
     const followings = useSelector(state=>state?.followings)
     const followers = useSelector(state=>state?.followers)
     const userStats = useSelector(state=>state?.userStats)
+    const interestedEvents = useSelector(state=>state?.interestedEvents)
     const dispatch = useDispatch()
     const [query, setQuery] = useState({
         search: "",
@@ -138,6 +139,9 @@ if (initialLoading) {
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom:scale(60)
+                    }}
                     data={[1, 1, 1, 1,1, 1]}
                     renderItem={({ item, index }) => {
                         return (
@@ -249,7 +253,7 @@ if (initialLoading) {
                                                     color: "black",
                                                     fontWeight: "700"
 
-                                                }}>All Reviews</Text>
+                                                }}>My Reviews</Text>
 
 
                                             </TouchableOpacity>
@@ -312,11 +316,45 @@ if (initialLoading) {
                                 } */}
                                 {
                                     index==5&& 
+                                    <View style={{
+                                        gap:scale(20)
+                                    }}>
+                                        <Text style={{
+                                                    color: "white",
+                                                    fontWeight: 600,
+                                                    fontSize: scale(24),
+                                                    lineHeight: scale(28),
+    
+                                                }}>Events I'm Interested In</Text>
+                                                <View>
+                                                {/* {interestedEvents.length0
+                                                ? */}
+                                                <InterestedEventsCarousel
+                                                showText={true}
+                                                />
+                                                {/* :
+                                                <>
+                                                    <TouchableOpacity onPress={() => {
+                            Vibration.vibrate(10)
+                            navigation.navigate("Home")
+                        }}>
+
+                            <Text style={{
                                     
-                                    <InterestedEventsCarousel
-                                    
-                                    showText={true}
-                                    />
+                                            textDecorationLine: "underline", fontWeight: 700,
+                                            marginLeft:scale(2),
+                                            textDecorationLine: "underline", fontWeight: 700,
+                                            marginLeft:scale(2),
+                                            color:"white"
+                            }}>
+                                Find an event you're interested in
+                            </Text>
+                        </TouchableOpacity>
+                                                </>
+                                            } */}
+                                                        
+                                                </View>
+                                    </View>
                                 }
                             </View>
                         )

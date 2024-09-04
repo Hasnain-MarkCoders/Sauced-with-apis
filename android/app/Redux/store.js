@@ -15,6 +15,8 @@ import followersSlice from './followers';
 import followingsSlice from './followings';
 import userStatsSlice from './userStats';
 import searchedUsersSlice from './searchedUsers';
+import allEventsExceptInterestedSlice from './allEventsExceptInterested';
+
 
 const rootReducer = combineReducers({
     auth:userReducer,
@@ -30,7 +32,9 @@ const rootReducer = combineReducers({
     followers:followersSlice,
     followings:followingsSlice,
     userStats:userStatsSlice,
-    searchedUsers:searchedUsersSlice
+    searchedUsers:searchedUsersSlice,
+    allEventsExceptInterested:allEventsExceptInterestedSlice
+
 
 })
 const persistConfig = {
