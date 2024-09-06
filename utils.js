@@ -455,3 +455,12 @@ export const isURL = (url)=>{
   );
     return re.test(url)
 }
+
+export const welcomepoints= [
+  "- Real reviews (for sauces you love and for sauces you're thinking about trying)",
+  "- Sharing your latest experience with a new hot sauce",
+  "- Easily finding any hot sauces you want along with all of the details and where to find/purchase it",
+  "- Tracking/collecting every hot sauce you've tried and want to try",
+  "- Stay up to date with the latest hot sauce events",
+  "- Total bragging rights (every time you leave a review or post, you're awarded points and move up a tier)"
+]

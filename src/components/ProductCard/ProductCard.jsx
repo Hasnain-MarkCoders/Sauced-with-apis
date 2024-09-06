@@ -143,7 +143,9 @@ const ProductCard = ({
                                     fontWeight: 500,
                                     fontSize: scale(12),
                                     lineHeight: scale(14),
-                                }}>{product?.reviewCount > 1 ? `${product?.reviewCount} Reviews` : `${product?.reviewCount} Review`}</Text>
+                                    textDecorationStyle:"solid",
+                                    textDecorationLine:"underline"
+                                }}>{`${product?.reviewCount} Reviews`}</Text>
                                 <CustomRating
                                     initialRating={product?.averageRating}
                                     ratingContainerStyle={{
@@ -249,7 +251,7 @@ const ProductCard = ({
                             <Text style={{
                                 color: "white"
                             }}>
-                                Website Link:
+                               Find on Company Site
                             </Text>
                             <TouchableOpacity onPress={() => {
                                 Linking.openURL(product?.websiteLink)
@@ -277,7 +279,7 @@ const ProductCard = ({
                             <Text style={{
                                 color: "white"
                             }}>
-                                Product Link:
+                                Find On Amazon
                             </Text>
                             <TouchableOpacity onPress={() => {
                                 Linking.openURL(product?.productLink)

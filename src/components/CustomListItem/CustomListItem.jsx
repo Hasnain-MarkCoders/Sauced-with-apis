@@ -2,20 +2,25 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import dot from "./../../../assets/images/dot.png"
 import { scale } from 'react-native-size-matters'
-const CustomListItem = ({text}) => {
+const CustomListItem = ({text, showDot=true}) => {
   return (
     <View
     style={{
       flexDirection:"row",
-      gap:10,
+      gap:showDot ?scale(10):0,
       alignItems:"center",
     }}>
  
  <View>
 
- <Image style={{
-      display:"flex"
-    }} source={dot}/>
+
+{
+  showDot&&
+  <Image style={{
+    display:"flex"
+  }} source={dot}/>
+}
+
 
  </View>
    

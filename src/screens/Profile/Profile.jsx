@@ -72,7 +72,8 @@ const ProfileScreen = () => {
                     checkins:res?.data?.user?.checkins?.length,
                     uri:res?.data?.user?.image,
                     name:res?.data?.user?.name,
-                    date:res?.data?.user?.date
+                    date:res?.data?.user?.date,
+                    reviewsCount:res?.data?.user?.reviewsCount
                 }))
             } catch (error) {
                 console.error('Failed to fetch user:', error);
@@ -176,6 +177,7 @@ if (initialLoading) {
                                         url={userStats?.uri}
                                         name={userStats?.name}
                                         date={userStats?.date}
+                                        reviewsCount={userStats?.reviewsCount}
                                             />
 
 

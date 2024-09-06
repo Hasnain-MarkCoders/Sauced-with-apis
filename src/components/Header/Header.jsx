@@ -16,7 +16,8 @@ const Header = ({
   headerContainerStyle={},
   showProfilePic=true,
   showMenu=true,
-  showBackButton=true
+  showBackButton=true,
+  descriptionStyle={}
 }) => {
   const navigation = useNavigation()
 let url = ""
@@ -110,10 +111,11 @@ let url = ""
       </View>
     {showDescription &&  <Text style={{
         color: "white",
-        marginTop: 15,
+        marginTop: scale(15),
         fontFamily: "Montserrat",
         fontSize: 14,
-        fontWeight: "700"
+        fontWeight: "700",
+        ...descriptionStyle
       }}>
         {description}
       </Text>}

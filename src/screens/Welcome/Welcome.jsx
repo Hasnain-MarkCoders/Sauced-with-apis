@@ -1,4 +1,4 @@
-import {   View, SafeAreaView, ScrollView, Dimensions } from 'react-native'
+import { View, SafeAreaView, ScrollView, Dimensions, Text } from 'react-native'
 import React from 'react'
 import { ImageBackground } from 'react-native';
 import home from './../../../assets/images/home.png';
@@ -10,29 +10,12 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { host } from '../../../Axios/useAxios';
 import { useNavigation } from '@react-navigation/native';
+import { welcomepoints } from '../../../utils';
 
 const Welcome = ({
-  route, navigation 
+  route, navigation
 }) => {
-  const { handleWelcome } = route.params;
-
-const userAuth = useSelector(state=>state.auth)
-// const navigation = useNavigation()
-  // const handleWelcome = async()=>{
-  //     try {
-  //       const response = await axios.post(host + "/welcome", {
-  //         headers: {
-  //           Authorization: `Bearer ${userAuth.token}`, // Assuming userAuth is defined and accessible
-  //         }
-  //       });
-
-  //     } catch (error) {
-  //       console.log("Error: ", error);
-  //     }
-  // }
-
-
-  
+  const handleWelcome = route?.params?.handleWelcome;
   return (
     <ImageBackground style={{
       flex: 1,
@@ -44,32 +27,90 @@ const userAuth = useSelector(state=>state.auth)
       }}>
 
         <ScrollView contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingBottom:scale(150),
+          paddingHorizontal: scale(20),
+          paddingBottom: scale(150),
         }}>
-          <View>
-          <Header showBackButton={false}  showMenu={false} showProfilePic={false} isWelcome ={ true} title={"Welcome to"} />
-            <WelcomeLists />
-          </View>
-         
-        </ScrollView>
-        <View style={{
-            position:"absolute",
-            width:"90%",
-            left:"50%",
-            transform: [{ translateX: -Dimensions.get('window').width * .45 }],
-            bottom:scale(40)
+          <View style={{
+            gap:scale(40)
+          }}>
+          <View style={{
+            gap:scale(0)
           }}>
 
-         <CustomButtom
-          buttonTextStyle={{ fontSize: scale(20) }}
-              buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
-              // onPress={() =>{ handleWelcome(); navigation.navigate("Drawer")}}
-              onPress={() =>{ handleWelcome()}}
+            <Header descriptionStyle={{marginTop:0}} headerContainerStyle={{
+              paddingHorizontal: 0
+            }} showBackButton={false} showMenu={false} showProfilePic={false} isWelcome={true} title={"Welcome to"} />
 
-              title={"Get Started"}
+              <Text style={{
+                  color: "#FFA100",
+                  fontFamily: "Montserrat",
+                  fontSize: scale(15),
+                  fontWeight: '700',
+                  lineHeight: scale(25)
+                }}>where we keep your hot sauce obsession organized, because who needs therapy when you have heat levels to track?</Text>
+            </View>
+
+            <View style={{
+              gap: scale(20)
+            }}>
+
+              <View style={{
+                gap: scale((20))
+              }}>
+                 <Text style={{
+                  color: "white",
+                  fontFamily: "Montserrat",
+                  fontSize: scale(13.9),
+                  fontWeight: '700',
+                  lineHeight: scale(18)
+                }}>
+                 Get ready to fire up your taste buds and your ego!
+                </Text>
+                <Text style={{
+                  color: "white",
+                  fontFamily: "Montserrat",
+                  fontSize: scale(12),
+                  fontWeight: '700',
+                  lineHeight: scale(18)
+                }}>
+                  This app was designed by people, for people who well... are obsessed with hot sauce.
+                </Text>
+                <Text style={{
+                  color: "white",
+                  fontFamily: "Montserrat",
+                  fontSize: scale(12),
+                  fontWeight: '700',
+                  lineHeight: scale(18)
+                }}>
+                  The following are reasons why you should join this community:
+                </Text>
+
+              </View>
+
+              <WelcomeLists
+                data={welcomepoints}
               />
+            </View>
           </View>
+
+        </ScrollView>
+        <View style={{
+          position: "absolute",
+          width: "90%",
+          left: "50%",
+          transform: [{ translateX: -Dimensions.get('window').width * .45 }],
+          bottom: scale(40)
+        }}>
+
+          <CustomButtom
+            buttonTextStyle={{ fontSize: scale(20) }}
+            buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A" }}
+            // onPress={() =>{ handleWelcome(); navigation.navigate("Drawer")}}
+            onPress={() => { handleWelcome() }}
+
+            title={"Get Started"}
+          />
+        </View>
 
 
       </SafeAreaView>

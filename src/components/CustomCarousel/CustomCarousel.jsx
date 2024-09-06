@@ -83,7 +83,7 @@ setTimeout(()=>{
 }, 3000)
     },[])
   return (
-    <View style={{gap:scale(10)}}>
+    <View>
         {
             initialLoading
             ?

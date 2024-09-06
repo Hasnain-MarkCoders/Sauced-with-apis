@@ -358,7 +358,7 @@ const Product = () => {
                         fontWeight: '600',
                         marginTop: scale(20),
                       }}>
-                      Chili peppers used
+                      Chili Peppers Used in Sauce
                     </Text>
 
                     <ProductsBulletsList
