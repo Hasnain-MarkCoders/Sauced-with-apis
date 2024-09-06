@@ -1,11 +1,18 @@
 #import "AppDelegate.h"
 #import "RNBootSplash.h"
+#import <Firebase.h>
+#import <AuthenticationServices/AuthenticationServices.h>
+#import <SafariServices/SafariServices.h>
+#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                      didFinishLaunchingWithOptions:launchOptions];
   self.moduleName = @"Sauced";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

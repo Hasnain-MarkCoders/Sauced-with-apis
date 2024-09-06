@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>406307069293-t0ognqvpcunhsbjk5me334082eajmvkl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.406307069293-t0ognqvpcunhsbjk5me334082eajmvkl</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>406307069293-08ckf01qd9d8vphu8up0amlp7nhir8dj.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCzg_kYNPjIJ2jJGpq10rynszQcMKjXpdQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>406307069293</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.sauced.com</string>
+	<key>PROJECT_ID</key>
+	<string>sauced-8e5ee</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sauced-8e5ee.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:406307069293:ios:1c37daf10a3ec97f0bce64</string>
+</dict>
+</plist>
