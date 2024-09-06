@@ -221,6 +221,8 @@ const ExternalProfileScreen = ({
                                           url={user?.image||""}
                                           name={getFormattedName(user?.name?user?.name:"")}
                                           date={user?.date||""}
+                                          reviewsCount={user?.reviewsCount}
+
                                            />
 
 

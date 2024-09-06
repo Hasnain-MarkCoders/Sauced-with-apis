@@ -126,21 +126,21 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-       implementation platform('com.google.firebase:firebase-bom:33.1.1')
+    implementation platform('com.google.firebase:firebase-bom:33.1.1')
     implementation ('com.google.android.gms:play-services-auth')
 
 
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth'
 
-    // Firebase Firestore
-    implementation 'com.google.firebase:firebase-firestore'
+    // // Firebase Firestore
+    // implementation 'com.google.firebase:firebase-firestore'
 
-    // Firebase Cloud Messaging
-    implementation 'com.google.firebase:firebase-messaging'
+    // // Firebase Cloud Messaging
+    // implementation 'com.google.firebase:firebase-messaging'
 
-    // Firebase Storage
-    implementation 'com.google.firebase:firebase-storage'
+    // // Firebase Storage
+    // implementation 'com.google.firebase:firebase-storage'
 
     implementation 'com.facebook.android:facebook-login:latest.release'
 

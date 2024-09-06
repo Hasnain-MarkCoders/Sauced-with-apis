@@ -80,13 +80,6 @@ const Home = () => {
 
                                 }} />
                             </TouchableOpacity>
-
-                            {/* <TouchableOpacity onPress={() => { navigation.navigate("QRScreen") }}>
-                                <View>
-
-                                    <Image source={qr} style={styles.qrImage} />
-                                </View>
-                            </TouchableOpacity> */}
                         </View>
                         <TouchableOpacity onPress={() => {
                             Vibration.vibrate(10)

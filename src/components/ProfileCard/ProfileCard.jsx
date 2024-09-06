@@ -13,9 +13,10 @@ totalFollowingCount=0,
 url="",
 name="",
 date="",
-_id
+_id,
+reviewsCount=0
 }) => {
-
+    const auth = useSelector(state=>state.auth)
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
     return (
@@ -114,13 +115,13 @@ _id
                                     <Text style={{
                                         color: "#FFA100",
                                         fontWeight: 600,
-                                        fontSize: scale(20),
+                                        fontSize: scale(13),
                                         lineHeight: scale(30),
                                     }}>{totalFollowersCount}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
-                                        fontSize: scale(10),
+                                        fontSize: scale(7),
                                         lineHeight: scale(15),
                                     }}>Followers</Text>
                                 </View>
@@ -139,13 +140,13 @@ _id
                                     <Text style={{
                                         color: "#FFA100",
                                         fontWeight: 600,
-                                        fontSize: scale(20),
+                                        fontSize: scale(13),
                                         lineHeight: scale(30),
                                     }}>{totalFollowingCount}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
-                                        fontSize: scale(10),
+                                        fontSize: scale(7),
                                         lineHeight: scale(15),
                                     }}>Following</Text>
                                 </View>
@@ -163,18 +164,42 @@ _id
                                     <Text style={{
                                         color: "#FFA100",
                                         fontWeight: 600,
-                                        fontSize: scale(20),
+                                        fontSize: scale(13),
                                         lineHeight: scale(30),
                                     }}>{totalCheckIns}</Text>
                                     <Text style={{
                                         color: "white",
                                         fontWeight: 600,
-                                        fontSize: scale(10),
+                                        fontSize: scale(7),
                                         lineHeight: scale(15),
                                     }}>Check-ins</Text>
                                 </View>
                             </TouchableOpacity>
 
+
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate("AllUserReviews", {_id:auth?._id})
+
+                            }}>
+
+                                <View  style={{
+                                    alignItems: "center",
+                                    justifyContent:"center"
+                                }}>
+                                    <Text style={{
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(13),
+                                        lineHeight: scale(30),
+                                    }}>{reviewsCount}</Text>
+                                    <Text style={{
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: scale(7),
+                                        lineHeight: scale(15),
+                                    }}>Reviews</Text>
+                                </View>
+                            </TouchableOpacity>
 
                         </View>
                     </View>

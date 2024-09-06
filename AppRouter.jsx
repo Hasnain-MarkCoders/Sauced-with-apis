@@ -89,7 +89,6 @@ function AppRouter() {
           {
             isAuthenticated ?
               <>
-              
               <Stack.Screen name="Main" component={MainNavigation} />
 
                 <Stack.Screen name="Drawer" component={DrawerStack} />
@@ -109,8 +108,6 @@ function AppRouter() {
                 <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
                 <Stack.Screen name="BrandScreen" component={BrandScreen} />
                 <Stack.Screen name="UserSearchScreen" component={UserSearchScreen} />
-
-
                 <Stack.Screen name="Welcome" component={Welcome} />
               </>
               :

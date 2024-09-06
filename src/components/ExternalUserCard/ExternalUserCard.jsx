@@ -12,7 +12,8 @@ const ExternalUserCard = ({
     url="",
     name="",
     date="",
-    _id
+    _id,
+    reviewsCount=0,
 }) => {
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
@@ -80,13 +81,13 @@ const ExternalUserCard = ({
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(20),
+                                    fontSize: scale(13),
                                     lineHeight: scale(36),
                                 }}>{totalFollowingCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
-                                    fontSize: scale(10),
+                                    fontSize: scale(7),
                                     lineHeight: scale(15),
                                 }}>Followers</Text>
                             </View>
@@ -103,13 +104,13 @@ const ExternalUserCard = ({
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(20),
+                                    fontSize: scale(13),
                                     lineHeight: scale(36),
                                 }}>{totalFollowingCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
-                                    fontSize: scale(10),
+                                    fontSize: scale(7),
                                     lineHeight: scale(15),
                                 }}>Following</Text>
                             </View>
@@ -127,18 +128,41 @@ const ExternalUserCard = ({
                                 <Text style={{
                                     color: "#FFA100",
                                     fontWeight: 600,
-                                    fontSize: scale(20),
+                                    fontSize: scale(13),
                                     lineHeight: scale(36),
                                 }}>{totalCheckIns}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
-                                    fontSize: scale(10),
+                                    fontSize: scale(7),
                                     lineHeight: scale(15),
                                 }}>Check-ins</Text>
                             </View>
                                 </TouchableOpacity>
+                                <TouchableOpacity
+                                 onPress={()=>{
+                                    navigation.navigate("AllUserReviews", {_id})
+                                }}
+                                >
 
+                            <View style={{
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Text style={{
+                                    color: "#FFA100",
+                                    fontWeight: 600,
+                                    fontSize: scale(13),
+                                    lineHeight: scale(36),
+                                }}>{totalCheckIns}</Text>
+                                <Text style={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(7),
+                                    lineHeight: scale(15),
+                                }}>Reviews</Text>
+                            </View>
+                                </TouchableOpacity>
                         </View>
                     </View>
                 </View>

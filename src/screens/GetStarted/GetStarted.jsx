@@ -17,12 +17,13 @@ const GetStarted = () => {
   return (
     <ImageBackground source={getStartedbackground} style={styles.background}>
       <SafeAreaView style={styles.container}>
-        <Image style={styles.logo} source={saucedLogo}/>
         <View style={styles.contentContainer}>
+        <Image style={styles.logo} source={saucedLogo}/>
           <Text style={styles.titleText}>
             Discover your perfect flavor with our extensive sauce collection.
           </Text>
 
+         
 
 <View style={{
   gap:scale(15)
@@ -40,6 +41,9 @@ const GetStarted = () => {
             onPress={() => {handleNavigateSignin(); Vibration.vibrate(10)}}
             title={"Sign In"}
           />
+           <Text style={styles.secondaryTitle}>
+            Discover your perfect flavor with our extensive sauce collection.
+          </Text>
 </View>
         </View>
       </SafeAreaView>
@@ -67,13 +71,14 @@ const styles = StyleSheet.create({
     width: scale(130),
     height: scale(130),
     resizeMode:"contain",
+    alignSelf:"center"
     
   },
   contentContainer: {
     width: "100%",
     flexGrow:1,
     gap:scale(20),
-    maxHeight:scale((screenHeight * .5) - 130),
+    // maxHeight:scale((screenHeight * .6) - 130),
     justifyContent:"flex-end",
     paddingBottom: scale(40),
 
@@ -82,6 +87,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     fontSize: scale(25),
+    lineHeight: scale(30),
+  },
+  secondaryTitle:{
+    textAlign: "center",
+    color: "white",
+    fontSize: scale(14),
     lineHeight: scale(30),
   },
   buttonStyle: {

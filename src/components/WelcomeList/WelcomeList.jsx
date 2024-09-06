@@ -4,20 +4,20 @@ import CustomListItem from "../CustomListItem/CustomListItem";
 import { scale } from "react-native-size-matters";
 
 const renderItem = ({ item }) =>
-    (<CustomListItem text={item} />)
+    (<CustomListItem text={item}  showDot={false}/>)
   ;
-const WelcomeLists = () => {
+const WelcomeLists = ({
+  data=[]
+}) => {
     return (
-      <View style={{}}>
         <FlatList
          showsVerticalScrollIndicator={false}
          showsHorizontalScrollIndicator={false}
-          data={welcomeLists}
+          data={data}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
-      </View>
     );
   };
 
