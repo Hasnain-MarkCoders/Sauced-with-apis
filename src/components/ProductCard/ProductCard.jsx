@@ -1,5 +1,5 @@
 import { Image, Text, TouchableOpacity, View, Linking } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
@@ -71,6 +71,12 @@ const ProductCard = ({
             setLoading(false);
         }
     }
+    // useEffect(()=>{
+    //     console.log("product?.reviewCount===========================>", product?.reviewCount)
+    // },[product?.reviewCount])
+    useEffect(()=>{
+console.log("product?.reviewCount", product?.reviewCount)
+    },[])
 
     return (
         <View style={{
@@ -334,7 +340,7 @@ const ProductCard = ({
             <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id })
+                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType})
 
                     }}
                     style={{

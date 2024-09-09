@@ -4,20 +4,21 @@ import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList } from 'react-native-gesture-handler';
 import FollowingList from '../../components/FollowingList/FollowingList.jsx';
 const FollowingScreen = ({
-    endpoint=""
-
 }) => {
+    const route = useRoute()
+    const _id = route?.params?._id
     const [query, setQuery] = useState({
         search: "",
     });
     const navigation = useNavigation()
     const [initialLoading, setInitialLoading] = useState(true)
+
     useEffect(()=>{
         setTimeout(()=>{
         setInitialLoading(false)
@@ -111,6 +112,7 @@ const FollowingScreen = ({
                                         All Following
                                     </Text>
                                     <FollowingList
+                                    _id={_id}
                                     searchTerm={query?.search}
                                     endpoint="/get-following"/>
                                      </View>

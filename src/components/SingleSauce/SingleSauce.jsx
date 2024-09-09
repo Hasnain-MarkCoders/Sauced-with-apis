@@ -27,7 +27,7 @@ const SingleSauce = ({
     sauceType="",
     showHeart=true,
     searchPageStyle=false,
-    fullWidthText= false
+    fullWidthText= false,
 }) => {
  const [isLoading, setIsLoading] = useState(true);
 const axiosInstance = useAxios()
@@ -39,7 +39,7 @@ const handleOnPress = ()=>{
     setProductDetails({url, title})
     setAlertModal(true)
 }else{
-    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected})
+    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected, })
 }
 }
 

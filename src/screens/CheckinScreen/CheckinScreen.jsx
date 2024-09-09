@@ -345,33 +345,7 @@ const CheckinScreen = () => {
                                         }
                                         </ScrollView >}
                                 </View>
-                            {/* <SelectDropdown
-                                data={cities}
-                                onSelect={(selectedItem, index) => {
-                                    console.log(selectedItem, index);
-                                    setData(prev=>({...prev, select:selectedItem?.title}))
-                                }}
-                                renderButton={(selectedItem, isOpened) => {
-                                    return (
-                                        <View style={styles.dropdownButtonStyle}>
-                                            <Text style={styles.dropdownButtonTxtStyle}>
-                                                {(selectedItem && selectedItem.title) || 'Food'}
-                                            </Text>
-                                            <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-                                        </View>
-                                    );
-                                }}
-                                renderItem={(item, index, isSelected) => {
-                                    return (
-                                        <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#FFA100' }) }}>
-                                            <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                                            <Text style={{ ...styles.dropdownItemTxtStyle, ...(isSelected && { color: "black" }) }}>{item.title}</Text>
-                                        </View>
-                                    );
-                                }}
-                                showsVerticalScrollIndicator={false}
-                                dropdownStyle={styles.dropdownMenuStyle}
-                            /> */}
+                          
 
                             <View style={{
                                 width: "flex",

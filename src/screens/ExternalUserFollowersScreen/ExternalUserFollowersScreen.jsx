@@ -10,7 +10,8 @@ import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList } from 'react-native-gesture-handler';
 import FollowersList from '../../components/FollowersList/FollowersList.jsx';
-const FollowerScreen = () => {
+import ExternalUserFollowersList from '../../components/ExternalUserFollowersList/ExternalUserFollowersList.jsx';
+const ExternalUserFollowersScreen = () => {
     const route = useRoute()
     const _id = route?.params?._id
    
@@ -100,10 +101,10 @@ const FollowerScreen = () => {
                                         marginBottom: scale(20),
                                         alignSelf:"flex-start"
                                     }}>
-                                        All Followers
+                                        All Followers 
                                     </Text>
                                     
-                                      <FollowersList
+                                      <ExternalUserFollowersList
                                       _id={_id}
                                       searchTerm={query?.search}
                                       />
@@ -121,7 +122,7 @@ const FollowerScreen = () => {
     )
 }
 
-export default FollowerScreen
+export default ExternalUserFollowersScreen
 
 const styles = StyleSheet.create({
     separator: {

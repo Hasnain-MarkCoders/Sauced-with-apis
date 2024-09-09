@@ -7,12 +7,10 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, {memo, useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
 import getStartedbackground from './../../../assets/images/ProductDescription.jpg';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
-import {UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY} from '@env';
-import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {FlatList} from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
@@ -46,7 +44,7 @@ const Product = () => {
   const auth = useSelector(state=>state?.auth)
   const {url = '', title = ''} = route?.params;
   const product = route?.params?.item;
-  const sauceType = route?.params.sauceType;
+  const sauceType = route?.params?.sauceType;
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -128,36 +126,9 @@ const Product = () => {
 
     return () => {
       setAlreadyInList(prev => ({list1: false, list2: false, list3: false}));
+      console.log("product?.reviewCount==============>", route?.params?.item?.reviewCount)
     };
-  }, [product]);
-
-  // useEffect(() => {
-  //   const fetchPhotos = async () => {
-  //     if (!hasMore || loading) return;
-  //     setLoading(true);
-  //     try {
-  //       const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-  //         params: {
-  //           client_id: VITE_UNSPLASH_ACCESSKEY,
-  //           page: page,
-  //         },
-  //       });
-  //       if (res.data.length === 0) {
-  //         setHasMore(false);
-  //       } else {
-  //         setData(prevData => [...prevData, ...res.data]);
-  //       }
-  //     } catch (error) {
-  //       console.error('Failed to fetch photos:', error);
-  //     } finally {
-  //       setLoading(false);
-  //       setInitialLoading(false);
-  //     }
-  //   };
-  //   fetchPhotos();
-  // }, [page]);
-
-
+  }, [route?.params?.item]);
 
   useEffect(() => {
     const fetchCheckings = async () => {
@@ -180,7 +151,11 @@ const Product = () => {
         }
     };
 
-    fetchCheckings();
+    navigation.addListener('focus', ()=>{
+      console.log("aaaa lay chack mai agya")
+      fetchCheckings();
+    })
+
 }, [page]);
 
 
@@ -250,10 +225,7 @@ const Product = () => {
         sauceId: product?._id,
         listType: type,
       });
-      console.log(
-        'res.data.message================================================>',
-        res.data.message,
-      );
+    
     } catch (error) {
       console.error('Failed to like / dislike:', error);
     } finally {
@@ -533,4 +505,4 @@ const Product = () => {
   );
 };
 
-export default memo(Product);
+export default Product;

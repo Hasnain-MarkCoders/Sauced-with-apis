@@ -27,6 +27,8 @@ import MainNavigation from './src/screens/MainNavigation/MainNavigation';
 import BrandScreen from './src/screens/BrandScreen/BrandScreen';
 import UserSearchScreen from './src/screens/UserSearchScreen/UserSearchScreen';
 import AllUserReviews from './src/screens/AllUserReviews/AllUserReviews';
+import ExternalUserFollowingScreen from './src/screens/ExternalUserFollowingScreen/ExternalUserFollowingScreen';
+import ExternalUserFollowersScreen from './src/screens/ExternalUserFollowersScreen/ExternalUserFollowersScreen';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -109,6 +111,8 @@ function AppRouter() {
                 <Stack.Screen name="BrandScreen" component={BrandScreen} />
                 <Stack.Screen name="UserSearchScreen" component={UserSearchScreen} />
                 <Stack.Screen name="Welcome" component={Welcome} />
+                <Stack.Screen  name="ExternalUserFollowing" component={ExternalUserFollowingScreen} />
+                <Stack.Screen  name="ExternalUserFollowers" component={ExternalUserFollowersScreen} />
               </>
               :
               <Stack.Screen name="Public" component={PublicStack} />

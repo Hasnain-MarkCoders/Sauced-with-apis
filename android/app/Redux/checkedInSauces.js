@@ -23,9 +23,15 @@ const checkedInSaucesSlice = createSlice({
         sauce.hasLiked  =!sauce.hasLiked
       }
       
+    },
+    handleIncreaseReviewCountOfCheckedInSauce:(state, action)=>{
+      const sauce = state.find(x => x._id == action.payload);
+      if (sauce) {
+        return [...state, {...sauce, reviewCount :sauce.reviewCount+1}]
+      }
     }
   },
 });
 
-export const { handleCheckedInSauces, handleToggleCheckedInSauce } = checkedInSaucesSlice.actions;
+export const { handleCheckedInSauces, handleToggleCheckedInSauce, handleIncreaseReviewCountOfCheckedInSauce } = checkedInSaucesSlice.actions;
 export default checkedInSaucesSlice.reducer;

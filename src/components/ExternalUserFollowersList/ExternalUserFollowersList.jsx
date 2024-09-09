@@ -9,7 +9,7 @@ import { handleUsers } from '../../../android/app/Redux/users';
 import { handleFollowers, handleFollowersSearch, handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
 import {debounce} from 'lodash'
 import { useNavigation } from '@react-navigation/native';
-const FollowersList = ({
+const ExternalUserFollowersList = ({
     numColumns = 2,
     searchTerm="",
     _id=""
@@ -18,7 +18,8 @@ const FollowersList = ({
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const axiosInstance = useAxios()
-    const followers = useSelector(state=>state?.followers)
+    // const followers = useSelector(state=>state?.followers)
+    const [data, setData] = useState([])
     const dispatch = useDispatch()
     const navigation = useNavigation()
     const fetchFollowers = useCallback(async () => {
@@ -34,7 +35,7 @@ const FollowersList = ({
                 }
             });
             setHasMore(res.data.pagination.hasNextPage)
-            dispatch(handleFollowers(res?.data?.data))
+            setData(res?.data?.data)
             
         } catch (error) {
             console.error('Failed to fetch followers:', error);
@@ -54,13 +55,14 @@ const FollowersList = ({
             const res = await axiosInstance.get(`/search-followers`, {
                 params: {
                     page: page,
-                    searchTerm
+                    searchTerm,
+                    _id
                 }
             });
             console.log("hasnain hon na yr")
             setHasMore(res?.data?.pagination?.hasNextPage);
             console.log("res?.data?.data==========================================>", res?.data?.data)
-            dispatch(handleFollowersSearch(res?.data?.data));
+            setData(res?.data?.data);
         } catch (error) {
             console.error('Failed to fetch users:', error);
         } finally {
@@ -76,12 +78,7 @@ const FollowersList = ({
 
 
     useEffect(() => {
-        navigation.addListener("focus",
-            ()=>{
-
                 fetchFollowers();
-            }
-        )
     }, [fetchFollowers]);
 
     const handleUser =  useCallback(async(user)=>{
@@ -89,11 +86,6 @@ const FollowersList = ({
         dispatch(handleRemoveUserFromFollowers(user?._id))
         await axiosInstance.post("/follow", {_id:user?._id});
           },[])
-
-
-
-
-
 
 useEffect(()=>{
 console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ye user ki id ha++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", _id)
@@ -111,14 +103,15 @@ console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++y
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 numColumns={numColumns}
-                data={followers}
+                data={data}
+                extraData={data}
                 onEndReachedThreshold={1}
                 onEndReached={() => {
                     if (!loading && hasMore) {
                         setPage(currentPage => currentPage + 1);
                     }
                 }}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => index?.toString()}
                 renderItem={({ item }) => 
                 <UserCard
                 cb={handleUser}
@@ -141,6 +134,6 @@ console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++y
     )
 }
 
-export default memo(FollowersList)
+export default memo(ExternalUserFollowersList)
 
 const styles = StyleSheet.create({})

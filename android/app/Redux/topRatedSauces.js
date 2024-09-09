@@ -23,9 +23,15 @@ const topRatedSaucesSlice = createSlice({
         sauce.hasLiked  =!sauce.hasLiked
       }
       
+    },
+    handleIncreaseReviewCountOfTopRatedSauce:(state, action)=>{
+      const sauce = state.find(x => x._id == action.payload);
+      if (sauce) {
+        return [...state, {...sauce, reviewCount :sauce.reviewCount+1}]
+      }
     }
   },
 });
 
-export const { handleTopRatedSauces, handleToggleTopRatedSauce } = topRatedSaucesSlice.actions;
+export const { handleTopRatedSauces, handleToggleTopRatedSauce,handleIncreaseReviewCountOfTopRatedSauce } = topRatedSaucesSlice.actions;
 export default topRatedSaucesSlice.reducer;

@@ -27,8 +27,15 @@ const saucesListThreeSlice = createSlice({
     handleRemoveSauceFromListThree: (state, action) => {
       return state.filter(x => x._id !== action.payload);
     },
+
+    handleIncreaseReviewCountOfListThreeSauce:(state, action)=>{
+      const sauce = state.find(x => x._id == action.payload);
+      if (sauce) {
+        return [...state, {...sauce, reviewCount :sauce.reviewCount+1}]
+      }
+    }
   },
 });
 
-export const { handleSaucesListThree, handleToggleSauceListThree, handleRemoveSauceFromListThree } = saucesListThreeSlice.actions;
+export const { handleSaucesListThree, handleToggleSauceListThree, handleRemoveSauceFromListThree , handleIncreaseReviewCountOfListThreeSauce} = saucesListThreeSlice.actions;
 export default saucesListThreeSlice.reducer;

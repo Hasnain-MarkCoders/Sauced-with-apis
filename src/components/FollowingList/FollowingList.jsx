@@ -11,7 +11,8 @@ import { handleStats, handleStatsChange } from '../../../android/app/Redux/userS
 import {debounce} from 'lodash'
 const FollowingList = ({
     numColumns = 2,
-    searchTerm=""
+    searchTerm="",
+    _id="",
 }) => {
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
@@ -28,7 +29,8 @@ const FollowingList = ({
         try {
             const res = await axiosInstance.get("/get-following", {
                 params: {
-                    page: page
+                    page: page,
+                    _id
                 }
             });
             setHasMore(res.data.pagination.hasNextPage)
@@ -76,7 +78,6 @@ const FollowingList = ({
     useEffect(() => {
         fetchFollowings();
     }, [fetchFollowings]);
-
 
 
 

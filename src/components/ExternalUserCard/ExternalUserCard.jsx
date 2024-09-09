@@ -70,7 +70,7 @@ const ExternalUserCard = ({
                         }}>
                             <TouchableOpacity
                             onPress={()=>{
-                                navigation.navigate("Followers")
+                                navigation.navigate("ExternalUserFollowers", {_id})
                             }}
                             >
 
@@ -83,7 +83,7 @@ const ExternalUserCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(13),
                                     lineHeight: scale(36),
-                                }}>{totalFollowingCount}</Text>
+                                }}>{totalFollowersCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -94,7 +94,7 @@ const ExternalUserCard = ({
                             </TouchableOpacity>
                                 <TouchableOpacity 
                                 onPress={()=>{
-                                    navigation.navigate("Following")
+                                    navigation.navigate("ExternalUserFollowing", {_id})
                                 }}>
 
                             <View style={{

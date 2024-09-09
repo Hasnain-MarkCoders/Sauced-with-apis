@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleFeaturedSauces } from '../../../android/app/Redux/featuredSauces';
+import { useNavigation } from '@react-navigation/native';
 const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
@@ -14,7 +15,7 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const featuredSauces = useSelector(state=>state.featuredSauces)
-    
+    const navigation = useNavigation()
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -35,8 +36,16 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     },[page,hasMore , featuredSauces]);
     
     useEffect(() => {
-        fetchSauces();
+        navigation.addListener('focus',()=>{
+            console.log("hello ji")
+            fetchSauces()
+        })
+
+        // fetchSauces();
     }, [fetchSauces]);
+
+
+  
 
     return (
         <>
@@ -72,6 +81,7 @@ featuredSauces?.length>0&&<View style={styles.container}>
 
                     }}
                     data={featuredSauces}
+                    extraData={featuredSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -80,7 +90,7 @@ featuredSauces?.length>0&&<View style={styles.container}>
                             setPage(currentPage => currentPage + 1);
                         }
                     }}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item?._id}
                     renderItem={({ item }) => <SingleSauce
                     sauceType="featured"
                     item={item}
