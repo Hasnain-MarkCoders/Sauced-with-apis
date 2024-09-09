@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Alert, Modal,  Text,  View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import closeIcon from "./../../../assets/images/close.png"
+import LinearGradient from 'react-native-linear-gradient';
 const CustomAlertModal = ({
   modalVisible = false,
   setModalVisible = () => { },
@@ -25,7 +26,6 @@ const CustomAlertModal = ({
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
       width: '100%', // Ensure it covers the full screen width
       height: '100%', // Ensure it covers the full screen height
     }}>
@@ -34,13 +34,14 @@ const CustomAlertModal = ({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
           <TouchableOpacity  style={{
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
+                width:"100%",
+                backgroundColor: 'rgba(33, 22, 10, .85)',
               }}
               activeOpacity={1}
               onPressOut={handleBackgroundTouch}>

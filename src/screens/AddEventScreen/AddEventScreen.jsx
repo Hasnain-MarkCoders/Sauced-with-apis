@@ -12,7 +12,8 @@ import DatePicker from 'react-native-date-picker'
 import arrow from "./../../../assets/images/arrow.png";
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import useAxios from '../../../Axios/useAxios.js';
-import axios from 'axios';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
 
 const AddEventScreen = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
@@ -27,10 +28,73 @@ const AddEventScreen = () => {
         date: new Date(),
         address: "",
         destinationDetails: "",
-        coordinates: ""
+        coordinates: {}
     });
+    const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const axiosInstance = useAxios()
     const navigation = useNavigation()
+
+    const handleEventCoords = (coords)=>{
+        setQuery(prev=>({...prev, ["address"]:coords?.destination,["coordinates"]:{latitude:coords?.latitude, longitude:coords?.longitude} }))
+    }
+
+
+    const [isloading, setLoading] = useState(false)
+
+    const checkLocationServiceAndNavigate = () => {
+        setLoading(true); // Start loading indicator
+        const permission = Platform.OS === 'ios' 
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+    
+        check(permission).then(result => {
+          if (result === RESULTS.GRANTED) {
+            fetchCurrentLocation();
+          } else if (result === RESULTS.DENIED) {
+            request(permission).then(result => {
+              if (result === RESULTS.GRANTED) {
+                fetchCurrentLocation();
+              } else {
+                Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+                setLoading(false); // Stop loading indicator
+              }
+            });
+          } else {
+            setLoading(false); // Stop loading indicator
+            Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+          }
+        }).catch(error => {
+          console.warn("Error checking location permission:", error);
+          Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+          setLoading(false); // Stop loading indicator
+        });
+      };
+    
+      const fetchCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            console.log("Current position:", position);
+            navigation.navigate("Map", {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              fn:handleEventCoords
+            });
+            setLoading(false); // Stop loading indicator
+          },
+          (error) => {
+            console.log("Error fetching current location:", error);
+            Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+            setLoading(false); // Stop loading indicator
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+      };
+
+
+
+
+
+
  
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -46,6 +110,7 @@ const AddEventScreen = () => {
     }, []);
 
     const handleAddEvent=async()=>{
+
         if (!query?.title) {
             return setAlertModal({
                 open: true,
@@ -98,22 +163,25 @@ const AddEventScreen = () => {
         // }
         
             try{
-
-                
+                    setIsSubmitLoading(true)
         const res = await axiosInstance.post("/request-event", {
             "eventName": query?.title,
-            "eventDetails": query?.destinationDetails,
-            "eventDate": query?.date,
-            "venueName": query?.address,
-            "venueDescription": query?.destinationDetails,
-            "venueLocation.longitude": "12.4964",
-            "venueLocation.latitude": "41.9028"
+            // "eventDetails": query?.destinationDetails,
+            // "eventDate": query?.date,
+            // "venueName": query?.address,
+            // "venueDescription": query?.destinationDetails,
+            "venueLocation.longitude": query.coordinates?.longitude,
+            "venueLocation.latitude": query.coordinates?.latitude
         }
         )
          console.log("<==============================================res============================================>", res.data)
          setAlertModal({
             alertModal: true,
             messsage: res?.data?.message
+        })
+
+        setTimeout(()=>{
+            navigation.goBack()
         })
             }catch(error){
                 console.log(error)
@@ -122,6 +190,8 @@ const AddEventScreen = () => {
                     messsage: error?.message
                 })
 
+            }finally{
+                setIsSubmitLoading(false)
             }
 
 
@@ -252,7 +322,7 @@ const AddEventScreen = () => {
                                     </View>
 
                            
-                                    <View style={{
+                                    {/* <View style={{
                                 gap:scale(10)
                             }}>
                                     <Text style={{
@@ -281,7 +351,7 @@ const AddEventScreen = () => {
                                     padding: 15,
 
                                 }} />
-                                    </View>
+                                    </View> */}
                             <View>
                                 <View style={{
                                 gap:scale(10)
@@ -329,9 +399,9 @@ const AddEventScreen = () => {
                                 fontSize:scale(17),
                                 color:"white"
                             }}>
-                                Location
+                                Address *
                             </Text>
-                            <CustomInput
+                            {/* <CustomInput
                                 // cb={() => {}}
                                 name="coordinates"
                                 onChange={handleText}
@@ -350,13 +420,31 @@ const AddEventScreen = () => {
                                     borderRadius: 10,
                                     padding: 15,
 
-                                }} />
+                                }} /> */}
+
+                            <CustomButtom
+                        loading={isloading}
+                            Icon={() => <Image source={arrow} />}
+                            showIcon={true}
+                            buttonTextStyle={{ fontSize: scale(14) }}
+                            buttonstyle={{
+                                width: "100%", borderColor: "#FFA100",
+                                backgroundColor: "#2e210a", padding: 15,
+                                display: "flex", gap: 10, flexDirection: "row-reverse",
+                                alignItems: "center", justifyContent:isloading?"center": "space-between"
+                            }}
+                            onPress={checkLocationServiceAndNavigate}
+
+                            title={query.address?query.address:"Location"}
+                        />
+
                                     </View>
 
                         </View>
                         <View>
 
                             <CustomButtom
+                            loading={isSubmitLoading}
                                 showIcon={false}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}

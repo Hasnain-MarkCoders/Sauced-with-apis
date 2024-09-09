@@ -17,6 +17,8 @@ import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
 import TopRatedSaucesList from '../../components/TopRatedSaucesList/TopRatedSaucesList';
 import FeaturedSaucesList from '../../components/FeaturedSaucesList/FeaturedSaucesList';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
 
 const Home = () => {
     const navigation = useNavigation()
@@ -25,7 +27,56 @@ const Home = () => {
     const [data, setData] = useState({
         search: "",
     });
+    const [isloading, setLoading] = useState(false)
 
+    const checkLocationServiceAndNavigate = () => {
+        setLoading(true); // Start loading indicator
+        const permission = Platform.OS === 'ios' 
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+    
+        check(permission).then(result => {
+          if (result === RESULTS.GRANTED) {
+            fetchCurrentLocation();
+          } else if (result === RESULTS.DENIED) {
+            request(permission).then(result => {
+              if (result === RESULTS.GRANTED) {
+                fetchCurrentLocation();
+              } else {
+                Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+                setLoading(false); // Stop loading indicator
+              }
+            });
+          } else {
+            setLoading(false); // Stop loading indicator
+            Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+          }
+        }).catch(error => {
+          console.warn("Error checking location permission:", error);
+          Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+          setLoading(false); // Stop loading indicator
+        });
+      };
+    
+      const fetchCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            console.log("Current position:", position);
+            navigation.navigate("Map", {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              fn:()=>{}
+            });
+            setLoading(false); // Stop loading indicator
+          },
+          (error) => {
+            console.log("Error fetching current location:", error);
+            Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+            setLoading(false); // Stop loading indicator
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+      };
     useEffect(() => {
         setTimeout(() => {
             setInitialLoading(false)
@@ -127,6 +178,7 @@ const Home = () => {
                     }}>
 
                         <CustomButtom
+                        loading={isloading}
                             Icon={() => <Image source={arrow} />}
                             showIcon={true}
                             buttonTextStyle={{ fontSize: scale(14) }}
@@ -134,9 +186,12 @@ const Home = () => {
                                 width: "100%", borderColor: "#FFA100",
                                 backgroundColor: "#2e210a", padding: 15,
                                 display: "flex", gap: 10, flexDirection: "row-reverse",
-                                alignItems: "center", justifyContent: "space-between"
+                                alignItems: "center", justifyContent:isloading?"center": "space-between"
                             }}
-                            onPress={() => navigation.navigate("Map")}
+                            // onPress={() => navigation.navigate("Map")}
+                            // onPress={navigateIfLocationEnabled}
+                            onPress={checkLocationServiceAndNavigate}
+
                             title={"Find a hot sauce store near me"}
                         />
                          <TouchableOpacity onPress={() => {
