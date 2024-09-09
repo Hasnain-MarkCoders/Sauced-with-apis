@@ -5,6 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './android/app/Redux/store';
 import { LogBox } from 'react-native';
 import BootSplash from "react-native-bootsplash";
+import Toast from 'react-native-toast-message';
 function App() {
   LogBox.ignoreLogs(['Warning: ...']); 
 LogBox.ignoreAllLogs();
@@ -23,6 +24,7 @@ React.useEffect(() => {
      <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
         <AppRouter/>
+        <Toast />
         </PersistGate>
       </Provider>
     </>

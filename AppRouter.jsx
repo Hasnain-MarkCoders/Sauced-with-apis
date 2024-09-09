@@ -29,6 +29,7 @@ import UserSearchScreen from './src/screens/UserSearchScreen/UserSearchScreen';
 import AllUserReviews from './src/screens/AllUserReviews/AllUserReviews';
 import ExternalUserFollowingScreen from './src/screens/ExternalUserFollowingScreen/ExternalUserFollowingScreen';
 import ExternalUserFollowersScreen from './src/screens/ExternalUserFollowersScreen/ExternalUserFollowersScreen';
+import AddStore from './src/screens/AddStore/AddStore';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -113,6 +114,8 @@ function AppRouter() {
                 <Stack.Screen name="Welcome" component={Welcome} />
                 <Stack.Screen  name="ExternalUserFollowing" component={ExternalUserFollowingScreen} />
                 <Stack.Screen  name="ExternalUserFollowers" component={ExternalUserFollowersScreen} />
+                <Stack.Screen name="AddStore" component={AddStore} />
+
               </>
               :
               <Stack.Screen name="Public" component={PublicStack} />

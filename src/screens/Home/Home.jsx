@@ -196,7 +196,7 @@ const Home = () => {
                         />
                          <TouchableOpacity onPress={() => {
                             Vibration.vibrate(10)
-                            navigation.navigate("RequestASauceScreen")
+                            navigation.navigate("AddStore")
                         }}>
 
                             <Text style={[styles.infoText, {
