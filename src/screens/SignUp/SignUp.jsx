@@ -39,24 +39,44 @@ const SignUp = () => {
     password: ""
   });
 
-  const [alertModal, setAlertModal] =useState(false)
+  // const [alertModal, setAlertModal] =useState(false)
+  const [alertModal, setAlertModal] = useState({
+    open: false,
+    message: "",
+    success:true
+})
   const handleSignUp = async () => {
     if (!data.fullName) {
       setIsEnabled(true); // Re-enable the button
-      setAlertModal(true)
-      setMessage("Full Name is required!")
+
+
+
+      setAlertModal({
+        open: true,
+        message: "Full Name is required!",
+        success:false
+    
+    })
       return 
     }
     if (!data.email) {
       setIsEnabled(true); // Re-enable the button
-      setAlertModal(true)
-      setMessage("Email is required!")
+      setAlertModal({
+        open: true,
+        message: "Email is required!",
+        success:false
+    
+    })
       return
     }
     if (!data.password) {
       setIsEnabled(true); // Re-enable the button
-      setAlertModal(true)
-      setMessage("Password is required!")
+      setAlertModal({
+        open: true,
+        message: "Password is required!",
+        success:false
+    
+    })
       return 
     }
     setIsEnabled(false); // Disable the button at the start
@@ -100,23 +120,43 @@ const SignUp = () => {
      
       } else {
         console.log('No user found');
-        setAlertModal(true)
-        setMessage('No user found')
+
+        setAlertModal({
+          open: true,
+          message: "No user found",
+          success:false
+      
+      })
      
       }
     } catch (error) {
  setAuthLoading(false)
 
       console.error(error);
+      setAuthLoading(false)
+
       if (error.code === 'auth/email-already-in-use') {
-        setAlertModal(true)
-        setMessage('That email address is already in use!')
+        setAlertModal({
+          open: true,
+          message: "That email address is already in use!",
+          success:false
+
+      });
       } else if (error.code === 'auth/invalid-email') {
-        setAlertModal(true)
-        setMessage('That email address is invalid!')
+        setAlertModal({
+          open: true,
+          message: "That email address is invalid!",
+          success:false
+
+      });
       } else {
-        setAlertModal(true)
-        setMessage(`An error occurred: ${error.message || error.toString()}`)
+        console.error(error);
+        setAlertModal({
+          open: true,
+          message: "An error occurred during login",
+          success:false
+
+      });
       }
     } finally {
       setIsEnabled(true); // Re-enable the button regardless of outcome
@@ -141,11 +181,16 @@ const SignUp = () => {
      setAuthLoading(true)
 
     try{
+  
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   
         if (result.isCancelled) {
-          setAlertModal(true)
-          setMessage('User cancelled the login process')
+          setAlertModal({
+            open: true,
+            message: "User cancelled the login process",
+            success:false
+  
+        });
           throw 'User cancelled the login process';
         }
       
@@ -153,8 +198,12 @@ const SignUp = () => {
         const data = await AccessToken.getCurrentAccessToken();
       
         if (!data) {
-          setAlertModal(true)
-          setMessage('Something went wrong obtaining access token')
+          setAlertModal({
+            open: true,
+            message: "Something went wrong obtaining access token",
+            success:false
+  
+        });
           throw 'Something went wrong obtaining access token';
         }
       
@@ -165,11 +214,6 @@ const SignUp = () => {
         const userCredential = await auth().signInWithCredential(facebookCredential);
         const firebaseIdToken = await userCredential.user.getIdToken();
         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseIdToken });
-        if (firebaseIdToken == myuser?.data?.user?.token){
-          console.log("ek hi token ha")
-        }else{
-          console.log("alag ha token")
-        }
         if (myuser) {
           dispatch(
             handleAuth({
@@ -189,25 +233,32 @@ const SignUp = () => {
       setAuthLoading(false)
 
       } catch (error) {
- setAuthLoading(false)
 
    // Handle specific errors
+   setAuthLoading(false)
+
    if (error.code === 'auth/email-already-in-use') {
-    setAlertModal(true)
-    setMessage('That email address is already in use!')
-     setAuthLoading(false)
+     setAlertModal({
+       open: true,
+       message: "That email address is already in use!",
+       success:false
 
+   });
    } else if (error.code === 'auth/invalid-email') {
-     setAlertModal(true)
-     setMessage('That email address is invalid!')
-     setAuthLoading(false)
+     setAlertModal({
+       open: true,
+       message: "That email address is invalid!",
+       success:false
 
+   });
    } else {
      console.error(error);
-     setAlertModal(true)
-     setMessage('An error occurred during login')
-     setAuthLoading(false)
+     setAlertModal({
+       open: true,
+       message: "An error occurred during login",
+       success:false
 
+   });
    }
  } finally {
    setIsEnabled(true); // Re-enable button or other elements
@@ -228,7 +279,6 @@ const SignUp = () => {
      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const res =   await auth().signInWithCredential(googleCredential)
       const firebaseToken = await res.user.getIdToken();
-      console.log(firebaseToken)
       const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
       if (myuser) {
         dispatch(
@@ -249,26 +299,31 @@ const SignUp = () => {
       setAuthLoading(false)
 
     } catch (error) {
- setAuthLoading(false)
+      setAuthLoading(false)
 
- // Handle specific errors
- if (error.code === 'auth/email-already-in-use') {
-  setAlertModal(true)
-  setMessage('That email address is already in use!')
-   setAuthLoading(false)
+      if (error.code === 'auth/email-already-in-use') {
+        setAlertModal({
+          open: true,
+          message: "That email address is already in use!",
+          success:false
 
- } else if (error.code === 'auth/invalid-email') {
-  setAlertModal(true)
-  setMessage('That email address is invalid!')
-   setAuthLoading(false)
+      });
+      } else if (error.code === 'auth/invalid-email') {
+        setAlertModal({
+          open: true,
+          message: "That email address is invalid!",
+          success:false
 
- } else {
-   console.error(error);
-   setAlertModal(true)
-   setMessage('An error occurred during login')
-   setAuthLoading(false)
+      });
+      } else {
+        console.error(error);
+        setAlertModal({
+          open: true,
+          message: "An error occurred during login",
+          success:false
 
- }
+      });
+      }
 } finally {
  setIsEnabled(true); // Re-enable button or other elements
  setLoading(false)
@@ -411,10 +466,11 @@ if(authLoading){
             </View>
           </View>
           <CustomAlertModal
-                            title={message}
-                            modalVisible={alertModal}
-                            setModalVisible={()=>setAlertModal(false)}
-                            />
+          title={alertModal?.message}
+          modalVisible={alertModal?.open}
+          success={alertModal?.success}
+          setModalVisible={()=>setAlertModal(false)}
+          />
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>

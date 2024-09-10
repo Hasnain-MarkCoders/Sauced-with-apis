@@ -17,7 +17,8 @@ const SouceDetails = () => {
     const [loading, setLoading] = useState(false)
     const [alertModal, setAlertModal] = useState({
         open: false,
-        message: ""
+        message: "",
+        success:false
     })
     const [query, setQuery] = useState({
         name: "",
@@ -48,20 +49,25 @@ const SouceDetails = () => {
             if (!query?.name) {
                 return setAlertModal({
                     open: true,
-                    message: "Sauce name is required!"
+                    message: "Sauce name is required!",
+                    success:false
                 })
             }
             else if (!query?.title) {
                 return setAlertModal({
                     open: true,
-                    message: "Title is required!"
+                    message: "Title is required!",
+                    success:false
+
                 })
             }
 
             else if (!query?.description) {
                 return setAlertModal({
                     open: true,
-                    message: "Description is required!"
+                    message: "Description is required!",
+                    success:false
+
                 })
             }
             const response = await axiosInstance.post("/request-sauce", {
@@ -75,7 +81,8 @@ const SouceDetails = () => {
             if (response && response?.data && response?.data?.message) {
                 setAlertModal({
                     open: true,
-                    message: response?.data.message
+                    message: response?.data.message,
+                    success:true
                 })
                 setQuery({})
             }
@@ -84,7 +91,8 @@ const SouceDetails = () => {
             console.log(error)
             setAlertModal({
                 open: true,
-                message: error?.response?.data?.message || "An error occurred. Please try again."
+                message: error?.response?.data?.message || "An error occurred. Please try again.",
+                success:false
             });
         } finally {
             setLoading(false)
@@ -255,6 +263,7 @@ const SouceDetails = () => {
                 />
                 <CustomAlertModal
                     title={alertModal?.message}
+                    success={alertModal?.success}
                     modalVisible={alertModal?.open}
                     setModalVisible={() => setAlertModal({
                         open: false,

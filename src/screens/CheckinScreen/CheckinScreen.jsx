@@ -58,7 +58,8 @@ const CheckinScreen = () => {
     const [imageUris, setImageUris] = useState([]);
     const [alertModal, setAlertModal] = useState({
         open: false,
-        message: ""
+        message: "",
+        success:true
     })
     const [showDropDown, setShowDropDown]  =useState(false)
     const [data, setData] = useState({
@@ -144,14 +145,16 @@ const CheckinScreen = () => {
         if (!data.description) {
             return   setAlertModal({
                 open:true,
-                message:"Please write a description."
+                message:"Please write a description.",
+                success:false
             })
          
         }
         if (!data.location) {
             return setAlertModal({
                 open:true,
-                message:"Please select an option from the list."
+                message:"Please select an option from the list.",
+                success:false
             })
             
         }
@@ -180,18 +183,24 @@ const CheckinScreen = () => {
                 console.error(errorMessage, uploadErrors);
                 setAlertModal({
                     open:true,
-                    message:errorMessage
+                    message:errorMessage,
+                    success:false
+
                 })
                
             } else {
                 setAlertModal({
                     open:true,
-                    message:"Check complete."
+                    message:"Check complete.",
+                    success:true
+
                 })
                 if(results[0]?.status=="fulfilled")
                     setAlertModal({
                         open:true,
-                        message:results[0]?.value?.message
+                        message:results[0]?.value?.message,
+                        success:true
+
                     })
                     setData(
                         {
@@ -207,7 +216,9 @@ const CheckinScreen = () => {
             console.error('An error occurred during uploads:', error);
            return setAlertModal({
                 open:true,
-                message:error.message
+                message:error.message,
+                success:false
+
             })
         } finally {
             setLoading(false);
@@ -413,6 +424,7 @@ const CheckinScreen = () => {
                     </View>
              
                     <CustomAlertModal
+                     success={alertModal?.success}
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}
                     setModalVisible={() => setAlertModal({

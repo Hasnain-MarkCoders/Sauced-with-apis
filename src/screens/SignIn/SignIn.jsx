@@ -23,7 +23,13 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 
 const SignIn = () => {
   const dispatch = useDispatch()
-  const [alertModal, setAlertModal] =useState(false)
+  // const [alertModal, setAlertModal] =useState(false)
+  const [alertModal, setAlertModal] = useState({
+    open: false,
+    message: "",
+    success:true
+})
+
   const [message, setMessage] = useState("")
   const [authLoading , setAuthLoading]= useState(false)
   const [isEnabled, setIsEnabled] = useState(true);
@@ -39,13 +45,23 @@ const SignIn = () => {
    
       // Input validation
       if (!data.email) {
-        setAlertModal(true)
-        setMessage("Email is required!")
+
+        setAlertModal({
+          open: true,
+          message: "Email is required!",
+          success:false
+
+      });
         return;
       }
       if (!data.password) {
-        setAlertModal(true)
-        setMessage("Password is required!")
+
+        setAlertModal({
+          open: true,
+          message: "Password is required!",
+          success:false
+
+      });
         return;
       }
       setIsEnabled(false); // Disable login button or other elements
@@ -79,8 +95,13 @@ const SignIn = () => {
             }))
         }else {
           console.log('No user found');
-          setAlertModal(true)
-          setMessage('No user found on Firebase')
+     
+          setAlertModal({
+            open: true,
+            message: "No user found on Firebase",
+            success:false
+  
+        });
         setAuthLoading(false)
   
         }
@@ -89,8 +110,12 @@ const SignIn = () => {
         // Optional: Update state or handle user authentication details
       } else {
         console.log('No user found');
-        setAlertModal(true)
-        setMessage('No user found on Firebase')
+        setAlertModal({
+          open: true,
+          message: "No user found on Firebase",
+          success:false
+
+      });
       setAuthLoading(false)
 
       }
@@ -99,15 +124,27 @@ const SignIn = () => {
       setAuthLoading(false)
 
       if (error.code === 'auth/email-already-in-use') {
-        setAlertModal(true)
-        setMessage('That email address is already in use!')
+        setAlertModal({
+          open: true,
+          message: "That email address is already in use!",
+          success:false
+
+      });
       } else if (error.code === 'auth/invalid-email') {
-        setAlertModal(true)
-        setMessage('That email address is invalid!')
+        setAlertModal({
+          open: true,
+          message: "That email address is invalid!",
+          success:false
+
+      });
       } else {
         console.error(error);
-        setAlertModal(true)
-        setMessage('An error occurred during login')
+        setAlertModal({
+          open: true,
+          message: "An error occurred during login",
+          success:false
+
+      });
       }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
@@ -126,8 +163,12 @@ const SignIn = () => {
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   
         if (result.isCancelled) {
-          setAlertModal(true)
-          setMessage('User cancelled the login process')
+          setAlertModal({
+            open: true,
+            message: "User cancelled the login process",
+            success:false
+  
+        });
           throw 'User cancelled the login process';
         }
       
@@ -135,8 +176,12 @@ const SignIn = () => {
         const data = await AccessToken.getCurrentAccessToken();
       
         if (!data) {
-          setAlertModal(true)
-          setMessage('Something went wrong obtaining access token')
+          setAlertModal({
+            open: true,
+            message: "Something went wrong obtaining access token",
+            success:false
+  
+        });
           throw 'Something went wrong obtaining access token';
         }
       
@@ -170,17 +215,29 @@ const SignIn = () => {
    // Handle specific errors
    setAuthLoading(false)
 
-   if (error.code === 'auth/email-already-in-use') {
-     setAlertModal(true)
-     setMessage('That email address is already in use!')
-   } else if (error.code === 'auth/invalid-email') {
-    setAlertModal(true)
-    setMessage('That email address is invalid!')
-   } else {
-     console.error(error);
-     setAlertModal(true)
-     setMessage('An error occurred during login')
-   }
+      if (error.code === 'auth/email-already-in-use') {
+        setAlertModal({
+          open: true,
+          message: "That email address is already in use!",
+          success:false
+
+      });
+      } else if (error.code === 'auth/invalid-email') {
+        setAlertModal({
+          open: true,
+          message: "That email address is invalid!",
+          success:false
+
+      });
+      } else {
+        console.error(error);
+        setAlertModal({
+          open: true,
+          message: "An error occurred during login",
+          success:false
+
+      });
+      }
  } finally {
    setIsEnabled(true); // Re-enable button or other elements
    setLoading(false)
@@ -224,19 +281,31 @@ const SignIn = () => {
 
  // Handle specific errors
  if (error.code === 'auth/email-already-in-use') {
-   setAlertModal(true)
-   setMessage('That email address is already in use!')
+  setAlertModal({
+    open: true,
+    message: "That email address is already in use!",
+    success:false
+
+})
    setAuthLoading(false)
 
  } else if (error.code === 'auth/invalid-email') {
-    setAlertModal(true)
-    setMessage('That email address is invalid!')
+  setAlertModal({
+    open: true,
+    message: 'That email address is invalid!',
+    success:false
+
+})
     setAuthLoading(false)
 
  } else {
    console.error(error);
-   setAlertModal(true)
-   setMessage('An error occurred during login')
+   setAlertModal({
+    open: true,
+    message: "An error occurred during login",
+    success:false
+
+})
    setAuthLoading(false)
 
  }
@@ -399,8 +468,9 @@ if(authLoading){
     </ScrollView>
 
     <CustomAlertModal
-                            title={message}
-                            modalVisible={alertModal}
+                            title={alertModal?.message}
+                            modalVisible={alertModal?.open}
+                            success={alertModal?.success}
                             setModalVisible={()=>setAlertModal(false)}
                             />
     </SafeAreaView>

@@ -20,7 +20,8 @@ const AddEventScreen = () => {
     const [openDate, setOpenDate] = useState(false)
     const [alertModal, setAlertModal] = useState({
         open: false,
-        message: ""
+        message: "",
+        success:true
     })
     const [query, setQuery] = useState({
         title: "",
@@ -114,7 +115,8 @@ const AddEventScreen = () => {
         if (!query?.title) {
             return setAlertModal({
                 open: true,
-                message: "Title is required!"
+                message: "Title is required!",
+                success:false
             })
 
         }
@@ -140,7 +142,9 @@ const AddEventScreen = () => {
         else if (!query?.address) {
             return setAlertModal({
                 open: true,
-                message: "Address is required!"
+                message: "Address is required!",
+                success:false
+
             })
 
         }
@@ -177,7 +181,8 @@ const AddEventScreen = () => {
          console.log("<==============================================res============================================>", res.data)
          setAlertModal({
             alertModal: true,
-            messsage: res?.data?.message
+            messsage: res?.data?.message,
+            success:true
         })
 
         setTimeout(()=>{
@@ -187,7 +192,9 @@ const AddEventScreen = () => {
                 console.log(error)
                 setAlertModal({
                     alertModal: true,
-                    messsage: error?.message
+                    messsage: error?.message,
+                success:false
+
                 })
 
             }finally{
@@ -474,6 +481,7 @@ const AddEventScreen = () => {
 <CustomAlertModal
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}
+                    success={alertModal?.success}
                     setModalVisible={() => setAlertModal({
                         alertModal: false,
                         messsage: ""

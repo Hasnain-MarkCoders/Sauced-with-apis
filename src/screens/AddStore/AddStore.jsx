@@ -23,10 +23,10 @@ const AddStore = () => {
 
     const [alertModal, setAlertModal] = useState({
         open: false,
-        message: ""
+        message: "",
+        success:true
     })
     const [query, setQuery] = useState({
-
         storeName: "",
         address: "",
         coordinates: {}
@@ -50,23 +50,22 @@ const AddStore = () => {
     }, []);
 
     const handleRequestSauce = async () => {
-
-
-
         try {
             setIsLoading(prev => ({ ...prev, ["submitForm"]: true }))
 
             if (!query?.storeName) {
                 setAlertModal({
                     open: true,
-                    message: "Store name is required!"
+                    message: "Store name is required!",
+                    success:false
                 });
                 return;
             }
             if(!(query?.coordinates?.latitude && query?.coordinates?.latitude && query?.address) ){
                 setAlertModal({
                     open: true,
-                    message: "Store address is required!"
+                    message: "Store address is required!",
+                    success:false
                 });
                 return;
 
@@ -82,7 +81,8 @@ const AddStore = () => {
             if (response && response?.data && response?.data?.message) {
                 setAlertModal({
                     open: true,
-                    message: response?.data.message
+                    message: response?.data.message,
+                    success:true
                 })
                 setQuery({})
             }
@@ -90,7 +90,9 @@ const AddStore = () => {
         } catch (error) {
             setAlertModal({
                 open: true,
-                message: error?.response?.data?.message || "An error occurred. Please try again."
+                message: error?.response?.data?.message || "An error occurred. Please try again.",
+                success:false
+
             });
         } finally {
             setIsLoading(prev => ({ ...prev, ["submitForm"]: false }))
@@ -145,7 +147,7 @@ const AddStore = () => {
                 Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
             },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
         );
     };
 
@@ -259,6 +261,7 @@ const AddStore = () => {
 
                 <CustomAlertModal
                     title={alertModal?.message}
+                    success={alertModal?.success}
                     modalVisible={alertModal?.open}
                     setModalVisible={() => setAlertModal({
                         open: false,

@@ -2,11 +2,14 @@ import React, { useEffect } from 'react'
 import { Alert, Modal,  Text,  View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import closeIcon from "./../../../assets/images/close.png"
+import ErrorLogo from "./../../../assets/images/ErrorLogo.png"
+import SuccessLogo from "./../../../assets/images/SuccessLogo.png"
+
 import LinearGradient from 'react-native-linear-gradient';
 const CustomAlertModal = ({
   modalVisible = false,
   setModalVisible = () => { },
-  
+  success=true,
   title="",
 }) => {
   useEffect(()=>{
@@ -52,16 +55,15 @@ const CustomAlertModal = ({
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-          <View style={{
-            margin: 20,
-            borderWidth: scale(.5),
-            borderColor: "#FFA100",
-            borderRadius: scale(12),
+          <LinearGradient 
+           colors={['#FFA100', '#FF7B00']}
+          
+          
+          style={{
             position: "relative",
-            backgroundColor: '#2E210A',
+            backgroundColor: 'red',
             borderRadius: scale(10),
-            padding: scale(40),
-            paddingVertical:scale(60),
+            padding: scale(20),
             gap:scale(20),
             shadowColor: '#000',
             width: "90%",
@@ -72,26 +74,15 @@ const CustomAlertModal = ({
             shadowOpacity: 0.25,
             shadowRadius: 4,
             elevation: 5,
-            minHeight:scale(200),
             display:"flex",
             alignItems:"center",
             justifyContent:"center"
           }}>
-            {/* <TouchableOpacity
-
-              style={{
-                position: "absolute",
-                right: scale(20),
-                top: scale(20)
-              }}
-              onPress={() => {
-                setModalVisible(false)
-              }}>
-              <Image style={{
-                width: scale(20),
-                height: scale(20)
-              }} source={closeIcon} />
-            </TouchableOpacity> */}
+            
+            <Image style={{
+              width:scale(90),
+              height:scale(90)
+            }} source={success?SuccessLogo:ErrorLogo}/>
          
                 <Text style={{
                     color:"white",
@@ -103,7 +94,26 @@ const CustomAlertModal = ({
                   {title}  
                 </Text>
 
-          </View>
+                <TouchableOpacity
+                
+                onPress={setModalVisible}
+                style={{
+                  backgroundColor:"white",
+                  paddingHorizontal:scale(60),
+                  paddingVertical:scale(15),
+                  borderRadius:scale(8),
+                  
+}}>
+                  <Text style={{
+                    color:"#FFA100",
+                    fontWeight:800,
+                    fontSize:scale(14)
+                  }}>
+                  Close
+                  </Text>
+                </TouchableOpacity>
+
+          </LinearGradient>
         </View>
           </TouchableOpacity>
       </Modal>

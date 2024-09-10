@@ -15,7 +15,8 @@ const RequestASauceScreen = () => {
     const [loading , setLoading] = useState(false)
     const [alertModal, setAlertModal] = useState({
         open: false,
-        message: ""
+        message: "",
+        success:true
     })
     const [query, setQuery] = useState({
 
@@ -51,7 +52,9 @@ const RequestASauceScreen = () => {
             if (!query?.sauceName) {
                 setAlertModal({
                     open: true,
-                    message: "Sauce name is required!"
+                    message: "Sauce name is required!",
+                    success:false
+
                 });
                 return;
             }
@@ -59,7 +62,9 @@ const RequestASauceScreen = () => {
            else if (!query?.brandName) {
                 setAlertModal({
                     open: true,
-                    message: "Brand name is required!"
+                    message: "Brand name is required!",
+                    success:false
+
                 });
                 return;
             }
@@ -68,7 +73,9 @@ const RequestASauceScreen = () => {
             if(!isURL(query.webLink)){
                 return setAlertModal({
                    open: true,
-                   message: "Website link must be a valid URL!"
+                   message: "Website link must be a valid URL!",
+                   success:false
+
                });
                
             }
@@ -84,7 +91,9 @@ const RequestASauceScreen = () => {
             if(response && response?.data &&  response?.data?.message){
                 setAlertModal({
                     open: true,
-                    message: response?.data.message
+                    message: response?.data.message,
+                    success:true
+
                 })
                 setQuery({})
             }
@@ -93,7 +102,9 @@ const RequestASauceScreen = () => {
             console.log(error)
             setAlertModal({
                 open: true,
-                message: error?.response?.data?.message || "An error occurred. Please try again."
+                message: error?.response?.data?.message || "An error occurred. Please try again.",
+                success:false
+
             });
         }finally{
             setLoading(false)
@@ -256,6 +267,7 @@ const RequestASauceScreen = () => {
 
 
                 <CustomAlertModal
+                    success={alertModal?.success}
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}
                     setModalVisible={() => setAlertModal({

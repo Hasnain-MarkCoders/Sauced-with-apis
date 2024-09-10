@@ -74,7 +74,7 @@ const Home = () => {
             Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
             setLoading(false); // Stop loading indicator
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
         );
       };
     useEffect(() => {

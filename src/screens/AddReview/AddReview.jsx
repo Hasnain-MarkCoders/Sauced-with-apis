@@ -52,6 +52,7 @@ const AddReview = () => {
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: '',
+        success:true
     });
     const [data, setData] = useState({
         review: '',
@@ -119,18 +120,24 @@ const handleUpdateReviewsCount = ()=>{
                return setAlertModal({
                     open: true,
                     message: 'Review is required!',
+                    success:false
+
                 });
             }
             if (!data?.rating) {
                return setAlertModal({
                     open: true,
                     message: 'Rating is required!',
+                    success:false
+
                 });
             }
             if (!data?.heatLevel) {
                 return setAlertModal({
                      open: true,
                      message: 'Heat level is required!',
+                     success:false
+
                  });
              }
             const formData = new FormData();
@@ -159,6 +166,8 @@ const handleUpdateReviewsCount = ()=>{
                 setAlertModal({
                     open: true,
                     message: res?.data?.message,
+                    success:true
+
                 });
                 handleUpdateReviewsCount()
                 
@@ -178,6 +187,8 @@ const handleUpdateReviewsCount = ()=>{
             return setAlertModal({
                 open: true,
                 message: error.message,
+                success:false
+
             });
         } finally {
         }
@@ -452,6 +463,7 @@ const handleUpdateReviewsCount = ()=>{
             </SafeAreaView>
             <CustomAlertModal
                 title={alertModal?.message}
+                success={alertModal?.success}
                 modalVisible={alertModal?.open}
                 setModalVisible={() =>
                     setAlertModal({

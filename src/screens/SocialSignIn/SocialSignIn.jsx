@@ -40,7 +40,12 @@ const SocialSignIn = () => {
     const dispatch = useDispatch()
     const [isEnabled, setIsEnabled] = useState(true);
     const [loading, setLoading] = useState(false)
-    const [alertModal, setAlertModal] =useState(false)
+    // const [alertModal, setAlertModal] =useState(false)
+    const [alertModal, setAlertModal] = useState({
+      open: false,
+      message: "",
+      success:true
+  })
     const [message, setMessage] = useState("")
     useEffect(() => {
              GoogleSignin.configure({
@@ -85,16 +90,29 @@ const SocialSignIn = () => {
            }
          } catch (error) {
       // Handle specific errors
+
       if (error.code === 'auth/email-already-in-use') {
-        setMessage('That email address is already in use!')
-        setAlertModal(true)
+        setAlertModal({
+          open: true,
+          message: "That email address is already in use!",
+          success:false
+
+      });
       } else if (error.code === 'auth/invalid-email') {
-        setMessage('That email address is invalid!')
-        setAlertModal(true)
+        setAlertModal({
+          open: true,
+          message: "That email address is invalid!",
+          success:false
+
+      });
       } else {
         console.error(error);
-        setMessage('An error occurred during login')
-        setAlertModal(true)
+        setAlertModal({
+          open: true,
+          message: "An error occurred during login",
+          success:false
+
+      });
       }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
@@ -112,8 +130,12 @@ const SocialSignIn = () => {
             const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
       
             if (result.isCancelled) {
-              setMessage('User cancelled the login process')
-              setAlertModal(true)
+              setAlertModal({
+                open: true,
+                message: "User cancelled the login process",
+                success:false
+      
+            });
               throw 'User cancelled the login process';
             }
           
@@ -121,11 +143,14 @@ const SocialSignIn = () => {
             const data = await AccessToken.getCurrentAccessToken();
           
             if (!data) {
-              setMessage('Something went wrong obtaining access token')
-              setAlertModal(true)
+              setAlertModal({
+                open: true,
+                message: "Something went wrong obtaining access token",
+                success:false
+      
+            });
               throw 'Something went wrong obtaining access token';
             }
-          
             // Create a Firebase credential with the AccessToken
             const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
           
@@ -153,17 +178,30 @@ const SocialSignIn = () => {
             }
           } catch (error) {
        // Handle specific errors
-       if (error.code === 'auth/email-already-in-use') {
-         setMessage('That email address is already in use!')
-         setAlertModal(true)
-       } else if (error.code === 'auth/invalid-email') {
-         setMessage('That email address is invalid!')
-         setAlertModal(true)
-       } else {
-         console.error(error);
-         setMessage('An error occurred during login')
-         setAlertModal(true)
-       }
+
+   if (error.code === 'auth/email-already-in-use') {
+     setAlertModal({
+       open: true,
+       message: "That email address is already in use!",
+       success:false
+
+   });
+   } else if (error.code === 'auth/invalid-email') {
+     setAlertModal({
+       open: true,
+       message: "That email address is invalid!",
+       success:false
+
+   });
+   } else {
+     console.error(error);
+     setAlertModal({
+       open: true,
+       message: "An error occurred during login",
+       success:false
+
+   });
+   }
      } finally {
        setIsEnabled(true);
        setLoading(false)
@@ -238,8 +276,9 @@ if(loading){
             </View>
           </View>
           <CustomAlertModal
-                            title={message}
-                            modalVisible={alertModal}
+                            title={alertModal?.message}
+                            modalVisible={alertModal?.open}
+                            success={alertModal?.success}
                             setModalVisible={()=>setAlertModal(false)}
                             />
         </ScrollView>
