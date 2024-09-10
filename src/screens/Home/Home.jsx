@@ -19,15 +19,49 @@ import TopRatedSaucesList from '../../components/TopRatedSaucesList/TopRatedSauc
 import FeaturedSaucesList from '../../components/FeaturedSaucesList/FeaturedSaucesList';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
-
+import messaging from '@react-native-firebase/messaging';
+import useAxios from '../../../Axios/useAxios';
 const Home = () => {
     const navigation = useNavigation()
     const [alertModal, setAlertModal] = useState(false)
+    const axiosInstance = useAxios()
+
     const [initialLoading, setInitialLoading] = useState(true)
     const [data, setData] = useState({
         search: "",
     });
     const [isloading, setLoading] = useState(false)
+
+
+
+    const updateTokenOnServer = async (newFcmToken) => {
+        try {
+          const resposne = await axiosInstance.post("/update-token", { notificationToken: newFcmToken });
+          console.log('Token updated on the server successfully.', resposne.data);
+        } catch (error) {
+          console.error('Failed to update token on server:', error);
+        }
+      };
+
+      
+      React.useEffect(() => {
+        // Get the initial token
+        const getInitialFcmToken = async () => {
+          const fcmToken = await messaging().getToken();
+          console.log('Initial FCM Token:', fcmToken);
+          await updateTokenOnServer(fcmToken); // Update token to your backend
+        };
+        getInitialFcmToken();
+        const unsubscribe = messaging().onTokenRefresh(async (newFcmToken) => {
+          console.log('FCM Token refreshed:', newFcmToken);
+          await updateTokenOnServer(newFcmToken); // Update new token to your backend
+        });
+      
+        // Clean up the listener when component unmounts
+        return () => unsubscribe();
+      }, []);
+      
+
 
     const checkLocationServiceAndNavigate = () => {
         setLoading(true); // Start loading indicator
@@ -82,6 +116,47 @@ const Home = () => {
             setInitialLoading(false)
         }, 1000)
     })
+
+
+
+
+    useEffect(()=>{
+
+        try{
+
+            async function requestUserPermission() {
+                const authStatus = await messaging().requestPermission();
+                const enabled =
+                  authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                  authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+              
+                if (enabled) {
+                  console.log('Authorization status:', authStatus);
+                  getFcmToken();
+                }
+              }
+              
+              const getFcmToken = async () => {
+                const token = await messaging().getToken();
+                console.log('FCM Token:', token);
+                // You can save the token to your backend if needed
+              };
+              requestUserPermission()
+        }catch(err){
+            console.log(err)
+        }
+      
+    },[])
+
+    // useEffect(() => {
+    //     const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    //     });
+      
+    //     return unsubscribe;
+    //   }, []);
+
+     
 
     if (initialLoading) {
         return (
