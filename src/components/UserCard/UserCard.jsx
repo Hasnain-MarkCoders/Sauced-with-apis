@@ -5,6 +5,7 @@ import CustomButtom from '../CustomButtom/CustomButtom'
 import Lightbox from 'react-native-lightbox';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { } }) => {
   const [LightBox, setLightBox] = useState(false)
@@ -13,6 +14,8 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
   const axiosInstance = useAxios()
+ const [isLoading, setIsLoading] = useState(true);
+
 
   const handleToggleUserStatus =useCallback( async () => {
     // setLoading(true);
@@ -69,7 +72,7 @@ useEffect(()=>{
           overflow: 'hidden',
           maxWidth: scale(140)
         }}>
-        <Lightbox activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
+        {/* <Lightbox activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
           springConfig={{ tension: 30, friction: 7 }}
           onOpen={() => setLightBox(true)}
           willClose={() => setLightBox(false)}
@@ -85,7 +88,31 @@ useEffect(()=>{
 
 
           ></Image>}
-        </Lightbox>
+        </Lightbox> */}
+{isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(58)}
+            height={scale(58)}
+            borderRadius={scale(58)}
+            
+            />
+        </SkeletonPlaceholder>
+      )}
+          {url && <Image
+          style={{
+            width:scale(58),
+            height:scale(58),
+            display:isLoading?"none":"flex",
+
+            borderRadius: scale(50),
+
+          }}
+          onLoad={() => setIsLoading(false)}
+            source={{ uri: url }}
+          // source={url}
+
+
+          ></Image>}
 
         <Text
           numberOfLines={1} ellipsizeMode="tail"

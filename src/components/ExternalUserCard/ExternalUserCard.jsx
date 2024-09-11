@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import flames from "./../../../assets/images/flames.png"
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 const ExternalUserCard = ({
     totalCheckIns=0,
     totalFollowersCount=0,
@@ -17,6 +18,8 @@ const ExternalUserCard = ({
 }) => {
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
+    const [isLoading, setIsLoading] = useState(true);
+
     return (
         <View style={{
             width: "100%",
@@ -35,8 +38,20 @@ const ExternalUserCard = ({
                 position:"relative"
             }}>
                 
+
+                {isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(100)}
+            height={scale(100)}
+            borderRadius={scale(50)}
+            
+            />
+        </SkeletonPlaceholder>
+      )}
+
                 <Image
                     style={{
+                        display:isLoading?"none":"flex",
                         width: scale(100),
                         height: scale(100),
                         borderRadius: scale(50),
@@ -45,6 +60,7 @@ const ExternalUserCard = ({
                     }}
                     // source={{ uri: url }}
                     source={{uri:url}}
+                    onLoad={() => setIsLoading(false)}
 
                 />
                 <View style={{

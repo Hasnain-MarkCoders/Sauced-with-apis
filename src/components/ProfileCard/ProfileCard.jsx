@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { formatDate, getFormattedName } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
 import { useSelector } from 'react-redux'
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -19,6 +20,8 @@ reviewsCount=0
     const auth = useSelector(state=>state.auth)
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
+    const [isLoading, setIsLoading] = useState(true);
+
     return (
         <View style={{
             width: "100%",
@@ -44,8 +47,18 @@ reviewsCount=0
                     position:"relative"
                 }}>
 
+{isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(90)}
+            height={scale(90)}
+            borderRadius={scale(45)}
+            
+            />
+        </SkeletonPlaceholder>
+      )}
                 <Image
                     style={{
+                        display:isLoading?"none":"flex",
                         width: scale(90),
                         height: scale(90),
                         resizeMode:"contain",
@@ -59,6 +72,7 @@ reviewsCount=0
                     }}
                     source={{ uri: url }}
                     // source={url}
+                    onLoad={() => setIsLoading(false)}
 
                 />
                  <Image

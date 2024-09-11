@@ -187,7 +187,6 @@ const ExternalProfileScreen = ({
 
                                             <Text
                                                 numberOfLines={1} ellipsizeMode="tail"
-
                                                 style={{
                                                     color: "white",
                                                     fontWeight: 600,
@@ -198,18 +197,6 @@ const ExternalProfileScreen = ({
 
                                                 }}>
                                                 {getFormattedName(user?.name?user?.name:"")}
-
-                                            </Text>
-
-                                            <Text style={{
-                                                color: "white",
-                                                fontWeight: 600,
-                                                fontSize: scale(35),
-                                                lineHeight: scale(50),
-                                                marginBottom: scale(20)
-
-                                            }}>
-                                                Profile
 
                                             </Text>
                                         </View>
