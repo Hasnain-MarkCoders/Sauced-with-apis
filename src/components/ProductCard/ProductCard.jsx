@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
 import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
-import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
 import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
 import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
@@ -46,24 +46,63 @@ const ProductCard = ({
             console.log(res.data)
             if (sauceType == "toprated") {
                 dispatch(handleToggleTopRatedSauce(product?._id))
+                  if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
             }
             if (sauceType == "featured") {
                 dispatch(handleToggleFeaturedSauce(product?._id))
+                   if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
+               
+             
             }
             if (sauceType == "favourite") {
                 dispatch(handleToggleFavoriteSauce(product?._id))
+               if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
+            // dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+
             }
             if (sauceType == "checkedin") {
                 dispatch(handleToggleCheckedInSauce(product?._id))
+                if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
             }
             if (sauceType == 1) {
                 dispatch(handleToggleSauceListOne(product?._id))
+                if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
             }
             if (sauceType == 2) {
                 dispatch(handleToggleSauceListTwo(product?._id))
+                if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
             }
             if (sauceType == 3) {
                 dispatch(handleToggleSauceListThree(product?._id))
+                if(productStatus?.isChecked){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+                }
             }
         } catch (error) {
             console.error('Failed to like / dislike:', error);
@@ -71,12 +110,6 @@ const ProductCard = ({
             setLoading(false);
         }
     }
-    // useEffect(()=>{
-    //     console.log("product?.reviewCount===========================>", product?.reviewCount)
-    // },[product?.reviewCount])
-    useEffect(()=>{
-console.log("product?.reviewCount", product?.reviewCount)
-    },[])
 
     return (
         <View style={{

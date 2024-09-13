@@ -18,6 +18,7 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
 
 
   const handleToggleUserStatus =useCallback( async () => {
+    console.log(_id)
     // setLoading(true);
     // try {
     //     const res = await axiosInstance.post("/follow", {_id});

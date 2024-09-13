@@ -1,9 +1,12 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomProgress from '../CustomProgress/CustomProgress'
+import useAxios from '../../../Axios/useAxios'
 
 const Award = ({url="", percentage, name}) => {
+
+
   return (
     <View style={{
         flexBasis:"48%",
@@ -35,6 +38,7 @@ const Award = ({url="", percentage, name}) => {
         backgroundColor:"#FFA100"
 
       }}>
+        {name}
 
       </View>}
       <CustomProgress  percentage={percentage} name={name}/>

@@ -140,6 +140,7 @@ const handleUpdateReviewsCount = ()=>{
 
                  });
              }
+             setLoading(true)
             const formData = new FormData();
             imageUris.forEach(imageUri => {
                 console.log(imageUri.type);
@@ -191,6 +192,7 @@ const handleUpdateReviewsCount = ()=>{
 
             });
         } finally {
+            setLoading(false)
         }
     };
 
@@ -440,6 +442,7 @@ const handleUpdateReviewsCount = ()=>{
                         paddingHorizontal: scale(20),
                     }}>
                     <CustomButtom
+                    disabled={loading}
                         showIcon={false}
                         buttonTextStyle={{ fontSize: scale(14) }}
                         buttonstyle={{

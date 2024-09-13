@@ -42,7 +42,6 @@ const [initialLoading, setInitialLoading] = React.useState(true)
                  }
              });
                  setHasMore(res.data.pagination.hasNextPage);
-                 console.log("res?.data?.events=============================>", res?.data?.events?.length)
                  dispatch(handleAllEventsExceptInterested([...res.data?.events]));
          } catch (error) {
              console.error('Failed to fetch reviews:', error);

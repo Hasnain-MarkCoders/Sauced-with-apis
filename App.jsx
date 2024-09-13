@@ -7,10 +7,14 @@ import { LogBox } from 'react-native';
 import BootSplash from "react-native-bootsplash";
 import Toast from 'react-native-toast-message';
 function App() {
-  LogBox.ignoreLogs(['Warning: ...']); 
+LogBox.ignoreLogs(['Warning: ...']); 
 LogBox.ignoreAllLogs();
 
 React.useEffect(() => {
+  if (__DEV__) {
+    console.warn = () => {};
+    console.error = () => {};
+  }
   const init = async () => {
     // …do multiple sync or async tasks
   };

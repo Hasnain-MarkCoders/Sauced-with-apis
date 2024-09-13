@@ -23,7 +23,6 @@ const FollowersList = ({
     const navigation = useNavigation()
     const fetchFollowers = useCallback(async () => {
         if(searchTerm) return
-
         if (!hasMore || loading) return;
         setLoading(true);
         try {
@@ -35,6 +34,8 @@ const FollowersList = ({
             });
             setHasMore(res.data.pagination.hasNextPage)
             dispatch(handleFollowers(res?.data?.data))
+            console.log("res?.data?.data==========================================>", res?.data?.data)
+
             
         } catch (error) {
             console.error('Failed to fetch followers:', error);
@@ -57,7 +58,6 @@ const FollowersList = ({
                     searchTerm
                 }
             });
-            console.log("hasnain hon na yr")
             setHasMore(res?.data?.pagination?.hasNextPage);
             console.log("res?.data?.data==========================================>", res?.data?.data)
             dispatch(handleFollowersSearch(res?.data?.data));
@@ -76,28 +76,15 @@ const FollowersList = ({
 
 
     useEffect(() => {
-        navigation.addListener("focus",
-            ()=>{
-
                 fetchFollowers();
-            }
-        )
     }, [fetchFollowers]);
 
     const handleUser =  useCallback(async(user)=>{
         dispatch(handleUsers([user]))
         dispatch(handleRemoveUserFromFollowers(user?._id))
-        await axiosInstance.post("/follow", {_id:user?._id});
+      const res=  await axiosInstance.post("/follow", {_id:user?._id});
+      console.log(res.data)
           },[])
-
-
-
-
-
-
-useEffect(()=>{
-console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ye user ki id ha++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", _id)
-},[])
 
 
     return (
@@ -122,7 +109,7 @@ console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++y
                 renderItem={({ item }) => 
                 <UserCard
                 cb={handleUser}
-                title={"Follow"}
+                title={item?.isFollowing?"Unfollow":"Follow back"}
                 _id={item?._id}
                 item={item}
                 url={item.image}

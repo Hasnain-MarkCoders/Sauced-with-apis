@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleAuth } from '../android/app/Redux/userReducer';
 import { useNavigation } from "@react-navigation/native";
 //export const host =  "http://localhost:5000"
-export const host =  "https://aws.markcoders.com/sauced-backend/api"
+// export const host =  "https://aws.markcoders.com/sauced-backend/api"
 // export const host =  "http://3.136.48.200/sauced-backend/api"
+export const host =  "https://app.saucedapp.com/sauced-backend/api"
+
 
 // export const host =  "https://59455wwt-6000.inc1.devtunnels.ms/"
 // export const host =  "https://s4v6lgbv-6000.uks1.devtunnels.ms/api"

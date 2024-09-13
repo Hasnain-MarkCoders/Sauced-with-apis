@@ -92,7 +92,10 @@ const Product = () => {
   const getId = (id = 0) => {
     return setId(id);
   };
+useEffect(()=>{
+  console.log("product?.id===========================>new", product?._id)
 
+},[product])
 
   const handleAddMessage = async () => {
     const existingMessage = data.find(item => item?._id == id)
@@ -126,7 +129,6 @@ const Product = () => {
 
     return () => {
       setAlreadyInList(prev => ({list1: false, list2: false, list3: false}));
-      console.log("product?.reviewCount==============>", route?.params?.item?.reviewCount)
     };
   }, [route?.params?.item]);
 
@@ -147,16 +149,13 @@ const Product = () => {
             console.error('Failed to fetch photos:', error);
         } finally {
             // setLoading(false);
+            console.log("product_id", product?.id)
             setInitialLoading(false);
         }
     };
-
-    navigation.addListener('focus', ()=>{
-      console.log("aaaa lay chack mai agya")
       fetchCheckings();
-    })
 
-}, [page]);
+}, [page, product]);
 
 
   const handleLoading = (listNumber, action) => {
@@ -392,10 +391,10 @@ const Product = () => {
                       </View>
 
                             <CommentsList
-                                            commentsData={data}
-                                            cb={handleUserProfileView}  getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
-                                            data={messagesData}
-                                            loading={loading} hasMore={hasMore} />
+                            commentsData={data}
+                            cb={handleUserProfileView}  getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
+                            loading={loading} hasMore={hasMore}
+                            />
                     </View>
                   </View>
                 )}

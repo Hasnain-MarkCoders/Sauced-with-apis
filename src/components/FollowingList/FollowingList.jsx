@@ -35,6 +35,7 @@ const FollowingList = ({
             });
             setHasMore(res.data.pagination.hasNextPage)
             dispatch(handleFollowings(res?.data?.data))
+            console.log("res?.data?.data=====================================================================================>", res?.data?.data)
             
         } catch (error) {
             console.error('Failed to fetch followers:', error);
@@ -112,7 +113,7 @@ const FollowingList = ({
                 renderItem={({ item }) => 
                 <UserCard
                 cb={handleUser}
-                title={"Unfollow"}
+                title={item?.isFollowing?"Unfollow":"Follow back"}
                 _id={item?._id}
                 item={item}
                 url={item.image}

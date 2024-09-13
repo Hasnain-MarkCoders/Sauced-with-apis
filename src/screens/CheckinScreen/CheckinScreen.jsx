@@ -13,6 +13,10 @@ import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import user from "./../../../assets/images/user.png"
 import locationIcon from "./../../../assets/images/locationIcon.png"
+import arrow from "./../../../assets/images/arrow.png";
+
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
 const cities =[
     { "city": "New York" },
     { "city": "Los Angeles" },
@@ -56,6 +60,10 @@ const CheckinScreen = () => {
     const navigation = useNavigation()
     const [loading, setLoading] = useState(false)
     const [imageUris, setImageUris] = useState([]);
+    const [isloading, setIsLoading] = useState({
+        submitForm: false,
+        loadMap: false
+    })
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: "",
@@ -65,12 +73,67 @@ const CheckinScreen = () => {
     const [data, setData] = useState({
         description: "",
         select: "", 
-        location:""
+        location:"",
+        address:"",
+        coordinates:{}
     });
     const route = useRoute()
     const product = route?.params?.product
     const routerNumber = route?.params?.routerNumber
     const axiosInstance = useAxios()
+
+    const checkLocationServiceAndNavigate = () => {
+        setIsLoading(prev => ({ ...prev, loadMap: true }))
+        // Start loading indicator
+        const permission = Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+            : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+        check(permission).then(result => {
+            if (result === RESULTS.GRANTED) {
+                fetchCurrentLocation();
+            } else if (result === RESULTS.DENIED) {
+                request(permission).then(result => {
+                    if (result === RESULTS.GRANTED) {
+                        fetchCurrentLocation();
+                        setIsLoading(prev => ({ ...prev, loadMap: false }))
+                    } else {
+                        Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+                        setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                    }
+                });
+            } else {
+                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+            }
+        }).catch(error => {
+            console.warn("Error checking location permission:", error);
+            Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+            setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+        });
+    };
+
+    const handleEventCoords = (coords) => {
+        setData(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
+    }
+
+    const fetchCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                navigation.navigate("Map", {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    fn: handleEventCoords
+                });
+                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+            },
+            (error) => {
+                Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
+        );
+    };
 
 
     const handleImagePicker = () => {
@@ -104,10 +167,10 @@ const CheckinScreen = () => {
     const handleImage = async (file, additionalData) => {
         const formData = new FormData();
         formData.append('images', file);
-        formData.append('text', additionalData.description);
-        formData.append('latitude', additionalData.latitude);
-        formData.append('longitude', additionalData.longitude);
-        formData.append('sauceId', additionalData.sauceId);
+        formData.append('text', additionalData?.description);
+        formData.append('latitude', additionalData?.coordinates?.latitude);
+        formData.append('longitude', additionalData?.coordinates?.longitude);
+        formData.append('sauceId', additionalData?.sauceId);
     
         const postData = {
             method: 'POST',
@@ -150,10 +213,10 @@ const CheckinScreen = () => {
             })
          
         }
-        if (!data.location) {
+        if (!data.coordinates?.latitude ||!data?.coordinates?.longitude || !data?.address) {
             return setAlertModal({
                 open:true,
-                message:"Please select an option from the list.",
+                message:"Please choose a location.",
                 success:false
             })
             
@@ -279,7 +342,7 @@ const CheckinScreen = () => {
                                     paddingLeft: scale(50)
 
                                 }} />
-                                <View style={{
+                                {/* <View style={{
                                     width:"100%",
                                     position:"relative",
                                     borderRadius:scale(12),
@@ -355,7 +418,25 @@ const CheckinScreen = () => {
                                             })
                                         }
                                         </ScrollView >}
-                                </View>
+                                </View> */}
+
+                        <CustomButtom
+                        loading={isloading?.loadMap}
+                            Icon={() => <Image source={arrow} />}
+                            showIcon={true}
+                            buttonTextStyle={{ fontSize: scale(14) }}
+                            buttonstyle={{
+                                width: "100%", borderColor: "#FFA100",
+                                backgroundColor: "#2e210a", padding: 15,
+                                display: "flex", gap: 10, flexDirection: "row-reverse",
+                                alignItems: "center", justifyContent:isloading?.loadMap?"center": "space-between"
+                            }}
+                            // onPress={() => navigation.navigate("Map")}
+                            // onPress={navigateIfLocationEnabled}
+                            onPress={checkLocationServiceAndNavigate}
+
+                            title={data?.address ? data?.address : "Address"}
+                        />
                           
 
                             <View style={{
@@ -407,6 +488,7 @@ const CheckinScreen = () => {
                             </View>
 
                             <CustomButtom
+                            disabled={loading}
                             loading={loading}
                                 showIcon={false}
                                 buttonTextStyle={{ fontSize: scale(16) }}

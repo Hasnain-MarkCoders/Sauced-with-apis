@@ -17,6 +17,7 @@ import scaledOpenEye from "./../../../assets/images/scaledOpenEye.png"
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
+import messaging from '@react-native-firebase/messaging';
 
 
 
@@ -40,6 +41,34 @@ const SignIn = () => {
     email: "",
     password: ""
   });
+
+
+
+
+
+
+  const updateTokenOnServer = async (authToken,newFcmToken) => {
+    try {
+      const resposne = await axiosInstance.post("/update-token", { notificationToken: newFcmToken }, {
+        headers:{
+          "Authorization":`Bearer ${authToken}`
+        }
+      });
+      console.log('Token updated on the server successfully.', resposne.data);
+    } catch (error) {
+      console.error('Failed to update token on server:', error);
+    }
+  };
+
+
+  
+  const getInitialFcmToken = async (authToken) => {
+    const fcmToken = await messaging().getToken();
+    console.log('Initial FCM Token:', fcmToken);
+    await updateTokenOnServer(authToken, fcmToken); // Update token to your backend
+  };
+
+
   const handleLogin = async () => {
     try {
    
@@ -77,7 +106,7 @@ const SignIn = () => {
         // Your API authentication
 
         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: token })
-     
+        await getInitialFcmToken(myuser?.data?.user?.token)
         if (myuser) {
           dispatch(
             handleAuth({
@@ -93,6 +122,7 @@ const SignIn = () => {
               "authenticated": true,
               "welcome": myuser?.data?.user?.welcome
             }))
+         
         }else {
           console.log('No user found');
      
@@ -194,6 +224,8 @@ const SignIn = () => {
         console.log("firebaseIdToken=================>", firebaseIdToken)
         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseIdToken });
         if (myuser) {
+          await getInitialFcmToken(myuser?.data?.user?.token)
+
           dispatch(
             handleAuth({
               "token": myuser?.data?.user?.token,
@@ -259,6 +291,8 @@ const SignIn = () => {
       const firebaseToken = await res.user.getIdToken();
       const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
       if (myuser ) {
+        await getInitialFcmToken(myuser?.data?.user?.token)
+
         dispatch(
           handleAuth({
             "token": myuser?.data?.user?.token,

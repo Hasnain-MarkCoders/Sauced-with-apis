@@ -49,7 +49,6 @@ const [initialLoading, setInitialLoading] = React.useState(true)
                 // //  setData([...res.data?.events]);
 
                 dispatch(handleInterestedEvents(res?.data?.interestedEvents))
-                console.log("res?.data?.interestedEvents?.length====================================================>", res?.data?.interestedEvents?.length)
                 setPaginationBullets(res?.data?.interestedEvents?.length)
          } catch (error) {
              console.error('Failed to fetch reviews:', error);

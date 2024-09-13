@@ -10,6 +10,7 @@ const AwardList = ({
     setPage=()=>{},
     loading=false
 }) => {
+  console.log(data[5]?.progress)
   return (
     
    <View style={{
@@ -20,6 +21,7 @@ const AwardList = ({
     showsVerticalScrollIndicator={false}
     numColumns={2}
        data={data}
+       extraData={data}
        onEndReachedThreshold={0.5}
        onEndReached={() => {
         if (!loading && hasMore) {
@@ -29,9 +31,9 @@ const AwardList = ({
       keyExtractor={(item, index) => index.toString()}
        renderItem={({ item }) => <Award 
        
-       url={item?.urls?.small} 
-       name={item?.title}
-       percentage={item?.percentage}
+       url={item?.badge?.icon} 
+       name={item?.badge?.name}
+       percentage={item?.progress}
        infoText={""}
        
        showText={false} />}

@@ -9,7 +9,7 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch } from 'react-redux';
 import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSauces';
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
-import { handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
 import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
 import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne';
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
@@ -47,38 +47,77 @@ const handleOnPress = ()=>{
 const handleToggleLike=async()=>{
     try {
         const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
-
-
         if (sauceType=="toprated"){
             dispatch(handleToggleTopRatedSauce(item?._id))
-            setSelected(prev=>!prev)
+            if(selected){
+                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                }
+
         }
 
 
         if (sauceType=="featured"){
             dispatch(handleToggleFeaturedSauce(item?._id))
-            setSelected(prev=>!prev)
+            if(selected){
+                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                }
         }
 
         if (sauceType=="favourite"){
-            dispatch(handleToggleFavoriteSauce(item?._id))
+            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
         }
         
         if (sauceType=="checkedin"){
             dispatch(handleToggleCheckedInSauce(item?._id))
+            if(selected){
+            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+            }else{
+                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+            }
+
         }
         if (sauceType==1){
             dispatch(handleToggleSauceListOne(item?._id))
+             if(selected){
+            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+            }else{
+                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+            }
+
+    // console.log("hello g")
+
         }
 
         if (sauceType==2){
             dispatch(handleToggleSauceListTwo(item?._id))
+             if(selected){
+            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+            }else{
+                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+            }
+
+    // console.log("hello g")
+
         }
         if (sauceType==3){
             dispatch(handleToggleSauceListThree(item?._id))
+             if(selected){
+            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+            }else{
+                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+            }
+
+    // console.log("hello g")
+
         }
     } catch (error) {
         console.error('Failed to like / dislike:', error);
+        dispatch(handleFavoriteSauces([item]))
+
     } finally {
     }
 }
@@ -115,7 +154,7 @@ const handleToggleLike=async()=>{
 
 {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
-          <SkeletonPlaceholder.Item  width="100%" height={searchPageStyle?scale(140):"100%"} marginTop={searchPageStyle?20:0} borderRadius={10}  />
+          <SkeletonPlaceholder.Item  width={"100%"} height={searchPageStyle?scale(125):"100%"} marginTop={searchPageStyle?20:0} borderRadius={10}  />
         </SkeletonPlaceholder>
       )}
       <Image

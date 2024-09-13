@@ -83,8 +83,8 @@ const ProductSearchList = ({
                     customStyles={
 
                         {
-                            width: scale((windowWidth))/4.3,
-                            marginBottom:scale(-20),
+                            width: (windowWidth)/3.8,
+                            marginBottom:scale(-30),
                             marginHorizontal: "auto",
                         }
                     }

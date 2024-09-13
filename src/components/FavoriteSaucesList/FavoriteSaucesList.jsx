@@ -27,6 +27,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
             });
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleFavoriteSauces(res?.data?.sauces))
+                 console.log("favorite sauces==============================================================================================>", res?.data?.sauces.filter(item=>!item?.hasLiked))
         } catch (error) {
             console.error('Failed to fetch sauces:', error);
         } finally {
@@ -72,9 +73,9 @@ favoriteSauces?.length>0&&<View style={styles.container}>
 
                     }}
                     data={favoriteSauces}
+                    extraData={favoriteSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
-
                     onEndReached={() => {
                         if (!loading && hasMore) {
                             setPage(currentPage => currentPage + 1);

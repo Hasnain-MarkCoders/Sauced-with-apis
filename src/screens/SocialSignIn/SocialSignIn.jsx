@@ -17,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
+import messaging from '@react-native-firebase/messaging';
 
 
 
@@ -37,6 +38,26 @@ const SocialSignIn = () => {
 
 
   const axiosInstance = useAxios()
+
+  const updateTokenOnServer = async (authToken,newFcmToken) => {
+    try {
+      const resposne = await axiosInstance.post("/update-token", { notificationToken: newFcmToken }, {
+        headers:{
+          "Authorization":`Bearer ${authToken}`
+        }
+      });
+      console.log('Token updated on the server successfully.', resposne.data);
+    } catch (error) {
+      console.error('Failed to update token on server:', error);
+    }
+  };
+
+  
+  const getInitialFcmToken = async (authToken) => {
+    const fcmToken = await messaging().getToken();
+    console.log('Initial FCM Token:', fcmToken);
+    await updateTokenOnServer(authToken, fcmToken); // Update token to your backend
+  };
     const dispatch = useDispatch()
     const [isEnabled, setIsEnabled] = useState(true);
     const [loading, setLoading] = useState(false)
@@ -71,9 +92,10 @@ const SocialSignIn = () => {
            const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
           //  console.log("firebaseToken==>", firebaseToken)
           //  console.log("myuser google==>", myuser.data.user)
-           
-           if (myuser) {
-             dispatch(
+          
+          if (myuser) {
+            await  getInitialFcmToken(myuser?.data?.user?.token)
+            dispatch(
                handleAuth({
                  "token": myuser?.data?.user?.token,
                  "uid": myuser?.data?.user?.token,
@@ -87,6 +109,7 @@ const SocialSignIn = () => {
                  "authenticated": true,
                  "welcome":myuser?.data?.user?.welcome
                }))
+
            }
          } catch (error) {
       // Handle specific errors
@@ -161,6 +184,8 @@ const SocialSignIn = () => {
             console.log("firebaseToken==>", firebaseIdToken)
             console.log("myuser google==>", myuser)
             if (myuser) {
+          await  getInitialFcmToken(myuser?.data?.user?.token)
+
               dispatch(
                 handleAuth({
                   "token": myuser?.data?.user?.token,
@@ -175,6 +200,7 @@ const SocialSignIn = () => {
                   "authenticated": true,
                   "welcome":myuser?.data?.user?.welcome
                 }))
+
             }
           } catch (error) {
        // Handle specific errors

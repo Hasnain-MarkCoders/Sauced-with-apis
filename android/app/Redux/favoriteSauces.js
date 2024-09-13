@@ -14,7 +14,7 @@ const favoriteSaucesSlice = createSlice({
       });
 
       // Replace the state with the updated map values
-      return Array.from(stateMap.values());
+      return [...Array.from(stateMap.values())];
     },
 
     handleToggleFavoriteSauce:(state, action)=>{
@@ -24,6 +24,11 @@ const favoriteSaucesSlice = createSlice({
       }
       
     },
+    handleRemoveSauceFromFavouriteSauces: (state, action) => {
+      console.log("action.payload", action.payload)
+      return state.filter(x => x._id !== action.payload);
+    },
+
     handleIncreaseReviewCountOfFavoriteSauce:(state, action)=>{
       const sauce = state.find(x => x._id == action.payload);
       if (sauce) {
@@ -33,5 +38,5 @@ const favoriteSaucesSlice = createSlice({
   },
 });
 
-export const { handleFavoriteSauces, handleToggleFavoriteSauce, handleIncreaseReviewCountOfFavoriteSauce } = favoriteSaucesSlice.actions;
+export const { handleFavoriteSauces, handleToggleFavoriteSauce, handleIncreaseReviewCountOfFavoriteSauce , handleRemoveSauceFromFavouriteSauces} = favoriteSaucesSlice.actions;
 export default favoriteSaucesSlice.reducer;

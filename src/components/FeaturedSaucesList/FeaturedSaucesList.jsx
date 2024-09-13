@@ -36,12 +36,7 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     },[page,hasMore , featuredSauces]);
     
     useEffect(() => {
-        navigation.addListener('focus',()=>{
-            console.log("hello ji")
             fetchSauces()
-        })
-
-        // fetchSauces();
     }, [fetchSauces]);
 
 

@@ -3,15 +3,13 @@ import React, { useEffect } from 'react'
 import { FlatList } from 'react-native-gesture-handler';
 import CustomComment from '../CustomComment/CustomComment';
 import { scale } from 'react-native-size-matters';
-const CommentsList = ({ data = [],commentsData=[], cb=()=>{},getId=()=>{}, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
-
+const CommentsList = ({ commentsData=[], cb=()=>{},getId=()=>{}, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
   return (
     <>
      
       <FlatList
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        // data={data}
         data={commentsData}
         onEndReachedThreshold={0.8}
         onEndReached={() => {
@@ -23,16 +21,19 @@ const CommentsList = ({ data = [],commentsData=[], cb=()=>{},getId=()=>{}, loadi
         renderItem={({ item, index }) =>
         <CustomComment
         getId={getId}
-        // index={index}
+        item={item}
         cb={cb}
           handleSubmitMessage={handleSubmitMessage}
         _id={item?._id}
           profileUri={item?.owner?.image}
           assets={item?.images}
           title={item?.owner?.name}
+          email={item?.owner?.email}
           text={item?.text}
           replies={item?.comments}
-          count = {data?.length}
+          likesCount={item?.likesCount}
+          hasLikedUser={item?.hasLiked}
+          count = {commentsData?.length}
 
           />
           

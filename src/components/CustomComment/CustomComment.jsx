@@ -8,6 +8,7 @@ import filledHeart from "./../../../assets/images/filledHeart.png"
 import Lightbox from 'react-native-lightbox';
 import NestedComment from '../NestedComment/NestedComment'
 import UserDetailsModal from '../UserDetailsModal/UserDetailsModal'
+import useAxios from '../../../Axios/useAxios'
 
 const CustomComment = ({
     getId=()=>{},
@@ -24,12 +25,41 @@ const CustomComment = ({
     count=0,
     index=0,
     cb=()=>{},
-    _id=""
+    _id="",
+    item={},
+    email="",
+    likesCount=0,
+    hasLikedUser=false
 }) => {
-    const [commentStatus, setCommentStatus] = useState(false)
+    const [commentStatus, setCommentStatus] = useState(hasLikedUser)
     const [LightBox, setLightBox] = useState(false)
     const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
     const [showReplies, setShowReplies]  = useState(false)
+    const [likeCount, setLikesCount ]= useState(likesCount)
+    const axiosInstance = useAxios()
+    const handleLike = async()=>{
+        try{
+            console.log(hasLikedUser)
+            setLikesCount(prev=> (commentStatus&&prev>0)?prev-1:prev+1)
+            setCommentStatus(prev => !prev);
+            const res = await axiosInstance.post(`/like-checkin`, { checkinId: _id });
+            setLikesCount(res.data?.likesCount)
+            Snackbar.show({
+                text: !commentStatus ? 'You loved this comment.' : "You unloved this comment.",
+                duration: Snackbar.LENGTH_SHORT,
+                action: {
+                    text: 'UNDO',
+                    textColor: '#FFA100',
+                    onPress: () => {
+                        setCommentStatus(prev => !prev)
+                    },
+                },
+            });
+            console.log("hello g hi")
+        }catch(error){
+
+        }
+    }
 
     return (
         <View style={{
@@ -71,7 +101,7 @@ const CustomComment = ({
                     }}>
                         <TouchableOpacity onPress={() => {
                             setOpenUserDetailsModal(true)
-                            cb({profileUri,name:"Thomas", email:"example@gmail.com",number:"+1234567890"})
+                            cb({profileUri,name:title, email,number:"+1234567890"})
                         }}>
 
                             <Text style={{
@@ -100,26 +130,15 @@ const CustomComment = ({
                 }}>
                     <TouchableOpacity
                         onPress={() => {
+                            handleLike()
                             Vibration.vibrate(10)
-                            setCommentStatus(prev => !prev);
-                            Snackbar.show({
-                                text: !commentStatus ? 'You loved this comment.' : "You unloved this comment.",
-                                duration: Snackbar.LENGTH_SHORT,
-                                action: {
-                                    text: 'UNDO',
-                                    textColor: '#FFA100',
-                                    onPress: () => {
-                                        setCommentStatus(prev => !prev)
-                                    },
-                                },
-                            });
                         }}
                     >
                         <View style={{
-                            display:isReply?"none":"flex"
+                            display:isReply?"none":"flex",
+                            alignItems:"center"
                         }}>
                             <Image style={{
-
                                 width: scale(20),
                                 height: scale(20),
                                 objectFit: "contain"
@@ -127,7 +146,10 @@ const CustomComment = ({
                             <Text style={{
                                 color: "white"
                             }}>
-                                {generateThreeDigitRandomNumber()}
+                                 {
+                                    likeCount
+                                    
+                                 }
                             </Text>
 
                         </View>
@@ -230,6 +252,6 @@ const CustomComment = ({
     )
 }
 
-export default memo(CustomComment)
+export default CustomComment
 
 const styles = StyleSheet.create({})

@@ -1,5 +1,5 @@
 import { ImageBackground, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
 import home from './../../../assets/images/home.png';
 import { s, scale, verticalScale } from 'react-native-size-matters';
@@ -10,41 +10,52 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import { awardListImages } from '../../../utils.js';
+import useAxios from '../../../Axios/useAxios.js';
 
-const Awards = () => {
-    const [data, setData] = useState([])
-    const [page, setPage] = useState(1)
+const Awards = ({navigation}) => {
+    const [awards, setAwards] = useState([])
+    const axiosInstance = useAxios()
+    const [points, setPoints] = useState(0)
+    const [badgeCount, setBadgeCount] = useState("1/1")
+
     const [hasMore, setHasMore] = useState(true)
+    const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false);
-    const navigation = useNavigation()
-    const [alertModal, setAlertModal]=useState(false)
+  
+  
+    const fetchAwards = useCallback(async () => {
+      if (!hasMore || loading) return;
+      setLoading(true);
+      try {
+          const res = await axiosInstance.get("/get-user-badges", {
+              params: {
+                  page: page,
+              }
+          });
+          setHasMore(res.data.pagination.hasNextPage)
+          setAwards(res?.data?.badges)
+          setPoints(res?.data?.points)
+          setBadgeCount(res?.data?.badgeCount)
+      } catch (error) {
+          console.error('Failed to fetch awards:', error);
+      } finally {
+          setLoading(false);
+      }
+  }, [hasMore, page]); 
+  
     useEffect(() => {
-        const fetchPhotos = async () => {
-            if (!hasMore || loading) return;
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchAwards();
 
-            setLoading(true);
-            try {
-                const res = await axios.get(`${UNSPLASH_URL}/photos`, {
-                    params: {
-                        client_id: VITE_UNSPLASH_ACCESSKEY,
-                        page: page
-                    }
-                });
-
-                if (res.data.length === 0) {
-                    setHasMore(false);
-                } else {
-                    setData(prevData => [...prevData, ...res.data]);
-                }
-            } catch (error) {
-                console.error('Failed to fetch photos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPhotos();
-    }, [page]);
+          });
+      
+          return unsubscribe;
+  }, [fetchAwards]);
+  
+  
+  useEffect(()=>{
+  console.log(awards)
+  },[awards])
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView
@@ -101,7 +112,7 @@ const Awards = () => {
                                              lineHeight:scale(50),
                                              fontWeight:500
                                         }}>
-                                        10 Points
+                                        {points} Points
                                         </Text>
                                         
                                     <View style={{
@@ -137,7 +148,7 @@ const Awards = () => {
                                             fontSize:scale(10),
                                             fontWeight:700
                                         }}>
-                                        1/6
+                                            {badgeCount}
                                         </Text>
 
                                     </View>
@@ -175,8 +186,8 @@ const Awards = () => {
                             }
                             {
                                 index == 1 && <AwardList loading={loading} hasMore={hasMore} setPage={setPage}
-                                data={awardListImages}
-                                // data={data}
+                                // data={awardListImages}
+                                data={awards}
                                  />
 
                             }
@@ -185,11 +196,6 @@ const Awards = () => {
                     }}
 
                 />
-     <CustomAlertModal
-                            title='Feature Coming Soon.'
-                            modalVisible={alertModal}
-                            setModalVisible={()=>setAlertModal(false)}
-                            />
             </SafeAreaView>
         </ImageBackground>
     )
