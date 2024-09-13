@@ -26,7 +26,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb1428704924451324</string>
-				<string>com.googleusercontent.apps.406307069293-t0ognqvpcunhsbjk5me334082eajmvkl</string>
+				<string>com.googleusercontent.apps.406307069293-idnt0ealfht0n4m89rv8i9tr3174c31l</string>
 			</array>
 		</dict>
 	</array>
@@ -35,7 +35,7 @@
 	<key>FacebookAppID</key>
 	<string>1428704924451324</string>
 	<key>GIDClientID</key>
-	<string>406307069293-t0ognqvpcunhsbjk5me334082eajmvkl.apps.googleusercontent.com</string>
+	<string>406307069293-idnt0ealfht0n4m89rv8i9tr3174c31l.apps.googleusercontent.com</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
@@ -51,6 +51,12 @@
 	<string>We need access to your location to show where you are on the map</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
