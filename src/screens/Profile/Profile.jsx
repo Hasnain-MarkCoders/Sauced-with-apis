@@ -30,6 +30,9 @@ const ProfileScreen = () => {
     const [initialLoading, setInitialLoading] = useState(true)
     const axiosInstance = useAxios()
     const saucesListOne = useSelector(state=>state.saucesListOne)
+    const saucesListTwo = useSelector(state=>state.saucesListTwo)
+    const saucesListThree = useSelector(state=>state.saucesListThree)
+
     const [data, setData] = useState([])
     const [checkedInSauces, setCheckedInSauces] = useState([])
     const [user, setUser] = useState(null)
@@ -261,7 +264,7 @@ if (initialLoading) {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{
-                                                marginBottom: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(30)
+                                                marginBottom: (users?.length>0 ||  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) && scale(30)
                                         }}>
 
                                         <HorizontalUsersList 
@@ -293,11 +296,11 @@ if (initialLoading) {
                                     </View>
 
                                 }
-
                                 {
                                     index == 3 && <View style={{
-                                        marginTop: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(50),
-                                        marginBottom: (users?.length>0 ||  SaucesListThree.length>0 || SaucesListTwo?.length>0 || SaucesListOne.length>0 ) && scale(30),
+                                        marginTop: (  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) &&scale(50),
+                                        
+                                        marginBottom: (users?.length>0 ||  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) && scale(30),
 
                                         gap:scale(50)
                                     }}>

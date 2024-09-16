@@ -80,10 +80,11 @@ const FollowersList = ({
     }, [fetchFollowers]);
 
     const handleUser =  useCallback(async(user)=>{
-        dispatch(handleUsers([user]))
-        dispatch(handleRemoveUserFromFollowers(user?._id))
+        // dispatch(handleUsers([user]))
+        // dispatch(handleRemoveUserFromFollowers(user?._id))
+            // dispatch(handleFollowers([{...user, isFollowing:!user.isFollowing}]))
       const res=  await axiosInstance.post("/follow", {_id:user?._id});
-      console.log(res.data)
+      dispatch(handleFollowers([{...user, isFollowing:res?.data?.isFollowing}]))
           },[])
 
 
@@ -99,6 +100,7 @@ const FollowersList = ({
                 showsVerticalScrollIndicator={false}
                 numColumns={numColumns}
                 data={followers}
+                extraData={followers}
                 onEndReachedThreshold={1}
                 onEndReached={() => {
                     if (!loading && hasMore) {

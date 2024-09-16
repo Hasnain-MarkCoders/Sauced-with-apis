@@ -38,6 +38,7 @@ import {
   handleRemoveSauceFromListTwo,
   handleSaucesListTwo,
 } from '../../../android/app/Redux/saucesListTwo.js';
+import axios from 'axios';
 
 const Product = () => {
   const route = useRoute();
@@ -114,6 +115,8 @@ useEffect(()=>{
 
 
 }
+
+
 
 
   useEffect(() => {
@@ -224,6 +227,9 @@ useEffect(()=>{
         sauceId: product?._id,
         listType: type,
       });
+      // setAlreadyInList(prev=>({...prev, [`list${listNumber}`]:!isAlreadyInList[`list${listNumber}`]}))
+
+
     
     } catch (error) {
       console.error('Failed to like / dislike:', error);

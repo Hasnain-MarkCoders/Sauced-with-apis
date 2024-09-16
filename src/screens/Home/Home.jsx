@@ -4,9 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import home from './../../../assets/images/home.png';
 import search from "./../../../assets/images/search_icon.png";
-import qr from "./../../../assets/images/qr.png";
-import { Brands, handleText } from '../../../utils';
-import SauceList from '../../components/SauceList/SauceList';
+import {  handleText } from '../../../utils';
 import BrandList from '../../components/BrandList/BrandList';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
@@ -21,11 +19,14 @@ import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import messaging from '@react-native-firebase/messaging';
 import useAxios from '../../../Axios/useAxios';
+import Toast from 'react-native-toast-message';
+import { addNotification } from '../../../android/app/Redux/notifications';
+import { useDispatch } from 'react-redux';
 const Home = () => {
     const navigation = useNavigation()
     const [alertModal, setAlertModal] = useState(false)
     const axiosInstance = useAxios()
-
+    const dispatch = useDispatch()
     const [initialLoading, setInitialLoading] = useState(true)
     const [data, setData] = useState({
         search: "",
@@ -148,13 +149,24 @@ const Home = () => {
       
     },[])
 
-    // useEffect(() => {
-    //     const unsubscribe = messaging().onMessage(async remoteMessage => {
-    //       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    //     });
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Toast.show({
+                type: 'success',
+                text1: remoteMessage.notification.title,
+                text2: remoteMessage.notification.body})
+                dispatch(addNotification({
+                    type: 'success',
+                    title: remoteMessage.notification.title,
+                    body: remoteMessage.notification.body}
+            ));
+            dispatch(increaseCount());
+            console.log("remoteMessage===============>", remoteMessage)
+
+        });
       
-    //     return unsubscribe;
-    //   }, []);
+        return unsubscribe;
+      }, []);
 
      
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PublicStack from './src/screens/PublicStack/PublicStack';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import DrawerStack from './src/screens/DrawerStack/DrawerStack';
 import Product from './src/screens/Product/Product';
@@ -30,12 +30,15 @@ import AllUserReviews from './src/screens/AllUserReviews/AllUserReviews';
 import ExternalUserFollowingScreen from './src/screens/ExternalUserFollowingScreen/ExternalUserFollowingScreen';
 import ExternalUserFollowersScreen from './src/screens/ExternalUserFollowersScreen/ExternalUserFollowersScreen';
 import AddStore from './src/screens/AddStore/AddStore';
+import { addNotification, increaseCount } from './android/app/Redux/notifications';
+import messaging from '@react-native-firebase/messaging';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [initialState, setInitialState] = React.useState(true)
   const userAuth = useSelector(state => state.auth)
+  const dispatch = useDispatch()
   React.useEffect(() => {
     const subscriber = auth().onAuthStateChanged(user => {
       if (user && userAuth?.authenticated) {
@@ -73,6 +76,24 @@ function AppRouter() {
     });
   }, []);
 
+  React.useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+        Toast.show({
+            type: 'success',
+            text1: remoteMessage.notification.title,
+            text2: remoteMessage.notification.body})
+            dispatch(addNotification({
+                type: 'success',
+                title: remoteMessage.notification.title,
+                body: remoteMessage.notification.body}
+        ));
+        dispatch(increaseCount());
+        console.log("remoteMessage===============>", remoteMessage)
+  
+    });
+  
+    return unsubscribe;
+  }, []);
 
   if (initialState) {
     return <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>

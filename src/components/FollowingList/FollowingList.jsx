@@ -83,7 +83,7 @@ const FollowingList = ({
 
 
     const handleUser =  useCallback(async(user)=>{
-        dispatch(handleUsers([user]))
+        dispatch(handleUsers([{...user, isFollowing:false}]))
         dispatch(handleRemoveUserFromFollowings(user?._id))
         dispatch(handleStatsChange({
             followings:-1,

@@ -47,7 +47,7 @@ const handleUser =  useCallback(async(user)=>{
 followings:1,
 }))
 
-dispatch(handleFollowings([user]))
+dispatch(handleFollowings([{...user, isFollowing:true}]))
 dispatch(handleRemoveUserFromUsers(user?._id))
 
  await axiosInstance.post("/follow", {_id:user?._id});

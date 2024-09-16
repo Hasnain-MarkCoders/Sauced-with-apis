@@ -30,7 +30,7 @@ const followersSlice = createSlice({
       handleFollowersCount :(state, action)=>{
         return action.payload
 
-      }
+      },
   },
 });
 

@@ -31,6 +31,12 @@ const CustomComment = ({
     likesCount=0,
     hasLikedUser=false
 }) => {
+    useEffect(()=>{
+
+        console.log("profileUri=================================>", profileUri)
+        console.log("item?.owner?.image=================================>", item.owner)
+
+    },[profileUri])
     const [commentStatus, setCommentStatus] = useState(hasLikedUser)
     const [LightBox, setLightBox] = useState(false)
     const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
@@ -60,6 +66,10 @@ const CustomComment = ({
 
         }
     }
+
+    useEffect(()=>{
+console.log(profileUri)
+    },[profileUri])
 
     return (
         <View style={{

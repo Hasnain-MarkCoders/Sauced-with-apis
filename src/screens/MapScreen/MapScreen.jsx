@@ -10,6 +10,7 @@ import locationIcon from "./../../../assets/images/location.png";
 
 
 import useAxios from '../../../Axios/useAxios';// Make sure to import your axios instance
+import Toast from 'react-native-toast-message';
 
 const { width } = Dimensions.get('window');
 
@@ -116,6 +117,12 @@ const MapScreen = () => {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           });
+
+          Toast.show({
+            type: 'success',
+            text1: 'Location selcted',
+            text2: 'Please go backt to continue.'}
+          )
         }}
         query={{
           key: 'AIzaSyAkJ06-4A1fY1ekldJUZMldHa5QJioBTlY', // Replace this with your actual API key

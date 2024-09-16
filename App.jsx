@@ -1,11 +1,12 @@
 import * as React from 'react';
 import AppRouter from './AppRouter';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './android/app/Redux/store';
 import { LogBox } from 'react-native';
 import BootSplash from "react-native-bootsplash";
 import Toast from 'react-native-toast-message';
+
 function App() {
 LogBox.ignoreLogs(['Warning: ...']); 
 LogBox.ignoreAllLogs();
@@ -23,6 +24,11 @@ React.useEffect(() => {
     await BootSplash.hide({ fade: true });
   });
 }, []);
+
+
+
+
+
   return (
     <>
      <Provider store={store}>

@@ -150,7 +150,8 @@ const AllCheckinsScreen = ({
 
                                         <CommentsList
                                             commentsData={data}
-                                            cb={handleUserProfileView} setNewMsg={setNewMsg} getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
+                                            cb={handleUserProfileView} 
+                                            setNewMsg={setNewMsg} getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
                                             data={messagesData}
                                             loading={loading} hasMore={hasMore} />
                                     </View>

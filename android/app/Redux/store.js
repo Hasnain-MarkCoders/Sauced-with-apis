@@ -16,40 +16,71 @@ import followingsSlice from './followings';
 import userStatsSlice from './userStats';
 import searchedUsersSlice from './searchedUsers';
 import allEventsExceptInterestedSlice from './allEventsExceptInterested';
+import notificationsSlice from './notifications'
 
+// Root reducer with LOGOUT action handler to reset state
+const appReducer = combineReducers({
+    auth: userReducer,
+    favoriteSauces: favoriteSaucesSlice,
+    saucesListOne: saucesListOneSlice,
+    saucesListTwo: saucesListTwoSlice,
+    saucesListThree: saucesListThreeSlice,
+    topRatedSauces: topRatedSaucesSlice,
+    featuredSauces: featuredSaucesSlice,
+    checkedInSauces: checkedInSaucesSlice,
+    interestedEvents: interestedEventsSlice,
+    users: usersSlice,
+    followers: followersSlice,
+    followings: followingsSlice,
+    userStats: userStatsSlice,
+    searchedUsers: searchedUsersSlice,
+    allEventsExceptInterested: allEventsExceptInterestedSlice,
+    notifications:notificationsSlice
+});
 
-const rootReducer = combineReducers({
-    auth:userReducer,
-    favoriteSauces:favoriteSaucesSlice,
-    saucesListOne:saucesListOneSlice,
-    saucesListTwo:saucesListTwoSlice,
-    saucesListThree:saucesListThreeSlice,
-    topRatedSauces:topRatedSaucesSlice,
-    featuredSauces:featuredSaucesSlice,
-    checkedInSauces:checkedInSaucesSlice,
-    interestedEvents:interestedEventsSlice,
-    users:usersSlice,
-    followers:followersSlice,
-    followings:followingsSlice,
-    userStats:userStatsSlice,
-    searchedUsers:searchedUsersSlice,
-    allEventsExceptInterested:allEventsExceptInterestedSlice
+// Handling the LOGOUT action to reset all state
+const rootReducer = (state, action) => {
+  if (action.type === 'LOGOUT') {
+    // Clear state by setting it to undefined
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
-
-})
+// Redux Persist configuration
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth', 'topRatedSauces', 'featuredSauces','favoriteSauces','checkedInSauces','saucesListOne', 'saucesListTwo', 'saucesListThree', 'interestedEvents', 'users', 'followers', 'followings', 'userStats', 'searchedUsers']
+  whitelist: [
+    'auth', 
+    'topRatedSauces', 
+    'featuredSauces',
+    'favoriteSauces',
+    'checkedInSauces',
+    'saucesListOne', 
+    'saucesListTwo', 
+    'saucesListThree', 
+    'interestedEvents', 
+    'users', 
+    'followers', 
+    'followings', 
+    'userStats', 
+    'searchedUsers',
+    'notifications'
+  ]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Store configuration
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }),
 });
 
+// Persistor for persisting the store
 const persistor = persistStore(store);
 
 export { store, persistor };
