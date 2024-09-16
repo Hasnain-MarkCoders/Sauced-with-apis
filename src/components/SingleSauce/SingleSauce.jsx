@@ -46,7 +46,6 @@ const handleOnPress = ()=>{
 
 const handleToggleLike=async()=>{
     try {
-        const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
         if (sauceType=="toprated"){
             dispatch(handleToggleTopRatedSauce(item?._id))
             if(selected){
@@ -114,6 +113,8 @@ const handleToggleLike=async()=>{
     // console.log("hello g")
 
         }
+        const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
+
     } catch (error) {
         console.error('Failed to like / dislike:', error);
         dispatch(handleFavoriteSauces([item]))
@@ -131,23 +132,23 @@ const handleToggleLike=async()=>{
         
         activeOpacity={.8}
         onPress={()=>{handleOnPress()}}
-        onLongPress={()=>{
-            handleToggleLike()
-            setSelected(prev=>!prev)
-            Snackbar.show({
-                text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
-                duration: Snackbar.LENGTH_SHORT,
-                action: {
-                    text: 'UNDO',
-                    textColor: '#FFA100',
-                    onPress: () => {
-                        handleToggleLike()
-                        setSelected(prev => !prev)
-                    },
-                },
-            });
+        // onLongPress={()=>{
+        //     handleToggleLike()
+        //     setSelected(prev=>!prev)
+        //     Snackbar.show({
+        //         text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
+        //         duration: Snackbar.LENGTH_SHORT,
+        //         action: {
+        //             text: 'UNDO',
+        //             textColor: '#FFA100',
+        //             onPress: () => {
+        //                 handleToggleLike()
+        //                 setSelected(prev => !prev)
+        //             },
+        //         },
+        //     });
         
-        }}
+        // }}
         style={[styles.container,
             {width:scale(110), ...customStyles},
         ]}>
@@ -166,7 +167,36 @@ const handleToggleLike=async()=>{
             style={[styles.text, {width:fullWidthText?"90%":"60%"}]}>
               {title}
             </Text>
-        {   showHeart&& (item["hasLiked"]?<Image
+        {   showHeart&& <TouchableOpacity
+            style={{
+                // paddingHorizontal:scale(20)
+                width:scale(40),
+                height:scale(40)
+            }}
+            onPress={()=>{
+                setSelected(prev=>!prev)
+                Snackbar.show({
+                    text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
+                    duration: Snackbar.LENGTH_SHORT,
+                    action: {
+                        text: 'UNDO',
+                        textColor: '#FFA100',
+                        onPress: () => {
+                            handleToggleLike()
+                            setSelected(prev => !prev)
+                        },
+                    },
+                });
+                handleToggleLike()
+           
+            }}
+        >
+
+            {(item["hasLiked"]?
+        
+        
+        
+        <Image
         style={{
                 width:scale(17),
                 height:scale(15),
@@ -181,7 +211,8 @@ const handleToggleLike=async()=>{
                 position:"absolute",
                 bottom:scale(20),
                 right:scale(10),
-            }} source={emptyheart}/>)
+            }} source={emptyheart}/>)}
+        </TouchableOpacity>
             }
         </TouchableOpacity>
         :null
