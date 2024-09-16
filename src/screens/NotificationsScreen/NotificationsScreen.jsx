@@ -6,9 +6,9 @@ import { scale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
 import CustomNotification from '../../components/CustomNotification/CustomNotification.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCount, clearNotifications } from '../../../android/app/Redux/notifications.js';
+import { clearCount, clearNotifications, deleteNotification } from '../../../android/app/Redux/notifications.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import { Swipeable } from 'react-native-gesture-handler';
 const NotificationsScreen = ({
 }) => {
     const navigation = useNavigation()
@@ -23,7 +23,24 @@ const NotificationsScreen = ({
             }
     },[count, notificationsData?.length])
    
-
+    const renderRightActions = (index) => (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#2e210a",
+            padding: scale(10),
+            borderRadius: scale(10),
+            borderWidth: 1,
+            borderColor: "#FFA100",
+            width: 75,
+            alignItems:"center",
+            justifyContent:"center",
+            marginLeft:scale(50)
+          }}
+          onPress={() => dispatch(deleteNotification(index))}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Delete</Text>
+        </TouchableOpacity>
+      );
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -83,8 +100,17 @@ const NotificationsScreen = ({
                                 data={notifications}
                                 extranotifications={notifications}
                                 keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) =>
-                                    <CustomNotification title={item.title} body={item.body} />
+                                renderItem={({ item, index }) =>
+
+                                    <Swipeable
+                                    renderRightActions={() => renderRightActions(index)}
+                                  >
+                                    <CustomNotification
+                                      title={item.title}
+                                      body={item.body}
+                                    />
+                                  </Swipeable>
+                                    // <CustomNotification title={item.title} body={item.body} />
 
                                 }
 

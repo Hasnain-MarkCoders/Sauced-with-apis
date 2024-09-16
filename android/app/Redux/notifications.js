@@ -23,6 +23,9 @@ const notificationsSlice = createSlice({
     clearCount: (state) => {
       state.count = 0;
     },
+    deleteNotification: (state, action) => {
+      state.notifications.splice(action.payload, 1);
+    },
   },
 });
 
@@ -31,6 +34,7 @@ export const {
   clearNotifications,
   increaseCount,
   clearCount,
+  deleteNotification
 } = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;
