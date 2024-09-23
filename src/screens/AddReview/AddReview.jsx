@@ -41,6 +41,8 @@ const AddReview = () => {
     const mycb = route?.params?.mycb || function(){};
     const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount || function(){};
     const setReviewCount = route?.params?.setReviewCount || function(){};
+    const reviewCount = route?.params?.reviewCount 
+
 
 
 
@@ -182,7 +184,7 @@ const handleUpdateReviewsCount = ()=>{
                 //       }
                 //     });
                 //   });
-                handleIncreaseReviewCount(sauceId, setReviewCount)
+                handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount)
                 setAlertModal({
                     open: true,
                     message: res?.data?.message,

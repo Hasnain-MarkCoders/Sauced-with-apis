@@ -17,6 +17,8 @@ import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesLis
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import TextTicker from 'react-native-text-ticker'
 import LinearGradient from 'react-native-linear-gradient';
+import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces';
+import { handleToggleLikeWishlistSauce } from '../../../android/app/Redux/wishlist';
 const SingleSauce = ({
     url = "",
     title="",
@@ -92,6 +94,25 @@ const handleToggleLike=async()=>{
             }else{
                 dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
             }
+
+
+            if (sauceType=="reviewed"){
+              dispatch(handleToggleReviewedSauce(item?._id))
+              if(selected){
+                  dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                  }else{
+                      dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                  }
+          }
+
+          if (sauceType=="wishlist"){
+            dispatch(handleToggleLikeWishlistSauce(item?._id))
+            if(selected){
+                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                }else{
+                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                }
+        }
 
     // console.log("hello g")
 

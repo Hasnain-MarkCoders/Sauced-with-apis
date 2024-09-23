@@ -18,9 +18,10 @@ import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedIn
 import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
 import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree'
-import { handleToggleWishList } from '../../../android/app/Redux/wishlist'
+import { handleToggleLikeWishlistSauce, handleToggleWishList } from '../../../android/app/Redux/wishlist'
 import { Camera } from 'lucide-react-native';
 import {Camera as VisionCamera, useCameraDevices} from 'react-native-vision-camera';
+import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces'
 const ProductCard = ({
     url = "",
     title = "",
@@ -97,6 +98,24 @@ const ProductCard = ({
                     dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
                 }
             }
+
+            if (sauceType=="reviewed"){
+                dispatch(handleToggleReviewedSauce(item?._id))
+                if(selected){
+                    dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                    }else{
+                        dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                    }
+            }
+  
+            if (sauceType=="wishlist"){
+              dispatch(handleToggleLikeWishlistSauce(item?._id))
+              if(selected){
+                  dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+                  }else{
+                      dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+                  }
+          }
             if (sauceType == 1) {
                 dispatch(handleToggleSauceListOne(product?._id))
                 if(productStatus?.isChecked){
@@ -220,7 +239,7 @@ const ProductCard = ({
                             justifyContent: "space-between"
                         }}>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllReviews", { _id: product?._id, setReviewCount, handleIncreaseReviewCount })
+                                navigation.navigate("AllReviews", { _id: product?._id, setReviewCount, handleIncreaseReviewCount , reviewCount})
                             }}>
                                 <Text style={{
                                     color: "white",
@@ -424,7 +443,7 @@ const ProductCard = ({
             <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType, mycb, handleIncreaseReviewCount, setReviewCount})
+                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount})
 
                     }}
                     style={{
@@ -468,7 +487,7 @@ const ProductCard = ({
 
                 </TouchableOpacity>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => {
                         console.log("has")
                         handleIncreaseReviewCount(product?._id, setReviewCount)
@@ -492,7 +511,7 @@ const ProductCard = ({
                     }}>test</Text>
 
 
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
 

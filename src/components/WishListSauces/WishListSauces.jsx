@@ -15,7 +15,8 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
     // const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const wishListSlices = useSelector(state=>state.wishlist)
-    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfWishListSauce({_id, setReviewCount}))
     },[])
 
@@ -93,7 +94,7 @@ wishListSlices?.length>0&&<View style={[styles.container, {marginBottom:scale(30
                     keyExtractor={(item, index) => `${item?._id} ${index.toString()}`}
                     renderItem={({ item }) => <SingleSauce
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
-                    sauceType={1}
+                    sauceType={"wishlist"}
                     item={item}
                         url={item?.image}
                         title={item?.name}

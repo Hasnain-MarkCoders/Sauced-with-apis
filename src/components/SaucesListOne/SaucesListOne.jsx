@@ -16,7 +16,8 @@ const SaucesListOne = ({ title = "", name = "", showMoreIcon = false, cb = () =>
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const saucesListOne = useSelector(state=>state.saucesListOne)
-    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfListOneSauce({_id, setReviewCount}))
     },[])
 

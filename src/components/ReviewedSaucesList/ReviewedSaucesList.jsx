@@ -1,45 +1,47 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
+import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import SingleSauce from '../SingleSauce/SingleSauce';
+import axios from 'axios';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
+import { handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
 
-
-const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
-    const saucesListThree = useSelector(state=>state.saucesListThree)
+    const reviewedSauces = useSelector(state=>state.reviewedsauces)
     const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
         setReviewCount(reviewCount+1)
-        dispatch(handleIncreaseReviewCountOfListThreeSauce({_id, setReviewCount}))
+        dispatch(handleIncreaseReviewCountOfReviewedSauce({_id, setReviewCount}))
     },[])
 
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
+
         setLoading(true);
+    
         try {
-            const res = await axiosInstance.get("/bookmarks", {
+            const res = await axiosInstance.get("/get-sauces", {
                 params: {
-                    type:3,
+                    type:"reviewed",
                     page
                 }
             });
-
                  setHasMore(res.data.pagination.hasNextPage);
-                 dispatch(handleSaucesListThree(res?.data?.items))
+                 dispatch(handleReviewedSauces(res?.data?.sauces))
         } catch (error) {
-            console.error('Failed to fetch sauces:', error);
+            console.error('Failed to fetch photos:', error);
         } finally {
             setLoading(false);
         }
-    },[page,hasMore , saucesListThree]);
+    },[page,hasMore , reviewedSauces]);
     
     useEffect(() => {
         fetchSauces();
@@ -53,7 +55,7 @@ const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () 
         <>
         {
 
-saucesListThree?.length>0&&<View style={styles.container}>
+reviewedSauces?.length>0&&<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -82,7 +84,7 @@ saucesListThree?.length>0&&<View style={styles.container}>
                         }
 
                     }}
-                    data={saucesListThree}
+                    data={reviewedSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -94,14 +96,14 @@ saucesListThree?.length>0&&<View style={styles.container}>
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
-                    sauceType={3}
+                    sauceType="reviewed"
                     item={item}
                         url={item?.image}
                         title={item?.name}
                     />}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
-                {(showMoreIcon && selected == saucesListThree?.length - 1) && <TouchableOpacity
+                {(showMoreIcon && selected == reviewedSauces?.length - 1) && <TouchableOpacity
                     style={{
                         position: "absolute",
                         right: "0%",
@@ -128,7 +130,7 @@ saucesListThree?.length>0&&<View style={styles.container}>
     );
 };
 
-export default SaucesListThree;
+export default ReviewedSaucesList;
 
 const styles = StyleSheet.create({
     container: {

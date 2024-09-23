@@ -17,7 +17,8 @@ const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const topRatedSauces = useSelector(state=>state.topRatedSauces)
-    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfTopRatedSauce({_id, setReviewCount}))
     },[])
 

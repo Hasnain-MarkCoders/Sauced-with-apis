@@ -22,6 +22,8 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const route = useRoute();
   const _id = route?.params?._id;
   const setReviewCount = route?.params?.setReviewCount|| function(){}
+  const reviewCount = route?.params?.reviewCount|| nulll
+
   const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
 
 
@@ -105,7 +107,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                 {showAddReviewButton && (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate('AddReview', {sauceId: _id, setPage, handleIncreaseReviewCount, setReviewCount});
+                      navigation.navigate('AddReview', {sauceId: _id, setPage, handleIncreaseReviewCount, setReviewCount, reviewCount});
                     }}
                     style={{
                       backgroundColor: '#2e210a',

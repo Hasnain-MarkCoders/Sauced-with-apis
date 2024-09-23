@@ -14,7 +14,8 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const checkedInSauces = useSelector(state=>state.checkedInSauces)
-    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfCheckedInSauce({_id, setReviewCount}))
     },[])
 

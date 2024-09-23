@@ -33,6 +33,14 @@ const wishListSlice = createSlice({
       }
     },
 
+    handleToggleLikeWishlistSauce:(state, action)=>{
+      const sauce = state.find(x=>x._id==action.payload)
+      if(sauce){
+        sauce.hasLiked  =!sauce.hasLiked
+      }
+      
+    },
+
     handleRemoveSauceFromWishList: (state, action) => {
       return state.filter(sauce => sauce._id !== action.payload);
     },
@@ -67,6 +75,7 @@ export const {
   handleWishList,
   handleToggleWishList,
   handleRemoveSauceFromWishList,
-  handleIncreaseReviewCountOfWishListSauce
+  handleIncreaseReviewCountOfWishListSauce,
+  handleToggleLikeWishlistSauce
 } = wishListSlice.actions;
 export default wishListSlice.reducer;

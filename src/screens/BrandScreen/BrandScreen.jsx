@@ -82,14 +82,23 @@ const BrandScreen = () => {
                       About {brand?.brand?.name}
 
                     </Text>
-                    <ProductsBulletsList
+                    {/* <ProductsBulletsList
                     data={brand?.brand?.about}
                     bulletStyle={{
                       backgroundColor:"#FFA100"
                     }}
                     textStyles={{
                       fontWeight: 700
-                    }} />
+                    }} /> */}
+                     <Text style={{
+      color:"white",
+      fontFamily:"Montserrat",
+      fontSize:scale(12),
+      fontWeight:600,
+      lineHeight:18,
+    }}>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis dignissimos mollitia amet culpa atque obcaecati aliquam quas assumenda temporibus expedita dolores et ea illum eius, deleniti eaque! Quidem, quo quaerat!
+    </Text>
                   </View>
                 }
                 {

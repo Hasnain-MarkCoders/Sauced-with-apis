@@ -19,6 +19,8 @@ import allEventsExceptInterestedSlice from './allEventsExceptInterested';
 import notificationsSlice from './notifications'
 import wishListSlice from './wishlist'
 import quickCheckinSlice from './quickCheckin'
+import reviewedSaucesSlice from './reviewedSauces'
+
 
 
 
@@ -41,7 +43,8 @@ const appReducer = combineReducers({
     allEventsExceptInterested: allEventsExceptInterestedSlice,
     notifications:notificationsSlice,
     wishlist:wishListSlice,
-    quickcheckin:quickCheckinSlice
+    quickcheckin:quickCheckinSlice,
+    reviewedsauces:reviewedSaucesSlice
 });
 
 // Handling the LOGOUT action to reset all state
@@ -74,7 +77,8 @@ const persistConfig = {
     'searchedUsers',
     'notifications',
     'wishlist',
-    'quickcheckin'
+    'quickcheckin',
+    'reviewedsauces'
 
   ]
 };

@@ -26,6 +26,7 @@ import InterestedEvents from '../../components/InterestedEvents/InterestedEvents
 import { handleStats } from '../../../android/app/Redux/userStats.js';
 import InterestedEventsCarousel from '../../components/InterestedEventsCarousel/InterestedEventsCarousel.jsx';
 import WishListSauces from '../../components/WishListSauces/WishListSauces.jsx';
+import ReviewedSaucesList from '../../components/ReviewedSaucesList/ReviewedSaucesList.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
     const [initialLoading, setInitialLoading] = useState(true)
@@ -290,9 +291,12 @@ if (initialLoading) {
                                         <CheckedInSaucesList
                                             title='Checked-in Sauces'
                                         />
-                                        <SauceList
+                                        <ReviewedSaucesList
+                                        title='Reviewed Sauces'
+                                        />
+                                        {/* <SauceList
                                             type="reviewed"
-                                            cb={() => { navigation.navigate("AllUserReviews", { route: "review", _id:auth?._id }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
+                                            cb={() => { navigation.navigate("AllUserReviews", { route: "review", _id:auth?._id }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} /> */}
 
                                     </View>
 

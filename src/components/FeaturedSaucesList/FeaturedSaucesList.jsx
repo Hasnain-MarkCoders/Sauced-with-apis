@@ -16,7 +16,8 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const dispatch = useDispatch()
     const featuredSauces = useSelector(state=>state.featuredSauces)
     const navigation = useNavigation()
-    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfFeaturedSauce({_id, setReviewCount}))
     },[])
 
