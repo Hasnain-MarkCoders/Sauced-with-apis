@@ -7,11 +7,12 @@ import awardicon from "./../../../assets/images/awardicon.png";
 import profileicon from "./../../../assets/images/profileicon.png";
 import ProfileScreen from '../Profile/Profile';
 import QRScreen from '../QRScreen/QRScreen';
-import qrImage from "./../../../assets/images/qr_transparent.png";
+import camera from "./../../../assets/images/camera.png";
 import search from "./../../../assets/images/search.png";
 import { scale } from 'react-native-size-matters';
 import SearchScreen from '../SearchScreen/SearchScreen';
 import { memo } from 'react';
+import CameraScreen from '../CameraScreen/CameraScreen';
 const Tab = createBottomTabNavigator();
 
 const PrivateStack = () => {
@@ -40,7 +41,7 @@ const PrivateStack = () => {
                     } else if (route.name === 'Search') {
                         icon = search;
                     } else if (route.name === 'QRScan') {
-                        icon = qrImage;
+                        icon = camera;
                     } else if (route.name === 'Awards') {
                         icon = awardicon;
                     } else if (route.name === 'Main') {
@@ -54,9 +55,9 @@ const PrivateStack = () => {
                      <>
                      <View style={{ gap: 4, alignItems: "center", backgroundColor:'white', padding:scale(25), borderRadius:scale(50) }}>
                             <Image style={{
-                                maxWidth: scale(24),
+                                // maxWidth: scale(50),
                                 resizeMode: 'contain',
-                                maxHeight: scale(24),
+                                // maxHeight: scale(25),
                                 // tintColor: focused ?   'white':'black'  // Set tintColor based on focus
                             }} source={icon} />
                         </View>
@@ -81,7 +82,9 @@ const PrivateStack = () => {
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Search" component={SearchScreen} />
-            <Tab.Screen name="QRScan" component={QRScreen} />
+            <Tab.Screen  options={{
+    tabBarStyle: { display: 'none' }  // Hide the tab bar on QRScan screen
+  }}  name="QRScan" component={CameraScreen} />
             <Tab.Screen name="Awards" component={Awards} />
             <Tab.Screen name="Main" component={ProfileScreen} />
         </Tab.Navigator>

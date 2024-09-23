@@ -1,28 +1,21 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native'
+import { ActivityIndicator, ImageBackground, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
 import home from './../../../assets/images/home.png';
-import { s, scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
+import {  scale, verticalScale } from 'react-native-size-matters';
 import AwardList from '../../components/AwardList/AwardList.jsx';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
-import { awardListImages } from '../../../utils.js';
 import useAxios from '../../../Axios/useAxios.js';
+import NotFound from '../../components/NotFound/NotFound.jsx';
 
 const Awards = ({navigation}) => {
     const [awards, setAwards] = useState([])
     const axiosInstance = useAxios()
     const [points, setPoints] = useState(0)
     const [badgeCount, setBadgeCount] = useState("1/1")
-
     const [hasMore, setHasMore] = useState(true)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false);
-  
-  
     const fetchAwards = useCallback(async () => {
       if (!hasMore || loading) return;
       setLoading(true);
@@ -52,10 +45,16 @@ const Awards = ({navigation}) => {
           return unsubscribe;
   }, [fetchAwards]);
   
-  
-  useEffect(()=>{
-  console.log(awards)
-  },[awards])
+  if (loading) {
+    return (
+      <ImageBackground
+        source={home}
+        style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#FFA100" />
+      </ImageBackground>
+    );
+  }
+
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView
@@ -72,7 +71,8 @@ const Awards = ({navigation}) => {
                     paddingBottom: verticalScale(30)
                 }} showText={false} />
 
-                <FlatList
+               { awards.length>0
+               ?<FlatList
                  showsVerticalScrollIndicator={false}
                  showsHorizontalScrollIndicator={false}
                     data={[1, 1]}
@@ -196,6 +196,8 @@ const Awards = ({navigation}) => {
                     }}
 
                 />
+            :
+            <NotFound/>}
             </SafeAreaView>
         </ImageBackground>
     )

@@ -3,14 +3,18 @@ import React, { useEffect } from 'react'
 import { FlatList } from 'react-native-gesture-handler';
 import CustomComment from '../CustomComment/CustomComment';
 import { scale } from 'react-native-size-matters';
-const CommentsList = ({ commentsData=[], cb=()=>{},getId=()=>{}, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
+import NotFound from '../NotFound/NotFound';
+const CommentsList = ({ commentsData=[],title,  cb=()=>{},getId=()=>{}, loading, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
   return (
     <>
-     
+     {
+      commentsData?.length>0
+      ?
       <FlatList
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={commentsData}
+        extraData={commentsData}
         onEndReachedThreshold={0.8}
         onEndReached={() => {
           if (!loading && hasMore) {
@@ -39,10 +43,13 @@ const CommentsList = ({ commentsData=[], cb=()=>{},getId=()=>{}, loading, hasMor
           
         }
       />
-      {
-
-        loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
-      }
+      :
+      loading
+      ?
+      <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
+      :
+      <NotFound/>
+     }
     </>
   )
 }

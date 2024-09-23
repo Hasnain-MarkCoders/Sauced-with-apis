@@ -32,6 +32,9 @@ import ExternalUserFollowersScreen from './src/screens/ExternalUserFollowersScre
 import AddStore from './src/screens/AddStore/AddStore';
 import { addNotification, increaseCount } from './android/app/Redux/notifications';
 import messaging from '@react-native-firebase/messaging';
+import CameraScreen from './src/screens/CameraScreen/CameraScreen';
+import SearchScreen from './src/screens/SearchScreen/SearchScreen';
+import Test from './src/screens/Test/Test';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -114,7 +117,6 @@ function AppRouter() {
             isAuthenticated ?
               <>
               <Stack.Screen name="Main" component={MainNavigation} />
-
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
                 <Stack.Screen name="QRScreen" component={QRScreen} />
@@ -136,6 +138,11 @@ function AppRouter() {
                 <Stack.Screen  name="ExternalUserFollowing" component={ExternalUserFollowingScreen} />
                 <Stack.Screen  name="ExternalUserFollowers" component={ExternalUserFollowersScreen} />
                 <Stack.Screen name="AddStore" component={AddStore} />
+                <Stack.Screen  options={{ tabBarVisible: false }} name="Camera" component={CameraScreen} />
+																<Stack.Screen name="search" component={SearchScreen} />
+																<Stack.Screen name="Test" component={Test} />
+
+
 
               </>
               :

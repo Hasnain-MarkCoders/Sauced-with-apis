@@ -10,6 +10,7 @@ import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../a
 import { useDispatch, useSelector } from 'react-redux';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
+import NotFound from '../NotFound/NotFound';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -73,21 +74,12 @@ const [initialLoading, setInitialLoading] = React.useState(true)
 
         if(!!x){
                    dispatch(handleRemoveInterestedEvents(event?._id))
-                // dispatch(handleRemoveAllEventsExceptInterested(event?._id))
                    handleAllEventsExceptInterested([event])
                     const res = await axiosInstance.post(`/interest-event`, {
                         eventId:event?._id
                     });
 
-                    console.log("res.data", res.data)
         }
-        // else{
-        //     dispatch(handleInterestedEvents([event]))
-        //     const res = await axiosInstance.post(`/interest-event`, {
-        //         eventId:event?._id
-        //     });
-        // }
-
     }
 
     React.useEffect(()=>{
@@ -103,6 +95,9 @@ setTimeout(()=>{
             <CarouselSkeleton/>
             :
             
+            interestedEvents?.length
+            >0
+            ?
             <Carousel
             autoPlayInterval={7000}
                 loop
@@ -127,6 +122,8 @@ setTimeout(()=>{
                 </>)
                 }
             />
+            :
+            <NotFound/>
 
         }
         <View style={{

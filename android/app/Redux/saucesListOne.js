@@ -28,10 +28,26 @@ const saucesListOneSlice = createSlice({
       return state.filter(x => x._id !== action.payload);
     },
     handleIncreaseReviewCountOfListOneSauce:(state, action)=>{
-      const sauce = state.find(x => x._id == action.payload);
-      if (sauce) {
-        return [...state, {...sauce, reviewCount :sauce.reviewCount+1}]
+      const _id = action.payload?._id;
+      const cb = action.payload?.setReviewCount || function() {};
+    
+      const sauceIndex = state.findIndex(x => x._id === _id);
+      if (sauceIndex !== -1) {
+        // Make a shallow copy of the state and the target sauce to ensure immutability
+        const newState = [...state];
+        const newSauce = { ...newState[sauceIndex] };
+    
+        // Update the review count
+        newSauce.reviewCount = newSauce.reviewCount + 1;
+        newState[sauceIndex] = newSauce;
+    
+        // Execute callback with the new review count
+        // cb(newSauce.reviewCount);
+    
+        return newState;
       }
+      
+      return state;
     }
 }
 });

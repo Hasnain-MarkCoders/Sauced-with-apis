@@ -1,5 +1,5 @@
-import { Image, Text, TouchableOpacity, View, Linking } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Image, Text, TouchableOpacity, View, Linking, Alert } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
@@ -13,31 +13,48 @@ import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
 import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
 import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
+import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
 import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
 import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
 import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree'
-
+import { handleToggleWishList } from '../../../android/app/Redux/wishlist'
+import { Camera } from 'lucide-react-native';
+import {Camera as VisionCamera, useCameraDevices} from 'react-native-vision-camera';
 const ProductCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
     product = {},
     sauceType = "",
+    mycb=()=>{},
+    handleIncreaseReviewCount=()=>{}
 }) => {
-    const topRatedSauces = useSelector(state => state?.topRatedSauces)
+    const wishListSlices = useSelector(state => state?.wishlist)
+    const isInWishList=(id=product?._id)=>{
+        return !!wishListSlices.find(item=>item?._id==id)
+
+    }
+
     // const count = useSelector(state=>state?.count)
+    const [loadings, setLoadings] = useState({
+        isWishListLoading:false
+      })
     const axiosInstance = useAxios()
     const dispatch = useDispatch()
     const navigation = useNavigation()
     const [LightBox, setLightBox] = useState(false)
+    const [reviewCount, setReviewCount] = useState(product?.reviewCount)
     const [loading, setLoading] = useState(false)
     const [productStatus, setproductStatus] = useState({
         isChecked: product["hasLiked"],
-        isAddedToWishList: false,
+        isAddedToWishList: isInWishList(),
         isAddedToList: false
     })
+
+    const camera = useRef(null);
+  const devices = useCameraDevices();
+  const device = devices.back;
 
     const handleToggleLike = async () => {
         setLoading(true);
@@ -110,6 +127,34 @@ const ProductCard = ({
             setLoading(false);
         }
     }
+    const handleWishlist = useCallback(async()=>{
+        try{
+          setLoadings(prev=>({
+            ...prev,
+            isWishListLoading:true
+          }))
+          const res = await axiosInstance.post(`/wishlist`, {
+            params: {
+                sauceId:product?._id
+            }
+        });
+      
+        }catch(error){
+      
+        }finally{
+          setLoadings(prev=>({
+            ...prev,
+            isWishListLoading:false
+          }))
+      
+        }
+      
+      },[])
+
+      useEffect(()=>{
+        console.log(product?.reviewCount)
+      },[product?.reviewCount])
+   
 
     return (
         <View style={{
@@ -175,7 +220,7 @@ const ProductCard = ({
                             justifyContent: "space-between"
                         }}>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllReviews", { _id: product?._id })
+                                navigation.navigate("AllReviews", { _id: product?._id, setReviewCount, handleIncreaseReviewCount })
                             }}>
                                 <Text style={{
                                     color: "white",
@@ -184,7 +229,7 @@ const ProductCard = ({
                                     lineHeight: scale(14),
                                     textDecorationStyle:"solid",
                                     textDecorationLine:"underline"
-                                }}>{`${product?.reviewCount} Reviews`}</Text>
+                                }}>{`${reviewCount} Reviews`}</Text>
                                 <CustomRating
                                     initialRating={product?.averageRating}
                                     ratingContainerStyle={{
@@ -196,7 +241,8 @@ const ProductCard = ({
 
                             <View style={{
                                 flexDirection: "row",
-                                gap: scale(10)
+                                gap: scale(10),
+                                alignItems:"center"
                             }}>
 
                                 <TouchableOpacity
@@ -234,6 +280,7 @@ const ProductCard = ({
                                     }} source={productStatus.isChecked ? filledHeart : emptyheart} />
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                disabled={loadings?.isWishListLoading}
                                     onLongPress={() => {
                                         setshowListModal(true)
                                     }}
@@ -243,6 +290,8 @@ const ProductCard = ({
                                             isAddedToWishList: !prev.isAddedToWishList
 
                                         }));
+                                        dispatch(handleToggleWishList(product))
+                                        handleWishlist()
                                         Snackbar.show({
                                             text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product in Wishlist.",
                                             duration: Snackbar.LENGTH_SHORT,
@@ -255,6 +304,8 @@ const ProductCard = ({
                                                         isAddedToWishList: false
 
                                                     }));
+                                                    !loadings?.isWishListLoading && handleWishlist()
+
 
                                                 },
                                             },
@@ -373,7 +424,7 @@ const ProductCard = ({
             <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType})
+                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType, mycb, handleIncreaseReviewCount, setReviewCount})
 
                     }}
                     style={{
@@ -392,10 +443,11 @@ const ProductCard = ({
                     }}>Add Review</Text>
 
 
+
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", { product,routerNumber:2                        })
+                        navigation.navigate("Checkin", { product,routerNumber:3, photo:{}, fn:()=>{}})
 
                     }}
                     style={{
@@ -412,6 +464,32 @@ const ProductCard = ({
                         fontWeight: "700"
 
                     }}>Check-in</Text>
+
+
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => {
+                        console.log("has")
+                        handleIncreaseReviewCount(product?._id, setReviewCount)
+                        // handleIncreaseReviewCount()
+                        // dispatch(handleIncreaseReviewCountOfFavoriteSauce({_id:product?._id, setReviewCount}))
+                        console.log("nain")
+                    }}
+                    style={{
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(6),
+                        backgroundColor: "#FFA100",
+                        borderRadius: scale(5),
+                        elevation: scale(5),
+                        alignSelf: "flex-end",
+
+                    }}>
+                    <Text style={{
+                        color: "black",
+                        fontWeight: "700"
+
+                    }}>test</Text>
 
 
                 </TouchableOpacity>

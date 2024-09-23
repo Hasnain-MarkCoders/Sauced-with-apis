@@ -12,6 +12,8 @@ const ProductSearchList = ({
     type = "",
     showHeart=false,
     searchTerm = "",
+    getQueryData=()=>{},
+    // handleIncreaseReviewCount=()=>{}
 }) => {
     const axiosInstance = useAxios()
     const [data, setData] = useState([])
@@ -31,6 +33,9 @@ const ProductSearchList = ({
             });
             setHasMore(res.data.pagination.hasNextPage);
             setData(prev => [...prev, ...res.data.sauces]);
+
+            getQueryData(res?.data?.sauces)
+            
         } catch (error) {
             console.error('Failed to fetch sauces:', error);
             setAlertModal({
@@ -41,6 +46,21 @@ const ProductSearchList = ({
             setLoading(false);
         }
     }, [hasMore, page, searchTerm, type]);
+    const handleIncreaseReviewCount = useCallback((id, setReviewCount)=>{
+        console.log("nano")
+        setData(prev=>{
+            return prev.map(item=>{
+                if (item._id==id){
+                    setReviewCount(item?.reviewCount+1)
+                    console.log(item)
+                    return {...item, reviewCount:item?.reviewCount+1}
+                }else{
+                    return item
+                }
+            })
+        })
+
+    },[])
 
 
     useEffect(() => {
@@ -74,6 +94,11 @@ const ProductSearchList = ({
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => <SingleSauce
+                handleIncreaseReviewCount={handleIncreaseReviewCount}
+                mycb={setData}
+                searchPageSauceStyles={{
+                    objectFit: "cover", width:scale(90), height:scale(130)
+                }}
                 fullWidthText={true}
                 searchPageStyle={true}
                 showHeart={showHeart}

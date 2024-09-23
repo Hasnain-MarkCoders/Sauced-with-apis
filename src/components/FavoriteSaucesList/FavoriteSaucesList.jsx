@@ -5,7 +5,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleFavoriteSauces } from '../../../android/app/Redux/favoriteSauces';
+import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
 const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
@@ -14,7 +14,12 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const favoriteSauces = useSelector(state=>state.favoriteSauces)
-    
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+        dispatch(handleIncreaseReviewCountOfFavoriteSauce({_id, setReviewCount}))
+    },[])
+
+ 
+
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -83,6 +88,7 @@ favoriteSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="favourite"
                     item={item}
                         url={item?.image}

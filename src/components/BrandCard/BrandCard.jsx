@@ -9,6 +9,9 @@ const BrandCard = ({
     title = "",
     product={}
 }) => {
+    useEffect(()=>{
+console.log("product==============>", product)
+    },[])
 
     const [LightBox, setLightBox] = useState(false)
     return (
@@ -63,7 +66,7 @@ const BrandCard = ({
                         <View>
                             <Text
 
-                                numberOfLines={1} ellipsizeMode="tail"
+                                // numberOfLines={1} ellipsizeMode="tail"
                                 style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -71,27 +74,6 @@ const BrandCard = ({
                                     lineHeight: scale(24),
                                 }}>{title}</Text>
                         </View>
-                        <View>
-                        <Text style={{
-                            color:"white"
-                        }}>
-                            Website Link:
-                        </Text>
-                        <TouchableOpacity onPress={() => {
-                            Linking.openURL(product?.brand?.websiteLink)
-                        }}>
-                            <Text 
-                             numberOfLines={1}
-                            ellipsizeMode='tail'
-                            style={{
-                                maxWidth:scale(155),
-                                color: "#FFA100",
-                                fontWeight: 600,
-                                fontSize: scale(12),
-                                lineHeight: scale(25),
-                            }}>{product?.brand?.websiteLink}</Text>
-                        </TouchableOpacity>
-                    </View>
                     </View>
 
                     <View style={
@@ -132,7 +114,57 @@ const BrandCard = ({
                         </View>
                     </View>
                 </View>
+              
             </View>
+            <View style={{
+                flexDirection:"row",
+                gap:scale(20)
+            }}>
+
+<View>
+<Text style={{
+    color:"white"
+}}>
+    Website Link:
+</Text>
+<TouchableOpacity onPress={() => {
+    Linking.openURL(product?.brand?.websiteLink)
+}}>
+    <Text 
+     numberOfLines={1}
+    ellipsizeMode='tail'
+    style={{
+        maxWidth:scale(155),
+        color: "#FFA100",
+        fontWeight: 600,
+        fontSize: scale(12),
+        lineHeight: scale(25),
+    }}>{product?.brand?.websiteLink}</Text>
+</TouchableOpacity>
+</View>
+
+<View>
+<Text style={{
+    color:"white"
+}}>
+    Amazon Link:
+</Text>
+<TouchableOpacity onPress={() => {
+    Linking.openURL(product?.brand?.amazonLink)
+}}>
+    <Text 
+     numberOfLines={1}
+    ellipsizeMode='tail'
+    style={{
+        maxWidth:scale(155),
+        color: "#FFA100",
+        fontWeight: 600,
+        fontSize: scale(12),
+        lineHeight: scale(25),
+    }}>{product?.brand?.amazonLink}</Text>
+</TouchableOpacity>
+</View>
+</View>
         </View>
     )
 }

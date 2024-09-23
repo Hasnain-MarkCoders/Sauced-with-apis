@@ -5,7 +5,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleCheckedInSauces } from '../../../android/app/Redux/checkedInSauces';
+import { handleCheckedInSauces, handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
 const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
@@ -14,7 +14,10 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const checkedInSauces = useSelector(state=>state.checkedInSauces)
-    
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+        dispatch(handleIncreaseReviewCountOfCheckedInSauce({_id, setReviewCount}))
+    },[])
+
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -82,6 +85,7 @@ checkedInSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="checkedin"
                     item={item}
                         url={item?.image}

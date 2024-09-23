@@ -5,7 +5,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleFeaturedSauces } from '../../../android/app/Redux/featuredSauces';
+import { handleFeaturedSauces, handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
 import { useNavigation } from '@react-navigation/native';
 const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
@@ -16,6 +16,10 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const dispatch = useDispatch()
     const featuredSauces = useSelector(state=>state.featuredSauces)
     const navigation = useNavigation()
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+        dispatch(handleIncreaseReviewCountOfFeaturedSauce({_id, setReviewCount}))
+    },[])
+
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -87,6 +91,7 @@ featuredSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => item?._id}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="featured"
                     item={item}
                         url={item?.image}

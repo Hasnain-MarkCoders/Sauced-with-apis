@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Easing, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import filledHeart from "./../../../assets/images/filledHeart.png"
 import emptyheart from "./../../../assets/images/heart.png"
@@ -15,7 +15,8 @@ import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListO
 import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
 import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-
+import TextTicker from 'react-native-text-ticker'
+import LinearGradient from 'react-native-linear-gradient';
 const SingleSauce = ({
     url = "",
     title="",
@@ -28,21 +29,28 @@ const SingleSauce = ({
     showHeart=true,
     searchPageStyle=false,
     fullWidthText= false,
+    searchPageSauceStyles={},
+    showOverlay=false,
+    mycb=()=>{},
+    handleIncreaseReviewCount=()=>{}
 }) => {
  const [isLoading, setIsLoading] = useState(true);
 const axiosInstance = useAxios()
 const navigation = useNavigation()
 const dispatch = useDispatch()
 const [selected, setSelected] = useState(item["hasLiked"])
+useEffect(()=>{
+console.log("url================================================================>", url)
+},[])
+
 const handleOnPress = ()=>{
     if(showPopup){
     setProductDetails({url, title})
     setAlertModal(true)
 }else{
-    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected, })
+    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected,handleIncreaseReviewCount, mycb,hasnain:"hanain"})
 }
 }
-
 
 const handleToggleLike=async()=>{
     try {
@@ -53,7 +61,6 @@ const handleToggleLike=async()=>{
                 }else{
                     dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
                 }
-
         }
 
 
@@ -65,7 +72,6 @@ const handleToggleLike=async()=>{
                     dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
                 }
         }
-
         if (sauceType=="favourite"){
             dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
         }
@@ -122,126 +128,151 @@ const handleToggleLike=async()=>{
     } finally {
     }
 }
-
-
-    return (
-        <>
-        {
-        url?
+return (
+    <>
+      {url ? (
         <TouchableOpacity
-        
-        activeOpacity={.8}
-        onPress={()=>{handleOnPress()}}
-        // onLongPress={()=>{
-        //     handleToggleLike()
-        //     setSelected(prev=>!prev)
-        //     Snackbar.show({
-        //         text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
-        //         duration: Snackbar.LENGTH_SHORT,
-        //         action: {
-        //             text: 'UNDO',
-        //             textColor: '#FFA100',
-        //             onPress: () => {
-        //                 handleToggleLike()
-        //                 setSelected(prev => !prev)
-        //             },
-        //         },
-        //     });
-        
-        // }}
-        style={[styles.container,
-            {width:scale(110), ...customStyles},
-        ]}>
+          activeOpacity={0.8}
+          onPress={handleOnPress}
+          style={[
+            styles.container,
+            { width: scale(110), ...customStyles },
+          ]}
+        >
+          {isLoading && (
+            <View style={[styles.skeletonContainer, styles.imageContainer]}>
+              <SkeletonPlaceholder
+                speed={1600}
+                backgroundColor="#2E210A"
+                highlightColor="#fff"
+              >
+                <SkeletonPlaceholder.Item
+                  width="100%"
+                  height="100%"
+                  borderRadius={scale(10)}
+                />
+              </SkeletonPlaceholder>
+            </View>
+          )}
 
-{isLoading && (
-        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
-          <SkeletonPlaceholder.Item  width={"100%"} height={searchPageStyle?scale(125):"100%"} marginTop={searchPageStyle?20:0} borderRadius={10}  />
-        </SkeletonPlaceholder>
-      )}
-      <Image
-        source={{ uri: url }}
-        style={[styles.image, { objectFit: "contain" }]}
-        onLoad={() => setIsLoading(false)}
-      />
-            <Text
-            style={[styles.text, {width:fullWidthText?"90%":"60%"}]}>
-              {title}
-            </Text>
-        {   showHeart&& <TouchableOpacity
-            style={{
-                // paddingHorizontal:scale(20)
-                width:scale(40),
-                height:scale(40)
-            }}
-            onPress={()=>{
-                setSelected(prev=>!prev)
-                Snackbar.show({
-                    text: !selected? 'You love this Sauce.' : "You unlove this Sauce.",
-                    duration: Snackbar.LENGTH_SHORT,
-                    action: {
+          <View style={styles.imageContainer}>
+            <ImageBackground
+              source={{ uri: url }}
+              style={[styles.image, searchPageSauceStyles]}
+              imageStyle={{ borderRadius: scale(10) }}
+              onLoad={() => setIsLoading(false)}
+            >
+              {/* Gradient Overlay */}
+              <LinearGradient
+                colors={['transparent', 'rgba(0, 0, 0, 0.8)']}
+                locations={[0, 1]}
+                style={[styles.gradient, { borderRadius: scale(10) }]}
+              />
+
+              {/* Marquee Text */}
+              <View style={styles.textContainer}>
+                <TextTicker
+                  duration={7000}
+                  loop
+                  bounce={false}
+                  repeatSpacer={0}
+                  marqueeDelay={0}
+                  easing={Easing.linear}
+                  isInteraction={false}
+                  animationType="scroll"
+                  style={styles.text}
+                >
+                  {title}
+                </TextTicker>
+              </View>
+
+              {showHeart && (
+                <TouchableOpacity
+                  style={styles.heartIcon}
+                  onPress={() => {
+                    setSelected((prev) => !prev);
+                    Snackbar.show({
+                      text: !selected
+                        ? 'You love this Sauce.'
+                        : 'You unlove this Sauce.',
+                      duration: Snackbar.LENGTH_SHORT,
+                      action: {
                         text: 'UNDO',
                         textColor: '#FFA100',
                         onPress: () => {
-                            handleToggleLike()
-                            setSelected(prev => !prev)
+                          handleToggleLike();
+                          setSelected((prev) => !prev);
                         },
-                    },
-                });
-                handleToggleLike()
-           
-            }}
-        >
-
-            {(item["hasLiked"]?
-        
-        
-        
-        <Image
-        style={{
-                width:scale(17),
-                height:scale(15),
-                position:"absolute",
-                bottom:scale(20),
-                right:scale(10),
-            }} source={filledHeart}/>
-            : <Image
-            style={{
-                width:scale(17),
-                height:scale(15),
-                position:"absolute",
-                bottom:scale(20),
-                right:scale(10),
-            }} source={emptyheart}/>)}
+                      },
+                    });
+                    handleToggleLike();
+                  }}
+                >
+                  <Image
+                    style={styles.heartImage}
+                    source={item['hasLiked'] ? filledHeart : emptyheart}
+                  />
+                </TouchableOpacity>
+              )}
+            </ImageBackground>
+          </View>
         </TouchableOpacity>
-            }
-        </TouchableOpacity>
-        :null
-        }
-        </>
-    );
+      ) : null}
+    </>
+  );
 };
 
 export default SingleSauce;
 
 const styles = StyleSheet.create({
-    container: {
-        borderRadius: scale(7),
-        height: scale(160),
-        position:"relative",
-        borderRadius:scale(10),
-    },
-    image: {
-        width: "100%",
-        height: "100%",
-        objectFit:"contain",
-        borderRadius:scale(10)
-
-    },
-    text:{
-      position:"absolute",
-      bottom:scale(20),
-      left:10,
-      color:"white",
-      width:"60%",
-    }
+  container: {
+    borderRadius: scale(10),
+    height: scale(160),
+  },
+  skeletonContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: scale(10),
+    overflow: 'hidden',
+  },
+  imageContainer: {
+    width: '100%',
+    height: '100%',
+    borderRadius: scale(10),
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '50%',
+  },
+  textContainer: {
+    position: 'absolute',
+    bottom: scale(10),
+    left: 10,
+    right: 10,
+    overflow: 'hidden',
+  },
+  text: {
+    color: 'white',
+    fontSize: 16,
+  },
+  heartIcon: {
+    position: 'absolute',
+    top: scale(10),
+    right: scale(10),
+    zIndex: 2,
+  },
+  heartImage: {
+    width: scale(20),
+    height: scale(18),
+  },
 });

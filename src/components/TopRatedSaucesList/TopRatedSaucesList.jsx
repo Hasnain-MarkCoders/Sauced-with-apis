@@ -7,7 +7,7 @@ import axios from 'axios';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
+import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
 const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
@@ -17,7 +17,10 @@ const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const topRatedSauces = useSelector(state=>state.topRatedSauces)
-    
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+        dispatch(handleIncreaseReviewCountOfTopRatedSauce({_id, setReviewCount}))
+    },[])
+
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
 
@@ -91,6 +94,7 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="toprated"
                     item={item}
                         url={item?.image}

@@ -25,6 +25,7 @@ import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.js
 import InterestedEvents from '../../components/InterestedEvents/InterestedEvents.jsx';
 import { handleStats } from '../../../android/app/Redux/userStats.js';
 import InterestedEventsCarousel from '../../components/InterestedEventsCarousel/InterestedEventsCarousel.jsx';
+import WishListSauces from '../../components/WishListSauces/WishListSauces.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
     const [initialLoading, setInitialLoading] = useState(true)
@@ -291,7 +292,7 @@ if (initialLoading) {
                                         />
                                         <SauceList
                                             type="reviewed"
-                                            cb={() => { navigation.navigate("AllReviews", { route: "review" }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
+                                            cb={() => { navigation.navigate("AllUserReviews", { route: "review", _id:auth?._id }) }} showMoreIcon={true} title='Reviewed Sauces' data={topRatedSauces} />
 
                                     </View>
 
@@ -299,7 +300,7 @@ if (initialLoading) {
                                 {
                                     index == 3 && <View style={{
                                         marginTop: (  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) &&scale(50),
-                                        
+                                    
                                         marginBottom: (users?.length>0 ||  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) && scale(30),
 
                                         gap:scale(50)
@@ -316,9 +317,12 @@ if (initialLoading) {
                                     </View>
 
                                 }
-                                {/* {
-                                    index==4 &&<InterestedEvents/>
-                                } */}
+                             {
+                                     index== 4 && <WishListSauces
+                                     title='Wishlist'
+                                     />
+
+                             }
                                 {
                                     index==5&& 
                                     <View style={{
@@ -332,31 +336,11 @@ if (initialLoading) {
     
                                                 }}>Events I'm Interested In</Text>
                                                 <View>
-                                                {/* {interestedEvents.length0
-                                                ? */}
+                                               
                                                 <InterestedEventsCarousel
                                                 showText={true}
                                                 />
-                                                {/* :
-                                                <>
-                                                    <TouchableOpacity onPress={() => {
-                            Vibration.vibrate(10)
-                            navigation.navigate("Home")
-                        }}>
-
-                            <Text style={{
-                                    
-                                            textDecorationLine: "underline", fontWeight: 700,
-                                            marginLeft:scale(2),
-                                            textDecorationLine: "underline", fontWeight: 700,
-                                            marginLeft:scale(2),
-                                            color:"white"
-                            }}>
-                                Find an event you're interested in
-                            </Text>
-                        </TouchableOpacity>
-                                                </>
-                                            } */}
+                                               
                                                         
                                                 </View>
                                     </View>

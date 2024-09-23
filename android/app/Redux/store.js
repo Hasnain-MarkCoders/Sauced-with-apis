@@ -17,6 +17,10 @@ import userStatsSlice from './userStats';
 import searchedUsersSlice from './searchedUsers';
 import allEventsExceptInterestedSlice from './allEventsExceptInterested';
 import notificationsSlice from './notifications'
+import wishListSlice from './wishlist'
+import quickCheckinSlice from './quickCheckin'
+
+
 
 // Root reducer with LOGOUT action handler to reset state
 const appReducer = combineReducers({
@@ -35,7 +39,9 @@ const appReducer = combineReducers({
     userStats: userStatsSlice,
     searchedUsers: searchedUsersSlice,
     allEventsExceptInterested: allEventsExceptInterestedSlice,
-    notifications:notificationsSlice
+    notifications:notificationsSlice,
+    wishlist:wishListSlice,
+    quickcheckin:quickCheckinSlice
 });
 
 // Handling the LOGOUT action to reset all state
@@ -66,7 +72,10 @@ const persistConfig = {
     'followings', 
     'userStats', 
     'searchedUsers',
-    'notifications'
+    'notifications',
+    'wishlist',
+    'quickcheckin'
+
   ]
 };
 

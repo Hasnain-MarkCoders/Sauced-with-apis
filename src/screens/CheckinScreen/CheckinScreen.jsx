@@ -1,4 +1,4 @@
-import React, {   useState } from 'react';
+import React, {   useEffect, useState } from 'react';
 import { View, SafeAreaView, ImageBackground, ScrollView, Alert, Image, Text, TouchableOpacity, StyleSheet, Vibration } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
@@ -8,58 +8,31 @@ import { scale } from 'react-native-size-matters';
 import {  useSelector } from 'react-redux';
 import { handleText } from '../../../utils.js';
 import useAxios, { host } from '../../../Axios/useAxios';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary, launchCamera  } from 'react-native-image-picker';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
-import user from "./../../../assets/images/user.png"
+// import user from "./../../../assets/images/user.png"
 import locationIcon from "./../../../assets/images/locationIcon.png"
 import arrow from "./../../../assets/images/arrow.png";
 
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
-const cities =[
-    { "city": "New York" },
-    { "city": "Los Angeles" },
-    { "city": "Chicago" },
-    { "city": "Houston" },
-    { "city": "Phoenix" },
-    { "city": "Philadelphia" },
-    { "city": "San Antonio" },
-    { "city": "San Diego" },
-    { "city": "Dallas" },
-    { "city": "San Jose" },
-    { "city": "Austin" },
-    { "city": "Jacksonville" },
-    { "city": "San Francisco" },
-    { "city": "Indianapolis" },
-    { "city": "Columbus" },
-    { "city": "Fort Worth" },
-    { "city": "Charlotte" },
-    { "city": "Detroit" },
-    { "city": "El Paso" },
-    { "city": "Memphis" },
-    { "city": "Boston" },
-    { "city": "Seattle" },
-    { "city": "Denver" },
-    { "city": "Washington" },
-    { "city": "Nashville" },
-    { "city": "Baltimore" },
-    { "city": "Oklahoma City" },
-    { "city": "Louisville" },
-    { "city": "Milwaukee" },
-    { "city": "Albuquerque" },
-    { "city": "Tucson" },
-    { "city": "Fresno" }
-]
-
-
-
+import axios from 'axios';
+import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
+import ChoiceModal from '../../components/ChoiceModal/ChoiceModal.jsx';
 const CheckinScreen = () => {
+    const axiosInstance = useAxios()
+    const route = useRoute()
+    const product = route?.params?.product
+    const fn = route?.params?.fn 
+    const routerNumber = route?.params?.routerNumber
+    const photo = route?.params?.photo
     const auth = useSelector(state => state.auth)
-    const [filterData, setFilterData] = useState(cities||[])
+    const [isSelected, setIsSelected] = useState(true)
     const navigation = useNavigation()
     const [loading, setLoading] = useState(false)
-    const [imageUris, setImageUris] = useState([]);
+    const [imageUris, setImageUris] = useState(photo?.uri?[photo]:[]);
+ 
     const [isloading, setIsLoading] = useState({
         submitForm: false,
         loadMap: false
@@ -69,18 +42,16 @@ const CheckinScreen = () => {
         message: "",
         success:true
     })
-    const [showDropDown, setShowDropDown]  =useState(false)
+ 
     const [data, setData] = useState({
         description: "",
         select: "", 
         location:"",
         address:"",
-        coordinates:{}
+        coordinates:{},
+        foodPairings:[]
     });
-    const route = useRoute()
-    const product = route?.params?.product
-    const routerNumber = route?.params?.routerNumber
-    const axiosInstance = useAxios()
+
 
     const checkLocationServiceAndNavigate = () => {
         setIsLoading(prev => ({ ...prev, loadMap: true }))
@@ -113,10 +84,7 @@ const CheckinScreen = () => {
         });
     };
 
-    const handleEventCoords = (coords) => {
-        setData(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
-    }
-
+  
     const fetchCurrentLocation = () => {
         Geolocation.getCurrentPosition(
             (position) => {
@@ -136,169 +104,375 @@ const CheckinScreen = () => {
     };
 
 
-    const handleImagePicker = () => {
+
+    const handleEventCoords = (coords) => {
+        setData(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
+    }
+
+    // const handleImagePicker = () => {
+    //     const options = {
+    //         mediaType: 'photo',
+    //         quality: 1,
+    //         selectionLimit: 0, // Allows multiple selection
+    //     };
+    
+    //     launchImageLibrary(options, response => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled image picker');
+    //         } else if (response.error) {
+    //             console.log('ImagePicker Error: ', response?.error);
+    //             Alert.alert('Error', 'Something went wrong while picking the image.');
+    //         } else {
+    //             const sources = response.assets.map(asset => ({
+    //                 uri: asset?.uri,
+    //                 type: asset?.type,
+    //                 name: asset?.fileName,
+    //             }));
+    
+    //             setImageUris(prevUris => [...prevUris, ...sources]);
+    //         }
+    //     });
+    // };
+
+    const handleImagePickerWithCamera = () => {
         const options = {
             mediaType: 'photo',
-            // maxWidth: 300,
-            // maxHeight: 300,
             quality: 1,
-            selectionLimit: 0,
+            selectionLimit: 0, // Allows multiple selection
         };
-
-        launchImageLibrary(options, response => {
+    
+        launchCamera(options, response => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response?.error);
-                Alert.alert('Error', 'Something went wrong while picking the image.');
+                // Open the alert modal with the error message
+                setAlertModal({
+                    open: true,
+                    message: 'Something went wrong while picking the image.',
+                    success: false
+                });
             } else {
                 const sources = response.assets.map(asset => ({
                     uri: asset?.uri,
                     type: asset?.type,
                     name: asset?.fileName,
                 }));
-
-                setImageUris(prevUris => [...prevUris, ...sources.map(source => source?.uri)]);
+    
+                setImageUris(prevUris => [...prevUris, ...sources]);
             }
         });
     };
-
-
-    const handleImage = async (file, additionalData) => {
-        const formData = new FormData();
-        formData.append('images', file);
-        formData.append('text', additionalData?.description);
-        formData.append('latitude', additionalData?.coordinates?.latitude);
-        formData.append('longitude', additionalData?.coordinates?.longitude);
-        formData.append('sauceId', additionalData?.sauceId);
     
-        const postData = {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + auth?.token // Auth token assumed to be necessary
-            },
-            body: formData
+    const handleImagePicker = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 1,
+            selectionLimit: 0, // Allows multiple selection
         };
-        console.log(formData)
-    
-        try {
-            const response = await fetch(`${host}/checkin`, postData);
-            const responseJson = await response.json();
-            console.log("response====> add check", responseJson)
-            if (!response.ok) {
-                throw new Error(responseJson.error || "An unknown error occurred");
-            }
-            
-            return responseJson;
-        } catch (error) {
-            console.error('Upload error:', error);
-            throw error; // Allows error handling in the calling function
-        }
-    };
-    
-
-
-
-
-
-
-
-
-    const handleSubmit = async () => {
-        if (!data.description) {
-            return   setAlertModal({
-                open:true,
-                message:"Please write a description.",
-                success:false
-            })
-         
-        }
-        if (!data.coordinates?.latitude ||!data?.coordinates?.longitude || !data?.address) {
-            return setAlertModal({
-                open:true,
-                message:"Please choose a location.",
-                success:false
-            })
-            
-        }
-        Vibration.vibrate(10);
-        setLoading(true);
-    
-        const additionalData = {
-            description: data.description,
-            latitude: "21321",
-            longitude: "32131",
-            sauceId: product._id // Assuming product._id is available and correct
-        };
-    
-        const uploadPromises = imageUris.map(uri => handleImage({
-            uri,
-            type: 'image/jpeg', // Assuming JPEG; adjust as needed
-            name: uri.split('/').pop(), // Extract filename from URI
-        }, additionalData));
-    
-        try {
-            const results = await Promise.allSettled(uploadPromises);
-            const uploadErrors = results.filter(result => result.status === 'rejected');
-    
-            if (uploadErrors.length > 0) {
-                const errorMessage = `Failed to upload ${uploadErrors.length} image(s).`;
-                console.error(errorMessage, uploadErrors);
+        const launchFunction = isSelected ? launchCamera : launchImageLibrary;
+     launchFunction(options, response => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response?.error);
+                // Open the alert modal with the error message
                 setAlertModal({
-                    open:true,
-                    message:errorMessage,
-                    success:false
-
-                })
-               
+                    open: true,
+                    message: 'Something went wrong while picking the image.',
+                    success: false
+                });
             } else {
-                setAlertModal({
-                    open:true,
-                    message:"Check complete.",
-                    success:true
-
-                })
-                if(results[0]?.status=="fulfilled")
-                    setAlertModal({
-                        open:true,
-                        message:results[0]?.value?.message,
-                        success:true
-
-                    })
-                    setData(
-                        {
-                            description: "",
-                            select: "", 
-                            location:""
-                        }
-                    )
-                    setImageUris([])
-                navigation.navigate("AllCheckinsScreen", {_id:product?._id, routerNumber});
+                const sources = response.assets.map(asset => ({
+                    uri: asset?.uri,
+                    type: asset?.type,
+                    name: asset?.fileName,
+                }));
+    
+                setImageUris(prevUris => [...prevUris, ...sources]);
             }
-        } catch (error) {
-            console.error('An error occurred during uploads:', error);
-           return setAlertModal({
-                open:true,
-                message:error.message,
-                success:false
-
-            })
-        } finally {
-            setLoading(false);
-        }
+        });
     };
     
-    ;
-    const filterfn = (search="")=>{
-        if(search){
-            setShowDropDown(true)
-        }else{
-            setShowDropDown(false)
-        }
-        const newData = [...cities]
-       setFilterData(newData.filter(x=>x?.city?.toLowerCase()?.includes(search?.toLowerCase())))
+    // const handleSubmit = async () => {
+    //     try {
+    //         // Input validations
+    //         if (!data?.description) {
+    //             return setAlertModal({
+    //                 open: true,
+    //                 message: 'Description is required!',
+    //                 success: false
+    //             });
+    //         }
+    
+    //         if (!data.coordinates?.latitude || !data.coordinates?.longitude || !data?.address) {
+    //             return setAlertModal({
+    //                 open: true,
+    //                 message: 'Location is required!',
+    //                 success: false
+    //             });
+    //         }
+    
+    //         // Set loading state
+    //         setLoading(true);
 
+    //         // Create FormData to send
+    //         const formData = new FormData();
+    
+    //         // Append each image to the FormData object
+    //         imageUris.forEach((imageUri, index) => {
+    //             formData.append('images', {
+    //                 uri: imageUri.uri,
+    //                 type: imageUri.type, // Use JPEG as default type if not provided
+    //                 name: imageUri.uri.split('/').pop() // Extract the file name from the URI
+    //             });
+    //         });
+    
+    //         // Append other fields (description, coordinates, sauceId)
+    //         formData.append('text', data?.description);
+    //         formData.append('latitude', data.coordinates?.latitude);
+    //         formData.append('longitude', data.coordinates?.longitude);
+    //         formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
+    //         data?.foodPairings.forEach(item=>{
+    //             formData.append("foodPairings",item)
+    //         })
+
+
+    
+    //         // Perform the axios POST request
+    //         const response = await axios.post(`${host}/checkin`, formData, {
+    //             headers: {
+    //                 Authorization: `Bearer ${auth?.token}`, // Authorization header with token
+    //                 'Content-Type': 'multipart/form-data', // Set the content type
+    //             },
+    //         });
+    
+    //         // Handle successful response
+    //         if (response?.data?.message) {
+    //             setAlertModal({
+    //                 open: true,
+    //                 message: response?.data?.message,
+    //                 success: true
+    //             });
+    
+    //             // Reset form fields after successful submission
+    //             setData({
+    //                 description: '',
+    //                 location: ''
+    //             });
+    
+    //             setImageUris([]);
+    
+    //             // Navigate back after successful check-in
+    //             setTimeout(() => {
+    //                 navigation.navigate("AllCheckinsScreen", { _id: product?._id, routerNumber });
+    //             }, 2000);
+    //         }
+    //     } catch (error) {
+    //         // Handle error response (e.g., 400 error)
+    //         setAlertModal({
+    //             open: true,
+    //             message: error?.response?.data?.message || error.message,
+    //             success: false
+    //         });
+    //     } finally {
+    //         // Always stop loading after request
+    //         setLoading(false);
+    //     }
+    // };
+
+    // const handleSubmit = async () => {
+    //     try {
+    //         // Input validations
+    //         if (!data?.description) {
+    //             return setAlertModal({
+    //                 open: true,
+    //                 message: 'Description is required!',
+    //                 success: false,
+    //             });
+    //         }
+    
+    //         if (!data.coordinates?.latitude || !data.coordinates?.longitude || !data?.address) {
+    //             return setAlertModal({
+    //                 open: true,
+    //                 message: 'Location is required!',
+    //                 success: false,
+    //             });
+    //         }
+    
+    //         // Set loading state
+    //         setLoading(true);
+    
+    //         // Create FormData to send
+    //         const formData = new FormData();
+    //         // Append each image to the FormData object
+    //         imageUris.forEach((imageUri, index) => {
+    //             formData.append('images', {
+    //                 uri: imageUri.uri,
+    //                 // type: imageUri.type, // Use JPEG as default type if not provided
+    //                 type:"image/JPEG",
+    //                 // name: imageUri.uri.split('/').pop(), // Extract the file name from the URI
+    //                 name :imageUri.name
+    //             });
+    //         });
+    
+    //         // Append other fields (description, coordinates, sauceId)
+    //         formData.append('text', data?.description);
+    //         formData.append('latitude', data.coordinates?.latitude);
+    //         formData.append('longitude', data.coordinates?.longitude);
+    //         formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
+    
+    //         // Append foodPairings
+    //         data?.foodPairings.forEach(item => {
+    //             formData.append('foodPairings', item);
+    //         });
+    
+    //         // Perform the axios POST request
+    //         const response = await axios.post(`${host}/checkin`, formData, {
+    //             headers: {
+    //                 Authorization: `Bearer ${auth?.token}`, // Authorization header with token
+    //                 'Content-Type': 'multipart/form-data', // Set the content type
+    //             },
+    //         });
+    
+    //         // Handle successful response
+    //         if (response?.data?.message) {
+    //             setAlertModal({
+    //                 open: true,
+    //                 message: response?.data?.message,
+    //                 success: true, // Success is true for a successful response
+    //             });
+    
+    //             // Reset form fields after successful submission
+    //             setData({
+    //                 description: '',
+    //                 location: '',
+    //             });
+    
+    //             setImageUris([]);
+    
+    //             // Navigate back after successful check-in
+    //             setTimeout(() => {
+    //                 navigation.navigate('AllCheckinsScreen', { _id: product?._id, routerNumber , fn});
+    //             }, 2000);
+    //         }
+    //     } catch (error) {
+    //         // Handle error response (e.g., 400 error)
+    //         setAlertModal({
+    //             open: true,
+    //             message: error?.response?.data?.message || error.message,
+    //             success: false, // Error, so success is false
+    //         });
+    //     } finally {
+    //         // Always stop loading after request
+    //         setLoading(false);
+    //     }
+    // };
+    
+ 
+// CheckinScreen.js
+
+const handleSubmit = async () => {
+    try {
+      // Input validations
+      if (!data?.description) {
+        return setAlertModal({
+          open: true,
+          message: 'Description is required!',
+          success: false,
+        });
+      }
+  
+      if (!data.coordinates?.latitude || !data?.coordinates?.longitude || !data?.address) {
+        return setAlertModal({
+          open: true,
+          message: 'Location is required!',
+          success: false,
+        });
+      }
+  
+      // Set loading state
+      setLoading(true);
+
+      // Create FormData to send
+      const formData = new FormData();
+  
+      // Log imageUris for debugging
+      console.log("Submitting images:", imageUris);
+  
+      // Append each image to the FormData object
+      imageUris.forEach((imageUri, index) => {
+        if (imageUri.uri && imageUri.name && imageUri.type) {
+          formData.append('images', {
+            uri: imageUri.uri,
+            type: imageUri.type, // Use the correct MIME type
+            name: imageUri.name,
+          });
+        } else {
+          console.warn(`Image at index ${index} is missing required properties.`);
+        }
+      });
+  
+      // Append other fields (description, coordinates, sauceId)
+      formData.append('text', data?.description);
+      formData.append('latitude', data.coordinates?.latitude);
+      formData.append('longitude', data.coordinates?.longitude);
+      formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
+  
+      // Append foodPairings
+      data?.foodPairings.forEach(item => {
+        formData.append('foodPairings', item);
+      });
+  
+      // Perform the axios POST request
+      const response = await axios.post(`${host}/checkin`, formData, {
+        headers: {
+          Authorization: `Bearer ${auth?.token}`, // Authorization header with token
+          'Content-Type': 'multipart/form-data', // Set the content type
+        },
+      });
+  
+      // Handle successful response
+      if (response?.data?.message) {
+        setAlertModal({
+          open: true,
+          message: response?.data?.message,
+          success: true, // Success is true for a successful response
+        });
+  
+        // Reset form fields after successful submission
+        setData({
+            description: "",
+            select: "", 
+            location:"",
+            address:"",
+            coordinates:{},
+            foodPairings:[]
+        });
+  
+        setImageUris([]);
+  
+        // Navigate back after successful check-in
+        setTimeout(() => {
+          navigation.navigate('AllCheckinsScreen', { _id: product?._id, routerNumber, fn });
+        }, 2000);
+      }
+    } catch (error) {
+      // Handle error response (e.g., 400 error)
+      setAlertModal({
+        open: true,
+        message: error?.response?.data?.message || error.message,
+        success: false, // Error, so success is false
+      });
+      console.log(error?.response?.data?.message)
+      console.log( error?.message)
+    } finally {
+      // Always stop loading after request
+      setLoading(false);
     }
+  };
+  
+
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -316,8 +490,8 @@ const CheckinScreen = () => {
 
                                 showImage={true}
                                 multiline={true}
-                                isURL={false}
-                                uri={user}
+                                isURL={true}
+                                uri={auth?.url}
                                 localImage={true}
                                 numberOfLines={5}
                                 name="description"
@@ -342,84 +516,6 @@ const CheckinScreen = () => {
                                     paddingLeft: scale(50)
 
                                 }} />
-                                {/* <View style={{
-                                    width:"100%",
-                                    position:"relative",
-                                    borderRadius:scale(12),
-                                }}>
-
-                                    <CustomInput
-                                    cb={filterfn}
-                                            imageStyles={{top:"50%",left:"90%", transform: [{ translateY: -0.5 * scale(25) }], width:scale(16), height:scale(20)}}
-                                            isURL={false}
-                                            showImage={true}
-                                            uri={locationIcon}
-                                        name="location"
-                                        onChange={handleText}
-                                        updaterFn={setData}
-                                        value={data.location}
-                                        showTitle={false}
-                                        placeholder="Location"
-                                        containterStyle={{
-                                            flexGrow: 1,
-                                            width:"100%",
-                                            backgroundColor:"#2e210a",
-                                            borderRadius:scale(12)
-                                        }}
-                                        inputStyle={{
-                                            borderColor: "#FFA100",
-                                            borderWidth: 1,
-                                            borderRadius: 10,
-                                            padding: 15,
-                                            paddingLeft:scale(20)
-
-                                        }} />
-                                        {(showDropDown && filterData.length>0) &&<ScrollView  style={{
-                                            position:"absolute",
-                                            
-                                            top:scale(55),
-                                            borderRadius:scale(12),
-                                            borderWidth:1,
-                                            borderColor:"#FFA100",
-                                            backgroundColor:"#2E210A",
-                                            zIndex:1,
-                                            width:"100%",
-                                            overflow:"scroll",
-                                            maxHeight:scale(200),
-                                            minHeight:scale(40),
-                                            padding:scale(20),
-                                            paddingVertical:scale(10)
-                                        }}>
-                                            { filterData.map((item, index)=>{
-
-                                              return <TouchableOpacity 
-                                              key={index}
-                                              style={{
-                                                borderRadius:scale(12),
-                                              }}
-                                              onPress={()=>{
-                                                setShowDropDown(false)
-                                                setData(prev=>({...prev, location:item.city}))
-                                              }}>
-                                              <Text
-                                              
-                                              style={{
-                                                
-                                                fontSize:scale(14),
-                                                color:"white",
-                                                paddingVertical:scale(10)
-                                              }}>
-                                                    {item.city}
-                                                </Text>
-                                              </TouchableOpacity>
-                                              
-                                              
-                                                
-                                            })
-                                        }
-                                        </ScrollView >}
-                                </View> */}
-
                         <CustomButtom
                         loading={isloading?.loadMap}
                             Icon={() => <Image source={arrow} />}
@@ -431,14 +527,69 @@ const CheckinScreen = () => {
                                 display: "flex", gap: 10, flexDirection: "row-reverse",
                                 alignItems: "center", justifyContent:isloading?.loadMap?"center": "space-between"
                             }}
-                            // onPress={() => navigation.navigate("Map")}
-                            // onPress={navigateIfLocationEnabled}
                             onPress={checkLocationServiceAndNavigate}
 
                             title={data?.address ? data?.address : "Address"}
                         />
-                          
+                          <SelectableChips setData={setData}/>
+                          <View style={{
+                            width:"100%",
 
+                          }}>
+                            <Text style={{
+                                fontSize:scale(18),
+                                color:"white"
+                            }}>
+                                Choose image from 
+                            </Text>
+
+                          </View>
+                          <View style={{
+                            width:"100%",
+                            flexDirection:"row",
+                            gap:scale(10)
+                          }}>
+                                    <TouchableOpacity 
+                                    
+                                    onPress={()=>{setIsSelected(true)}}
+                                    style={{
+    backgroundColor: isSelected?'#FFA500':'#2e210a', // Dark box for unselected chips
+    borderRadius: scale(20),
+    paddingVertical: scale(6),
+    paddingHorizontal: scale(10),
+    borderColor: '#FFA500', // Orange border for chips to match the theme
+    borderWidth: scale(1),
+    alignItems: 'center',
+  }}>
+                                        <Text
+                                        style={{
+                                            color:isSelected?'#000':'#fff'
+                                        }}
+                                        >
+                                            Camera
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                    
+                                    onPress={()=>{setIsSelected(false)}}
+                                    style={{
+    backgroundColor: isSelected? '#2e210a':'#FFA500', // Dark box for unselected chips
+    borderRadius: scale(20),
+    paddingVertical: scale(6),
+    paddingHorizontal: scale(10),
+    borderColor: '#FFA500', // Orange border for chips to match the theme
+    borderWidth: scale(1),
+    alignItems: 'center',
+  }}>
+                                        <Text
+                                         style={{
+                                            color:isSelected?'#fff':'#000'
+                                        }}
+                                        >
+                                            Gallery
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                             <View style={{
                                 width: "flex",
                                 width: "100%",
@@ -448,11 +599,12 @@ const CheckinScreen = () => {
                                 justifyContent: "center"
                             }}>
                                 {imageUris.map((uri, index) => (
-                                    <Image key={index} source={{ uri }} style={{
+                                    <Image key={index} source={{ uri: uri?.uri }} style={{
                                         width: scale(100), borderColor: "#FFA100",
                                         borderWidth: 1, height: scale(100), borderRadius: scale(12)
                                     }} />
                                 ))}
+                               
                                 <TouchableOpacity
 
                                     onPress={handleImagePicker}
@@ -514,9 +666,10 @@ const CheckinScreen = () => {
                         messsage: ""
                     })}
                 />
+           
                 </ScrollView>
             </SafeAreaView>
-         
+       
         </ImageBackground>
     );
 };

@@ -32,10 +32,6 @@ const CustomComment = ({
     hasLikedUser=false
 }) => {
     useEffect(()=>{
-
-        console.log("profileUri=================================>", profileUri)
-        console.log("item?.owner?.image=================================>", item.owner)
-
     },[profileUri])
     const [commentStatus, setCommentStatus] = useState(hasLikedUser)
     const [LightBox, setLightBox] = useState(false)
@@ -61,7 +57,6 @@ const CustomComment = ({
                     },
                 },
             });
-            console.log("hello g hi")
         }catch(error){
 
         }
@@ -215,9 +210,14 @@ console.log(profileUri)
                 }}>
 
                 <Text style={{
-                    color: "white",
+                    color: "#000",
                     display:isReply?"none":"flex",
                     fontSize:scale(12),
+                    borderRadius:scale(20),
+                    backgroundColor:"#FFA500",
+                    paddingHorizontal:scale(10),
+                    paddingVertical:scale(5)
+
                 }}>Reply</Text>
             </TouchableOpacity>
 
@@ -245,15 +245,18 @@ console.log(profileUri)
             }}
             style={{
                 alignSelf: "flex-start",
-                paddingLeft:scale(50),
+                paddingLeft:scale(60),
             }}
             >
 
                { <Text 
     
                  style={{
-                   
-                    color:"white"
+                    borderRadius:scale(20),
+                    backgroundColor:"#FFA500",
+                    paddingHorizontal:scale(10),
+                    paddingVertical:scale(5),
+                    color:"#000"
                 }}>{showReplies ? "Hide Replies":"Show replies"}</Text>}
             </TouchableOpacity>}
            

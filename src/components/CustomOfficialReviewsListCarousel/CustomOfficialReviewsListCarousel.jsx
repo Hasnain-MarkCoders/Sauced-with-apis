@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
+import NotFound from '../NotFound/NotFound';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -68,6 +69,8 @@ const CustomOfficialReviewsListCarousel = ({
             initialLoading?
             <CarouselSkeleton/>
             :
+            data.length>0
+            ?
             <Carousel
             autoPlayInterval={7000}
                 loop
@@ -88,6 +91,8 @@ const CustomOfficialReviewsListCarousel = ({
                         
                 </>)}
             />
+            :
+            <NotFound/>
 
         }
         <View style={{

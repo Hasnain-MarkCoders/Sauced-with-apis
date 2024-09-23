@@ -1,61 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, Text, StyleSheet, Alert } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, { Marker } from 'react-native-maps';
 import darkArrow from "./../../../assets/images/darkArrow.png";
-import storeIcon from "./../../../assets/images/store.png";
-import locationIcon from "./../../../assets/images/location.png";
+import yellowChilli from "./../../../assets/images/yellow-chilli.png";
+import redChilli from "./../../../assets/images/red-chilli.png";
 
+import Geocoder from 'react-native-geocoding';
 
-import useAxios from '../../../Axios/useAxios';// Make sure to import your axios instance
+// Initialize the Geocoder with your API key (for example, Google API)
+
+import useAxios from '../../../Axios/useAxios'; // Make sure to import your axios instance
 import Toast from 'react-native-toast-message';
+import { Search } from 'lucide-react-native';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
 const MapScreen = () => {
-  const axiosInstance = useAxios()
+  const axiosInstance = useAxios();
   const navigation = useNavigation();
   const route = useRoute();
   const lng = route?.params?.lng;
   const lat = route?.params?.lat;
   const handleEventCoords = route?.params?.fn;
+  // const [places, setPlaces] = useState([])
+  const [isContinue, setIsContinue] = useState(false);
 
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: .005,
+    longitudeDelta: .005,
   });
-  const [markerSize, setMarkerSize] = useState(30);
+
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [markerSize, setMarkerSize] = useState(60);
   const [stores, setStores] = useState([]);
-
-
-
-
-
-  const handleRegionChange = (newRegion) => {
-    // setRegion(newRegion);
-
-    // Adjust marker size based on latitudeDelta (this determines zoom level)
-    const zoomFactor = newRegion.latitudeDelta;
-    let size = 30; // Default marker size
-
-    // Adjust size dynamically based on zoom level
-    if (zoomFactor < 0.02) {
-      size = 70; // Zoomed in
-    } else if (zoomFactor < 0.05) {
-      size = 65; // Moderately zoomed in
-    } else if (zoomFactor < 0.1) {
-      size = 60; // Default size
-    } else {
-      size = 55; // Zoomed out
-    }
-
-    setMarkerSize(size);
-  };
-
+const mapRef = useRef()
   useEffect(() => {
     // Fetch stores data
     const fetchStores = async () => {
@@ -72,9 +56,21 @@ const MapScreen = () => {
         console.error('Error fetching stores:', error);
       }
     };
-
+    Geocoder.init('AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E'); // replace with your actual API key
     fetchStores();
   }, []);
+
+  useEffect(() => {
+    if (selectedRegion && mapRef.current) {
+      mapRef.current.animateToRegion({
+        latitude: selectedRegion.latitude,
+        longitude: selectedRegion.longitude,
+        latitudeDelta: .005,
+        longitudeDelta: .005,
+      }, 1000); // 1000ms animation duration
+    }
+  }, [selectedRegion]);
+
 
   const handleMarkerPress = (store) => {
     Alert.alert(
@@ -84,11 +80,39 @@ const MapScreen = () => {
     );
   };
 
+  const handleContinuePress = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Continue Pressed',
+      text2: 'You pressed the Continue button.',
+    });
+  };
+
+  // useEffect(() => {
+  //   const fetchPlaces = async () => {
+
+  //     try{
+  //       const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${yourLng}&radius=1000&key=AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E`);
+  //       // setPlaces(data.results);  // Assuming you have a state to hold places
+  //       console.log("data.results==================================================================>", response)
+  //     }catch(err){
+  //       console.log(err)
+  //     }finally{
+
+  //     }
+ 
+  //   };
+  
+  //   fetchPlaces();
+  // }, []);
+  
+
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.goBack()}
+      >
         <Image
           style={{
             width: "100%",
@@ -97,36 +121,64 @@ const MapScreen = () => {
           }}
           source={darkArrow}
         />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
+      <View style={{
+        position:"relative"
+      }}>
+        <View style={{
+          position:"absolute",
+          top:0,
+          zIndex:3,
+          top:scale(66),
+          left:scale(83)
+        }}>
+
+        <Search   color={"gray"} size={23}/>
+        </View>
       <GooglePlacesAutocomplete
+        nearbyPlacesAPI="GooglePlacesSearch"
         placeholder='Search for places'
         fetchDetails={true}
+
         onPress={(data, details = null) => {
-          setRegion({
+
+          const postalCode = details?.address_components?.find(component =>
+            component.types.includes('postal_code')
+          )?.long_name;
+
+          const newSelectedRegion = {
             latitude: details.geometry.location?.lat,
             longitude: details.geometry.location?.lng,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          });
+          };
+
+          setSelectedRegion(newSelectedRegion);
 
           handleEventCoords({
             latitude: details.geometry.location?.lat,
             longitude: details.geometry.location?.lng,
             destination: data?.description,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
+            latitudeDelta: .005,
+            longitudeDelta: .005,
+            zip: postalCode?.toString()
           });
 
           Toast.show({
             type: 'success',
-            text1: 'Location selcted',
-            text2: 'Please go backt to continue.'}
-          )
+            text1: 'Location selected',
+            text2: 'Please go Back to continue.'
+          });
+
+          setIsContinue(true);
         }}
+
         query={{
-          key: 'AIzaSyAkJ06-4A1fY1ekldJUZMldHa5QJioBTlY', // Replace this with your actual API key
+          key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace this with your actual API key
           language: 'en',
+        }}
+        textInputProps={{
+          placeholderTextColor: 'gray',
+          returnKeyType: "search"
         }}
         styles={{
           textInput: {
@@ -134,32 +186,104 @@ const MapScreen = () => {
             height: scale(50),
             borderRadius: scale(50),
             fontSize: 15,
-            paddingLeft:scale(20)
+            paddingLeft: scale(42),
+            color: "gray",
+            // placeholderTextColor is not a valid style property here
           },
           container: {
             position: 'absolute',
-            width: '95%',
-            top: scale(18),
-            left: width * 0.025,
+            width: '70%',
+            top: scale(50),
+            left: width * 0.2,
             zIndex: 1,
-          }
+          },
+
+          description: {
+            color: "gray"
+          },
         }}
       />
+      </View>
+
 
       <MapView
+      ref={mapRef}
+        onPress={async (e) => {
+          const { latitude, longitude } = e.nativeEvent.coordinate;
+          try {
+            const geocodeResponse = await Geocoder.from(latitude, longitude);
+            console.log("geocodeResponse===================================>", geocodeResponse)
+            const address = geocodeResponse.results[0].formatted_address;
+            const postalCode = geocodeResponse.results[0].address_components.find(component =>
+              component.types.includes('postal_code')
+            )?.long_name;
+            const newSelectedRegion = {
+              latitude,
+              longitude,
+            };
+            handleEventCoords({
+              latitude,
+              longitude,
+              destination: address,
+              latitudeDelta: .005,
+              longitudeDelta: .005,
+              zip: postalCode?.toString()
+            });
+            setSelectedRegion(newSelectedRegion);
+
+            Toast.show({
+              type: 'success',
+              text1: 'Location selected',
+              text2: 'Please go Back to continue.'
+            });
+            setIsContinue(true);
+
+          } catch (error) {
+            console.error("Error fetching location description:", error);
+          }
+        }}
+
         style={styles.map}
         region={region}
         followsUserLocation={true}
-        onRegionChangeComplete={handleRegionChange}
+        // onRegionChangeComplete={handleRegionChange}
       >
-        {!!region && <Marker
-         coordinate={region}><View style={styles.marker}>
-                  <Image
-                       source={locationIcon}
-                       style={[styles.markerImage, { width: scale(markerSize), height: scale(markerSize) }]}
-                  />
-                  {/* <Text>{store.storeName}</Text> */}
-                </View></Marker>}
+        {!!region && (
+          <Marker 
+          
+          onPress={(e) =>{console.log(e)}}
+          coordinate={region}>
+            <View style={styles.marker}>
+              <Image
+                source={yellowChilli}
+                style={[styles.markerImage, { width: scale(markerSize), height: scale(markerSize) }]}
+              />
+            </View>
+          </Marker>
+        )}
+  {/* {places.map((place) => (
+    <Marker
+      key={place.id}
+      coordinate={{ latitude: place.geometry.location.lat, longitude: place.geometry.location.lng }}
+      title={place.name}
+      onPress={() => handleMarkerPress(place)}
+    />
+  ))} */}
+        {!!selectedRegion && (
+          <Marker
+            coordinate={{
+              latitude: selectedRegion.latitude,
+              longitude: selectedRegion.longitude,
+            }}
+          >
+            <View style={styles.marker}>
+              <Image
+                source={redChilli}
+                style={[styles.markerImage, { width: scale(markerSize), height: scale(markerSize) }]}
+              />
+            </View>
+          </Marker>
+        )}
 
         {/* Render multiple markers with validation */}
         {stores.map((store) => {
@@ -175,16 +299,14 @@ const MapScreen = () => {
                   latitude: latitude,
                   longitude: longitude,
                 }}
-                 pinColor="orange"
+                pinColor="orange"
                 // onPress={() => handleMarkerPress(store)}
               >
                 <View style={styles.marker}>
                   <Image
-                    // source={{ uri: "https://w7.pngwing.com/pngs/113/388/png-transparent-store-shop-market-shopping-ecommerce-buy-3d-icon.png" }}
-                       source={storeIcon}
+                    source={redChilli}
                     style={[styles.markerImage, { width: markerSize, height: markerSize }]}
                   />
-                  {/* <Text>{store.storeName}</Text> */}
                 </View>
               </Marker>
             );
@@ -192,7 +314,17 @@ const MapScreen = () => {
 
           return null;
         })}
+
       </MapView>
+
+      {isContinue && (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.continueButton}
+        >
+          <Text style={styles.continueButtonText}>Continue</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -207,24 +339,38 @@ const styles = StyleSheet.create({
     width: scale(20),
     height: scale(20),
     zIndex: 2,
-    top: scale(20),
-    left: scale(15),
+    top: scale(65),
+    left: scale(30),
   },
   map: {
     flex: 1,
   },
   marker: {
     alignItems: 'center',
-    width:scale(100),
-    height:scale(150),
-
+    width: scale(100),
+    height: scale(150),
   },
   markerImage: {
-    width:"100%",
-    height:"100%",
-    resizeMode:"contain"
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain"
     // borderRadius: 15,
-  }
+  },
+  continueButton: {
+    position: 'absolute',
+    bottom: 20,  // 20px from the bottom
+    left: '10%',
+    right: '10%',
+    backgroundColor: 'green',
+    padding: 15,
+    borderRadius: 30,
+    alignItems: 'center',
+  },
+  continueButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default MapScreen;

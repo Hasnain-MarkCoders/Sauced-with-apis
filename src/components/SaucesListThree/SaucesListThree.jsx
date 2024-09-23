@@ -5,7 +5,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
+import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
 
 
 const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
@@ -16,7 +16,10 @@ const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () 
     const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const saucesListThree = useSelector(state=>state.saucesListThree)
-    
+    const handleIncreaseReviewCount = useCallback((_id , setReviewCount)=>{
+        dispatch(handleIncreaseReviewCountOfListThreeSauce({_id, setReviewCount}))
+    },[])
+
     const fetchSauces = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -89,6 +92,7 @@ saucesListThree?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType={3}
                     item={item}
                         url={item?.image}

@@ -38,6 +38,12 @@ const AddReview = () => {
     const [imageUris, setImageUris] = useState([]);
     const sauceId = route?.params?.sauceId;
     const sauceType = route?.params?.sauceType;
+    const mycb = route?.params?.mycb || function(){};
+    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount || function(){};
+    const setReviewCount = route?.params?.setReviewCount || function(){};
+
+
+
 
     const [isKeyBoard, setIsKeyBoard] = useState(false);
     const axiosInstance = useAxios();
@@ -164,6 +170,19 @@ const handleUpdateReviewsCount = ()=>{
                 },
             });
             if (res?.data && res?.data?.message) {
+                // mycb(prev => {
+                //     // Return the updated state
+                //     return prev.map(item => {
+                //       if (item?._id === sauceId) {
+                //         // Update the matched item with new reviewCount
+                //         return { ...item, reviewCount: item.reviewCount + 1 };
+                //       } else {
+                //         // Return the unchanged item
+                //         return item;
+                //       }
+                //     });
+                //   });
+                handleIncreaseReviewCount(sauceId, setReviewCount)
                 setAlertModal({
                     open: true,
                     message: res?.data?.message,

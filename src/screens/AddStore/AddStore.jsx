@@ -29,12 +29,13 @@ const AddStore = () => {
     const [query, setQuery] = useState({
         storeName: "",
         address: "",
-        coordinates: {}
+        coordinates: {},
+        zip:""
 
     });
     const navigation = useNavigation()
     const handleEventCoords = (coords) => {
-        setQuery(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
+        setQuery(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } , ["zip"]:coords.zip}))
     }
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -73,7 +74,8 @@ const AddStore = () => {
             const response = await axiosInstance.post("/add-store", {
                 "storeName":query?.storeName,
                 "longitude":query?.coordinates?.latitude.toString(),
-                "latitude":query?.coordinates?.longitude.toString()
+                "latitude":query?.coordinates?.longitude.toString(),
+                zip:query?.zip
             });
 
           
@@ -138,7 +140,9 @@ const AddStore = () => {
                 navigation.navigate("Map", {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
-                    fn: handleEventCoords
+                    fn: handleEventCoords,
+                    showContinue:true
+
                 });
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
             },

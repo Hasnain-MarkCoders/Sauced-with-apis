@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
 import getStartedbackground from './../../../assets/images/ProductDescription.jpg';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
@@ -38,13 +38,19 @@ import {
   handleRemoveSauceFromListTwo,
   handleSaucesListTwo,
 } from '../../../android/app/Redux/saucesListTwo.js';
-import axios from 'axios';
 
 const Product = () => {
+
+
+
+
   const route = useRoute();
   const auth = useSelector(state=>state?.auth)
   const {url = '', title = ''} = route?.params;
   const product = route?.params?.item;
+  const mycb = route?.params?.mycb|| function(){}
+  const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
+
   const sauceType = route?.params?.sauceType;
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -62,6 +68,7 @@ const Product = () => {
   const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
   const [isEnabled, setisEnabled] = useState(true);
   const navigation = useNavigation();
+  
   const [isAlreadyInList, setAlreadyInList] = useState({
     list1: false,
     list2: false,
@@ -86,6 +93,7 @@ const Product = () => {
     };
   }, []);
 
+
   const handleSubmitMessage = data => {
     setIsKeyBoard(true);
   };
@@ -94,7 +102,8 @@ const Product = () => {
     return setId(id);
   };
 useEffect(()=>{
-  console.log("product?.id===========================>new", product?._id)
+ console.log("product==============================================>", product)
+
 
 },[product])
 
@@ -102,7 +111,7 @@ useEffect(()=>{
     const existingMessage = data.find(item => item?._id == id)
     console.log(existingMessage)
     if (existingMessage) {
-        existingMessage?.comments?.unshift({
+        existingMessage?.comments?.push({
             user: { image: auth?.url, name: auth?.name }, text: query.search
         })
         setQuery({ search: "" })
@@ -147,12 +156,16 @@ useEffect(()=>{
                 }
             });
             setHasMore(res?.data?.pagination?.hasNextPage);
-            setData(prev => [...prev, ...res?.data?.checkins]);
+            console.log("res.data?.checkins====================================================================>", res?.data?.checkins)
+            if (res?.data?.checkins?.length){
+
+              setData(prev => [...prev, ...res?.data?.checkins]);
+            }
         } catch (error) {
             console.error('Failed to fetch photos:', error);
         } finally {
             // setLoading(false);
-            console.log("product_id", product?.id)
+            console.log("product_id", product?._id)
             setInitialLoading(false);
         }
     };
@@ -227,7 +240,7 @@ useEffect(()=>{
         sauceId: product?._id,
         listType: type,
       });
-      // setAlreadyInList(prev=>({...prev, [`list${listNumber}`]:!isAlreadyInList[`list${listNumber}`]}))
+  //     // setAlreadyInList(prev=>({...prev, [`list${listNumber}`]:!isAlreadyInList[`list${listNumber}`]}))
 
 
     
@@ -245,6 +258,7 @@ useEffect(()=>{
       name: data.name,
     });
   };
+
 
   if (initialLoading) {
     return (
@@ -290,13 +304,17 @@ useEffect(()=>{
                     style={{
                       marginBottom: scale(20),
                     }}>
+                      
                     <ProductCard
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
+                    mycb={mycb}
                       sauceType={sauceType}
                       product={product}
                       setshowListModal={setModalVisible}
                       url={url}
                       title={title}
                     />
+                       
                   </View>
                 )}
 
@@ -319,9 +337,9 @@ useEffect(()=>{
                     <Text
                       style={{
                         color: 'white',
-                        fontFamily: 'Montserrat',
-                        fontSize: scale(12),
-                        fontWeight: 700,
+                        // fontFamily: 'Montserrat',
+                        fontSize: scale(13),
+                        fontWeight: 400,
                         lineHeight: 20,
                       }}>
                       {product?.description}
@@ -367,8 +385,7 @@ useEffect(()=>{
                         fontWeight: 700,
                         lineHeight: 18,
                       }}>
-                      1 lb. Fresh Chiles, Such As Jalapeno, Serrano, Fresno,
-                      Poblano, Habanero, Or A Mix.
+                      {product?.ingredients}
                     </Text>
                   </View>
                 )}
@@ -382,7 +399,7 @@ useEffect(()=>{
                       style={{
                         gap: scale(30),
                       }}>
-                      <SauceList title="Shared Images" data={topRatedSauces} />
+                      {/* <SauceList title="Shared Images" data={topRatedSauces} /> */}
                       <View>
                         <Text
                           style={{

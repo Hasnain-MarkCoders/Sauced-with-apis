@@ -23,6 +23,7 @@ const AllCheckinsScreen = ({
     const [commentStatus, setCommentStatus] = useState(false)
     const name = route?.params?.name
     const url = route?.params?.url
+    const fn = route?.params?.fn
     const numberOfRoutesBack = route?.params?.routerNumber
     const auth = useSelector(state => state.auth)
 
@@ -52,7 +53,7 @@ const AllCheckinsScreen = ({
     const handleAddMessage = async () => {
         const existingMessage = data.find(item => item?._id == id)
         if (existingMessage) {
-            existingMessage?.comments?.unshift({
+            existingMessage?.comments?.push({
                 user: { image: uri, name: auth?.name }, text: query.search
             })
             setQuery({ search: "" })
@@ -112,7 +113,7 @@ const AllCheckinsScreen = ({
 
                 <Header
                     showMenu={false}
-                    cb={() => navigation.pop(numberOfRoutesBack)} showProfilePic={false} headerContainerStyle={{
+                    cb={() => (navigation.pop(numberOfRoutesBack), fn())} showProfilePic={false} headerContainerStyle={{
                         paddingBottom: scale(20)
                     }} showText={false} />
 

@@ -422,7 +422,9 @@ if(dayAndMonth){
 // Example usage:
 const exampleDate = new Date('August 14, 2024 21:45:36.776');
 console.log(formatDate(exampleDate));
-
+export const GetPLatformSpecificURL = (platform, uri)=>{
+  return platform.os =="ios"? uri:'file://'+uri
+}
 
 
   export function generateRandomText(num=400) {
