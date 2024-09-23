@@ -8,7 +8,6 @@ import home from './../../../assets/images/home.png';
 import useAxios from '../../../Axios/useAxios';
 
 const Stack = createNativeStackNavigator();
-import axios from 'axios';
 const MainNavigation = () => {
     const axiosInstance = useAxios()
     const auth = useSelector(state=>state.auth)
