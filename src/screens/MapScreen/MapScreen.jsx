@@ -8,6 +8,20 @@ import darkArrow from "./../../../assets/images/darkArrow.png";
 import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
 
+import restaurant from "./../../../assets/images/restaurant.png";
+import shopping from "./../../../assets/images/shopping.png";
+import bar from "./../../../assets/images/bar.png";
+import gym from "./../../../assets/images/gym.png";
+import bank from "./../../../assets/images/bank.png";
+import park from "./../../../assets/images/park.png";
+import school from "./../../../assets/images/school.png";
+import hospital from "./../../../assets/images/hospital.png";
+import interest from "./../../../assets/images/interest.png";
+import establishment from "./../../../assets/images/establishment.png";
+import defaultMarker from "./../../../assets/images/defaultMarker.png";
+
+
+
 import Geocoder from 'react-native-geocoding';
 
 // Initialize the Geocoder with your API key (for example, Google API)
@@ -38,8 +52,9 @@ const MapScreen = () => {
 
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [markerSize, setMarkerSize] = useState(60);
+  const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
-const mapRef = useRef()
+  const mapRef = useRef()
   useEffect(() => {
     // Fetch stores data
     const fetchStores = async () => {
@@ -69,15 +84,58 @@ const mapRef = useRef()
         longitudeDelta: .005,
       }, 1000); // 1000ms animation duration
     }
+    fetchNearbyPlaces(selectedRegion)
   }, [selectedRegion]);
 
 
+  const getRadiusFromDelta = (latitudeDelta) => {
+    return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
+  };
   const handleMarkerPress = (store) => {
     Alert.alert(
       store.storeName,
       `Posted by: ${store.postedBy.name}\nEmail: ${store.postedBy.email}`,
       [{ text: 'OK' }]
     );
+  };
+
+  const handleNearByMarkerPress = (place) => {
+    Alert.alert(
+      place.name,
+      place.vicinity || 'No address available',
+      [{ text: 'OK' }]
+    );
+  };
+
+  // const fetchNearbyPlaces = async () => {
+  //   try {
+  //     const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
+  //       params: {
+  //         location: `${lat},${lng}`,
+  //         radius: 1000,
+  //         key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
+  //       }
+  //     });
+  //     setNearbyPlaces(response.data.results);
+  //   } catch (error) {
+  //     console.error('Error fetching nearby places:', error);
+  //   }
+  // };
+
+  const fetchNearbyPlaces = async (region) => {
+    try {
+      const radius = getRadiusFromDelta(region.latitudeDelta);
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
+        params: {
+          location: `${region.latitude},${region.longitude}`,
+          radius: radius,
+          key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
+        },
+      });
+      setNearbyPlaces(response.data.results);
+    } catch (error) {
+      console.error('Error fetching nearby places:', error);
+    }
   };
 
   const handleContinuePress = () => {
@@ -100,13 +158,71 @@ const mapRef = useRef()
   //     }finally{
 
   //     }
- 
+
   //   };
-  
+
   //   fetchPlaces();
   // }, []);
-  
 
+  const handleRegionChangeComplete = (newRegion) => {
+    // Fetch nearby places without updating the displayed region
+    fetchNearbyPlaces(newRegion);
+  };
+
+  const getMarkerIcon = (types) => {
+    // Map of place types to Google Places icons
+    const typeToIconMap = {
+      restaurant ,
+      shopping_mall: shopping,
+      bar: bar,
+      gym: gym,
+      bank: bank,
+      park: park,
+      school: school,
+      hospital: hospital,
+      point_of_interest: interest, // Add this line
+      establishment: establishment, // Add this line
+      default:defaultMarker,
+    };
+
+    // Return the icon URL based on the place type
+    for (const type of types) {
+      if (typeToIconMap[type]) {
+        return typeToIconMap[type];
+      }
+    }
+    // Return the default icon if no type matches
+    return typeToIconMap.default;
+  };
+
+
+
+
+
+
+  const CustomMarker = ({ imageSource, size }) => (
+    <View style={{
+      alignItems: "center",
+      padding: scale(8),
+      backgroundColor: "white",
+      borderRadius: 50,
+      shadowColor: "#000000",
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.17,
+      shadowRadius: 3.05,
+      elevation: 4
+
+
+    }}>
+      <Image
+        source={imageSource}
+        style={[{ width: scale(size), height: scale(size) }]}
+      />
+    </View>
+  );
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -124,95 +240,94 @@ const mapRef = useRef()
       </TouchableOpacity>
 
       <View style={{
-        position:"relative"
+        position: "relative"
       }}>
         <View style={{
-          position:"absolute",
-          top:0,
-          zIndex:3,
-          top:scale(66),
-          left:scale(83)
+          position: "absolute",
+          top: 0,
+          zIndex: 3,
+          top: scale(66),
+          left: scale(83)
         }}>
 
-        <Search   color={"gray"} size={23}/>
+          <Search color={"gray"} size={23} />
         </View>
-      <GooglePlacesAutocomplete
-        nearbyPlacesAPI="GooglePlacesSearch"
-        placeholder='Search for places'
-        fetchDetails={true}
+        <GooglePlacesAutocomplete
+          nearbyPlacesAPI="GooglePlacesSearch"
+          placeholder='Search for places'
+          fetchDetails={true}
 
-        onPress={(data, details = null) => {
+          onPress={(data, details = null) => {
 
-          const postalCode = details?.address_components?.find(component =>
-            component.types.includes('postal_code')
-          )?.long_name;
+            const postalCode = details?.address_components?.find(component =>
+              component.types.includes('postal_code')
+            )?.long_name;
 
-          const newSelectedRegion = {
-            latitude: details.geometry.location?.lat,
-            longitude: details.geometry.location?.lng,
-          };
+            const newSelectedRegion = {
+              latitude: details.geometry.location?.lat,
+              longitude: details.geometry.location?.lng,
+            };
 
-          setSelectedRegion(newSelectedRegion);
+            setSelectedRegion(newSelectedRegion);
 
-          handleEventCoords({
-            latitude: details.geometry.location?.lat,
-            longitude: details.geometry.location?.lng,
-            destination: data?.description,
-            latitudeDelta: .005,
-            longitudeDelta: .005,
-            zip: postalCode?.toString()
-          });
+            handleEventCoords({
+              latitude: details.geometry.location?.lat,
+              longitude: details.geometry.location?.lng,
+              destination: data?.description,
+              // latitudeDelta: .005,
+              // longitudeDelta: .005,
+              zip: postalCode?.toString()
+            });
 
-          Toast.show({
-            type: 'success',
-            text1: 'Location selected',
-            text2: 'Please go Back to continue.'
-          });
+            Toast.show({
+              type: 'success',
+              text1: 'Location selected',
+              text2: 'Please go Back to continue.'
+            });
 
-          setIsContinue(true);
-        }}
+            setIsContinue(true);
+          }}
 
-        query={{
-          key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace this with your actual API key
-          language: 'en',
-        }}
-        textInputProps={{
-          placeholderTextColor: 'gray',
-          returnKeyType: "search"
-        }}
-        styles={{
-          textInput: {
-            backgroundColor: '#FFFFFF',
-            height: scale(50),
-            borderRadius: scale(50),
-            fontSize: 15,
-            paddingLeft: scale(42),
-            color: "gray",
-            // placeholderTextColor is not a valid style property here
-          },
-          container: {
-            position: 'absolute',
-            width: '70%',
-            top: scale(50),
-            left: width * 0.2,
-            zIndex: 1,
-          },
+          query={{
+            key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace this with your actual API key
+            language: 'en',
+          }}
+          textInputProps={{
+            placeholderTextColor: 'gray',
+            returnKeyType: "search"
+          }}
+          styles={{
+            textInput: {
+              backgroundColor: '#FFFFFF',
+              height: scale(50),
+              borderRadius: scale(50),
+              fontSize: 15,
+              paddingLeft: scale(42),
+              color: "gray",
+            },
+            container: {
+              position: 'absolute',
+              width: '70%',
+              top: scale(50),
+              left: width * 0.2,
+              zIndex: 1,
+            },
 
-          description: {
-            color: "gray"
-          },
-        }}
-      />
+            description: {
+              color: "gray"
+            },
+          }}
+        />
       </View>
 
 
       <MapView
-      ref={mapRef}
+        onRegionChangeComplete={handleRegionChangeComplete}
+        ref={mapRef}
         onPress={async (e) => {
           const { latitude, longitude } = e.nativeEvent.coordinate;
           try {
             const geocodeResponse = await Geocoder.from(latitude, longitude);
-            console.log("geocodeResponse===================================>", geocodeResponse)
             const address = geocodeResponse.results[0].formatted_address;
             const postalCode = geocodeResponse.results[0].address_components.find(component =>
               component.types.includes('postal_code')
@@ -225,8 +340,8 @@ const mapRef = useRef()
               latitude,
               longitude,
               destination: address,
-              latitudeDelta: .005,
-              longitudeDelta: .005,
+              // latitudeDelta: .005,
+              // longitudeDelta: .005,
               zip: postalCode?.toString()
             });
             setSelectedRegion(newSelectedRegion);
@@ -246,13 +361,12 @@ const mapRef = useRef()
         style={styles.map}
         region={region}
         followsUserLocation={true}
-        // onRegionChangeComplete={handleRegionChange}
       >
         {!!region && (
-          <Marker 
-          
-          onPress={(e) =>{console.log(e)}}
-          coordinate={region}>
+          <Marker
+
+            onPress={(e) => { console.log(e) }}
+            coordinate={region}>
             <View style={styles.marker}>
               <Image
                 source={yellowChilli}
@@ -261,14 +375,7 @@ const mapRef = useRef()
             </View>
           </Marker>
         )}
-  {/* {places.map((place) => (
-    <Marker
-      key={place.id}
-      coordinate={{ latitude: place.geometry.location.lat, longitude: place.geometry.location.lng }}
-      title={place.name}
-      onPress={() => handleMarkerPress(place)}
-    />
-  ))} */}
+   
         {!!selectedRegion && (
           <Marker
             coordinate={{
@@ -300,7 +407,7 @@ const mapRef = useRef()
                   longitude: longitude,
                 }}
                 pinColor="orange"
-                // onPress={() => handleMarkerPress(store)}
+                onPress={() => handleMarkerPress(store)}
               >
                 <View style={styles.marker}>
                   <Image
@@ -314,6 +421,25 @@ const mapRef = useRef()
 
           return null;
         })}
+        {nearbyPlaces.map((place) => (
+
+
+
+          <Marker
+            key={place.id}
+         
+            coordinate={{
+              latitude: place.geometry.location.lat,
+              longitude: place.geometry.location.lng,
+            }}
+            onPress={() => handleNearByMarkerPress(place)}
+          >
+            <CustomMarker
+              imageSource={ getMarkerIcon(place.types) }
+              size={12}
+            />
+          </Marker>
+        ))}
 
       </MapView>
 
@@ -353,8 +479,8 @@ const styles = StyleSheet.create({
   markerImage: {
     width: "100%",
     height: "100%",
-    resizeMode: "contain"
-    // borderRadius: 15,
+    resizeMode: "contain",
+    borderRadius: 150,
   },
   continueButton: {
     position: 'absolute',
