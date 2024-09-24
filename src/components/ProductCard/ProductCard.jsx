@@ -198,9 +198,9 @@ const ProductCard = ({
                         <Image
                             style={{
                                 width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(100),
+                                height: LightBox ? "100%" : scale(150),
                                 minWidth: scale(120),
-                                minHeight: scale(100),
+                                minHeight: scale(150),
                                 borderRadius: LightBox ? 0 : scale(10),
                                 borderColor: LightBox ? 0 : "#FFA100",
                                 borderWidth: LightBox ? 0 : scale(1)
@@ -219,7 +219,7 @@ const ProductCard = ({
                 }}>
 
                     <View style={{
-                        gap: scale(20),
+                        gap: scale(5),
                         flexShrink: 0,
                         flexGrow: 1,
                     }}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, Text, StyleSheet, Alert } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -19,9 +19,8 @@ import hospital from "./../../../assets/images/hospital.png";
 import interest from "./../../../assets/images/interest.png";
 import establishment from "./../../../assets/images/establishment.png";
 import defaultMarker from "./../../../assets/images/defaultMarker.png";
-
-
-
+import successLogo from "./../../../assets/images/3dSuccessLogo.png";
+import debounce from 'lodash.debounce';
 import Geocoder from 'react-native-geocoding';
 
 // Initialize the Geocoder with your API key (for example, Google API)
@@ -30,6 +29,7 @@ import useAxios from '../../../Axios/useAxios'; // Make sure to import your axio
 import Toast from 'react-native-toast-message';
 import { Search } from 'lucide-react-native';
 import axios from 'axios';
+import YesNoModal from '../../components/YesNoModal/YesNoModal';
 
 const { width } = Dimensions.get('window');
 
@@ -39,15 +39,13 @@ const MapScreen = () => {
   const route = useRoute();
   const lng = route?.params?.lng;
   const lat = route?.params?.lat;
+  const showContinue = route?.params?.showContinue ;
   const handleEventCoords = route?.params?.fn;
-  // const [places, setPlaces] = useState([])
-  const [isContinue, setIsContinue] = useState(false);
-
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
-    latitudeDelta: .005,
-    longitudeDelta: .005,
+    latitudeDelta: 0.00001,
+    longitudeDelta: 0.00001,
   });
 
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -55,18 +53,71 @@ const MapScreen = () => {
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
   const mapRef = useRef()
+  const [isAutocompleteActive, setIsAutocompleteActive] = useState(false);
+  const [isContinue, setIsContinue] = useState(false);
+  const [hotSauceMarkers, setHotSauceMarkers] = useState([]);
+  const [showModal, setShowModal] = useState(false)
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const handleAutocompleteFocus = () => {
+    setIsAutocompleteActive(true);
+  };
+
+  const handleAutocompleteBlur = () => {
+    setIsAutocompleteActive(false);
+  };
+  useEffect(() => {
+    // Fetch stores data
+    const fetchHotSauces = async () => {
+      try {
+        const res = await axiosInstance.get('/get-locations', {
+          params:{
+            type:"hotsauces"
+          }
+        });
+        const validHotSauces = res.data.items.filter((hotSauce) => {
+          const latitude = parseFloat(hotSauce.hotsauceLocation.latitude);
+          const longitude = parseFloat(hotSauce.hotsauceLocation.longitude);
+          // Check if both latitude and longitude are valid numbers
+          return !isNaN(latitude) && !isNaN(longitude);
+        });
+        const hotSauces = validHotSauces.map(item=>{
+          return {place_id:item?.place_id, zip:item?.zip, latitude:item?.hotsauceLocation.latitude, longitude:item?.hotsauceLocation.longitude}
+        })
+        setHotSauceMarkers(hotSauces);
+      } catch (error) {
+        console.error('Error fetching stores:', error);
+      }
+    };
+    Geocoder.init('AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E'); // replace with your actual API key
+    fetchHotSauces();
+  }, []);
+
+
   useEffect(() => {
     // Fetch stores data
     const fetchStores = async () => {
       try {
-        const res = await axiosInstance.get('/get-stores');
-        const validStores = res.data.stores.filter((store) => {
+        const res = await axiosInstance.get('/get-locations', {
+          params: {
+            type: "store"
+          }
+        });
+        
+        const validStores = res.data.items.filter((store) => {
           const latitude = parseFloat(store.storeLocation.latitude);
           const longitude = parseFloat(store.storeLocation.longitude);
           // Check if both latitude and longitude are valid numbers
           return !isNaN(latitude) && !isNaN(longitude);
         });
-        setStores(validStores);
+  
+        const stores = validStores.map(item => ({
+          latitude: parseFloat(item.storeLocation.latitude), // Ensure it's a number
+          longitude: parseFloat(item.storeLocation.longitude), // Ensure it's a number
+          place_id: item.place_id,
+          zip: item.zip
+        }));
+  
+        setStores(stores);
       } catch (error) {
         console.error('Error fetching stores:', error);
       }
@@ -75,13 +126,14 @@ const MapScreen = () => {
     fetchStores();
   }, []);
 
+
   useEffect(() => {
     if (selectedRegion && mapRef.current) {
       mapRef.current.animateToRegion({
         latitude: selectedRegion.latitude,
         longitude: selectedRegion.longitude,
-        latitudeDelta: .005,
-        longitudeDelta: .005,
+        latitudeDelta: 0.00001,
+        longitudeDelta: 0.00001,
       }, 1000); // 1000ms animation duration
     }
     fetchNearbyPlaces(selectedRegion)
@@ -92,82 +144,142 @@ const MapScreen = () => {
     return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
   };
   const handleMarkerPress = (store) => {
-    Alert.alert(
-      store.storeName,
-      `Posted by: ${store.postedBy.name}\nEmail: ${store.postedBy.email}`,
-      [{ text: 'OK' }]
-    );
+    Alert.alert(store.toString())
+    // Alert.alert(
+    //   // store.storeName,
+    //   // `Posted by: ${store.postedBy.name}\nEmail: ${store.postedBy.email}`,
+    //   // store.place_id.toString(),
+    //   [{ text: 'OK' }]
+    // );
   };
 
-  const handleNearByMarkerPress = (place) => {
-    Alert.alert(
-      place.name,
-      place.vicinity || 'No address available',
-      [{ text: 'OK' }]
-    );
+const handleAddHotSauce = async(data)=>{
+  const res = await axiosInstance.post("/add-hotsauce",data)
+  console.log("res===========================================>", res.data)
+
+}
+  const handleNearByMarkerPress = async(place) => {
+    // Alert.alert(
+    //   "Is that a hot sauce?",
+    //   "",
+    //   [
+    //     { text: 'No' },
+    //     { 
+    //       text: 'Yes', 
+    //       onPress: 
+    //       async () => {
+    //         // Add the place.place_id to hotSauceMarkers
+  
+    //         // Get the lat and lng
+    //         const latitude = selectedPlace.latitude;
+    //         const longitude = selectedPlace.longitude;
+  
+    //         // Use Geocoder to get the address and zip code
+    //         try {
+    //           const geocodeResponse = await Geocoder.from(latitude, longitude);
+    //           const address = geocodeResponse.results[0].formatted_address;
+    //           const postalCode = geocodeResponse.results[0].address_components.find(component =>
+    //             component.types.includes('postal_code')
+    //           )?.long_name;
+  
+    //           setHotSauceMarkers(prev => [...prev, {place_id:selectedPlace.place_id,latitude , longitude, zip:postalCode}]);
+    //          await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:postalCode?.toString(), place_id:selectedPlace?.place_id.toString()})
+
+    //         } catch (error) {
+    //           console.error("Error fetching location description:", error);
+    //         }
+    //       }
+    //     },
+    //   ]
+    // );
+    
+      // Add the place.place_id to hotSauceMarkers
+
+      // Get the lat and lng
+      const latitude = selectedPlace.latitude;
+      const longitude = selectedPlace.longitude;
+
+      // Use Geocoder to get the address and zip code
+      try {
+        const geocodeResponse = await Geocoder.from(latitude, longitude);
+        const address = geocodeResponse.results[0].formatted_address;
+        const postalCode = geocodeResponse.results[0].address_components.find(component =>
+          component.types.includes('postal_code')
+        )?.long_name;
+
+        setHotSauceMarkers(prev => [...prev, {place_id:selectedPlace.place_id,latitude , longitude, zip:postalCode}]);
+       await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:postalCode?.toString(), place_id:selectedPlace?.place_id.toString()})
+       setSelectedPlace(null)
+
+      } catch (error) {
+        console.error("Error fetching location description:", error);
+      }
+    
   };
 
-  // const fetchNearbyPlaces = async () => {
-  //   try {
-  //     const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
-  //       params: {
-  //         location: `${lat},${lng}`,
-  //         radius: 1000,
-  //         key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
-  //       }
-  //     });
-  //     setNearbyPlaces(response.data.results);
-  //   } catch (error) {
-  //     console.error('Error fetching nearby places:', error);
-  //   }
-  // };
 
-  const fetchNearbyPlaces = async (region) => {
+
+
+
+
+  const fetchNearbyPlaces = useCallback(async (region) => {
     try {
       const radius = getRadiusFromDelta(region.latitudeDelta);
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
+      const nearbyResponse = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
         params: {
           location: `${region.latitude},${region.longitude}`,
           radius: radius,
           key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
         },
       });
-      setNearbyPlaces(response.data.results);
+  
+      // Map over the results to get place details for each
+      const placeDetailsPromises = nearbyResponse.data.results.map(async (place) => {
+        try {
+          const detailsResponse = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
+            params: {
+              place_id: place.place_id,
+              key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
+              fields: 'place_id,geometry,name,address_components,types', // Specify the fields you need
+            },
+          });
+  
+          const details = detailsResponse.data.result;
+  
+          // Extract zip code from address_components
+          const postalCodeComponent = details.address_components.find(component =>
+            component.types.includes('postal_code')
+          );
+          const zip = postalCodeComponent ? postalCodeComponent.long_name : null;
+          return {
+            place_id: details.place_id,
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+            zip: zip,
+            types: details.types || [],
+            name: details.name,
+          };
+        } catch (error) {
+          console.error(`Error fetching details for place_id ${place.place_id}:`, error);
+          return null; // Handle individual errors and continue
+        }
+      });
+  
+      const places = await Promise.all(placeDetailsPromises);
+  
+      // Filter out any null responses due to errors
+      const validPlaces = places.filter(place => place !== null);
+      setNearbyPlaces(validPlaces);
     } catch (error) {
       console.error('Error fetching nearby places:', error);
     }
-  };
+  },[]);
+  
 
-  const handleContinuePress = () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Continue Pressed',
-      text2: 'You pressed the Continue button.',
-    });
-  };
-
-  // useEffect(() => {
-  //   const fetchPlaces = async () => {
-
-  //     try{
-  //       const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${yourLng}&radius=1000&key=AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E`);
-  //       // setPlaces(data.results);  // Assuming you have a state to hold places
-  //       console.log("data.results==================================================================>", response)
-  //     }catch(err){
-  //       console.log(err)
-  //     }finally{
-
-  //     }
-
-  //   };
-
-  //   fetchPlaces();
-  // }, []);
-
-  const handleRegionChangeComplete = (newRegion) => {
+  const handleRegionChangeComplete = debounce((newRegion) => {
     // Fetch nearby places without updating the displayed region
     fetchNearbyPlaces(newRegion);
-  };
+  },1500);
 
   const getMarkerIcon = (types) => {
     // Map of place types to Google Places icons
@@ -180,9 +292,9 @@ const MapScreen = () => {
       park: park,
       school: school,
       hospital: hospital,
-      point_of_interest: interest, // Add this line
+      point_of_interest: defaultMarker, // Add this line
       establishment: establishment, // Add this line
-      default:defaultMarker,
+      default:interest,
     };
 
     // Return the icon URL based on the place type
@@ -194,10 +306,6 @@ const MapScreen = () => {
     // Return the default icon if no type matches
     return typeToIconMap.default;
   };
-
-
-
-
 
 
   const CustomMarker = ({ imageSource, size }) => (
@@ -246,8 +354,10 @@ const MapScreen = () => {
           position: "absolute",
           top: 0,
           zIndex: 3,
-          top: scale(66),
-          left: scale(83)
+          top: scale(28),
+          left: scale(45),
+          zIndex: isAutocompleteActive ? -1 : 3, // Conditionally set zIndex to hide/show the search icon
+          opacity: isAutocompleteActive ? 0 : 1, 
         }}>
 
           <Search color={"gray"} size={23} />
@@ -258,7 +368,7 @@ const MapScreen = () => {
           fetchDetails={true}
 
           onPress={(data, details = null) => {
-
+            const placeId = details?.place_id || data?.place_id;
             const postalCode = details?.address_components?.find(component =>
               component.types.includes('postal_code')
             )?.long_name;
@@ -274,9 +384,10 @@ const MapScreen = () => {
               latitude: details.geometry.location?.lat,
               longitude: details.geometry.location?.lng,
               destination: data?.description,
-              // latitudeDelta: .005,
-              // longitudeDelta: .005,
-              zip: postalCode?.toString()
+              // latitudeDelta: 0.00001,
+              // longitudeDelta: 0.00001,
+              zip: postalCode?.toString(),
+              place_id:placeId?.toString()
             });
 
             Toast.show({
@@ -294,22 +405,24 @@ const MapScreen = () => {
           }}
           textInputProps={{
             placeholderTextColor: 'gray',
-            returnKeyType: "search"
+            returnKeyType: "search",
+            onFocus: handleAutocompleteFocus,
+            onBlur: handleAutocompleteBlur,
           }}
           styles={{
             textInput: {
               backgroundColor: '#FFFFFF',
-              height: scale(50),
+              height: scale(45),
               borderRadius: scale(50),
               fontSize: 15,
-              paddingLeft: scale(42),
+              paddingLeft:isAutocompleteActive?scale(20): scale(35),
               color: "gray",
             },
             container: {
               position: 'absolute',
-              width: '70%',
-              top: scale(50),
-              left: width * 0.2,
+              width: '85%',
+              top: scale(15),
+              left: width * 0.1,
               zIndex: 1,
             },
 
@@ -328,6 +441,7 @@ const MapScreen = () => {
           const { latitude, longitude } = e.nativeEvent.coordinate;
           try {
             const geocodeResponse = await Geocoder.from(latitude, longitude);
+            const placeId = geocodeResponse.results[0].place_id
             const address = geocodeResponse.results[0].formatted_address;
             const postalCode = geocodeResponse.results[0].address_components.find(component =>
               component.types.includes('postal_code')
@@ -340,9 +454,10 @@ const MapScreen = () => {
               latitude,
               longitude,
               destination: address,
-              // latitudeDelta: .005,
-              // longitudeDelta: .005,
-              zip: postalCode?.toString()
+              // latitudeDelta: 0.00001,
+              // longitudeDelta: 0.00001,
+              zip: postalCode?.toString(),
+              place_id:placeId?.toString()
             });
             setSelectedRegion(newSelectedRegion);
 
@@ -359,7 +474,7 @@ const MapScreen = () => {
         }}
 
         style={styles.map}
-        region={region}
+        initialRegion ={region}
         followsUserLocation={true}
       >
         {!!region && (
@@ -394,8 +509,8 @@ const MapScreen = () => {
 
         {/* Render multiple markers with validation */}
         {stores.map((store) => {
-          const latitude = parseFloat(store.storeLocation.latitude);
-          const longitude = parseFloat(store.storeLocation.longitude);
+          const latitude = parseFloat(store.latitude);
+          const longitude = parseFloat(store.longitude);
 
           // Validate latitude and longitude before rendering the marker
           if (!isNaN(latitude) && !isNaN(longitude)) {
@@ -429,21 +544,30 @@ const MapScreen = () => {
             key={place.id}
          
             coordinate={{
-              latitude: place.geometry.location.lat,
-              longitude: place.geometry.location.lng,
+              latitude: place.latitude,
+              longitude: place.longitude,
             }}
-            onPress={() => handleNearByMarkerPress(place)}
+            // onPress={() => handleNearByMarkerPress(place)}
+            onPress={()=>{setShowModal(true); setSelectedPlace(place)}}
+            
           >
             <CustomMarker
-              imageSource={ getMarkerIcon(place.types) }
-              size={12}
+              imageSource={
+                hotSauceMarkers.some(item=>item.place_id == place.place_id)
+                ?
+                redChilli
+                :
+                getMarkerIcon(place.types)
+              
+              }
+              size={18}
             />
           </Marker>
         ))}
 
       </MapView>
 
-      {isContinue && (
+      {(isContinue &&!showContinue)&& (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.continueButton}
@@ -451,6 +575,13 @@ const MapScreen = () => {
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       )}
+      <YesNoModal
+      success={true}
+      modalVisible={showModal}
+      setModalVisible={setShowModal}
+      cb={()=>handleNearByMarkerPress()}
+      title="Is That a Hot Sauce?"
+      />
     </View>
   );
 };
@@ -465,8 +596,8 @@ const styles = StyleSheet.create({
     width: scale(20),
     height: scale(20),
     zIndex: 2,
-    top: scale(65),
-    left: scale(30),
+    top: scale(25),
+    left: scale(8),
   },
   map: {
     flex: 1,

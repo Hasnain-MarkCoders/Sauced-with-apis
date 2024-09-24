@@ -100,7 +100,8 @@ const Home = () => {
             navigation.navigate("Map", {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
-              fn:()=>{}
+              fn:()=>{},
+              showContinue:true
             });
             setLoading(false); // Stop loading indicator
           },

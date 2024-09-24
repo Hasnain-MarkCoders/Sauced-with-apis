@@ -121,7 +121,7 @@ const ProductSearchList = ({
                 />}
             />
             {loading && (
-                <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
+                <ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
             )}
 
         </View>

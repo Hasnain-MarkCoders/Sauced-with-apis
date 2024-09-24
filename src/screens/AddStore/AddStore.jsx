@@ -30,12 +30,13 @@ const AddStore = () => {
         storeName: "",
         address: "",
         coordinates: {},
-        zip:""
+        zip:"",
+        place_id:""
 
     });
     const navigation = useNavigation()
     const handleEventCoords = (coords) => {
-        setQuery(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } , ["zip"]:coords.zip}))
+        setQuery(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } , ["zip"]:coords.zip, ["place_id"]:coords.place_id}))
     }
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -75,7 +76,8 @@ const AddStore = () => {
                 "storeName":query?.storeName,
                 "longitude":query?.coordinates?.latitude.toString(),
                 "latitude":query?.coordinates?.longitude.toString(),
-                zip:query?.zip
+                zip:query?.zip,
+                place_id:query?.place_id,
             });
 
           
@@ -141,7 +143,7 @@ const AddStore = () => {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                     fn: handleEventCoords,
-                    showContinue:true
+                    showContinue:false
 
                 });
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator

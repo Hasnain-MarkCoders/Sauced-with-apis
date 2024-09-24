@@ -41,7 +41,7 @@ const CustomConfirmModal = ({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
+       
           setModalVisible(!modalVisible);
         }}>
           <TouchableOpacity style={{
