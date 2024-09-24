@@ -1,10 +1,8 @@
-import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';

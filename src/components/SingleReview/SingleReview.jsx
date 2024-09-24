@@ -1,19 +1,25 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
 import { formatDate, formatEventDate, generateRandomText } from '../../../utils'
+import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
 
 const SingleReview = ({
   item=null,
-    // text=generateRandomText()
+  isNavigate=false,
+  url,
+  _id,
+  name
 }) => {
-console.log("item============>",item?.createdAt)
-
+  const navigation = useNavigation()
+  const auth = useSelector(state=>state?.auth)
     const[ readMore,setReadMore]=useState(item?.text?.length>130)
-    
   return (
-    <View style={{
+    <View
+
+    style={{
         backgroundColor:"#2e210a",
         borderColor:"#FFA100",
         borderWidth:1,
@@ -23,14 +29,36 @@ console.log("item============>",item?.createdAt)
         position:"relative",
         gap:scale(5)
       }}>
+        <TouchableOpacity
+            onPress={()=>{
+              if(isNavigate){
+                  // navigate
+                  if (auth?._id!==_id){
+                    navigation.navigate("ExternalProfileScreen", {
+                      url,
+                      _id,
+                      name
+                    })
+      
+                  }else{
+                    navigation.navigate("Profile")
+                  }
+              }
+          }}
+        >
+
         <Text style={{
         color: "white",
         fontWeight: 700,
         fontSize: scale(14),
-        lineHeight: scale(17)
+        lineHeight: scale(17),
+        textDecorationLine: "underline"
+        ,textDecorationStyle:"solid"
+        ,textDecorationColor:"black"
     }}>
           {item?.owner?.name}
         </Text>
+        </TouchableOpacity>
         <CustomRating 
         initialRating={item?.star}
         

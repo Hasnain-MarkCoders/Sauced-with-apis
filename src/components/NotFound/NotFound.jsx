@@ -15,7 +15,7 @@ const NotFound = ({
         <Text style={{
           color:"white"
         }}>
-            {title} Not Found 
+            {title?title:"Not Found "} 
         </Text>
     </View>
   )

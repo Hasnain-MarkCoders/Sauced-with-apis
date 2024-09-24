@@ -1,28 +1,22 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Image, ActivityIndicator, Vibration } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import HorizontalUsersList from '../../components/HorizontalUsersList/HorizontalUsersList.jsx';
-import SauceList from '../../components/SauceList/SauceList.jsx';
-import { FriendListImages, handleText, topRatedSauces } from '../../../utils.js';
+import {  handleText } from '../../../utils.js';
 import ProfileCard from '../../components/ProfileCard/ProfileCard.jsx';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
-import moreIcon from "./../../../assets/images/more.png"
 import { useDispatch, useSelector } from 'react-redux';
 import useAxios from '../../../Axios/useAxios.js';
-import BookMarkSauceList from '../../components/BookMarkSauceList/BookMarkSauceList.jsx';
 import FavoriteSaucesList from '../../components/FavoriteSaucesList/FavoriteSaucesList.jsx';
 import CheckedInSaucesList from '../../components/CheckedInSaucesList/CheckedInSaucesList.jsx';
 import SaucesListOne from '../../components/SaucesListOne/SaucesListOne.jsx';
 import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
 import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
-import InterestedEvents from '../../components/InterestedEvents/InterestedEvents.jsx';
 import { handleStats } from '../../../android/app/Redux/userStats.js';
 import InterestedEventsCarousel from '../../components/InterestedEventsCarousel/InterestedEventsCarousel.jsx';
 import WishListSauces from '../../components/WishListSauces/WishListSauces.jsx';
@@ -34,19 +28,10 @@ const ProfileScreen = () => {
     const saucesListOne = useSelector(state=>state.saucesListOne)
     const saucesListTwo = useSelector(state=>state.saucesListTwo)
     const saucesListThree = useSelector(state=>state.saucesListThree)
-
-    const [data, setData] = useState([])
-    const [checkedInSauces, setCheckedInSauces] = useState([])
-    const [user, setUser] = useState(null)
-    const [page, setPage] = useState(1)
-    const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const users = useSelector(state=>state?.users)
-    const followings = useSelector(state=>state?.followings)
-    const followers = useSelector(state=>state?.followers)
     const userStats = useSelector(state=>state?.userStats)
-    const interestedEvents = useSelector(state=>state?.interestedEvents)
     const dispatch = useDispatch()
     const [query, setQuery] = useState({
         search: "",
@@ -96,31 +81,6 @@ const ProfileScreen = () => {
         // Cleanup function to clear interval when component unmounts
         return () => clearInterval(interval);
     }, []);
-
-
-    // useEffect(() => {
-    //     const fetchPhotos = async () => {
-    //         if (!hasMore || loading) return;
-    
-    //         setLoading(true);
-    //         try {
-    //             const res = await axiosInstance.get(`/get-sauces`, {
-    //                 params: {
-    //                     type:"checkedin",
-    //                     page: page
-    //                 }
-    //             });
-    //                 setHasMore(res.data.pagination.hasNextPage);
-    //                 setCheckedInSauces(prev=>[...prev,...res.data.sauces]);
-    //         } catch (error) {
-    //             console.error('Failed to fetch photos:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-       
-    //     fetchPhotos();
-    // }, [page]);
 useEffect(()=>{
 setTimeout(()=>{
 setInitialLoading(false)
@@ -204,7 +164,6 @@ if (initialLoading) {
                                                 isURL={false}
                                                 showImage={true}
                                                 uri={search}
-                                                cb={() => setPage(1)}
                                                 name="search"
                                                 onChange={handleText}
                                                 updaterFn={setQuery}
@@ -270,10 +229,6 @@ if (initialLoading) {
                                         }}>
 
                                         <HorizontalUsersList 
-                                        horizontal={true}
-                                        loading={loading}
-                                        hasMore={hasMore}
-                                        setPage={setPage}
                                         />
                                         </View>
                                     </View>

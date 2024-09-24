@@ -311,7 +311,7 @@ const handleAddHotSauce = async(data)=>{
   const CustomMarker = ({ imageSource, size }) => (
     <View style={{
       alignItems: "center",
-      padding: scale(8),
+      padding: scale(16),
       backgroundColor: "white",
       borderRadius: 50,
       shadowColor: "#000000",
@@ -560,7 +560,7 @@ const handleAddHotSauce = async(data)=>{
                 getMarkerIcon(place.types)
               
               }
-              size={18}
+              size={22}
             />
           </Marker>
         ))}
