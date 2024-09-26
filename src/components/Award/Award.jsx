@@ -22,7 +22,7 @@ const Award = ({url="", percentage, name}) => {
       <Text style={{
         color:"white",
         fontSize:scale(16)
-      }}>Badge</Text>
+      }}> {name}</Text>
      { url ? <Image style={{
         width:scale(80),
         height:scale(80),

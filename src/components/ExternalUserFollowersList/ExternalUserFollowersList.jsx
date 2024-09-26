@@ -22,6 +22,7 @@ const ExternalUserFollowersList = ({
     const [data, setData] = useState([])
     const dispatch = useDispatch()
     const navigation = useNavigation()
+    const auth = useSelector(state=>state?.auth)
     const fetchFollowers = useCallback(async () => {
         if(searchTerm) return
 
@@ -35,7 +36,7 @@ const ExternalUserFollowersList = ({
                 }
             });
             setHasMore(res.data.pagination.hasNextPage)
-            setData(res?.data?.data)
+            setData(prev=>[...prev, ...res?.data?.data])
             
         } catch (error) {
             console.error('Failed to fetch followers:', error);
@@ -114,6 +115,7 @@ console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++y
                 keyExtractor={(item, index) => index?.toString()}
                 renderItem={({ item }) => 
                 <UserCard
+                showButton={auth?._id !== item?._id}
                 cb={handleUser}
                 title={"Follow"}
                 _id={item?._id}

@@ -43,23 +43,8 @@ const SettingScreen = () => {
 
 
       
-    const handleBlock = async () => {
-        try{
-            setLoading(true)
-            setIsEnabled(false)
-            await new Promise(resolve => setTimeout(resolve, 2000));
-          setShowBlockmodal(false)
-        }catch{
-            console.log(error)
-            Alert.alert(error.message || error.toString())
-        }
-
-        finally{
-            setLoading(false)
-            setIsEnabled(true)
-          setShowBlockmodal(false)
-
-        }
+    const handleBlock =  () => {
+  navigation.navigate("BlockedUsersList")
       };
 
            
@@ -109,7 +94,7 @@ const SettingScreen = () => {
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => setShowBlockmodal(true)}
+                                onPress={handleBlock}
                                 title={"Blocked "}
                             />
 

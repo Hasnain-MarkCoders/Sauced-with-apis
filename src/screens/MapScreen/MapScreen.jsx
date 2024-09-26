@@ -20,6 +20,8 @@ import interest from "./../../../assets/images/interest.png";
 import establishment from "./../../../assets/images/establishment.png";
 import defaultMarker from "./../../../assets/images/defaultMarker.png";
 import successLogo from "./../../../assets/images/3dSuccessLogo.png";
+import marker from "./../../../assets/images/marker.png";
+
 import debounce from 'lodash.debounce';
 import Geocoder from 'react-native-geocoding';
 
@@ -49,7 +51,7 @@ const MapScreen = () => {
   });
 
   const [selectedRegion, setSelectedRegion] = useState(null);
-  const [markerSize, setMarkerSize] = useState(60);
+  const [markerSize, setMarkerSize] = useState(90);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
   const mapRef = useRef()
@@ -143,58 +145,19 @@ const MapScreen = () => {
   const getRadiusFromDelta = (latitudeDelta) => {
     return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
   };
+
   const handleMarkerPress = (store) => {
-    Alert.alert(store.toString())
-    // Alert.alert(
-    //   // store.storeName,
-    //   // `Posted by: ${store.postedBy.name}\nEmail: ${store.postedBy.email}`,
-    //   // store.place_id.toString(),
-    //   [{ text: 'OK' }]
-    // );
+    Alert.alert(
+      'Store Information',
+      `Zip: ${store.zip ? store.zip : 'Not available'}`,
+      [{ text: 'OK' }]
+    );
   };
 
 const handleAddHotSauce = async(data)=>{
   const res = await axiosInstance.post("/add-hotsauce",data)
-  console.log("res===========================================>", res.data)
-
 }
-  const handleNearByMarkerPress = async(place) => {
-    // Alert.alert(
-    //   "Is that a hot sauce?",
-    //   "",
-    //   [
-    //     { text: 'No' },
-    //     { 
-    //       text: 'Yes', 
-    //       onPress: 
-    //       async () => {
-    //         // Add the place.place_id to hotSauceMarkers
-  
-    //         // Get the lat and lng
-    //         const latitude = selectedPlace.latitude;
-    //         const longitude = selectedPlace.longitude;
-  
-    //         // Use Geocoder to get the address and zip code
-    //         try {
-    //           const geocodeResponse = await Geocoder.from(latitude, longitude);
-    //           const address = geocodeResponse.results[0].formatted_address;
-    //           const postalCode = geocodeResponse.results[0].address_components.find(component =>
-    //             component.types.includes('postal_code')
-    //           )?.long_name;
-  
-    //           setHotSauceMarkers(prev => [...prev, {place_id:selectedPlace.place_id,latitude , longitude, zip:postalCode}]);
-    //          await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:postalCode?.toString(), place_id:selectedPlace?.place_id.toString()})
-
-    //         } catch (error) {
-    //           console.error("Error fetching location description:", error);
-    //         }
-    //       }
-    //     },
-    //   ]
-    // );
-    
-      // Add the place.place_id to hotSauceMarkers
-
+  const handleNearByMarkerPressCB = async(place) => {
       // Get the lat and lng
       const latitude = selectedPlace.latitude;
       const longitude = selectedPlace.longitude;
@@ -206,7 +169,6 @@ const handleAddHotSauce = async(data)=>{
         const postalCode = geocodeResponse.results[0].address_components.find(component =>
           component.types.includes('postal_code')
         )?.long_name;
-
         setHotSauceMarkers(prev => [...prev, {place_id:selectedPlace.place_id,latitude , longitude, zip:postalCode}]);
        await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:postalCode?.toString(), place_id:selectedPlace?.place_id.toString()})
        setSelectedPlace(null)
@@ -218,8 +180,23 @@ const handleAddHotSauce = async(data)=>{
   };
 
 
-
-
+  const handleNearByMarkerPress = async (place) => {
+    // Check if this place is already a hot sauce
+    const isHotSauce = hotSauceMarkers.some((item) => item.place_id === place.place_id);
+  
+    if (isHotSauce) {
+      // Show details if it's a hot sauce
+      Alert.alert(
+        'Hot Sauce Details',
+        `Place: ${place.name}\nZip: ${place.zip ? place.zip : 'Not available'}`,
+        [{ text: 'OK' }]
+      );
+    } else {
+      // Show modal to add it as a hot sauce
+      setShowModal(true);
+      setSelectedPlace(place);
+    }
+  };
 
 
   const fetchNearbyPlaces = useCallback(async (region) => {
@@ -279,41 +256,11 @@ const handleAddHotSauce = async(data)=>{
   const handleRegionChangeComplete = debounce((newRegion) => {
     // Fetch nearby places without updating the displayed region
     fetchNearbyPlaces(newRegion);
-  },1500);
+  },2000);
 
-  const getMarkerIcon = (types) => {
-    // Map of place types to Google Places icons
-    const typeToIconMap = {
-      restaurant ,
-      shopping_mall: shopping,
-      bar: bar,
-      gym: gym,
-      bank: bank,
-      park: park,
-      school: school,
-      hospital: hospital,
-      point_of_interest: defaultMarker, // Add this line
-      establishment: establishment, // Add this line
-      default:interest,
-    };
-
-    // Return the icon URL based on the place type
-    for (const type of types) {
-      if (typeToIconMap[type]) {
-        return typeToIconMap[type];
-      }
-    }
-    // Return the default icon if no type matches
-    return typeToIconMap.default;
-  };
-
-
-  const CustomMarker = ({ imageSource, size }) => (
+  const CustomMarker = ({ imageSource, size,}) => (
     <View style={{
       alignItems: "center",
-      padding: scale(16),
-      backgroundColor: "white",
-      borderRadius: 50,
       shadowColor: "#000000",
       shadowOffset: {
         width: 0,
@@ -372,7 +319,6 @@ const handleAddHotSauce = async(data)=>{
             const postalCode = details?.address_components?.find(component =>
               component.types.includes('postal_code')
             )?.long_name;
-
             const newSelectedRegion = {
               latitude: details.geometry.location?.lat,
               longitude: details.geometry.location?.lng,
@@ -384,8 +330,6 @@ const handleAddHotSauce = async(data)=>{
               latitude: details.geometry.location?.lat,
               longitude: details.geometry.location?.lng,
               destination: data?.description,
-              // latitudeDelta: 0.00001,
-              // longitudeDelta: 0.00001,
               zip: postalCode?.toString(),
               place_id:placeId?.toString()
             });
@@ -395,7 +339,6 @@ const handleAddHotSauce = async(data)=>{
               text1: 'Location selected',
               text2: 'Please go Back to continue.'
             });
-
             setIsContinue(true);
           }}
 
@@ -454,8 +397,6 @@ const handleAddHotSauce = async(data)=>{
               latitude,
               longitude,
               destination: address,
-              // latitudeDelta: 0.00001,
-              // longitudeDelta: 0.00001,
               zip: postalCode?.toString(),
               place_id:placeId?.toString()
             });
@@ -467,7 +408,6 @@ const handleAddHotSauce = async(data)=>{
               text2: 'Please go Back to continue.'
             });
             setIsContinue(true);
-
           } catch (error) {
             console.error("Error fetching location description:", error);
           }
@@ -479,7 +419,7 @@ const handleAddHotSauce = async(data)=>{
       >
         {!!region && (
           <Marker
-
+          anchor={{ x: 0.5, y: 0.5 }} 
             onPress={(e) => { console.log(e) }}
             coordinate={region}>
             <View style={styles.marker}>
@@ -493,6 +433,7 @@ const handleAddHotSauce = async(data)=>{
    
         {!!selectedRegion && (
           <Marker
+          anchor={{ x: 0.5, y: 0.5 }} 
             coordinate={{
               latitude: selectedRegion.latitude,
               longitude: selectedRegion.longitude,
@@ -516,6 +457,8 @@ const handleAddHotSauce = async(data)=>{
           if (!isNaN(latitude) && !isNaN(longitude)) {
             return (
               <Marker
+          anchor={{ x: 0.5, y: 0.5 }} 
+
                 key={store._id}
                 coordinate={{
                   latitude: latitude,
@@ -537,30 +480,26 @@ const handleAddHotSauce = async(data)=>{
           return null;
         })}
         {nearbyPlaces.map((place) => (
-
-
-
           <Marker
             key={place.id}
+            anchor={{ x: 0.5, y: 0.5 }} 
          
             coordinate={{
               latitude: place.latitude,
               longitude: place.longitude,
             }}
-            // onPress={() => handleNearByMarkerPress(place)}
-            onPress={()=>{setShowModal(true); setSelectedPlace(place)}}
-            
+            onPress={() => handleNearByMarkerPress(place)}
           >
             <CustomMarker
+            onPress={() =>  handleNearByMarkerPress(place)}
               imageSource={
                 hotSauceMarkers.some(item=>item.place_id == place.place_id)
                 ?
                 redChilli
                 :
-                getMarkerIcon(place.types)
-              
+                marker
               }
-              size={22}
+              size={scale(70)}
             />
           </Marker>
         ))}
@@ -579,7 +518,7 @@ const handleAddHotSauce = async(data)=>{
       success={true}
       modalVisible={showModal}
       setModalVisible={setShowModal}
-      cb={()=>handleNearByMarkerPress()}
+      cb={()=>handleNearByMarkerPressCB()}
       title="Is That a Hot Sauce?"
       />
     </View>

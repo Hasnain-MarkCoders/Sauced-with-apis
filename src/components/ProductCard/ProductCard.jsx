@@ -29,7 +29,8 @@ const ProductCard = ({
     product = {},
     sauceType = "",
     mycb=()=>{},
-    handleIncreaseReviewCount=()=>{}
+    handleIncreaseReviewCount=()=>{},
+    handleLike=()=>{}
 }) => {
     const wishListSlices = useSelector(state => state?.wishlist)
     const isInWishList=(id=product?._id)=>{
@@ -47,6 +48,7 @@ const ProductCard = ({
     const [LightBox, setLightBox] = useState(false)
     const [reviewCount, setReviewCount] = useState(product?.reviewCount)
     const [loading, setLoading] = useState(false)
+
     const [productStatus, setproductStatus] = useState({
         isChecked: product["hasLiked"],
         isAddedToWishList: isInWishList(),
@@ -58,6 +60,8 @@ const ProductCard = ({
   const device = devices.back;
 
     const handleToggleLike = async () => {
+        handleLike(product?._id, setproductStatus)
+
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, { sauceId: product?._id });
@@ -266,11 +270,12 @@ const ProductCard = ({
 
                                 <TouchableOpacity
                                     onPress={() => {
-
-                                        setproductStatus(prev => ({
-                                            ...prev,
-                                            isChecked: !prev.isChecked
-                                        }));
+                                        if(sauceType){
+                                            setproductStatus(prev => ({
+                                                ...prev,
+                                                isChecked: !prev.isChecked
+                                            }));
+                                        }
                                         Snackbar.show({
                                             text: !productStatus.isChecked ? 'You love this product.' : "You unlove this product.",
                                             duration: Snackbar.LENGTH_SHORT,
@@ -278,12 +283,14 @@ const ProductCard = ({
                                                 text: 'UNDO',
                                                 textColor: '#FFA100',
                                                 onPress: () => {
+                                                    // if(sauceType){
+                                                    //     setproductStatus(prev => ({
+                                                    //         ...prev,
+                                                    //         isChecked: !prev.isChecked
+    
+                                                    //     }))
+                                                    // }
 
-                                                    setproductStatus(prev => ({
-                                                        ...prev,
-                                                        isChecked: !prev.isChecked
-
-                                                    }))
                                                     handleToggleLike()
                                                 },
                                             },

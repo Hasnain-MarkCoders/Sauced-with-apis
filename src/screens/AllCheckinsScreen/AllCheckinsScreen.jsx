@@ -21,10 +21,10 @@ const AllCheckinsScreen = ({
 }) => {
     const route = useRoute()
     const [commentStatus, setCommentStatus] = useState(false)
-    const name = route?.params?.name
-    const url = route?.params?.url
-    const fn = route?.params?.fn
-    const numberOfRoutesBack = route?.params?.routerNumber
+    const name = route?.params?.name||""
+    const url = route?.params?.url||""
+    const fn = route?.params?.fn||function(){}
+    const numberOfRoutesBack = route?.params?.routerNumber||1
     const auth = useSelector(state => state.auth)
 
     const uri = auth.url

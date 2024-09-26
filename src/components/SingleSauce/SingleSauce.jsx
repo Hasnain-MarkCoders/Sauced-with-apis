@@ -20,136 +20,140 @@ import LinearGradient from 'react-native-linear-gradient';
 import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces';
 import { handleToggleLikeWishlistSauce } from '../../../android/app/Redux/wishlist';
 const SingleSauce = ({
-    url = "",
-    title="",
-    customStyles={},
-    showPopup=false,
-    setProductDetails=()=>{},
-    setAlertModal=()=>{},
-    item={},
-    sauceType="",
-    showHeart=true,
-    searchPageStyle=false,
-    fullWidthText= false,
-    searchPageSauceStyles={},
-    showOverlay=false,
-    mycb=()=>{},
-    handleIncreaseReviewCount=()=>{}
+  url = "",
+  title = "",
+  customStyles = {},
+  showPopup = false,
+  setProductDetails = () => { },
+  setAlertModal = () => { },
+  item = {},
+  sauceType = "",
+  showHeart = true,
+  searchPageStyle = false,
+  fullWidthText = false,
+  searchPageSauceStyles = {},
+  showOverlay = false,
+  mycb = () => { },
+  handleIncreaseReviewCount = () => { },
+  handleLike = () => { }
 }) => {
- const [isLoading, setIsLoading] = useState(true);
-const axiosInstance = useAxios()
-const navigation = useNavigation()
-const dispatch = useDispatch()
-const [selected, setSelected] = useState(item["hasLiked"])
-useEffect(()=>{
-console.log("url================================================================>", url)
-},[])
+  const [isLoading, setIsLoading] = useState(true);
+  const axiosInstance = useAxios()
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+  const [selected, setSelected] = useState({
+    isChecked: item["hasLiked"]
+  })
+  useEffect(() => {
+    console.log("selected================================================================>", selected)
+  }, [selected.isChecked])
 
-const handleOnPress = ()=>{
-    if(showPopup){
-    setProductDetails({url, title})
-    setAlertModal(true)
-}else{
-    navigation.navigate("ProductDetail", {url, title, item, sauceType, setSelected,handleIncreaseReviewCount, mycb,hasnain:"hanain"})
-}
-}
+  const handleOnPress = () => {
+    if (showPopup) {
+      setProductDetails({ url, title })
+      setAlertModal(true)
+    } else {
+      navigation.navigate("ProductDetail", { url, title, item, sauceType, setSelected, handleIncreaseReviewCount, mycb, hasnain: "hanain", handleLike })
+    }
+  }
 
-const handleToggleLike=async()=>{
+  const handleToggleLike = async () => {
+    handleLike(item?._id, setSelected)
     try {
-        if (sauceType=="toprated"){
-            dispatch(handleToggleTopRatedSauce(item?._id))
-            if(selected){
-                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                }
+      if (sauceType == "toprated") {
+        dispatch(handleToggleTopRatedSauce(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+        }
+      }
+
+
+      if (sauceType == "featured") {
+        dispatch(handleToggleFeaturedSauce(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+        }
+      }
+      if (sauceType == "favourite") {
+        dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+      }
+
+      if (sauceType == "checkedin") {
+        dispatch(handleToggleCheckedInSauce(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+        }
+
+      }
+      if (sauceType == 1) {
+        dispatch(handleToggleSauceListOne(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
         }
 
 
-        if (sauceType=="featured"){
-            dispatch(handleToggleFeaturedSauce(item?._id))
-            if(selected){
-                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                }
-        }
-        if (sauceType=="favourite"){
+        if (sauceType == "reviewed") {
+          dispatch(handleToggleReviewedSauce(item?._id))
+          if (selected) {
             dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        }
-        
-        if (sauceType=="checkedin"){
-            dispatch(handleToggleCheckedInSauce(item?._id))
-            if(selected){
-            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-            }else{
-                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-            }
-
-        }
-        if (sauceType==1){
-            dispatch(handleToggleSauceListOne(item?._id))
-             if(selected){
-            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-            }else{
-                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-            }
-
-
-            if (sauceType=="reviewed"){
-              dispatch(handleToggleReviewedSauce(item?._id))
-              if(selected){
-                  dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                  }else{
-                      dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                  }
+          } else {
+            dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
           }
-
-          if (sauceType=="wishlist"){
-            dispatch(handleToggleLikeWishlistSauce(item?._id))
-            if(selected){
-                dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                }
         }
 
-    // console.log("hello g")
-
-        }
-
-        if (sauceType==2){
-            dispatch(handleToggleSauceListTwo(item?._id))
-             if(selected){
+        if (sauceType == "wishlist") {
+          dispatch(handleToggleLikeWishlistSauce(item?._id))
+          if (selected) {
             dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-            }else{
-                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-            }
-
-    // console.log("hello g")
-
+          } else {
+            dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+          }
         }
-        if (sauceType==3){
-            dispatch(handleToggleSauceListThree(item?._id))
-             if(selected){
-            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-            }else{
-                dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-            }
 
-    // console.log("hello g")
+        // console.log("hello g")
 
+      }
+
+      if (sauceType == 2) {
+        dispatch(handleToggleSauceListTwo(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
         }
-        const res = await axiosInstance.post(`/like-sauce`, {sauceId:item?._id});
+
+        // console.log("hello g")
+
+      }
+      if (sauceType == 3) {
+        dispatch(handleToggleSauceListThree(item?._id))
+        if (selected) {
+          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        } else {
+          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+        }
+
+        // console.log("hello g")
+
+      }
+      const res = await axiosInstance.post(`/like-sauce`, { sauceId: item?._id });
 
     } catch (error) {
-        console.error('Failed to like / dislike:', error);
-        dispatch(handleFavoriteSauces([item]))
+      console.error('Failed to like / dislike:', error);
+      dispatch(handleFavoriteSauces([item]))
 
     } finally {
     }
-}
-return (
+  }
+  return (
     <>
       {url ? (
         <TouchableOpacity
@@ -168,8 +172,8 @@ return (
                 highlightColor="#fff"
               >
                 <SkeletonPlaceholder.Item
-                  width={searchPageSauceStyles.width|| "100%"}
-                  height={searchPageSauceStyles.height||"100%"}
+                  width={searchPageSauceStyles.width || "100%"}
+                  height={searchPageSauceStyles.height || "100%"}
 
                   borderRadius={scale(10)}
                 />
@@ -212,7 +216,13 @@ return (
                 <TouchableOpacity
                   style={styles.heartIcon}
                   onPress={() => {
-                    setSelected((prev) => !prev);
+                    if (sauceType) {
+                      setSelected(prev => ({
+                        ...prev,
+                        isChecked: !prev.isChecked
+                      }));
+                    }
+                    handleToggleLike();
                     Snackbar.show({
                       text: !selected
                         ? 'You love this Sauce.'
@@ -222,17 +232,21 @@ return (
                         text: 'UNDO',
                         textColor: '#FFA100',
                         onPress: () => {
+                          if (sauceType) {
+                            setSelected(prev => ({
+                              ...prev,
+                              isChecked: !prev.isChecked
+                            }));
+                          }
                           handleToggleLike();
-                          setSelected((prev) => !prev);
                         },
                       },
                     });
-                    handleToggleLike();
                   }}
                 >
                   <Image
                     style={styles.heartImage}
-                    source={item['hasLiked'] ? filledHeart : emptyheart}
+                    source={selected['isChecked'] ? filledHeart : emptyheart}
                   />
                 </TouchableOpacity>
               )}

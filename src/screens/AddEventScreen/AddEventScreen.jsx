@@ -87,7 +87,7 @@ const AddEventScreen = () => {
             Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
             setLoading(false); // Stop loading indicator
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
         );
       };
 
@@ -173,26 +173,34 @@ const AddEventScreen = () => {
             // "eventDetails": query?.destinationDetails,
             // "eventDate": query?.date,
             // "venueName": query?.address,
-            // "venueDescription": query?.destinationDetails,
+            "venueDescription": query?.destinationDetails,
             "venueLocation.longitude": query.coordinates?.longitude,
             "venueLocation.latitude": query.coordinates?.latitude
         }
         )
-         console.log("<==============================================res============================================>", res.data)
+         console.log("<==============================================res============================================>", res.data.message)
          setAlertModal({
-            alertModal: true,
-            messsage: res?.data?.message,
+            open: true,
+            message: res?.data?.message,
             success:true
         })
-
-        setTimeout(()=>{
-            navigation.goBack()
+        setQuery({
+            title: "",
+            eventOrganizer: "",
+            date: new Date(),
+            address: "",
+            destinationDetails: "",
+            coordinates: {}
         })
+
+        // setTimeout(()=>{
+        //     navigation.goBack()
+        // })
             }catch(error){
                 console.log(error)
                 setAlertModal({
-                    alertModal: true,
-                    messsage: error?.message,
+                    open: true,
+                    message: error?.message,
                 success:false
 
                 })
@@ -484,7 +492,7 @@ const AddEventScreen = () => {
                     success={alertModal?.success}
                     setModalVisible={() => setAlertModal({
                         alertModal: false,
-                        messsage: ""
+                        message: ""
                     })}
                 />
             </SafeAreaView>

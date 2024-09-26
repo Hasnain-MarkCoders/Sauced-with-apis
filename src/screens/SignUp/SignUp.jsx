@@ -314,6 +314,7 @@ const SignUp = () => {
      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const res =   await auth().signInWithCredential(googleCredential)
       const firebaseToken = await res.user.getIdToken();
+      console.log("firebaseToken============================>", firebaseToken)
       const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseToken });
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token)

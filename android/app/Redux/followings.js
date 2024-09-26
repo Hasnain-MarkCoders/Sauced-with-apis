@@ -19,6 +19,11 @@ const followingsSlice = createSlice({
       action.payload.forEach(item => {
         stateMap.set(item._id, item);
       });
+      state.forEach(item => {
+        if (!stateMap.has(item._id)) {
+          stateMap.delete(item._id);
+        }
+      });
 
       // Replace the state with the updated map values
       return Array.from(stateMap.values());

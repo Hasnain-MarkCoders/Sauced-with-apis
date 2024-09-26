@@ -1,9 +1,11 @@
-import React, {  useEffect,  useState } from 'react';
+import { useDispatch } from 'react-redux';
+import React, {  useCallback, useEffect,  useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
 const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/get-sauces",searchTerm = "", showMoreIcon = false, cb = () => { }, type="" }) => {
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
@@ -11,7 +13,47 @@ const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(0)
+    const dispatch = useDispatch()
 
+    const handleIncreaseReviewCount = useCallback((id, setReviewCount) => {
+        setData(prev => {
+            return prev.map(item => {
+                if (item._id == id) {
+                    setReviewCount(item?.reviewCount + 1)
+                    return { ...item, reviewCount: item?.reviewCount + 1 }
+                } else {
+                    return item
+                }
+            })
+        })
+
+    }, [])
+    const handleLike = useCallback((id, setproductStatus) => {
+       
+        setData(prev => {
+            return prev.map(item => {
+                if (item._id == id) {
+                  
+                    setproductStatus(
+                        {
+                            ...prev,
+                            isChecked: !item?.hasLiked
+                        }
+                    )
+                    if(item?.hasLiked){
+                                    dispatch(handleRemoveSauceFromFavouriteSauces(id))
+                                }else{
+                                    dispatch(handleFavoriteSauces([{...item, hasLiked:true}]))
+                                }
+
+                    return { ...item, hasLiked: !item?.hasLiked }
+                } else {
+                    return item
+                }
+            })
+        })
+
+    }, [])
     const fetchSuaces = async () => {
         if (!hasMore || loading) return;
         setLoading(true);
@@ -75,6 +117,7 @@ data?.length>0&&<View style={styles.container}>
 
                     }}
                     data={data}
+                    extraData={data}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -85,6 +128,8 @@ data?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    handleIncreaseReviewCount={handleIncreaseReviewCount}
+                    handleLike={handleLike}
                     item={item}
                     fetchSuaces={fetchSuaces}
                     setSaucesData={setData}

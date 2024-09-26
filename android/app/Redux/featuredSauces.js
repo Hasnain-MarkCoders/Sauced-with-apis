@@ -12,6 +12,11 @@ const featuredSaucesSlice = createSlice({
       action.payload.forEach(item => {
         stateMap.set(item._id, item);
       });
+      state.forEach(item => {
+        if (!stateMap.has(item._id)) {
+          stateMap.delete(item._id);
+        }
+      });
 
       // Replace the state with the updated map values
       return Array.from(stateMap.values());
@@ -22,7 +27,7 @@ const featuredSaucesSlice = createSlice({
       if(sauce){
         sauce.hasLiked  =!sauce.hasLiked
       }
-      
+  
     },
     handleIncreaseReviewCountOfFeaturedSauce:(state, action)=>{
       const _id = action.payload?._id;

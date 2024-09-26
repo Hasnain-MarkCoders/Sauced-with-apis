@@ -66,7 +66,7 @@ const SearchScreen = () => {
                 fontSize: scale(14),
             }}
         >
-            {item?.title}
+            {item?.name}
         </Text>
     </TouchableOpacity>
     },[navigation])

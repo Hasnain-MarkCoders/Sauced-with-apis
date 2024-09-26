@@ -35,6 +35,7 @@ import messaging from '@react-native-firebase/messaging';
 import CameraScreen from './src/screens/CameraScreen/CameraScreen';
 import SearchScreen from './src/screens/SearchScreen/SearchScreen';
 import Test from './src/screens/Test/Test';
+import BlockedUsersScreen from './src/screens/BlockedUsersScreen/BlockedUsersScreen';
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
@@ -56,22 +57,10 @@ function AppRouter() {
   }, [userAuth?.authenticated]);
 
 
-  // React.useEffect(() => {
-  //   const subscriber = auth().onAuthStateChanged(user => {
-  //     if (user ) {
-  //       setIsAuthenticated(true)
-  //       setInitialState(false)
-  //     } else {
-  //       setIsAuthenticated(false)
-  //       setInitialState(false)
-  //     }
-  //   });
-  //   return subscriber; // unsubscribe on unmount
-  // }, []);
+
 
   React.useEffect(() => {
     const init = async () => {
-      // …do multiple sync or async tasks
     };
 
     init().finally(async () => {
@@ -116,7 +105,7 @@ function AppRouter() {
           {
             isAuthenticated ?
               <>
-              <Stack.Screen name="Main" component={MainNavigation} />
+                <Stack.Screen name="Main" component={MainNavigation} />
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
                 <Stack.Screen name="QRScreen" component={QRScreen} />
@@ -139,9 +128,9 @@ function AppRouter() {
                 <Stack.Screen  name="ExternalUserFollowers" component={ExternalUserFollowersScreen} />
                 <Stack.Screen name="AddStore" component={AddStore} />
                 <Stack.Screen  options={{ tabBarVisible: false }} name="Camera" component={CameraScreen} />
-																<Stack.Screen name="search" component={SearchScreen} />
-																<Stack.Screen name="Test" component={Test} />
-
+								<Stack.Screen name="search" component={SearchScreen} />
+                <Stack.Screen name="BlockedUsersList" component={BlockedUsersScreen} />
+                <Stack.Screen name="Test" component={Test} />
 
 
               </>

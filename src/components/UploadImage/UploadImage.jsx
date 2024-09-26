@@ -1,50 +1,53 @@
-import React, { useDebugValue, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { handleAuth } from '../../../android/app/Redux/userReducer';
-import useAxios, { host } from '../../../Axios/useAxios';
-import Snackbar from 'react-native-snackbar';
-import user from "./../../../assets/images/user.png"
+import useAxios from '../../../Axios/useAxios';
+import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
+
 const UploadImage = () => {
     const auth = useSelector(state => state?.auth);
-    const [imageUri, setImageUri] = useState(auth?.url) ;
-    const dispatch = useDispatch()
+    const [imageUri, setImageUri] = useState(auth?.url);
+    const dispatch = useDispatch();
+    const axiosInstance = useAxios();
+
+    const [alertModal, setAlertModal] = useState({
+        open: false,
+        message: "",
+        success: true,
+        openYesNoModal: false
+    });
 
     const handleImage = async (url, file) => {
-        const data = new FormData()
-        data.append('image', file);
-        var postData = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + auth?.token
-            },
-            body: data,
-        }
-        return fetch(`${host}/change-image`, postData)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                     dispatch(handleAuth({
-                        url
-                    }))
-                    setImageUri(url)
-                    Snackbar.show({
-                        text: 'Picuture Uploaded Successfully.',
-                        duration: Snackbar.LENGTH_SHORT,
-                      });
-                if(responseJson.code > 200){
-                    Alert.alert(responseJson?.error)
-                }
+        try {
+            const data = new FormData();
+            data.append('image', file);
 
-                return responseJson;
-            })
-            .catch((error) => {
-                console.log('error', error);
-                Alert.alert('Upload Error', `An error occurred: ${error.toString()}`);
+            const response = await axiosInstance.post("/change-image", data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
             });
-    }
+            dispatch(handleAuth({ url }));
+            setImageUri(url);
+            setAlertModal({
+                open: true,
+                message: response?.data?.message,
+                success: true,
+                openYesNoModal: false
+            });
+        } catch (error) {
+            console.error("Failed to upload image: ", error);
+            setAlertModal({
+                open: true,
+                message: error.message,
+                success: false,
+                openYesNoModal: false
+            });
+        }
+    };
 
     const handleImagePicker = () => {
         const options = {
@@ -54,43 +57,57 @@ const UploadImage = () => {
             quality: 1,
         };
 
-        launchImageLibrary(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-                Alert.alert('Error', 'Something went wrong while picking the image.');
-            } else {
-                const source = { uri: response.assets[0].uri };
-                setImageUri(source.uri);
-
-                const file = {
-                    uri: response?.assets[0]?.uri,
-                    type: response?.assets[0]?.type,
-                    name: response?.assets[0]?.fileName,
-
+        try {
+            launchImageLibrary(options, response => {
+                if (response.didCancel) {
+                    console.log("User cancelled image picker");
+                } else if (response.errorCode) {
+                    console.log('ImagePicker Error: ', response.errorMessage);
+                } else if (response.assets && response.assets.length > 0) {
+                    const asset = response.assets[0];
+                    const source = { uri: asset.uri };
+                    setImageUri(source.uri);
+                    const file = {
+                        uri: asset.uri,
+                        type: asset.type,
+                        name: asset.fileName,
+                    };
+                    handleImage(source.uri, file);
+                } else {
+                    console.log("Unexpected response from image picker");
                 }
-                handleImage(source.uri, file)
-            }
-        });
+            });
+        } catch (error) {
+            console.error("Error during image selection: ", error);
+            setAlertModal({
+                open: true,
+                message: error.message,
+                success: false,
+                openYesNoModal: false
+            });
+        }
     };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-             onPress={handleImagePicker}
-             >
+            <TouchableOpacity onPress={handleImagePicker}>
                 <Image
                     style={styles.image}
-                    source={{ uri: imageUri }}
-                    // source={user}
+                    source={{ uri: imageUri || 'default-placeholder-image-uri-here' }}
                 />
             </TouchableOpacity>
-            <TouchableOpacity 
-            onPress={handleImagePicker}
-            >
+            <TouchableOpacity onPress={handleImagePicker}>
                 <Text style={styles.text}>Change Profile Picture</Text>
             </TouchableOpacity>
+            <CustomAlertModal
+                success={alertModal?.success}
+                title={alertModal?.message}
+                modalVisible={alertModal?.open}
+                setModalVisible={() => setAlertModal({
+                    open: false,
+                    message: ""
+                })}
+            />
         </View>
     );
 };
@@ -114,10 +131,10 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#FFA100",
-        textDecorationLine:"underline",
+        textDecorationLine: "underline",
         fontSize: scale(12),
         lineHeight: scale(25),
     },
 });
 
-export default UploadImage;
+export default memo(UploadImage);

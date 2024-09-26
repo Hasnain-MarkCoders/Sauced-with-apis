@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { } }) => {
+const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { }, showButton=true }) => {
   const [LightBox, setLightBox] = useState(false)
   const [toggledTitle, setToggledTitle] = useState(title)
 
@@ -16,34 +16,6 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
   const axiosInstance = useAxios()
  const [isLoading, setIsLoading] = useState(true);
 
-
-  const handleToggleUserStatus =useCallback( async () => {
-    console.log(_id)
-    // setLoading(true);
-    // try {
-    //     const res = await axiosInstance.post("/follow", {_id});
-    //     // console.log("<=====================res.message===============>", res?.message)
-    //         if(res.data.isFollowing){
-    //           // setToggledTitle("Unfollow")
-    //            cb(item) 
-
-    //         }
-    //         else{
-    //           // setToggledTitle("Follow")
-    //           cb(item) 
-
-    //         }
-    //     // console.log("<======================================checking==================================>", res.data)
-    // } catch (error) {
-    //     console.error('Failed to fetch photos:', error);
-    // } finally {
-    //     setLoading(false);
-    // }
-   
-  },[])
-useEffect(()=>{
-
-},[item])
   return (
 
     <TouchableOpacity
@@ -73,23 +45,7 @@ useEffect(()=>{
           overflow: 'hidden',
           maxWidth: scale(140)
         }}>
-        {/* <Lightbox activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-          springConfig={{ tension: 30, friction: 7 }}
-          onOpen={() => setLightBox(true)}
-          willClose={() => setLightBox(false)}
-        >
-          {url && <Image style={{
-            width: LightBox ? "100%" : scale(58),
-            height: LightBox ? "100%" : scale(58),
-            borderRadius: LightBox ? 0 : scale(50),
-
-          }}
-            source={{ uri: url }}
-          // source={url}
-
-
-          ></Image>}
-        </Lightbox> */}
+       
 {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
           <SkeletonPlaceholder.Item              width={scale(58)}
@@ -124,19 +80,17 @@ useEffect(()=>{
           }}>{name}</Text>
 
 
-        <CustomButtom
+      {showButton &&  <CustomButtom
           loading={loading}
 
           buttonTextStyle={{ fontSize: scale(12) }}
           buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}
           onPress={()=>{cb(item)}}
-          // onPress={() => { handleToggleUserStatus()}}
-
-          title={title} />
+          title={title} />}
 
       </View>
     </TouchableOpacity>
-    // <></>
+    
 
   )
 }

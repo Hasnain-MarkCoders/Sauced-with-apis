@@ -1,5 +1,5 @@
-import React, {   useEffect, useState } from 'react';
-import { View, SafeAreaView, ImageBackground, ScrollView, Alert, Image, Text, TouchableOpacity, StyleSheet, Vibration } from 'react-native';
+import React, {    useState } from 'react';
+import { View, SafeAreaView, ImageBackground, ScrollView, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
@@ -11,28 +11,26 @@ import useAxios, { host } from '../../../Axios/useAxios';
 import { launchImageLibrary, launchCamera  } from 'react-native-image-picker';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
-// import user from "./../../../assets/images/user.png"
-import locationIcon from "./../../../assets/images/locationIcon.png"
 import arrow from "./../../../assets/images/arrow.png";
 
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
-import ChoiceModal from '../../components/ChoiceModal/ChoiceModal.jsx';
+import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 const CheckinScreen = () => {
     const axiosInstance = useAxios()
     const route = useRoute()
     const product = route?.params?.product
     const fn = route?.params?.fn 
     const routerNumber = route?.params?.routerNumber
-    const photo = route?.params?.photo
+    const photo = route?.params?.photo||null
     const auth = useSelector(state => state.auth)
     const [isSelected, setIsSelected] = useState(true)
     const navigation = useNavigation()
     const [loading, setLoading] = useState(false)
     const [imageUris, setImageUris] = useState(photo?.uri?[photo]:[]);
- 
+    const [fetchLocation, setFetchLocation] = useState(false)
     const [isloading, setIsLoading] = useState({
         submitForm: false,
         loadMap: false
@@ -40,7 +38,8 @@ const CheckinScreen = () => {
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: "",
-        success:true
+        success:true,
+        openYesNoModal:false
     })
  
     const [data, setData] = useState({
@@ -64,22 +63,56 @@ const CheckinScreen = () => {
             if (result === RESULTS.GRANTED) {
                 fetchCurrentLocation();
             } else if (result === RESULTS.DENIED) {
-                request(permission).then(result => {
-                    if (result === RESULTS.GRANTED) {
-                        fetchCurrentLocation();
-                        setIsLoading(prev => ({ ...prev, loadMap: false }))
-                    } else {
-                        Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
-                        setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                    }
-                });
+
+                setAlertModal({
+                    open:false,
+                    message:"Location permission is denied. Please Press yes to grant it.",
+                    success:false,
+                    openYesNoModal:true,
+                    // fn:()=>{ request(permission).then(result => {
+                    //         if (result === RESULTS.GRANTED) {
+                    //             fetchCurrentLocation();
+                    //             setIsLoading(prev => ({ ...prev, loadMap: false }))
+                    //         } else {
+                    //             setAlertModal({
+                    //                 open: true,
+                    //                 messsage: "Please grant location permission to use this feature.",
+                    //                 success: false
+                    //             })
+                    //             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                    //         }
+                    //     })
+                    // }
+                })
+
+                // request(permission).then(result => {
+                //     if (result === RESULTS.GRANTED) {
+                //         fetchCurrentLocation();
+                //         setIsLoading(prev => ({ ...prev, loadMap: false }))
+                //     } else {
+                //         setAlertModal({
+                //             open: true,
+                //             messsage: "Please grant location permission to use this feature.",
+                //             success: false
+                //         })
+                //         setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                //     }
+                // });
             } else {
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+                setAlertModal({
+                    open: true,
+                    messsage: "Location permission is not available or blocked. Please enable it in settings.",
+                    success: false
+                })
             }
         }).catch(error => {
             console.warn("Error checking location permission:", error);
-            Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+            setAlertModal({
+                open: true,
+                messsage: "An error occurred while checking location permission. Please try again.",
+                success: false
+            })
             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
         });
     };
@@ -96,7 +129,11 @@ const CheckinScreen = () => {
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
             },
             (error) => {
-                Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+                setAlertModal({
+                    open: true,
+                    messsage: "Could not fetch current location. Please ensure your location services are enabled and try again.",
+                    success: false
+                })
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
             },
             { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
@@ -109,61 +146,6 @@ const CheckinScreen = () => {
         setData(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
     }
 
-    // const handleImagePicker = () => {
-    //     const options = {
-    //         mediaType: 'photo',
-    //         quality: 1,
-    //         selectionLimit: 0, // Allows multiple selection
-    //     };
-    
-    //     launchImageLibrary(options, response => {
-    //         if (response.didCancel) {
-    //             console.log('User cancelled image picker');
-    //         } else if (response.error) {
-    //             console.log('ImagePicker Error: ', response?.error);
-    //             Alert.alert('Error', 'Something went wrong while picking the image.');
-    //         } else {
-    //             const sources = response.assets.map(asset => ({
-    //                 uri: asset?.uri,
-    //                 type: asset?.type,
-    //                 name: asset?.fileName,
-    //             }));
-    
-    //             setImageUris(prevUris => [...prevUris, ...sources]);
-    //         }
-    //     });
-    // };
-
-    const handleImagePickerWithCamera = () => {
-        const options = {
-            mediaType: 'photo',
-            quality: 1,
-            selectionLimit: 0, // Allows multiple selection
-        };
-    
-        launchCamera(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response?.error);
-                // Open the alert modal with the error message
-                setAlertModal({
-                    open: true,
-                    message: 'Something went wrong while picking the image.',
-                    success: false
-                });
-            } else {
-                const sources = response.assets.map(asset => ({
-                    uri: asset?.uri,
-                    type: asset?.type,
-                    name: asset?.fileName,
-                }));
-    
-                setImageUris(prevUris => [...prevUris, ...sources]);
-            }
-        });
-    };
-    
     const handleImagePicker = () => {
         const options = {
             mediaType: 'photo',
@@ -171,7 +153,7 @@ const CheckinScreen = () => {
             selectionLimit: 0, // Allows multiple selection
         };
         const launchFunction = isSelected ? launchCamera : launchImageLibrary;
-     launchFunction(options, response => {
+        launchFunction(options, response => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
@@ -183,194 +165,18 @@ const CheckinScreen = () => {
                     success: false
                 });
             } else {
-                const sources = response.assets.map(asset => ({
+                const sources = response?.assets?.map(asset => ({
                     uri: asset?.uri,
                     type: asset?.type,
                     name: asset?.fileName,
-                }));
+                })) || []; // Default to empty array if undefined
     
                 setImageUris(prevUris => [...prevUris, ...sources]);
             }
         });
     };
     
-    // const handleSubmit = async () => {
-    //     try {
-    //         // Input validations
-    //         if (!data?.description) {
-    //             return setAlertModal({
-    //                 open: true,
-    //                 message: 'Description is required!',
-    //                 success: false
-    //             });
-    //         }
-    
-    //         if (!data.coordinates?.latitude || !data.coordinates?.longitude || !data?.address) {
-    //             return setAlertModal({
-    //                 open: true,
-    //                 message: 'Location is required!',
-    //                 success: false
-    //             });
-    //         }
-    
-    //         // Set loading state
-    //         setLoading(true);
-
-    //         // Create FormData to send
-    //         const formData = new FormData();
-    
-    //         // Append each image to the FormData object
-    //         imageUris.forEach((imageUri, index) => {
-    //             formData.append('images', {
-    //                 uri: imageUri.uri,
-    //                 type: imageUri.type, // Use JPEG as default type if not provided
-    //                 name: imageUri.uri.split('/').pop() // Extract the file name from the URI
-    //             });
-    //         });
-    
-    //         // Append other fields (description, coordinates, sauceId)
-    //         formData.append('text', data?.description);
-    //         formData.append('latitude', data.coordinates?.latitude);
-    //         formData.append('longitude', data.coordinates?.longitude);
-    //         formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
-    //         data?.foodPairings.forEach(item=>{
-    //             formData.append("foodPairings",item)
-    //         })
-
-
-    
-    //         // Perform the axios POST request
-    //         const response = await axios.post(`${host}/checkin`, formData, {
-    //             headers: {
-    //                 Authorization: `Bearer ${auth?.token}`, // Authorization header with token
-    //                 'Content-Type': 'multipart/form-data', // Set the content type
-    //             },
-    //         });
-    
-    //         // Handle successful response
-    //         if (response?.data?.message) {
-    //             setAlertModal({
-    //                 open: true,
-    //                 message: response?.data?.message,
-    //                 success: true
-    //             });
-    
-    //             // Reset form fields after successful submission
-    //             setData({
-    //                 description: '',
-    //                 location: ''
-    //             });
-    
-    //             setImageUris([]);
-    
-    //             // Navigate back after successful check-in
-    //             setTimeout(() => {
-    //                 navigation.navigate("AllCheckinsScreen", { _id: product?._id, routerNumber });
-    //             }, 2000);
-    //         }
-    //     } catch (error) {
-    //         // Handle error response (e.g., 400 error)
-    //         setAlertModal({
-    //             open: true,
-    //             message: error?.response?.data?.message || error.message,
-    //             success: false
-    //         });
-    //     } finally {
-    //         // Always stop loading after request
-    //         setLoading(false);
-    //     }
-    // };
-
-    // const handleSubmit = async () => {
-    //     try {
-    //         // Input validations
-    //         if (!data?.description) {
-    //             return setAlertModal({
-    //                 open: true,
-    //                 message: 'Description is required!',
-    //                 success: false,
-    //             });
-    //         }
-    
-    //         if (!data.coordinates?.latitude || !data.coordinates?.longitude || !data?.address) {
-    //             return setAlertModal({
-    //                 open: true,
-    //                 message: 'Location is required!',
-    //                 success: false,
-    //             });
-    //         }
-    
-    //         // Set loading state
-    //         setLoading(true);
-    
-    //         // Create FormData to send
-    //         const formData = new FormData();
-    //         // Append each image to the FormData object
-    //         imageUris.forEach((imageUri, index) => {
-    //             formData.append('images', {
-    //                 uri: imageUri.uri,
-    //                 // type: imageUri.type, // Use JPEG as default type if not provided
-    //                 type:"image/JPEG",
-    //                 // name: imageUri.uri.split('/').pop(), // Extract the file name from the URI
-    //                 name :imageUri.name
-    //             });
-    //         });
-    
-    //         // Append other fields (description, coordinates, sauceId)
-    //         formData.append('text', data?.description);
-    //         formData.append('latitude', data.coordinates?.latitude);
-    //         formData.append('longitude', data.coordinates?.longitude);
-    //         formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
-    
-    //         // Append foodPairings
-    //         data?.foodPairings.forEach(item => {
-    //             formData.append('foodPairings', item);
-    //         });
-    
-    //         // Perform the axios POST request
-    //         const response = await axios.post(`${host}/checkin`, formData, {
-    //             headers: {
-    //                 Authorization: `Bearer ${auth?.token}`, // Authorization header with token
-    //                 'Content-Type': 'multipart/form-data', // Set the content type
-    //             },
-    //         });
-    
-    //         // Handle successful response
-    //         if (response?.data?.message) {
-    //             setAlertModal({
-    //                 open: true,
-    //                 message: response?.data?.message,
-    //                 success: true, // Success is true for a successful response
-    //             });
-    
-    //             // Reset form fields after successful submission
-    //             setData({
-    //                 description: '',
-    //                 location: '',
-    //             });
-    
-    //             setImageUris([]);
-    
-    //             // Navigate back after successful check-in
-    //             setTimeout(() => {
-    //                 navigation.navigate('AllCheckinsScreen', { _id: product?._id, routerNumber , fn});
-    //             }, 2000);
-    //         }
-    //     } catch (error) {
-    //         // Handle error response (e.g., 400 error)
-    //         setAlertModal({
-    //             open: true,
-    //             message: error?.response?.data?.message || error.message,
-    //             success: false, // Error, so success is false
-    //         });
-    //     } finally {
-    //         // Always stop loading after request
-    //         setLoading(false);
-    //     }
-    // };
-    
  
-// CheckinScreen.js
 
 const handleSubmit = async () => {
     try {
@@ -396,9 +202,6 @@ const handleSubmit = async () => {
 
       // Create FormData to send
       const formData = new FormData();
-  
-      // Log imageUris for debugging
-      console.log("Submitting images:", imageUris);
   
       // Append each image to the FormData object
       imageUris.forEach((imageUri, index) => {
@@ -656,6 +459,21 @@ const handleSubmit = async () => {
 
                         </View>
                     </View>
+                    <YesNoModal
+                    modalVisible={alertModal.openYesNoModal}
+                    setModalVisible={()=>{
+                        setAlertModal({
+                            open: false,
+                            messsage: "",
+                            success:true,
+                            openYesNoModal:false
+                        })
+                    }}
+                    success={alertModal.success}
+                    title={"Location Request"}
+                    // cb={alertModal.fn}
+                                    
+                    />
              
                     <CustomAlertModal
                      success={alertModal?.success}

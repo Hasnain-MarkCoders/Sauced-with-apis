@@ -22,7 +22,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const route = useRoute();
   const _id = route?.params?._id;
   const setReviewCount = route?.params?.setReviewCount|| function(){}
-  const reviewCount = route?.params?.reviewCount|| nulll
+  const reviewCount = route?.params?.reviewCount|| null
 
   const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
 
@@ -145,7 +145,12 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                
-                  <SingleReview item={item} />
+                  <SingleReview
+                  isNavigate={true}
+                  url={item?.owner.image}
+                  name={item?.owner.name}
+                  _id={item?.owner?._id}
+                  item={item} />
                 )}
               />
             :

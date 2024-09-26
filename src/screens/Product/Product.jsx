@@ -50,6 +50,8 @@ const Product = () => {
   const product = route?.params?.item;
   const mycb = route?.params?.mycb|| function(){}
   const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
+  const handleLike = route?.params?.handleLike|| function(){}
+
 
   const sauceType = route?.params?.sauceType;
   const [data, setData] = useState([]);
@@ -306,6 +308,7 @@ useEffect(()=>{
                     }}>
                       
                     <ProductCard
+                    handleLike={handleLike}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     mycb={mycb}
                       sauceType={sauceType}
