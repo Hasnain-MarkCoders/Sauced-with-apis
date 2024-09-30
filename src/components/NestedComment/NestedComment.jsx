@@ -76,13 +76,13 @@ const NestedComment = ({
                     Snackbar.show({
                         text: !commentStatus ? 'You loved this comment.' : "You unloved this comment.",
                         duration: Snackbar.LENGTH_SHORT,
-                        action: {
-                            text: 'UNDO',
-                            textColor: '#FFA100',
-                            onPress: () => {
-                                setCommentStatus(prev => !prev)
-                            },
-                        },
+                        // action: {
+                        //     text: 'UNDO',
+                        //     textColor: '#FFA100',
+                        //     onPress: () => {
+                        //         setCommentStatus(prev => !prev)
+                        //     },
+                        // },
                     });
                 }}
             >

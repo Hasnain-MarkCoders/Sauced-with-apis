@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
@@ -20,9 +18,7 @@ import useAxios from '../../../Axios/useAxios.js';
 const AllCheckinsScreen = ({
 }) => {
     const route = useRoute()
-    const [commentStatus, setCommentStatus] = useState(false)
-    const name = route?.params?.name||""
-    const url = route?.params?.url||""
+ 
     const fn = route?.params?.fn||function(){}
     const numberOfRoutesBack = route?.params?.routerNumber||1
     const auth = useSelector(state => state.auth)
@@ -34,7 +30,6 @@ const AllCheckinsScreen = ({
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
     const [isKeyBoard, setIsKeyBoard] = useState(false)
-    const [isNewMsg, setNewMsg] = useState(false)
     const [id, setId] = useState(0)
     const [query, setQuery] = useState({
         search: "",
@@ -62,8 +57,6 @@ const AllCheckinsScreen = ({
                 "text": query.search
             });
         }
-
-
 
     }
     useEffect(() => {
@@ -152,7 +145,7 @@ const AllCheckinsScreen = ({
                                         <CommentsList
                                             commentsData={data}
                                             cb={handleUserProfileView} 
-                                            setNewMsg={setNewMsg} getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
+                                           getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
                                             data={messagesData}
                                             loading={loading} hasMore={hasMore} />
                                     </View>

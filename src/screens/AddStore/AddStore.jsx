@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration, Image } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration, Image, Linking } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -12,10 +12,17 @@ import useAxios from '../../../Axios/useAxios.js';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import arrow from "./../../../assets/images/arrow.png";
+import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 
 const AddStore = () => {
     const axiosInstance = useAxios()
     const [isKeyBoard, setIsKeyBoard] = useState(false)
+    const [yesNoModal, setYesNoModal] = useState({
+        open:false,
+        message:"",
+        severity:"success",
+        cb:()=>{}
+    })
     const [isloading, setIsLoading] = useState({
         submitForm: false,
         loadMap: false
@@ -115,18 +122,53 @@ const AddStore = () => {
             if (result === RESULTS.GRANTED) {
                 fetchCurrentLocation();
             } else if (result === RESULTS.DENIED) {
-                request(permission).then(result => {
-                    if (result === RESULTS.GRANTED) {
-                        fetchCurrentLocation();
-                        setIsLoading(prev => ({ ...prev, loadMap: false }))
-                    } else {
-                        Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
-                        setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                setYesNoModal({
+                    open: true,
+                    message: "Location Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permission).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                              fetchCurrentLocation();
+                            } else {
+                              // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+                              Alert.alert(
+                                  "Location Permission Blocked",
+                                  "Please enable location permission in your device settings to use this feature.",
+                                  [
+                                      { text: "Cancel", style: "cancel" },
+                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                  ]
+                              );
+                              setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                            }
+                          });
                     }
                 });
             } else {
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+                setYesNoModal({
+                    open: true,
+                    message: "Location Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permission).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                              fetchCurrentLocation();
+                            } else {
+                              Alert.alert(
+                                  "Location Permission Blocked",
+                                  "Please enable location permission in your device settings to use this feature.",
+                                  [
+                                      { text: "Cancel", style: "cancel" },
+                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                  ]
+                              );
+                              setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+                            }
+                          });
+                    }
+                });
             }
         }).catch(error => {
             console.warn("Error checking location permission:", error);
@@ -263,7 +305,20 @@ const AddStore = () => {
                 </View>
 
 
-
+                <YesNoModal
+                    modalVisible={yesNoModal.open}
+                    setModalVisible={()=>{
+                        setYesNoModal({
+                            open: false,
+                            messsage: "",
+                            severity:true,
+                        })
+                    }}
+                    success={yesNoModal.severity}
+                    title={"Location Request"}
+                    cb={yesNoModal.cb}
+                                    
+                    />
 
                 <CustomAlertModal
                     title={alertModal?.message}

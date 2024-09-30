@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
 import { formatDate, formatEventDate, generateRandomText } from '../../../utils'
@@ -13,9 +13,12 @@ const SingleReview = ({
   _id,
   name
 }) => {
+  console.log("item", item.createdAt)
   const navigation = useNavigation()
   const auth = useSelector(state=>state?.auth)
     const[ readMore,setReadMore]=useState(item?.text?.length>130)
+    console.log(item?.owner?.name)
+
   return (
     <View
 
@@ -33,16 +36,17 @@ const SingleReview = ({
             onPress={()=>{
               if(isNavigate){
                   // navigate
-                  if (auth?._id!==_id){
+                  // if (auth?._id!==_id){
                     navigation.navigate("ExternalProfileScreen", {
                       url,
                       _id,
                       name
                     })
       
-                  }else{
-                    navigation.navigate("Profile")
-                  }
+                  // }
+                  // else{
+                  //   navigation.navigate("Profile")
+                  // }
               }
           }}
         >
@@ -93,7 +97,7 @@ const SingleReview = ({
             color:"white"
         }}>
           {
-            formatEventDate(new Date(item?.createdAt)?.getTime(), true)
+            formatEventDate(new Date(item?.createdAt), true)
           }
         </Text>}
       </View>

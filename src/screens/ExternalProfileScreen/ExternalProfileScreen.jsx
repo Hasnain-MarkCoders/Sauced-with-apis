@@ -5,7 +5,7 @@ import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
 import axios from 'axios';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
 import { getFormattedName, handleText, topRatedSauces } from '../../../utils.js';
@@ -23,16 +23,13 @@ import { useDispatch, useSelector } from 'react-redux';
 const ExternalProfileScreen = ({
 }) => {
     const route = useRoute()
+    const _id = route?.params?._id
     const name = route?.params?.name
     const url = route?.params?.url
-    const _id = route?.params?._id
-    const followings = useSelector(state=>state?.followings)
     const [user, setUser] = useState(null)
-    const [data, setData] = useState([])
-    const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
-    const [hasMore, setHasMore] = useState(true)
-    const [initialLoading, setInitialLoading] = useState(true)
+    // const [initialLoading, setInitialLoading] = useState(true)
+    const auth = useSelector(state=>state?.auth)
     const [loading, setLoading] = useState({
         blockLoading:false,
         initialLoading:true,
@@ -64,40 +61,90 @@ const ExternalProfileScreen = ({
    
 
 
-    React.useEffect(() => {
-        const fetchUser = async () => {
-            setLoading(prev=>({
-                ...prev,
-                initialLoading:true,
-            }));
-            try {
-                const res = await axiosInstance.get(`/get-user`, {
-                    params:{
-                        _id
-                    }
-                });
-                setUser(res?.data?.user)
-                console.log(res.data.user)
-            } catch (error) {
-                console.error('Failed to fetch user:', error);
-            } finally {
-                setLoading(prev=>({
-                    ...prev,
-                    initialLoading:false,
-                }));
-                if (initialLoading){
-                    setInitialLoading(false)
-                }
-            }
-        };
-        // Initial fetch
-        fetchUser();
-        // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
-        const interval = setInterval(fetchUser, 10000); // 10000 milliseconds = 10 seconds
-        // Cleanup function to clear interval when component unmounts
-        return () => clearInterval(interval);
-    }, []);
+    // React.useEffect(() => {
+    //     const fetchUser = async () => {
+    //         setLoading(prev=>({
+    //             ...prev,
+    //             initialLoading:true,
+    //         }));
+    //         try {
+    //             const res = await axiosInstance.get(`/get-user`, {
+    //                 params:{
+    //                     _id
+    //                 }
+    //             });
+    //             setUser(res?.data?.user)
+    //         } catch (error) {
+    //             console.error('Failed to fetch user:', error);
+    //         } finally {
+    //             setLoading(prev=>({
+    //                 ...prev,
+    //                 initialLoading:false,
+    //             }));
+    //             if (initialLoading){
+    //                 setInitialLoading(false)
+    //             }
+    //         }
+    //     };
+    //     // Initial fetch
+       
+    //     // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
+    //     const interval = setInterval(fetchUser, 10000); // 10000 milliseconds = 10 seconds
+    //     // Cleanup function to clear interval when component unmounts
+    //     return () => clearInterval(interval);
+    // }, [_id]);
 
+
+     // Function to fetch user data
+  const fetchUser = useCallback(async () => {
+      console.log("_id", _id)
+    if (!_id) return; // Ensure _id is available
+    setLoading(prev => ({
+        ...prev,
+        initialLoading: true,
+      }));
+    try {
+      const res = await axiosInstance.get(`/get-user`, {
+        params: {
+          _id
+        }
+      });
+      setUser(res?.data?.user);
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      Snackbar.show({
+        text: 'Failed to fetch user data.',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    } finally {
+      setLoading(prev => ({
+        ...prev,
+        initialLoading: false,
+      }));
+    //   if (initialLoading) {
+    //     setInitialLoading(false);
+    //   }
+    }
+  }, [_id]);
+
+  // Fetch data on mount and when _id changes
+//   useEffect(() => {
+//     fetchUser();
+
+//     // Set up interval for polling
+//     const interval = setInterval(fetchUser, 10000); // 10 seconds
+
+//     // Cleanup interval on unmount or when _id changes
+//     return () => clearInterval(interval);
+//   }, [fetchUser]);
+
+  // Fetch data when the screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+        console.log("focus howa!", _id)
+      fetchUser();
+    }, [fetchUser])
+  );
 
     const handleUser =  useCallback(async(user)=>{
         if(user){
@@ -127,7 +174,7 @@ const ExternalProfileScreen = ({
             if(res?.data?.message){
                 setTitles(prev=>({...prev, blockTitle:"Blocked"}))
                 Snackbar.show({
-                    text: `${name } is blocked.`,
+                    text: `${user?.name } is blocked.`,
                     duration: Snackbar.LENGTH_SHORT,
                 });
 
@@ -146,7 +193,8 @@ const ExternalProfileScreen = ({
 
     }
 
-    if (initialLoading) {
+
+    if (loading.initialLoading) {
         return (
             <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#FFA100" />
@@ -283,22 +331,27 @@ const ExternalProfileScreen = ({
                                             marginBottom: scale(20),
                                             gap: scale(20)
                                         }}>
-                                            <CustomButtom
-                                            disabled={loading?.initialLoading}
-                                            loading={loading?.blockLoading}
-                                                Icon={() => <Image source={arrow} />}
-                                                showIcon={true}
-                                                buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
-                                                buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                                onPress={() => {
-                                                    Vibration.vibrate(10);
-                                                    handleBlock()
-                                                    // Alert.alert("Blocked")
+                                            {
+                                                auth._id!==_id&&
 
-                                                }}
-                                                title={titles.blockTitle}
-
-                                            />
+                                                <CustomButtom
+                                                disabled={loading?.initialLoading}
+                                                loading={loading?.blockLoading}
+                                                    Icon={() => <Image source={arrow} />}
+                                                    showIcon={true}
+                                                    buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
+                                                    buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
+                                                    onPress={() => {
+                                                        Vibration.vibrate(10);
+                                                        handleBlock()
+                                                        // Alert.alert("Blocked")
+    
+                                                    }}
+                                                    title={titles.blockTitle}
+    
+                                                />
+                                            }
+                                       
 
 
                                             {/* <CustomButtom

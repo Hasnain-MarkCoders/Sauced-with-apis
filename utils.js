@@ -390,13 +390,16 @@ export function formatDate(date) {
 }
 
 
-export function formatEventDate(unixTimestamp, dayAndMonth) {
-  // Ensure Unix timestamp is in milliseconds for JavaScript Date object
-  const date = new Date(unixTimestamp * 1000);
+export function formatEventDate(isoDateString, dayAndMonth) {
+  // Parse the ISO date string into a JavaScript Date object
+  const date = new Date(isoDateString);
+
   // Array of days and months for formatting
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const months = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"];
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
   // Get formatted day of the week and month
   const dayOfWeek = days[date.getUTCDay()];
@@ -412,12 +415,15 @@ export function formatEventDate(unixTimestamp, dayAndMonth) {
 
   // Get the year
   const year = date.getUTCFullYear();
-if(dayAndMonth){
-  return `${day} ${monthName}`
-}
+
+  if (dayAndMonth) {
+    return `${day} ${monthName}`;
+  }
+
   // Format the string as requested
   return `${dayOfWeek}, ${monthName} ${day}, ${year} at ${hour}:${minute} ${amPm}`;
 }
+
 
 // Example usage:
 const exampleDate = new Date('August 14, 2024 21:45:36.776');

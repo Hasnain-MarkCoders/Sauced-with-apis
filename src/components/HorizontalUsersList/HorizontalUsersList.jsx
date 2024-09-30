@@ -19,6 +19,7 @@ const HorizontalUsersList = ({
     const axiosInstance = useAxios()
     const users = useSelector(state=>state?.users)
     const dispatch = useDispatch()
+    const auth = useSelector(state=>state?.auth)
     const fetchUsers = useCallback(async () => {
       if (!hasMore || loading) return;
       setLoading(true);
@@ -71,6 +72,7 @@ dispatch(handleRemoveUserFromUsers(user?._id))
           }}
            keyExtractor={(item, index) => index.toString()}
            renderItem={({ item }) => <UserCard 
+           showButton={auth._id==item._id?false:true}
            cb={handleUser}
            _id={item?._id}
            title={"Follow"}

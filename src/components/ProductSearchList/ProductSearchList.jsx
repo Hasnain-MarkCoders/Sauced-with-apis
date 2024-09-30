@@ -110,10 +110,10 @@ const ProductSearchList = ({
             <FlatList
                 data={data}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: scale(150), gap: scale(10) }}
+                contentContainerStyle={{ paddingBottom: scale(150), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
                 showsHorizontalScrollIndicator={false}
-                numColumns={3}
-                onEndReachedThreshold={0.5}
+                // numColumns={3}
+                onEndReachedThreshold={2}
                 onEndReached={() => {
                     if (!loading && hasMore) {
                         setPage(currentPage => currentPage + 1);
@@ -121,6 +121,7 @@ const ProductSearchList = ({
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => <SingleSauce
+                
                     handleLike={handleLike}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     mycb={setData}

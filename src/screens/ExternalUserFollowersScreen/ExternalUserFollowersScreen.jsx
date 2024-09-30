@@ -37,7 +37,7 @@ const ExternalUserFollowersScreen = () => {
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom:verticalScale(0) }}>
-                <Header cb={() => navigation.goBack()} showMenu={true} showProfilePic={false} headerContainerStyle={{
+                <Header cb={() => navigation.goBack()} showMenu={false} showProfilePic={false} headerContainerStyle={{
                     paddingBottom: scale(20)
                 }} title={"Followers"} showText={false} />
                 <FlatList 

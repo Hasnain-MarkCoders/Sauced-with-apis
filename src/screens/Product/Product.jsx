@@ -193,17 +193,17 @@ useEffect(()=>{
       Snackbar.show({
         text: `sauce adding in List ${listNumber}`,
         duration: Snackbar.LENGTH_SHORT,
-        action: {
-          text: 'UNDO',
-          textColor: '#FFA100',
+        // action: {
+        //   text: 'UNDO',
+        //   textColor: '#FFA100',
 
-          onPress: () => {
-            Snackbar.show({
-              text: `sauce remove from List ${listNumber}`,
-              duration: Snackbar.LENGTH_SHORT,
-            });
-          },
-        },
+        //   onPress: () => {
+        //     Snackbar.show({
+        //       text: `sauce remove from List ${listNumber}`,
+        //       duration: Snackbar.LENGTH_SHORT,
+        //     });
+        //   },
+        // },
       });
 
       const type =

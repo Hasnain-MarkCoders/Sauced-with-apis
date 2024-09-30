@@ -92,12 +92,11 @@ const BrandScreen = () => {
                     }} /> */}
                      <Text style={{
       color:"white",
-      fontFamily:"Montserrat",
       fontSize:scale(12),
-      fontWeight:600,
+      fontWeight:400,
       lineHeight:18,
     }}>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis dignissimos mollitia amet culpa atque obcaecati aliquam quas assumenda temporibus expedita dolores et ea illum eius, deleniti eaque! Quidem, quo quaerat!
+  {brand?.brand?.about}
     </Text>
                   </View>
                 }

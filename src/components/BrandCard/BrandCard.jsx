@@ -128,7 +128,7 @@ console.log("product==============>", product)
     Website Link:
 </Text>
 <TouchableOpacity onPress={() => {
-    Linking.openURL(product?.brand?.websiteLink)
+   product?.brand?.websiteLink&& Linking.openURL(product?.brand?.websiteLink)
 }}>
     <Text 
      numberOfLines={1}
@@ -150,7 +150,7 @@ console.log("product==============>", product)
     Amazon Link:
 </Text>
 <TouchableOpacity onPress={() => {
-    Linking.openURL(product?.brand?.amazonLink)
+    product?.brand?.amazonLink &&Linking.openURL(product?.brand?.amazonLink)
 }}>
     <Text 
      numberOfLines={1}

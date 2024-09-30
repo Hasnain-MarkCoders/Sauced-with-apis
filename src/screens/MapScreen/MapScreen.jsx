@@ -7,26 +7,10 @@ import MapView, { Marker } from 'react-native-maps';
 import darkArrow from "./../../../assets/images/darkArrow.png";
 import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
-
-import restaurant from "./../../../assets/images/restaurant.png";
-import shopping from "./../../../assets/images/shopping.png";
-import bar from "./../../../assets/images/bar.png";
-import gym from "./../../../assets/images/gym.png";
-import bank from "./../../../assets/images/bank.png";
-import park from "./../../../assets/images/park.png";
-import school from "./../../../assets/images/school.png";
-import hospital from "./../../../assets/images/hospital.png";
-import interest from "./../../../assets/images/interest.png";
-import establishment from "./../../../assets/images/establishment.png";
-import defaultMarker from "./../../../assets/images/defaultMarker.png";
-import successLogo from "./../../../assets/images/3dSuccessLogo.png";
 import marker from "./../../../assets/images/marker.png";
-
 import debounce from 'lodash.debounce';
 import Geocoder from 'react-native-geocoding';
-
 // Initialize the Geocoder with your API key (for example, Google API)
-
 import useAxios from '../../../Axios/useAxios'; // Make sure to import your axios instance
 import Toast from 'react-native-toast-message';
 import { Search } from 'lucide-react-native';

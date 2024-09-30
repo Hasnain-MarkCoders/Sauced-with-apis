@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
 import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
@@ -170,7 +170,7 @@ const ExternalUserCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(13),
                                     lineHeight: scale(36),
-                                }}>{totalCheckIns}</Text>
+                                }}>{reviewsCount}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,

@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Circle, CircleX, X } from "lucide-react-native";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { Circle,  X } from "lucide-react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Text,
@@ -29,7 +29,6 @@ const CameraScreen = () => {
   const [isActive, setIsActive] = useState(true);
   const handleNavigateBack = ()=>{
     setCapturedImage(null)
-    // setIsActive(false)
     navigation.goBack()
   }
 
@@ -43,25 +42,7 @@ const CameraScreen = () => {
     }
   }, [hasPermission, requestPermission]);
 
-  const GetPlatformSpecificURL = (platform, uri) => {
-    return platform.OS == "ios" ? uri : "file://" + uri;
-  };
 
-  // const handleCapture = async () => {
-  //   try {
-  //     if (camera.current) {
-  //       const options = { quality: 0.5, base64: true, exif: true };
-  //       const photo = await camera.current.takePhoto(options);
-  //       const name = photo.path.split("/").pop()
-  //       const type ="image/"+photo.path.split(".").pop()
-
-  //       const uri = GetPlatformSpecificURL(Platform, photo.path);
-  //       setCapturedImage({ ...photo,uri, name,type });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error capturing photo:", error);
-  //   }
-  // };
 
 
   const handleCapture = async () => {
@@ -114,6 +95,7 @@ const CameraScreen = () => {
     );
   }
 
+
   return (
     <View style={styles.container}>
       {!capturedImage ? (
@@ -129,8 +111,8 @@ const CameraScreen = () => {
       )}
 
       <TouchableOpacity
-        onPress={() => {
-          capturedImage ? setCapturedImage(null) : (setIsActive(false), navigation.goBack());
+        onPress={async() => {
+          capturedImage ? setCapturedImage(null) : (setIsActive(true), navigation.goBack());
         }}
         style={styles.closeButton}
       >

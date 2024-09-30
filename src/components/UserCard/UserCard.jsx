@@ -2,20 +2,16 @@ import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomButtom from '../CustomButtom/CustomButtom'
-import Lightbox from 'react-native-lightbox';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useSelector } from 'react-redux';
 
-const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { }, showButton=true }) => {
-  const [LightBox, setLightBox] = useState(false)
-  const [toggledTitle, setToggledTitle] = useState(title)
-
+const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { }, showButton=true, buttonOpacity=1 }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
-  const axiosInstance = useAxios()
  const [isLoading, setIsLoading] = useState(true);
-
+const auth = useSelector(state=>state.auth)
   return (
 
     <TouchableOpacity
@@ -43,7 +39,10 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
           paddingHorizontal: scale(15),
           margin: scale(5),
           overflow: 'hidden',
-          maxWidth: scale(140)
+          maxWidth: scale(140),
+          minHeight:scale(170),
+          alignItems:"center",
+          justifyContent:"center"
         }}>
        
 {isLoading && (
@@ -66,9 +65,6 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
           }}
           onLoad={() => setIsLoading(false)}
             source={{ uri: url }}
-          // source={url}
-
-
           ></Image>}
 
         <Text
@@ -82,19 +78,15 @@ const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () =
 
       {showButton &&  <CustomButtom
           loading={loading}
-
-          buttonTextStyle={{ fontSize: scale(12) }}
-          buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" }}
+          buttonTextStyle={{ fontSize: scale(12), }}
+          buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 8, backgroundColor: "#2E210A" ,opacity:buttonOpacity}}
           onPress={()=>{cb(item)}}
           title={title} />}
-
       </View>
     </TouchableOpacity>
-    
-
   )
 }
 
-export default UserCard
+export default memo(UserCard)
 
 const styles = StyleSheet.create({})

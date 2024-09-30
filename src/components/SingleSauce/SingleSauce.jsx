@@ -228,19 +228,19 @@ const SingleSauce = ({
                         ? 'You love this Sauce.'
                         : 'You unlove this Sauce.',
                       duration: Snackbar.LENGTH_SHORT,
-                      action: {
-                        text: 'UNDO',
-                        textColor: '#FFA100',
-                        onPress: () => {
-                          if (sauceType) {
-                            setSelected(prev => ({
-                              ...prev,
-                              isChecked: !prev.isChecked
-                            }));
-                          }
-                          handleToggleLike();
-                        },
-                      },
+                      // action: {
+                      //   text: 'UNDO',
+                      //   textColor: '#FFA100',
+                      //   onPress: () => {
+                      //     if (sauceType) {
+                      //       setSelected(prev => ({
+                      //         ...prev,
+                      //         isChecked: !prev.isChecked
+                      //       }));
+                      //     }
+                      //     handleToggleLike();
+                      //   },
+                      // },
                     });
                   }}
                 >

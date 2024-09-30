@@ -8,8 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
 import { useDispatch, useSelector } from 'react-redux';
-import { current } from '@reduxjs/toolkit';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
 const screenWidth = Dimensions.get('window').width;
@@ -19,6 +17,8 @@ const effectiveWidth = screenWidth - 2 * horizontalPadding;
 const CustomCarousel = ({
     showText=false,
 }) => {
+    const auth = useSelector(state=>state.auth)
+    console.log(auth.token)
 const [selected, setSelected] = React.useState(0)
 const [initialLoading, setInitialLoading] = React.useState(true)
  const navigation = useNavigation()

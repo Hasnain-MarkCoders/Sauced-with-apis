@@ -74,7 +74,7 @@ console.log("photo ha ", photo)
       <View style={[styles.itemContainer, selectedSauce?._id === item._id && styles.selectedItem]}>
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.textContainer}>
-          <Text numberOfLines={1} style={styles.title}>{item.title}</Text>
+          <Text numberOfLines={1} style={styles.title}>{item.name}</Text>
           <Text style={styles.description}>{item?.description?.trim()?.slice(0, 80)}</Text>
         </View>
       </View>
@@ -110,7 +110,7 @@ console.log("photo ha ", photo)
           disabled={!selectedSauce} // Disable button if no sauce is selected
         >
           <Text style={[styles.button, !selectedSauce && styles.disabledButton]}>
-            Quick Checkin
+            Quick Check-ins
           </Text>
         </TouchableOpacity>
         

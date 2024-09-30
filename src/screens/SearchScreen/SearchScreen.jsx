@@ -7,6 +7,7 @@ import CustomInput from '../../components/CustomInput/CustomInput';
 import { useNavigation } from '@react-navigation/native';
 import search from "./../../../assets/images/search_icon.png";
 import ProductSearchList from '../../components/ProductSearchList/ProductSearchList';
+import { X } from 'lucide-react-native';
 
 const { height } = Dimensions.get('window'); // Get screen height dynamically
 
@@ -132,6 +133,21 @@ const SearchScreen = () => {
                                     paddingLeft: scale(45),
                                 }}
                             />
+                                {query.search !== "" && (
+                <TouchableOpacity
+                  onPress={() => setQuery({ search: "" })}
+                  style={{
+                    position: 'absolute',
+                    right: scale(15),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    padding: scale(5),
+                  }}
+                >
+                  <X color="#FFA100" size={scale(20)} />
+                </TouchableOpacity>
+              )}
                         </View>
                         <TouchableOpacity onPress={() => {
                             Vibration.vibrate(10);

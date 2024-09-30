@@ -159,7 +159,6 @@ const Awards = ({navigation}) => {
                                     <TouchableOpacity onPress={()=>
                                         {
                                             Vibration.vibrate(10)
-                                            setAlertModal(true)
                                         }
                                     }>
 
@@ -186,7 +185,6 @@ const Awards = ({navigation}) => {
                             }
                             {
                                 index == 1 && <AwardList loading={loading} hasMore={hasMore} setPage={setPage}
-                                // data={awardListImages}
                                 data={awards}
                                  />
 

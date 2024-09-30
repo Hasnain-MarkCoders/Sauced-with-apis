@@ -22,8 +22,6 @@ const CustomButtom = ({
       elevation:5,
         borderRadius:10,
         ...buttonstyle ,
-
-
       }}>
      { loading? <ActivityIndicator size="small" color="white" />: <>
         {

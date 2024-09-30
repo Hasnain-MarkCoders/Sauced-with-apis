@@ -279,21 +279,21 @@ const ProductCard = ({
                                         Snackbar.show({
                                             text: !productStatus.isChecked ? 'You love this product.' : "You unlove this product.",
                                             duration: Snackbar.LENGTH_SHORT,
-                                            action: {
-                                                text: 'UNDO',
-                                                textColor: '#FFA100',
-                                                onPress: () => {
-                                                    // if(sauceType){
-                                                    //     setproductStatus(prev => ({
-                                                    //         ...prev,
-                                                    //         isChecked: !prev.isChecked
+                                            // action: {
+                                            //     text: 'UNDO',
+                                            //     textColor: '#FFA100',
+                                            //     onPress: () => {
+                                            //         // if(sauceType){
+                                            //         //     setproductStatus(prev => ({
+                                            //         //         ...prev,
+                                            //         //         isChecked: !prev.isChecked
     
-                                                    //     }))
-                                                    // }
+                                            //         //     }))
+                                            //         // }
 
-                                                    handleToggleLike()
-                                                },
-                                            },
+                                            //         handleToggleLike()
+                                            //     },
+                                            // },
                                         });
                                         handleToggleLike()
 
@@ -321,20 +321,20 @@ const ProductCard = ({
                                         Snackbar.show({
                                             text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product in Wishlist.",
                                             duration: Snackbar.LENGTH_SHORT,
-                                            action: {
-                                                text: 'UNDO',
-                                                textColor: '#FFA100',
-                                                onPress: () => {
-                                                    setproductStatus(prev => ({
-                                                        ...prev,
-                                                        isAddedToWishList: false
+                                            // action: {
+                                            //     text: 'UNDO',
+                                            //     textColor: '#FFA100',
+                                            //     onPress: () => {
+                                            //         setproductStatus(prev => ({
+                                            //             ...prev,
+                                            //             isAddedToWishList: false
 
-                                                    }));
-                                                    !loadings?.isWishListLoading && handleWishlist()
+                                            //         }));
+                                            //         !loadings?.isWishListLoading && handleWishlist()
 
 
-                                                },
-                                            },
+                                            //     },
+                                            // },
                                         });
                                     }}
                                 >
@@ -370,7 +370,7 @@ const ProductCard = ({
                                Find on Company Site
                             </Text>
                             <TouchableOpacity onPress={() => {
-                                Linking.openURL(product?.websiteLink)
+                                product?.websiteLink && Linking.openURL(product?.websiteLink)
                             }}>
                                 <Text
                                     numberOfLines={1}
@@ -398,7 +398,7 @@ const ProductCard = ({
                                 Find On Amazon
                             </Text>
                             <TouchableOpacity onPress={() => {
-                                Linking.openURL(product?.productLink)
+                                product?.productLink &&Linking.openURL(product?.productLink)
                             }}>
                                 <Text
                                     numberOfLines={1}
