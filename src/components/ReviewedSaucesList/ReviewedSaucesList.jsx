@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
+import NotFound from '../NotFound/NotFound';
 
 const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
@@ -53,7 +54,7 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
         <>
         {
 
-reviewedSauces?.length>0&&<View style={styles.container}>
+<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -63,61 +64,79 @@ reviewedSauces?.length>0&&<View style={styles.container}>
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
                 {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
-            <View style={{
-                gap: scale(20),
-                flexDirection: "row", alignItems: "center",
-            }}>
+            {
+                reviewedSauces?.length>0
+                ?
+                <View style={{
+                    gap: scale(20),
+                    flexDirection: "row", alignItems: "center",
+                }}>
 
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingRight: selected ? scale(60) : scale(0)
-                    }}
-                    horizontal
-                    onViewableItemsChanged={({ viewableItems }) => {
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingRight: selected ? scale(60) : scale(0)
+                        }}
+                        horizontal
+                        onViewableItemsChanged={({ viewableItems }) => {
 
-                        if (viewableItems.length > 0) {
-                            setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
-                        }
+                            if (viewableItems.length > 0) {
+                                setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
+                            }
 
-                    }}
-                    data={reviewedSauces}
-                    scrollEventThrottle={16}
-                    onEndReachedThreshold={0.5}
+                        }}
+                        data={reviewedSauces}
+                        scrollEventThrottle={16}
+                        onEndReachedThreshold={0.5}
 
-                    onEndReached={() => {
-                        if (!loading && hasMore) {
-                            setPage(currentPage => currentPage + 1);
-                        }
-                    }}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => <SingleSauce
-                    handleIncreaseReviewCount={handleIncreaseReviewCount}
-                    sauceType="reviewed"
-                    item={item}
-                        url={item?.image}
-                        title={item?.name}
-                    />}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
-                />
-                {(showMoreIcon && selected == reviewedSauces?.length - 1) && <TouchableOpacity
-                    style={{
-                        position: "absolute",
-                        right: "0%",
-                        zIndex: 111
-                    }}
-                    onPress={() => { cb() }}>
-                        <TouchableOpacity onPress={fetchSauces}><Text>refresh</Text></TouchableOpacity>
-                    <Image style={{
+                        onEndReached={() => {
+                            if (!loading && hasMore) {
+                                setPage(currentPage => currentPage + 1);
+                            }
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => <SingleSauce
+                        handleIncreaseReviewCount={handleIncreaseReviewCount}
+                        sauceType="reviewed"
+                        item={item}
+                            url={item?.image}
+                            title={item?.name}
+                        />}
+                        ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    />
+                    {(showMoreIcon && selected == reviewedSauces?.length - 1) && <TouchableOpacity
+                        style={{
+                            position: "absolute",
+                            right: "0%",
+                            zIndex: 111
+                        }}
+                        onPress={() => { cb() }}>
+                            <TouchableOpacity onPress={fetchSauces}><Text>refresh</Text></TouchableOpacity>
+                        <Image style={{
 
-                        resizeMode: "contain",
-                        width: scale(40),
-                        height: scale(40)
-                    }} source={moreIcon} />
+                            resizeMode: "contain",
+                            width: scale(40),
+                            height: scale(40)
+                        }} source={moreIcon} />
 
-                </TouchableOpacity>}
-            </View>
+                    </TouchableOpacity>}
+                </View>
+                :
+                !loading
+                ?
+                <View style={{
+                    marginBottom:scale(20)
+                }}>
+
+                    <NotFound
+                    title='Reviewed Sauces Not available'
+                    />
+                </View>
+                :
+                null
+
+            }
             {
 
                 loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />

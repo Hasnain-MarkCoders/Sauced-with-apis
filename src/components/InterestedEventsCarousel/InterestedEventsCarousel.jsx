@@ -87,6 +87,11 @@ setTimeout(()=>{
     setInitialLoading(false)
 }, 3000)
     },[])
+
+    // React.useEffect(()=>{
+    //     if (interestedEvents?.length==0)
+    //     setPaginationBullets(0)
+    // },[interestedEvents?.length])
   return (
     <View style={{gap:scale(10)}}>
         {
@@ -123,7 +128,9 @@ setTimeout(()=>{
                 }
             />
             :
-            <NotFound/>
+            <NotFound
+            title='Interested events Not available'
+            />
 
         }
         <View style={{

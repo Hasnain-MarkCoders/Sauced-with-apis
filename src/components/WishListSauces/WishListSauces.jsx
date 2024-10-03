@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfWishListSauce, handleWishList } from '../../../android/app/Redux/wishlist';
+import NotFound from '../NotFound/NotFound';
 
 const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
@@ -51,7 +52,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
         <>
         {
 
-wishListSlices?.length>0&&<View style={[styles.container, {marginBottom:scale(30)}]}>
+<View style={[styles.container, {marginBottom:scale(30)}]}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -61,48 +62,59 @@ wishListSlices?.length>0&&<View style={[styles.container, {marginBottom:scale(30
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
                 {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
-            <View style={{
-                gap: scale(20),
-                flexDirection: "row", alignItems: "center",
-            }}>
+            {
+                wishListSlices?.length>0?
 
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    // contentContainerStyle={{
-                    //     paddingRight: selected ? scale(60) : scale(0)
-                    // }}
-                    horizontal
-                    // onViewableItemsChanged={({ viewableItems }) => {
+                <View style={{
+                    gap: scale(20),
+                    flexDirection: "row", alignItems: "center",
+                }}>
 
-                    //     if (viewableItems.length > 0) {
-                    //         setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
-                    //     }
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        // contentContainerStyle={{
+                        //     paddingRight: selected ? scale(60) : scale(0)
+                        // }}
+                        horizontal
+                        // onViewableItemsChanged={({ viewableItems }) => {
 
-                    // }}
-                    data={wishListSlices}
-                    scrollEventThrottle={16}
-                    onEndReachedThreshold={0.5}
+                        //     if (viewableItems.length > 0) {
+                        //         setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
+                        //     }
 
-                    onEndReached={() => {
-                        if (!loading && hasMore) {
-                            setPage(currentPage => currentPage + 1);
-                        }
-                    }}
-                    extraData={wishListSlices}
+                        // }}
+                        data={wishListSlices}
+                        scrollEventThrottle={16}
+                        onEndReachedThreshold={0.5}
 
-                    keyExtractor={(item, index) => `${item?._id} ${index.toString()}`}
-                    renderItem={({ item }) => <SingleSauce
-                    handleIncreaseReviewCount={handleIncreaseReviewCount}
-                    sauceType={"wishlist"}
-                    item={item}
-                        url={item?.image}
-                        title={item?.name}
-                    />}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                        onEndReached={() => {
+                            if (!loading && hasMore) {
+                                setPage(currentPage => currentPage + 1);
+                            }
+                        }}
+                        extraData={wishListSlices}
+
+                        keyExtractor={(item, index) => `${item?._id} ${index.toString()}`}
+                        renderItem={({ item }) => <SingleSauce
+                        handleIncreaseReviewCount={handleIncreaseReviewCount}
+                        sauceType={"wishlist"}
+                        item={item}
+                            url={item?.image}
+                            title={item?.name}
+                        />}
+                        ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    />
+                
+                </View>
+                :
+                !loading
+                ?
+                <NotFound
+                title='Wishlist sauces Not available'
                 />
-               
-            </View>
+                :null
+            }
             {
 
                 loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />

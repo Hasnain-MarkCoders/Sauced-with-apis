@@ -64,6 +64,12 @@ const [initialLoading, setInitialLoading] = React.useState(true)
 
     const handleInterestedEvent = async(event)=>{
         const x = interestedEvents?.find(item=>item?._id==event?._id)
+        if(!!x){
+            dispatch(handleRemoveInterestedEvents(event?._id))
+            // dispatch(handleAllEventsExceptInterested([event]))
+         
+
+ }
         if(!x){
                 //  dispatch(handleRemoveAllEventsExceptInterested(event?._id))
             // return dispatch(handleRemoveInterestedEvents(event?._id))

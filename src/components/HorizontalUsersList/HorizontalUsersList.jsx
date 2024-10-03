@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleRemoveUserFromUsers, handleUsers } from '../../../android/app/Redux/users';
 import { handleFollowings } from '../../../android/app/Redux/followings';
 import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
+import NotFound from '../NotFound/NotFound';
 const HorizontalUsersList = ({
  numColumns=1,
  horizontal=true
@@ -58,32 +59,52 @@ dispatch(handleRemoveUserFromUsers(user?._id))
         gap:scale(20),
         flex:1
     }}>
-        <FlatList
-        showsHorizontalScrollIndicator={false} 
-        numColumns={numColumns}
-        showsVerticalScrollIndicator={false}
-        horizontal={horizontal}
-           data={users}
-           onEndReachedThreshold={0.5}
-           onEndReached={() => {
-            if (!loading && hasMore) {
-                setPage(currentPage => currentPage + 1);
-            }
-          }}
-           keyExtractor={(item, index) => index.toString()}
-           renderItem={({ item }) => <UserCard 
-           showButton={auth._id==item._id?false:true}
-           cb={handleUser}
-           _id={item?._id}
-           title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
-        item={item}
-        url={item.image}
-        name={item?.name}
-        // title={"Follow"}
-        showText={false}
-         />}
-    
-       />{
+        {
+            users?.length>0 
+            ?
+            
+            <FlatList
+            showsHorizontalScrollIndicator={false} 
+            numColumns={numColumns}
+            showsVerticalScrollIndicator={false}
+            horizontal={horizontal}
+               data={users}
+               onEndReachedThreshold={0.5}
+               onEndReached={() => {
+                if (!loading && hasMore) {
+                    setPage(currentPage => currentPage + 1);
+                }
+              }}
+               keyExtractor={(item, index) => index.toString()}
+               renderItem={({ item }) => <UserCard 
+               showButton={auth._id==item._id?false:true}
+               cb={handleUser}
+               _id={item?._id}
+               title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
+            item={item}
+            url={item.image}
+            name={item?.name}
+            // title={"Follow"}
+            showText={false}
+             />}
+        
+           />
+           :
+           !loading
+           ?
+           <View style={{
+            marginBottom:scale(20)
+           }}>
+
+               <NotFound
+               title='No users found'
+               />
+           </View>
+           :
+          null
+        }
+       
+       {
 
        loading &&   <ActivityIndicator size="small" color="#FFA100" />
        }

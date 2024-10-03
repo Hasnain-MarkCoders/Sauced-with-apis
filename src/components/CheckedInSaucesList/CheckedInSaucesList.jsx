@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleCheckedInSauces, handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
+import NotFound from '../NotFound/NotFound';
 const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
@@ -46,7 +47,7 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
         <>
         {
 
-checkedInSauces?.length>0&&<View style={styles.container}>
+<View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -56,6 +57,9 @@ checkedInSauces?.length>0&&<View style={styles.container}>
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
                 {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
+            {
+                checkedInSauces?.length>0
+                ?
             <View style={{
                 gap: scale(20),
                 flexDirection: "row", alignItems: "center",
@@ -110,6 +114,15 @@ checkedInSauces?.length>0&&<View style={styles.container}>
 
                 </TouchableOpacity>}
             </View>
+            :
+            !loading
+            ?
+            <NotFound
+            title='Checked In Sauces Not available'
+            />
+            :
+            null
+            }
             {
 
                 loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />

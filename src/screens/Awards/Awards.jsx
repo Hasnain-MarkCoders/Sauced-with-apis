@@ -195,7 +195,7 @@ const Awards = ({navigation}) => {
 
                 />
             :
-            <NotFound/>}
+            <NotFound title='No badges found'/>}
             </SafeAreaView>
         </ImageBackground>
     )
