@@ -296,7 +296,7 @@ const ProductCard = ({
                                             }));
                                         }
                                         Snackbar.show({
-                                            text: !productStatus.isChecked ? 'You love this product.' : "You unlove this product.",
+                                            text: !productStatus.isChecked ? 'Like' : "Unlike",
                                             duration: Snackbar.LENGTH_SHORT,
                                             // action: {
                                             //     text: 'UNDO',
@@ -392,7 +392,7 @@ const ProductCard = ({
                                 product?.websiteLink && Linking.openURL(product?.websiteLink)
                             }}>
                                 <Text
-                                    numberOfLines={1}
+                                    // numberOfLines={1}
                                     ellipsizeMode='tail'
                                     style={{
                                         maxWidth: scale(110),
@@ -400,7 +400,9 @@ const ProductCard = ({
                                         fontWeight: 600,
                                         fontSize: scale(12),
                                         lineHeight: scale(25),
-                                    }}>{product?.websiteLink}</Text>
+                                        textDecorationStyle:"solid",
+                                        textDecorationLine:product?.websiteLink ?"underline":"none"
+                                    }}>{product?.websiteLink?"Visit Website":"Website Link not available."}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{
@@ -420,7 +422,7 @@ const ProductCard = ({
                                 product?.productLink &&Linking.openURL(product?.productLink)
                             }}>
                                 <Text
-                                    numberOfLines={1}
+                                    // numberOfLines={1}
                                     ellipsizeMode='tail'
                                     style={{
                                         maxWidth: scale(110),
@@ -428,12 +430,14 @@ const ProductCard = ({
                                         fontWeight: 600,
                                         fontSize: scale(12),
                                         lineHeight: scale(25),
-                                    }}>{product?.productLink}</Text>
+                                         textDecorationStyle:"solid",
+                                        textDecorationLine:product?.productLink ?"underline":"none"
+                                    }}>{product?.productLink?"Visit Amazon":"Not available on Amazon"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
-                <View >
+                {/* <View >
                     <View style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
@@ -464,9 +468,11 @@ const ProductCard = ({
                             </View>
                         </View>
                     </View>
-                </View>
+                </View> */}
             </View>
-            <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
+            <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10),  alignItems:"center" }}>
+                <View style={{flexDirection: "row", flexGrow: 1, gap: scale(10)}}>
+
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate("AddReview", { sauceId: product?._id ,item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
@@ -512,7 +518,40 @@ const ProductCard = ({
 
 
                 </TouchableOpacity>
+                </View>
 
+ <View >
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                        <View style={{
+                            alignItems: "center",
+                            gap: scale(10)
+                        }}>
+                            <View style={{
+                                gap: scale(1),
+
+                            }}>
+
+                                <Text style={{
+                                    color: "#FFA100",
+                                    textAlign: "center",
+                                    fontWeight: 600,
+                                    fontSize: scale(30),
+                                    lineHeight: scale(36),
+                                }}>{product?.checkIn}</Text>
+                                <Text style={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: scale(10),
+                                    lineHeight: scale(25),
+                                    marginTop: scale(-6)
+                                }}>Check-ins</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
                 {/* <TouchableOpacity
                     onPress={() => {
                         console.log("has")

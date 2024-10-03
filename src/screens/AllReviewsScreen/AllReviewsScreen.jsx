@@ -7,12 +7,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import {scale} from 'react-native-size-matters';
 import SingleReview from '../../components/SingleReview/SingleReview.jsx';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios.js';
 import {FlatList} from 'react-native-gesture-handler';
 import NotFound from '../../components/NotFound/NotFound.jsx';
@@ -73,10 +75,27 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
     })
     return () => {
       navigation.removeListener("focus", ()=>{
+        setPage(1);
+        setData([]);
         fetchReviews();
       })
     }
   }, [fetchReviews]);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Optionally, you can show an alert or simply prevent going back
+        return true; // Prevent default behavior
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
 
   return (
     <ImageBackground

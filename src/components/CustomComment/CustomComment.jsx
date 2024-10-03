@@ -48,7 +48,7 @@ const CustomComment = ({
             const res = await axiosInstance.post(`/like-checkin`, { checkinId: _id });
             setLikesCount(res.data?.likesCount)
             Snackbar.show({
-                text: !commentStatus ? 'You loved this comment.' : "You unloved this comment.",
+                text: !commentStatus ? 'Like' : "Unlike",
                 duration: Snackbar.LENGTH_SHORT,
                 // action: {
                 //     text: 'UNDO',

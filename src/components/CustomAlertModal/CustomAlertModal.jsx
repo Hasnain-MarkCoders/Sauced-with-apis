@@ -88,8 +88,8 @@ const CustomAlertModal = ({
          
                 <Text style={{
                     color:"white",
-                    fontSize:scale(20),
-                    fontWeight:700,
+                    fontSize:scale(16),
+                    fontWeight:400,
                     lineHeight:scale(50),
                     textAlign:"center"
                 }}>
@@ -104,7 +104,7 @@ const CustomAlertModal = ({
                 }}
                 style={{
                   backgroundColor:"white",
-                  paddingHorizontal:scale(60),
+                  paddingHorizontal:scale(40),
                   paddingVertical:scale(15),
                   borderRadius:scale(8),
                   
@@ -114,7 +114,7 @@ const CustomAlertModal = ({
                     fontWeight:800,
                     fontSize:scale(14)
                   }}>
-                 {buttonText?buttonText: "cancel"}
+                 {buttonText?buttonText: "Close"}
                   </Text>
                 </TouchableOpacity>
 

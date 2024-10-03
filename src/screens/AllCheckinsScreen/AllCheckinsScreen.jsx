@@ -1,9 +1,9 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, BackHandler } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import CommentsList from '../../components/CommentsList/CommentsList.jsx';
@@ -107,6 +107,19 @@ const AllCheckinsScreen = ({
         fetchCheckings();
     }, [page]);
 
+    useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            // Optionally, you can show an alert or simply prevent going back
+            return true; // Prevent default behavior
+          };
+    
+          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    
+          return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [])
+      );
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
