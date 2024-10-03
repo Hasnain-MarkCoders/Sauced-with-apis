@@ -132,6 +132,7 @@ const CameraScreen = () => {
       {capturedImage && (
         <View style={styles.bottomSheetContainer}>
           <SearchSaucesBottomSheet
+          setCapturedImage={setCapturedImage}
           fn={handleNavigateBack}
           photo={capturedImage} />
         </View>

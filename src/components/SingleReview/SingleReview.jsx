@@ -1,11 +1,12 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useMemo, useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
 import { formatDate, formatEventDate, generateRandomText } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
-
+import Lightbox from 'react-native-lightbox-v2';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 const SingleReview = ({
   item=null,
   isNavigate=false,
@@ -13,13 +14,17 @@ const SingleReview = ({
   _id,
   name
 }) => {
-  console.log("item", item.createdAt)
+  console.log("item", item)
   const navigation = useNavigation()
-  const auth = useSelector(state=>state?.auth)
     const[ readMore,setReadMore]=useState(item?.text?.length>130)
-    console.log(item?.owner?.name)
+    const [loading, setLoading] = useState(true)
+    const [lightbox, setLightbox] = useState(false)
 
   return (
+    <View style={{
+      gap:scale(20),
+      marginBottom:scale(40)
+    }}>
     <View
 
     style={{
@@ -100,7 +105,65 @@ const SingleReview = ({
             formatEventDate(new Date(item?.createdAt), true)
           }
         </Text>}
+      <View style={{
+            width: 'flex',
+            width: '100%',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            gap: scale(20),
+            marginTop:scale(10)
+      }}>
+
+      {item?.images?.map((uri, index) => (
+
+        <>
+         {loading && <View>
+            <SkeletonPlaceholder
+                 width={scale(100)}
+                 height={scale(100)}
+                speed={1600}
+                backgroundColor="#2E210A"
+                highlightColor="#fff"
+            >
+                <SkeletonPlaceholder.Item
+                    width={scale(100)}
+                    height={scale(100)}
+                    borderRadius={scale(10)}
+                />
+            </SkeletonPlaceholder>
+        </View>}
+        <Lightbox
+    // springConfig={{ tension: 30, friction: 7 }}
+    activeProps={{
+        style: {
+            width: '100%',
+            height: scale(400),
+            borderColor: 'transparent',
+            borderWidth: 0,
+            borderRadius: 0,
+            opacity: loading ? 0 : 1,
+        },
+    }}
+>
+    <Image
+        onLoad={() => setLoading(false)}
+        key={index}
+        source={{ uri: uri }}
+        style={{
+            width: scale(100),
+            height: scale(100),
+            borderColor: '#FFA100',
+            borderWidth: 1,
+            borderRadius: scale(12),
+            opacity: loading ? 0 : 1,
+        }}
+    />
+</Lightbox>
+        </>
+                                                ))}
       </View>
+      </View>
+    </View>
   )
 }
 

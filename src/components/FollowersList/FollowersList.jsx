@@ -88,7 +88,7 @@ const FollowersList = ({
         renderItem={({ item }) =>
           <UserCard
             cb={handleUser}
-            title={item?.isFollowing ? "Unfollow" : "Follow back"}
+            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
             _id={item?._id}
             item={item}
             url={item.image}

@@ -1,11 +1,13 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { formatDate, getFormattedName } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
 import { useSelector } from 'react-redux'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -21,6 +23,7 @@ reviewsCount=0
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
     const [isLoading, setIsLoading] = useState(true);
+    const [LightBox, setLightBox] = useState(false)
 
     return (
         <View style={{
@@ -56,25 +59,45 @@ reviewsCount=0
             />
         </SkeletonPlaceholder>
       )}
-                <Image
-                    style={{
-                        display:isLoading?"none":"flex",
-                        width: scale(90),
-                        height: scale(90),
-                        resizeMode:"contain",
-                        top:0,
-                        left:0,
-                        position:"absolute",
-                        objectFit:"cover",
-                        borderRadius: scale(50),
-                        borderColor: "#FFA100",
-                        borderWidth: scale(1)
-                    }}
-                    source={{ uri: url }}
-                    // source={url}
-                    onLoad={() => setIsLoading(false)}
 
-                />
+<Lightbox
+    activeProps={{
+        style: {
+            width: '100%',
+            height: '50%',
+            top: '25%',
+            left: 0,
+            position: 'absolute',
+            borderRadius: 0,
+            borderColor: 'transparent',
+            borderWidth: 0,
+        },
+        resizeMode: 'contain',
+    }}
+    // springConfig={{ tension: 30, friction: 7 }}
+>
+    <Image
+        style={{
+            display: isLoading ? 'none' : 'flex',
+            width: scale(90),
+            height: scale(90),
+            top: 0,
+            left: 0,
+            position: 'absolute',
+            borderRadius: scale(50),
+            borderColor: '#FFA100',
+            borderWidth: scale(1),
+        }}
+        resizeMode="contain"
+        source={{ uri: url }}
+        onLoad={() => setIsLoading(false)}
+    />
+</Lightbox>
+
+
+
+
+
                  <Image
                     style={{
                         bottom:10,

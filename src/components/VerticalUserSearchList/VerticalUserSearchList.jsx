@@ -6,7 +6,8 @@ import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers } from '../../../android/app/Redux/searchedUsers';
+import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers, handleToggleSearchedUserIsFollowing } from '../../../android/app/Redux/searchedUsers';
+import { handleStats } from '../../../android/app/Redux/userStats';
 
 const VerticalUserSearchList = ({
   numColumns = 1,
@@ -20,6 +21,7 @@ const VerticalUserSearchList = ({
   const users = useSelector(state => state?.searchedUsers);
   const dispatch = useDispatch();
   const auth = useSelector(state => state?.auth);
+  const userStats = useSelector(state=>state?.userStats)
 
   const fetchUsersWithSearchTerm = useCallback(debounce(async () => {
     // Only block fetch if it's already loading or no more data
@@ -64,7 +66,18 @@ const VerticalUserSearchList = ({
   }, [page]);
 
   const handleUser = useCallback(async (user) => {
-    dispatch(handleRemoveSearchedUsers(user?._id));
+    // dispatch(handleRemoveSearchedUsers(user?._id));
+    if(user?.isFollowing){
+      dispatch(handleStats({
+        followings:userStats.followings-1,
+    }))
+
+    }else{
+      dispatch(handleStats({
+        followings:userStats.followings+1,
+    }))
+    }
+    dispatch(handleToggleSearchedUserIsFollowing(user?._id))
     await axiosInstance.post("/follow", { _id: user?._id });
   }, []);
 
@@ -88,7 +101,7 @@ const VerticalUserSearchList = ({
           showButton={auth._id==item._id?false:true}
             cb={handleUser}
             _id={item?._id}
-            title={"Follow"}
+            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
             item={item}
             url={item.image}
             name={item?.name}

@@ -65,7 +65,8 @@ const DrawerStack = () => {
                 drawerStyle: {
                     backgroundColor: "#FFA100",
                     width: 240,
-                }
+                },
+                swipeEnabled: false,
             }}
         >
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Profile" component={PrivateStack} />

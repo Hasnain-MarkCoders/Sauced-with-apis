@@ -74,7 +74,7 @@ const [initialLoading, setInitialLoading] = React.useState(true)
 
         if(!!x){
                    dispatch(handleRemoveInterestedEvents(event?._id))
-                   handleAllEventsExceptInterested([event])
+                   dispatch(handleAllEventsExceptInterested([event]))
                     const res = await axiosInstance.post(`/interest-event`, {
                         eventId:event?._id
                     });

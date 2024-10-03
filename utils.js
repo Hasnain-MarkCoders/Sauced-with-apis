@@ -390,39 +390,65 @@ export function formatDate(date) {
 }
 
 
-export function formatEventDate(isoDateString, dayAndMonth) {
+// export function formatEventDate(isoDateString, dayAndMonth) {
+//   // Parse the ISO date string into a JavaScript Date object
+//   const date = new Date(isoDateString);
+
+//   // Array of days and months for formatting
+//   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+//   const months = [
+//     "January", "February", "March", "April", "May", "June",
+//     "July", "August", "September", "October", "November", "December"
+//   ];
+
+//   // Get formatted day of the week and month
+//   const dayOfWeek = days[date.getUTCDay()];
+//   const monthName = months[date.getUTCMonth()];
+
+//   // Pad day, hour, and minute with leading zeros if necessary
+//   const day = date.getUTCDate().toString().padStart(2, '0');
+//   const hour = date.getUTCHours() % 12 || 12;  // Convert 24h to 12h format and handle '0' hour
+//   const minute = date.getUTCMinutes().toString().padStart(2, '0');
+
+//   // Determine AM or PM based on UTC hour
+//   const amPm = date.getUTCHours() >= 12 ? 'PM' : 'AM';
+
+//   // Get the year
+//   const year = date.getUTCFullYear();
+
+//   if (dayAndMonth) {
+//     return `${day} ${monthName}`;
+//   }
+
+//   // Format the string as requested
+//   return `${dayOfWeek}, ${monthName} ${day}, ${year} at ${hour}:${minute} ${amPm}`;
+// }
+
+export function formatEventDate(isoDateString, dayAndMonth, timeZone) {
   // Parse the ISO date string into a JavaScript Date object
   const date = new Date(isoDateString);
 
-  // Array of days and months for formatting
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  // Define formatting options based on the requirement
+  const options = dayAndMonth
+    ? { day: '2-digit', month: 'long', timeZone }
+    : {
+        weekday: 'short',
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone,
+      };
 
-  // Get formatted day of the week and month
-  const dayOfWeek = days[date.getUTCDay()];
-  const monthName = months[date.getUTCMonth()];
+  // Create an Intl.DateTimeFormat formatter
+  const formatter = new Intl.DateTimeFormat('en-US', options);
 
-  // Pad day, hour, and minute with leading zeros if necessary
-  const day = date.getUTCDate().toString().padStart(2, '0');
-  const hour = date.getUTCHours() % 12 || 12;  // Convert 24h to 12h format and handle '0' hour
-  const minute = date.getUTCMinutes().toString().padStart(2, '0');
-
-  // Determine AM or PM based on UTC hour
-  const amPm = date.getUTCHours() >= 12 ? 'PM' : 'AM';
-
-  // Get the year
-  const year = date.getUTCFullYear();
-
-  if (dayAndMonth) {
-    return `${day} ${monthName}`;
-  }
-
-  // Format the string as requested
-  return `${dayOfWeek}, ${monthName} ${day}, ${year} at ${hour}:${minute} ${amPm}`;
+  // Format the date
+  return formatter.format(date);
 }
+
 
 
 // Example usage:

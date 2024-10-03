@@ -8,6 +8,9 @@ import {
     Vibration,
     AppRegistry,
     Image,
+    Platform,
+    Linking,
+    Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header.jsx';
@@ -23,7 +26,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import useAxios, { host } from '../../../Axios/useAxios.js';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces.js';
@@ -33,20 +36,22 @@ import { handleIncreaseReviewCountOfListThreeSauce } from '../../../android/app/
 import { handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces.js';
 import { handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces.js';
 import { handleIncreaseReviewCountOfTopRatedSauce } from '../../../android/app/Redux/topRatedSauces.js';
+import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
+import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 const AddReview = () => {
     const route = useRoute();
     const [imageUris, setImageUris] = useState([]);
     const sauceId = route?.params?.sauceId;
-    const sauceType = route?.params?.sauceType;
-    const mycb = route?.params?.mycb || function(){};
-    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount || function(){};
-    const setReviewCount = route?.params?.setReviewCount || function(){};
-    const reviewCount = route?.params?.reviewCount 
-
-
-
-
-
+    const sauceType = route?.params?.sauceType||"" 
+    const url = route?.params?.url||"" 
+    const title = route?.params?.title||"" 
+    const item = route?.params?.item||{}
+    const mycb = route?.params?.mycb||function(){}
+    const handleLike = route?.params?.handleLike|| function(){}
+    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
+    const setReviewCount = route?.params?.setReviewCount||function(){}
+    const reviewCount = route?.params?.reviewCount||"" 
+    const [isSelected, setIsSelected] = useState(true)
     const [isKeyBoard, setIsKeyBoard] = useState(false);
     const axiosInstance = useAxios();
     const [loading, setLoading] = useState(false);
@@ -56,12 +61,18 @@ const AddReview = () => {
     const dispatch = useDispatch()
     const auth = useSelector(state => state?.auth);
     const featuredSauces = useSelector(state=>state?.featuredSauces)
-    
     console.log(auth?.token);
+    const [yesNoModal, setYesNoModal] = useState({
+        open:false,
+        message:"",
+        severity:"success",
+        cb:()=>{}
+    })
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: '',
-        success:true
+        success:true,
+        cb:()=>{}
     });
     const [data, setData] = useState({
         review: '',
@@ -70,7 +81,90 @@ const AddReview = () => {
     });
     const navigation = useNavigation();
 
-    const handleImagePicker = () => {
+
+
+
+
+    const handleImagePickerPermission = (isSelected=true) => {
+        const cameraPermission = Platform.OS === 'ios' 
+            ? PERMISSIONS.IOS.CAMERA 
+            : PERMISSIONS.ANDROID.CAMERA;
+    
+        const galleryPermission = Platform.OS === 'ios' 
+            ? PERMISSIONS.IOS.PHOTO_LIBRARY 
+            : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+    
+        const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
+    
+        check(permissionToCheck).then(result => {
+            if (result === RESULTS.GRANTED) {
+                handleImagePicker(isSelected); // Proceed with image picking
+            } else if (result === RESULTS.DENIED) {
+    
+                setYesNoModal({
+                    open: true,
+                    message: isSelected 
+                        ? "Camera Permission Required. Would you like to grant permission?" 
+                        : "Gallery Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permissionToCheck).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                handleImagePicker(isSelected);
+                            } else {
+                                Alert.alert(
+                                    isSelected 
+                                        ? "Camera Permission Blocked" 
+                                        : "Gallery Permission Blocked",
+                                    `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                            }
+                        });
+                    }
+                });
+            } else {
+                setYesNoModal({
+                    open: true,
+                    message: isSelected 
+                        ? "Camera Permission Required. Would you like to grant permission?" 
+                        : "Gallery Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permissionToCheck).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                handleImagePicker(isSelected);
+                            } else {
+                                Alert.alert(
+                                    isSelected 
+                                        ? "Camera Permission Blocked" 
+                                        : "Gallery Permission Blocked",
+                                    `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                            }
+                        });
+                    }
+                });
+            }
+        }).catch(error => {
+            console.warn("Error checking camera/gallery permission:", error);
+            setAlertModal({
+                open: true,
+                message: `An error occurred while checking ${isSelected ? 'camera' : 'gallery'} permission. Please try again.`,
+                success: false,
+            });
+        });
+    };
+    
+
+    const handleImagePicker = (isSelected) => {
         const options = {
             mediaType: 'photo',
             // maxWidth: 300,
@@ -79,7 +173,8 @@ const AddReview = () => {
             selectionLimit: 0,
         };
 
-        launchImageLibrary(options, response => {
+        const launchFunction = isSelected ? launchCamera : launchImageLibrary;
+        launchFunction(options, response => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
@@ -189,7 +284,15 @@ const handleUpdateReviewsCount = ()=>{
                 setAlertModal({
                     open: true,
                     message: res?.data?.message,
-                    success:true
+                    success:true,
+                    buttonText:"View Reviews",
+                    cb:()=>{
+                        navigation.navigate("AllReviews", 
+                            { _id: sauceId, 
+                                // setReviewCount, handleIncreaseReviewCount , reviewCount, product, mycb
+                                item,title, url, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
+                            })
+                    }
 
                 });
                 handleUpdateReviewsCount()
@@ -202,9 +305,9 @@ const handleUpdateReviewsCount = ()=>{
                 });
                 progress.value=0
                 setImageUris([]);
-                setTimeout(()=>{
-                navigation.goBack();
-                },2000)
+                // setTimeout(()=>{
+                // navigation.goBack();
+                // },2000)
             }
         } catch (error) {
             return setAlertModal({
@@ -376,7 +479,7 @@ const handleUpdateReviewsCount = ()=>{
                                                     onSlidingComplete={e => {
                                                         setData(prev => ({
                                                             ...prev,
-                                                            heatLevel: Math.round(e),
+                                                            heatLevel: e.toFixed(2),
                                                         }));
                                                     }}
                                                     theme={{
@@ -390,10 +493,76 @@ const handleUpdateReviewsCount = ()=>{
                                                     progress={progress}
                                                     minimumValue={min}
                                                     maximumValue={max}
+
+                                                    
                                                 />
                                             </View>
                                             </View>
+                                            <View style={{
+                            width:"100%",
 
+                          }}>
+                            <Text style={{
+                                fontSize:scale(18),
+                                color:"white"
+                            }}>
+                                Choose image from 
+                            </Text>
+
+                          </View>
+
+                          <View style={{
+                            width:"100%",
+                            flexDirection:"row",
+                            gap:scale(10)
+                          }}>
+                                    <TouchableOpacity 
+                                    
+                                    onPress={()=>{
+                                        setIsSelected(true)
+                                        handleImagePickerPermission(true)
+                                    }}
+                                    style={{
+    backgroundColor: isSelected?'#FFA500':'#2e210a', // Dark box for unselected chips
+    borderRadius: scale(20),
+    paddingVertical: scale(6),
+    paddingHorizontal: scale(10),
+    borderColor: '#FFA500', // Orange border for chips to match the theme
+    borderWidth: scale(1),
+    alignItems: 'center',
+  }}>
+                                        <Text
+                                        style={{
+                                            color:isSelected?'#000':'#fff'
+                                        }}
+                                        >
+                                            Camera
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                    
+                                    onPress={()=>{
+                                        setIsSelected(false)
+                                        handleImagePickerPermission(false)
+                                    }}
+                                    style={{
+    backgroundColor: isSelected? '#2e210a':'#FFA500', // Dark box for unselected chips
+    borderRadius: scale(20),
+    paddingVertical: scale(6),
+    paddingHorizontal: scale(10),
+    borderColor: '#FFA500', // Orange border for chips to match the theme
+    borderWidth: scale(1),
+    alignItems: 'center',
+  }}>
+                                        <Text
+                                         style={{
+                                            color:isSelected?'#fff':'#000'
+                                        }}
+                                        >
+                                            Gallery
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                                             <View
                                                 style={{
                                                     width: 'flex',
@@ -417,7 +586,9 @@ const handleUpdateReviewsCount = ()=>{
                                                     />
                                                 ))}
                                                 <TouchableOpacity
-                                                    onPress={handleImagePicker}
+                                                    onPress={()=>{
+                                                        handleImagePickerPermission(isSelected)
+                                                    }}
                                                     style={{
                                                         width: imageUris[0]?.uri ? scale(100) : '100%',
                                                     }}>
@@ -485,16 +656,33 @@ const handleUpdateReviewsCount = ()=>{
                         title={'Submit'}
                     />
                 </View>
+                <YesNoModal
+                    modalVisible={yesNoModal.open}
+                    setModalVisible={()=>{
+                        setYesNoModal({
+                            open: false,
+                            messsage: "",
+                            severity:true,
+                        })
+                    }}
+                    success={yesNoModal.severity}
+                    title={yesNoModal.message}
+                    cb={yesNoModal.cb}
+                                    
+                    />
             </SafeAreaView>
             <CustomAlertModal
                 title={alertModal?.message}
                 success={alertModal?.success}
                 modalVisible={alertModal?.open}
+                buttonText={alertModal.buttonText}
+                cb={alertModal.cb||function(){}}
                 setModalVisible={() =>
                     setAlertModal({
                         open: false,
                         messsage: '',
                     })
+                    
                 }
             />
         </ImageBackground>

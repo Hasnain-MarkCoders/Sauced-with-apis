@@ -23,6 +23,8 @@ const NotificationsScreen = ({
             }
     },[count, notificationsData?.length])
    
+
+   
     const renderRightActions = (index) => (
         <TouchableOpacity
           style={{

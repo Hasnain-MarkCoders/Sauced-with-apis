@@ -1,7 +1,8 @@
 import { Image, Linking, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
-import Lightbox from 'react-native-lightbox';
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 import CustomRating from '../CustomRating/CustomRating'
 import { useNavigation } from '@react-navigation/native'
 const BrandCard = ({
@@ -28,27 +29,35 @@ console.log("product==============>", product)
                 <View style={{
                 }}>
 
-                    <Lightbox
-                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-                        springConfig={{ tension: 30, friction: 7 }}
-                        onOpen={() => setLightBox(true)}
-                        willClose={() => setLightBox(false)}
-                    >
-                        <Image
-                            style={{
-                                width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(100),
-                                minWidth: scale(120),
-                                minHeight: scale(100),
-                                borderRadius: LightBox ? 0 : scale(10),
-                                borderColor: LightBox ? 0 : "#FFA100",
-                                borderWidth: LightBox ? 0 : scale(1)
-                            }}
-                            source={{ uri: url }}
-                            // source={url}
-
-                        />
-                    </Lightbox>
+<Lightbox
+//   springConfig={{ tension: 30, friction: 7 }}
+  activeProps={{
+    resizeMode: 'contain',
+    style: {
+      width: '100%',
+      height: '100%',
+      minWidth: scale(120),
+      minHeight: scale(100),
+      borderRadius: 0,
+      borderColor: 'transparent',
+      borderWidth: 0,
+    },
+  }}
+>
+  <Image
+    style={{
+      width: scale(120),
+      height: scale(100),
+      minWidth: scale(120),
+      minHeight: scale(100),
+      borderRadius: scale(10),
+      borderColor: '#FFA100',
+      borderWidth: scale(1),
+    }}
+    source={{ uri: url }}
+    resizeMode="cover"
+  />
+</Lightbox>
                 </View>
                 <View style={{
                     gap: scale(14),

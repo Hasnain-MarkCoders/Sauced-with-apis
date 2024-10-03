@@ -54,18 +54,23 @@ const auth = useSelector(state=>state.auth)
             />
         </SkeletonPlaceholder>
       )}
-          {url && <Image
-          style={{
-            width:scale(58),
-            height:scale(58),
-            display:isLoading?"none":"flex",
+          {url &&
+          
+          
+            <Image
+            style={{
+              width:scale(58),
+              height:scale(58),
+              display:isLoading?"none":"flex",
+  
+              borderRadius: scale(50),
+  
+            }}
+            onLoad={() => setIsLoading(false)}
+              source={{ uri: url }}
+            ></Image>
 
-            borderRadius: scale(50),
-
-          }}
-          onLoad={() => setIsLoading(false)}
-            source={{ uri: url }}
-          ></Image>}
+          }
 
         <Text
           numberOfLines={1} ellipsizeMode="tail"

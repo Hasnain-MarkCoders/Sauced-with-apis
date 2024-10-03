@@ -29,8 +29,14 @@ const followingsSlice = createSlice({
       // Clear the state entirely (useful for resetting on new searches or fetches)
       return [];
     },
+    handleToggleIsFollowing:(state, action)=>{
+      const user = state.find(x=>x._id==action.payload)
+      if(user){
+        user.isFollowing  =!user.isFollowing
+      }
+    },
   },
 });
 
-export const { handleFollowings, handleRemoveUserFromFollowings, handleFollowingSearch, clearFollowingsState } = followingsSlice.actions;
+export const { handleFollowings, handleRemoveUserFromFollowings, handleFollowingSearch, clearFollowingsState, handleToggleIsFollowing } = followingsSlice.actions;
 export default followingsSlice.reducer;

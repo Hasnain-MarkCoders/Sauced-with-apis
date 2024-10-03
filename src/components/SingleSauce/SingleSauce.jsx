@@ -71,6 +71,7 @@ const SingleSauce = ({
 
 
       if (sauceType == "featured") {
+        console.log("sauceType==================>", sauceType)
         dispatch(handleToggleFeaturedSauce(item?._id))
         if (selected) {
           dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
@@ -164,6 +165,7 @@ const SingleSauce = ({
             { width: scale(110), ...customStyles },
           ]}
         >
+          
           {isLoading && (
             <View style={[styles.skeletonContainer, styles.imageContainer]}>
               <SkeletonPlaceholder
@@ -182,6 +184,7 @@ const SingleSauce = ({
           )}
 
           <View style={styles.imageContainer}>
+        
             <ImageBackground
               source={{ uri: url }}
               style={[styles.image, searchPageSauceStyles]}
@@ -224,7 +227,7 @@ const SingleSauce = ({
                     }
                     handleToggleLike();
                     Snackbar.show({
-                      text: !selected
+                      text: !selected.isChecked
                         ? 'You love this Sauce.'
                         : 'You unlove this Sauce.',
                       duration: Snackbar.LENGTH_SHORT,

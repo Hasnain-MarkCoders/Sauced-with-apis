@@ -22,7 +22,15 @@ const AllCheckinsScreen = ({
     const fn = route?.params?.fn||function(){}
     const numberOfRoutesBack = route?.params?.routerNumber||1
     const auth = useSelector(state => state.auth)
-
+    const url  = route?.params.url||""
+    const title = route?.params.title||""
+    const item = route?.params.item||{}
+    const  reviewCount = route?.params?.reviewCount||""
+    const  setReviewCount = route?.params?.setReviewCount||function(){}
+    const  handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
+    const  mycb = route?.params?.mycb||function(){}
+    const handleLike = route?.params?.handleLike|| function(){}
+    const  sauceType  = route?.params?.sauceType||"" 
     const uri = auth.url
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
@@ -106,7 +114,25 @@ const AllCheckinsScreen = ({
 
                 <Header
                     showMenu={false}
-                    cb={() => (navigation.pop(numberOfRoutesBack), fn())} showProfilePic={false} headerContainerStyle={{
+                    // cb={() => (navigation.pop(numberOfRoutesBack), fn())} 
+                    cb={() => {
+                        navigation.navigate("ProductDetail", {
+                             url,
+                             title,
+                             item,
+                             reviewCount,
+                             setReviewCount,
+                             handleIncreaseReviewCount,
+                             sauceType,
+                             mycb,
+                             handleLike
+                            })
+
+
+                    }} 
+
+                    
+                    showProfilePic={false} headerContainerStyle={{
                         paddingBottom: scale(20)
                     }} showText={false} />
 

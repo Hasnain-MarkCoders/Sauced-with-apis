@@ -94,9 +94,18 @@ const ExternalUserFollowingList = ({
 
   // Handle user follow/unfollow action
   const handleUser = useCallback(async (user) => {
-    dispatch(handleUsers([user])); // Update user state optimistically
-    dispatch(handleRemoveUserFromFollowings(user?._id)); // Remove user from followings
-    dispatch(handleStatsChange({ followings: -1 })); // Update stats
+    // dispatch(handleUsers([user])); // Update user state optimistically
+    // dispatch(handleRemoveUserFromFollowings(user?._id)); // Remove user from followings
+    // dispatch(handleStatsChange({ followings: -1 })); // Update stats
+    const updatedUser = { ...user, isFollowing: !user.isFollowing };
+    if (user.isFollowing){
+      dispatch(handleRemoveUserFromFollowings(user._id))
+      dispatch(handleUsers([updatedUser])); // Update user state optimistically
+      dispatch(handleStatsChange({ followings: -1 }))
+    }
+    setData(prev => prev.map(item => item._id === user._id ? updatedUser : item))
+    dispatch(handleStatsChange({ followings: +1 }))
+
     await axiosInstance.post("/follow", { _id: user?._id });
   }, [dispatch, axiosInstance]);
 
@@ -119,7 +128,7 @@ const ExternalUserFollowingList = ({
           <UserCard
             showButton={auth?._id !== item?._id} // Show button only if it's not the current user
             cb={handleUser}
-            title={item.isFollowing?"Unfollow":"Follow"}
+            title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
             _id={item?._id}
             item={item}
             url={item.image}

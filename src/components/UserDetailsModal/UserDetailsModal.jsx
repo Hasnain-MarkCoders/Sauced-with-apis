@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Modal, View, TouchableOpacity, Image, Alert } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import DetailKeyValue from '../DetailKeyValue/DetailKeyValue';
-import Lightbox from 'react-native-lightbox';
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 import closeIcon from './../../../assets/images/close.png';
 
 const UserDetailsModal = ({
@@ -99,25 +100,27 @@ const UserDetailsModal = ({
                       marginBottom:scale(20)
                     }}>
 
-                  <Lightbox
-                    style={{
-                      width: lightBox ? '100%' : scale(50),
-                      borderRadius: scale(20),
-                    }}
-                    activeProps={{ resizeMode: lightBox ? 'contain' : 'cover' }}
-                    springConfig={{ tension: 30, friction: 7 }}
-                    onOpen={() => setLightBox(true)}
-                    willClose={() => setLightBox(false)}>
-                       <Image
-                  style={{
-                    resizeMode: 'contain',
-                    width:lightBox?"100%": scale(50),
-                    borderRadius:lightBox?"100%": scale(50),
-                    height:lightBox?scale(200): scale(50),
-                  }}
-                  source={{uri:profilePicture}}
-                />
-                  </Lightbox>
+<Lightbox
+    activeProps={{
+        resizeMode: 'contain',
+        style: {
+            width: '100%',
+            height: scale(200),
+            borderRadius: '100%',
+        },
+    }}
+    // springConfig={{ tension: 30, friction: 7 }}
+>
+    <Image
+        style={{
+            resizeMode: 'contain',
+            width: scale(50),
+            height: scale(50),
+            borderRadius: scale(20),
+        }}
+        source={{ uri: profilePicture }}
+    />
+</Lightbox>
                   <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={name} />
                     </View>
                   <DetailKeyValue Key="Email:" value={email} />

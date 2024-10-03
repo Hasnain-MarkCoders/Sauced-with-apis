@@ -26,7 +26,7 @@ const MapScreen = () => {
   const lng = route?.params?.lng;
   const lat = route?.params?.lat;
   const showContinue = route?.params?.showContinue ;
-  const handleEventCoords = route?.params?.fn;
+  const handleEventCoords = route?.params?.fn || function(){};
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
@@ -301,18 +301,18 @@ const handleAddHotSauce = async(data)=>{
           onPress={(data, details = null) => {
             const placeId = details?.place_id || data?.place_id;
             const postalCode = details?.address_components?.find(component =>
-              component.types.includes('postal_code')
+              component?.types?.includes('postal_code')
             )?.long_name;
             const newSelectedRegion = {
-              latitude: details.geometry.location?.lat,
-              longitude: details.geometry.location?.lng,
+              latitude: details?.geometry?.location?.lat,
+              longitude: details?.geometry?.location?.lng,
             };
 
             setSelectedRegion(newSelectedRegion);
 
             handleEventCoords({
-              latitude: details.geometry.location?.lat,
-              longitude: details.geometry.location?.lng,
+              latitude: details?.geometry?.location?.lat,
+              longitude: details?.geometry?.location?.lng,
               destination: data?.description,
               zip: postalCode?.toString(),
               place_id:placeId?.toString()
@@ -365,7 +365,7 @@ const handleAddHotSauce = async(data)=>{
         onRegionChangeComplete={handleRegionChangeComplete}
         ref={mapRef}
         onPress={async (e) => {
-          const { latitude, longitude } = e.nativeEvent.coordinate;
+          const { latitude, longitude } = e?.nativeEvent?.coordinate;
           try {
             const geocodeResponse = await Geocoder.from(latitude, longitude);
             const placeId = geocodeResponse.results[0].place_id

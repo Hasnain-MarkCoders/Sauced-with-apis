@@ -11,7 +11,7 @@ const flavors = [
 
 const { width } = Dimensions.get('window');
 
-const SelectableChips = ({setData}) => {
+const SelectableChips = ({setData=()=>{}, isClearChips=false}) => {
   const [selectedFlavors, setSelectedFlavors] = useState([]);
 
   const handleChipPress = (flavor) => {
@@ -21,11 +21,14 @@ const SelectableChips = ({setData}) => {
       setSelectedFlavors([...selectedFlavors, flavor]);
     }
   };
-
-
   useEffect(()=>{
     setData(prev=>({...prev, ["foodPairings"]:selectedFlavors}))
   },[selectedFlavors])
+  useEffect(()=>{
+    if(isClearChips){
+      setSelectedFlavors([])
+    }
+  },[isClearChips])
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

@@ -21,8 +21,8 @@ const Banner = ({
     item
 }) => {
     const interestedEvents = useSelector(state=>state?.interestedEvents)
-    const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
-    const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
+    // const [tempIsInterested, setTempIsInterested] = useState(!!interestedEvents?.find(item=>item?._id==event?._id))
+    const isInterestedEvent = !!interestedEvents?.find(item => item?._id === event?._id);
     const navigation = useNavigation()
     return (
         <>{
@@ -127,11 +127,13 @@ const Banner = ({
                             </TouchableOpacity>
                             <TouchableOpacity
 
-                                onPress={()=>{cb(event); setTempIsInterested(prev=>!prev)}}
+                                onPress={()=>{cb(event);
+                                    //  setTempIsInterested(prev=>!prev)
+                                    }}
                                 style={{
                                     paddingHorizontal: scale(10),
                                     paddingVertical: scale(6),
-                                    backgroundColor: tempIsInterested?"#FFA100":"white",
+                                    backgroundColor: isInterestedEvent?"#FFA100":"white",
                                     borderRadius: scale(5),
                                     flexGrow:1,
                                     flexShrink:0,
@@ -146,7 +148,12 @@ const Banner = ({
 
 
 
-                                }}>{isInterested || tempIsInterested?"Not-Interested":"Interested"}</Text>
+                                }}>
+                                    {/* {isInterested || tempIsInterested?"Not-Interested":"Interested"}
+                                     */}
+                                    { isInterestedEvent?"Not-Interested":"Interested"}
+                                    
+                                    </Text>
 
 
                             </TouchableOpacity>

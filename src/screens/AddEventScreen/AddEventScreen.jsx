@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Image,ScrollView, Text, View, Keyboard, Alert, Vibration, TouchableOpacity, Linking } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Image, ScrollView, Text, View, Keyboard, Alert, Vibration, TouchableOpacity, Linking, Modal, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -15,20 +15,21 @@ import useAxios from '../../../Axios/useAxios.js';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
+import { useSelector } from 'react-redux';
 
 const AddEventScreen = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const [openDate, setOpenDate] = useState(false)
     const [yesNoModal, setYesNoModal] = useState({
-        open:false,
-        message:"",
-        severity:"success",
-        cb:()=>{}
+        open: false,
+        message: "",
+        severity: "success",
+        cb: () => { }
     })
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: "",
-        success:true
+        success: true
     })
     const [query, setQuery] = useState({
         title: "",
@@ -41,9 +42,18 @@ const AddEventScreen = () => {
     const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const axiosInstance = useAxios()
     const navigation = useNavigation()
+    const [pickerMode, setPickerMode] = useState('date');
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [isNext, setIsNext] = useState(false)
+    const [currentStep, setCurrentStep] = useState('date'); // 'date' or 'time'
+    const auth = useSelector(state=>state.auth)
 
-    const handleEventCoords = (coords)=>{
-        setQuery(prev=>({...prev, ["address"]:coords?.destination,["coordinates"]:{latitude:coords?.latitude, longitude:coords?.longitude} }))
+    useEffect(()=>{
+console.log("auth.token", auth.token)
+    },[auth])
+
+    const handleEventCoords = (coords) => {
+        setQuery(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
     }
 
 
@@ -51,94 +61,96 @@ const AddEventScreen = () => {
 
     const checkLocationServiceAndNavigate = () => {
         setLoading(true); // Start loading indicator
-        const permission = Platform.OS === 'ios' 
-          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
-          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+        const permission = Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+            : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
         check(permission).then(result => {
-          if (result === RESULTS.GRANTED) {
-            fetchCurrentLocation();
-          } else if (result === RESULTS.DENIED) {
-            setYesNoModal({
-                open: true,
-                message: "Location Permission Required. Would you like to grant permission?",
-                success: true,
-                cb: () => {
-                    request(permission).then(result => {
-                        if (result === RESULTS.GRANTED) {
-                          fetchCurrentLocation();
-                        } else {
-                          Alert.alert(
-                              "Location Permission Blocked",
-                              "Please enable location permission in your device settings to use this feature.",
-                              [
-                                  { text: "Cancel", style: "cancel" },
-                                  { text: "Open Settings", onPress: () => Linking.openSettings() }
-                              ]
-                          );
-                          setLoading(false); // Stop loading indicator
-                        }
-                      });
-                }
-            });
-          } else {
-            setLoading(false); // Stop loading indicator
-            setYesNoModal({
-                open: true,
-                message: "Location Permission Required. Would you like to grant permission?",
-                success: true,
-                cb: () => {
-                    request(permission).then(result => {
-                        if (result === RESULTS.GRANTED) {
-                          fetchCurrentLocation();
-                        } else {
-                          Alert.alert(
-                              "Location Permission Blocked",
-                              "Please enable location permission in your device settings to use this feature.",
-                              [
-                                  { text: "Cancel", style: "cancel" },
-                                  { text: "Open Settings", onPress: () => Linking.openSettings() }
-                              ]
-                          );
-                          setLoading(false); // Stop loading indicator
-                        }
-                      });
-                }
-            });
-          }
+            if (result === RESULTS.GRANTED) {
+                fetchCurrentLocation();
+            } else if (result === RESULTS.DENIED) {
+                setYesNoModal({
+                    open: true,
+                    message: "Location Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permission).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                fetchCurrentLocation();
+                            } else {
+                                Alert.alert(
+                                    "Location Permission Blocked",
+                                    "Please enable location permission in your device settings to use this feature.",
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                                setLoading(false); // Stop loading indicator
+                            }
+                        });
+                    }
+                });
+            } else {
+                setLoading(false); // Stop loading indicator
+                setYesNoModal({
+                    open: true,
+                    message: "Location Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permission).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                fetchCurrentLocation();
+                            } else {
+                                Alert.alert(
+                                    "Location Permission Blocked",
+                                    "Please enable location permission in your device settings to use this feature.",
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                                setLoading(false); // Stop loading indicator
+                            }
+                        });
+                    }
+                });
+            }
         }).catch(error => {
-          console.warn("Error checking location permission:", error);
-          Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
-          setLoading(false); // Stop loading indicator
+            console.warn("Error checking location permission:", error);
+            Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+            setLoading(false); // Stop loading indicator
         });
-      };
-    
-      const fetchCurrentLocation = () => {
+    };
+
+    const fetchCurrentLocation = () => {
         Geolocation.getCurrentPosition(
-          (position) => {
-            console.log("Current position:", position);
-            navigation.navigate("Map", {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-              fn:handleEventCoords
-            });
-            setLoading(false); // Stop loading indicator
-          },
-          (error) => {
-            console.log("Error fetching current location:", error);
-            Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
-            setLoading(false); // Stop loading indicator
-          },
-          { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
+            (position) => {
+                console.log("Current position:", position);
+                navigation.navigate("Map", {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    fn: handleEventCoords
+                });
+                setLoading(false); // Stop loading indicator
+            },
+            (error) => {
+                console.log("Error fetching current location:", error);
+                Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+                setLoading(false); // Stop loading indicator
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
         );
-      };
+    };
+
+
+useEffect(()=>{
+console.log("selectedDate======================>", selectedDate)
+},[selectedDate])
 
 
 
 
-
-
- 
     useEffect(() => {
         const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
             setIsKeyBoard(true)
@@ -152,13 +164,13 @@ const AddEventScreen = () => {
         };
     }, []);
 
-    const handleAddEvent=async()=>{
+    const handleAddEvent = async () => {
 
         if (!query?.title) {
             return setAlertModal({
                 open: true,
                 message: "Title is required!",
-                success:false
+                success: false
             })
 
         }
@@ -181,15 +193,15 @@ const AddEventScreen = () => {
         // }
 
 
-        else if (!query?.address) {
-            return setAlertModal({
-                open: true,
-                message: "Address is required!",
-                success:false
+        // else if (!query?.address) {
+        //     return setAlertModal({
+        //         open: true,
+        //         message: "Address is required!",
+        //         success:false
 
-            })
+        //     })
 
-        }
+        // }
 
 
         // else if (!query?.destinationDetails) {
@@ -207,49 +219,50 @@ const AddEventScreen = () => {
         //     })
 
         // }
-        
-            try{
-                    setIsSubmitLoading(true)
-        const res = await axiosInstance.post("/request-event", {
-            "eventName": query?.title,
-            // "eventDetails": query?.destinationDetails,
-            // "eventDate": query?.date,
-            // "venueName": query?.address,
-            "venueDescription": query?.destinationDetails,
-            "venueLocation.longitude": query.coordinates?.longitude,
-            "venueLocation.latitude": query.coordinates?.latitude
-        }
-        )
-         console.log("<==============================================res============================================>", res.data.message)
-         setAlertModal({
-            open: true,
-            message: res?.data?.message,
-            success:true
-        })
-        setQuery({
-            title: "",
-            eventOrganizer: "",
-            date: new Date(),
-            address: "",
-            destinationDetails: "",
-            coordinates: {}
-        })
 
-        // setTimeout(()=>{
-        //     navigation.goBack()
-        // })
-            }catch(error){
-                console.log(error)
-                setAlertModal({
-                    open: true,
-                    message: error?.message,
-                success:false
-
-                })
-
-            }finally{
-                setIsSubmitLoading(false)
+        try {
+            setIsSubmitLoading(true)
+            console.log("query?.date=========================>", query?.date)
+            const res = await axiosInstance.post("/request-event", {
+                "eventName": query?.title,
+                // "eventDetails": query?.destinationDetails,
+                "eventDate": query?.date,
+                // "venueName": query?.address,
+                "venueDescription": query?.destinationDetails,
+                "venueLocation.longitude": query.coordinates?.longitude,
+                "venueLocation.latitude": query.coordinates?.latitude
             }
+            )
+            console.log("<==============================================res============================================>", res.data.message)
+            setAlertModal({
+                open: true,
+                message: res?.data?.message,
+                success: true
+            })
+            setQuery({
+                title: "",
+                eventOrganizer: "",
+                date: new Date(),
+                address: "",
+                destinationDetails: "",
+                coordinates: {}
+            })
+
+            // setTimeout(()=>{
+            //     navigation.goBack()
+            // })
+        } catch (error) {
+            console.log(error)
+            setAlertModal({
+                open: true,
+                message: error?.message,
+                success: false
+
+            })
+
+        } finally {
+            setIsSubmitLoading(false)
+        }
 
 
 
@@ -257,129 +270,139 @@ const AddEventScreen = () => {
     }
 
 
-
-
+    const togglePickerMode = () => {
+        setPickerMode((prevMode) => (prevMode === 'date' ? 'time' : 'date'));
+      };
+      const handleConfirmDateTime = () => {
+        // Update the query state with the combined date and time
+        setQuery((prev) => ({ ...prev, date: selectedDate }));
+    
+        // Close the modal and reset the picker
+        setOpenDate(false);
+        setCurrentStep('date');
+        setIsNext(false)
+      };
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
                 <ScrollView>
 
-                <Header cb={() => navigation.goBack()}
-                    showMenu={false}
-                    showProfilePic={false} headerContainerStyle={{
-                        paddingBottom: scale(20)
-                    }} title={""} showText={false} />
+                    <Header cb={() => navigation.goBack()}
+                        showMenu={false}
+                        showProfilePic={false} headerContainerStyle={{
+                            paddingBottom: scale(20)
+                        }} title={""} showText={false} />
 
-                <View style={{
-                    paddingHorizontal: scale(20),
-                    paddingBottom: scale(20),
-                    flex: 1
-                }}>
-                    <Text style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: scale(35),
-                        lineHeight: scale(50),
-                        marginBottom: scale(20)
-                    }}>
-                        Add Events
-                    </Text>
                     <View style={{
-                        gap: scale(20),
-                        flex: 1,
-                        justifyContent: "space-between",
+                        paddingHorizontal: scale(20),
+                        paddingBottom: scale(20),
+                        flex: 1
                     }}>
-
+                        <Text style={{
+                            color: "white",
+                            fontWeight: 600,
+                            fontSize: scale(35),
+                            lineHeight: scale(50),
+                            marginBottom: scale(20)
+                        }}>
+                            Add Events
+                        </Text>
                         <View style={{
-                            gap: scale(20)
+                            gap: scale(20),
+                            flex: 1,
+                            justifyContent: "space-between",
                         }}>
 
                             <View style={{
-                                gap:scale(10)
+                                gap: scale(20)
                             }}>
-                            <Text style={{
-                                fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Title *
-                            </Text>
-                            <CustomInput
-                                // cb={() => setPage(1)}
-                                name="title"
-                                onChange={handleText}
-                                updaterFn={setQuery}
-                                value={query.title}
-                                showTitle={false}
-                                placeholder="Title"
-                                containterStyle={{
-                                    flexGrow: 1,
-                                }}
-                                inputStyle={{
-                                    borderColor: "#FFA100",
-                                    backgroundColor: "#2e210a",
-                                    color: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 10,
-                                    padding: 15,
 
-                                }} />
-                            </View>
-                            <View style={{
-                                gap:scale(10)
-                            }}>
-                            <Text style={{
-                                fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Event Organizer
-                            </Text>
-                            <CustomInput
-                                // cb={() => setPage(1)}
-                                name="eventOrganizer"
-                                onChange={handleText}
-                                updaterFn={setQuery}
-                                value={query.eventOrganizer}
-                                showTitle={false}
-                                placeholder="Event Organizer"
-                                containterStyle={{
-                                    flexGrow: 1,
-                                }}
-                                inputStyle={{
-                                    borderColor: "#FFA100",
-                                    backgroundColor: "#2e210a",
-                                    color: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 10,
-                                    padding: 15,
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        Title *
+                                    </Text>
+                                    <CustomInput
+                                        // cb={() => setPage(1)}
+                                        name="title"
+                                        onChange={handleText}
+                                        updaterFn={setQuery}
+                                        value={query.title}
+                                        showTitle={false}
+                                        placeholder="Title"
+                                        containterStyle={{
+                                            flexGrow: 1,
+                                        }}
+                                        inputStyle={{
+                                            borderColor: "#FFA100",
+                                            backgroundColor: "#2e210a",
+                                            color: "white",
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            padding: 15,
 
-                                }} />
-                            </View>
-                                    <View style={{
-                                gap:scale(10)
-                            }}>
-                                         <Text style={{
-                                fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Date
-                            </Text>
+                                        }} />
+                                </View>
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        Event Organizer
+                                    </Text>
+                                    <CustomInput
+                                        // cb={() => setPage(1)}
+                                        name="eventOrganizer"
+                                        onChange={handleText}
+                                        updaterFn={setQuery}
+                                        value={query.eventOrganizer}
+                                        showTitle={false}
+                                        placeholder="Event Organizer"
+                                        containterStyle={{
+                                            flexGrow: 1,
+                                        }}
+                                        inputStyle={{
+                                            borderColor: "#FFA100",
+                                            backgroundColor: "#2e210a",
+                                            color: "white",
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            padding: 15,
+
+                                        }} />
+                                </View>
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        Date
+                                    </Text>
                                     <CustomButtom
-                                    Icon={() => <Image source={arrow} />}
-                                    showIcon={false}
-                                    buttonTextStyle={{ fontSize: scale(14) }}
-                                    buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
-                                    onPress={() => {
-                                        Vibration.vibrate(10);
-                                        // navigation.navigate("SauceDetails")
-                                        setOpenDate(true)
-                                    }}
-                                    title={query.date.toDateString()}
-                                />
-                                    </View>
+                                        Icon={() => <Image source={arrow} />}
+                                        showIcon={false}
+                                        buttonTextStyle={{ fontSize: scale(14) }}
+                                        buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
+                                        onPress={() => {
+                                            Vibration.vibrate(10);
+                                            // navigation.navigate("SauceDetails")
+                                            setOpenDate(true)
+                                        }}
+                                        title={query.date.toDateString()}
+                                    />
+                                </View>
 
-                           
-                                    {/* <View style={{
+
+                                {/* <View style={{
                                 gap:scale(10)
                             }}>
                                     <Text style={{
@@ -409,56 +432,56 @@ const AddEventScreen = () => {
 
                                 }} />
                                     </View> */}
-                            <View>
-                                <View style={{
-                                gap:scale(10)
-                            }}>
-                                <Text style={{
-                                fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Details
-                            </Text>
-                                <CustomInput
-                                    // cb={() => setPage(1)}
-                                    multiline={true}
-                                    numberOfLines={5}
-                                    name="destinationDetails"
-                                    onChange={handleText}
-                                    updaterFn={setQuery}
-                                    value={query.destinationDetails}
-                                    showTitle={false}
-                                    placeholder="Details"
-                                    containterStyle={{
-                                        flexGrow: 1,
-                                    }}
-                                    inputStyle={{
-                                        borderColor: "#FFA100",
-                                        backgroundColor: "#2e210a",
-                                        color: "white",
-                                        borderWidth: 1,
-                                        borderRadius: 10,
-                                        padding: 15,
-            textAlignVertical:"top"
-
-
-
-                                    }} />
-                                </View>
-                            </View>
-
-
-
+                                <View>
                                     <View style={{
-                                gap:scale(10)
-                            }}>
+                                        gap: scale(10)
+                                    }}>
+                                        <Text style={{
+                                            fontSize: scale(17),
+                                            color: "white"
+                                        }}>
+                                            Details
+                                        </Text>
+                                        <CustomInput
+                                            // cb={() => setPage(1)}
+                                            multiline={true}
+                                            numberOfLines={5}
+                                            name="destinationDetails"
+                                            onChange={handleText}
+                                            updaterFn={setQuery}
+                                            value={query.destinationDetails}
+                                            showTitle={false}
+                                            placeholder="Details"
+                                            containterStyle={{
+                                                flexGrow: 1,
+                                            }}
+                                            inputStyle={{
+                                                borderColor: "#FFA100",
+                                                backgroundColor: "#2e210a",
+                                                color: "white",
+                                                borderWidth: 1,
+                                                borderRadius: 10,
+                                                padding: 15,
+                                                textAlignVertical: "top"
+
+
+
+                                            }} />
+                                    </View>
+                                </View>
+
+
+
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
                                     <Text style={{
-                                fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Address *
-                            </Text>
-                            {/* <CustomInput
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        Address
+                                    </Text>
+                                    {/* <CustomInput
                                 // cb={() => {}}
                                 name="coordinates"
                                 onChange={handleText}
@@ -479,69 +502,213 @@ const AddEventScreen = () => {
 
                                 }} /> */}
 
-                            <CustomButtom
-                        loading={isloading}
-                            Icon={() => <Image source={arrow} />}
-                            showIcon={true}
-                            buttonTextStyle={{ fontSize: scale(14) }}
-                            buttonstyle={{
-                                width: "100%", borderColor: "#FFA100",
-                                backgroundColor: "#2e210a", padding: 15,
-                                display: "flex", gap: 10, flexDirection: "row-reverse",
-                                alignItems: "center", justifyContent:isloading?"center": "space-between"
-                            }}
-                            onPress={checkLocationServiceAndNavigate}
+                                    <CustomButtom
+                                        loading={isloading}
+                                        Icon={() => <Image source={arrow} />}
+                                        showIcon={true}
+                                        buttonTextStyle={{ fontSize: scale(14) }}
+                                        buttonstyle={{
+                                            width: "100%", borderColor: "#FFA100",
+                                            backgroundColor: "#2e210a", padding: 15,
+                                            display: "flex", gap: 10, flexDirection: "row-reverse",
+                                            alignItems: "center", justifyContent: isloading ? "center" : "space-between"
+                                        }}
+                                        onPress={checkLocationServiceAndNavigate}
 
-                            title={query.address?query.address:"Location"}
-                        />
+                                        title={query.address ? query.address : "Location"}
+                                    />
 
-                                    </View>
+                                </View>
 
-                        </View>
-                        <View>
+                            </View>
+                            <View>
 
-                            <CustomButtom
-                            loading={isSubmitLoading}
-                                showIcon={false}
-                                buttonTextStyle={{ fontSize: scale(14) }}
-                                buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
-                                // onPress={() => {Vibration.vibrate(10) ;setAlertModal(true)}}
-                                onPress={handleAddEvent}
-                                title={"Submit"}
-                            />
+                                <CustomButtom
+                                    loading={isSubmitLoading}
+                                    showIcon={false}
+                                    buttonTextStyle={{ fontSize: scale(14) }}
+                                    buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
+                                    // onPress={() => {Vibration.vibrate(10) ;setAlertModal(true)}}
+                                    onPress={handleAddEvent}
+                                    title={"Submit"}
+                                />
+                            </View>
                         </View>
                     </View>
-                </View>
                 </ScrollView>
-                 <DatePicker
-                modal
-                open={openDate}
-                date={new Date()}
+                {/* <DatePicker
+                    modal
+                    open={openDate}
+                    mode="date"
+                    date={new Date()}
 
-        onConfirm={(date) => {
-            setOpenDate(false)
-          setQuery(prev=>({...prev, date:date}))
-        }}
-        onCancel={() => {
-            setOpenDate(false)
-        }}
-      />
-  <YesNoModal
+                    onConfirm={(date) => {
+                        setOpenDate(false)
+                        setQuery(prev => ({ ...prev, date: date }))
+                    }}
+                    onCancel={() => {
+                        setOpenDate(false)
+                    }}
+                />
+                <YesNoModal
                     modalVisible={yesNoModal.open}
-                    setModalVisible={()=>{
+                    setModalVisible={() => {
                         setYesNoModal({
                             open: false,
                             messsage: "",
-                            severity:true,
+                            severity: true,
                         })
                     }}
                     success={yesNoModal.severity}
                     title={"Location Request"}
                     cb={yesNoModal.cb}
-                                    
-                    />
 
-<CustomAlertModal
+                /> */}
+{/* 
+<Modal
+          transparent={true}
+          animationType="slide"
+          visible={openDate}
+          onRequestClose={() => {
+            setOpenDate(false);
+            setPickerMode('date');
+          }}
+        >
+            <TouchableWithoutFeedback  onPress={() => {
+            setOpenDate(false);
+            setPickerMode('date');
+          }} >
+                <View style={styles.modalOverlay}>
+
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <DatePicker
+              theme="dark"
+                mode={pickerMode}
+                date={selectedDate}
+                onDateChange={(date) => {
+                  setSelectedDate(date);
+                }}
+                textColor="white"
+                fadeToColor="none"
+                androidVariant="iosClone"
+                locale="en"
+              />
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={togglePickerMode} style={styles.toggleButton}>
+                  <Text style={styles.toggleButtonText}>
+                    {pickerMode === 'date' ? 'Switch to Time Picker' : 'Switch to Date Picker'}
+                  </Text>
+                </TouchableOpacity>
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setOpenDate(false);
+                      setPickerMode('date');
+                    }}
+                    style={styles.cancelButton}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setOpenDate(false);
+                      setPickerMode('date');
+                      setQuery((prev) => ({ ...prev, date: selectedDate }));
+                    }}
+                    style={styles.confirmButton}
+                  >
+                    <Text style={styles.confirmButtonText}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </Modal> */}
+
+
+<Modal
+          transparent={true}
+          animationType="slide"
+          visible={openDate}
+          onRequestClose={() => {
+            setOpenDate(false);
+            setCurrentStep('date');
+          }}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setOpenDate(false);
+              setCurrentStep('date');
+            }}
+          >
+            <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>
+                      {currentStep === 'date' ? 'Select Date' : 'Select Time'}
+                    </Text>
+                    <DatePicker
+                      theme="dark"
+                      mode={currentStep}
+                      date={selectedDate}
+                      onDateChange={(date) => {
+                        setIsNext(true)
+                        if (currentStep === 'date') {
+                          
+                          const updatedDate = new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            date.getDate(),
+                            selectedDate.getHours(),
+                            selectedDate.getMinutes()
+                          );
+                          setSelectedDate(updatedDate);
+                        } else {
+                        
+                          const updatedDate = new Date(selectedDate);
+                          updatedDate.setHours(date.getHours());
+                          updatedDate.setMinutes(date.getMinutes());
+                          setSelectedDate(updatedDate);
+                        }
+                      }}
+                      textColor="white"
+                      fadeToColor="none"
+                      androidVariant="iosClone"
+                      locale="en"
+                    />
+                    <View style={styles.buttonContainer}>
+                      {currentStep === 'date' ? (
+                        <TouchableOpacity
+                          onPress={() => {setCurrentStep('time');setIsNext(false)}}
+                          disabled={!isNext}
+                        >
+                              
+                          <Text style={{color: isNext ? 'white' : 'gray', alignSelf:"center", fontSize:scale(14)}}>Next</Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={()=>{
+                            handleConfirmDateTime()
+                          }}
+                       
+                          disabled={!isNext}
+                        >
+                          <Text style={{color: isNext ? 'white' : 'gray', alignSelf:"center", fontSize:scale(14), }}>Confirm</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                </View>
+                </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+                <CustomAlertModal
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}
                     success={alertModal?.success}
@@ -554,5 +721,75 @@ const AddEventScreen = () => {
         </ImageBackground>
     )
 }
-
+const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      width:"90%",
+    },
+    modalTitle:{
+        color:"white",
+        fontSize: scale(16),
+        fontWeight:"bold",
+        marginBottom: scale(20),
+        alignSelf:"center"
+    },
+    modalContent: {
+      backgroundColor: '#2e210a',
+      padding: scale(20),
+    borderRadius: scale(20),
+      alignItems:"center",
+      borderColor: "#FFA100",
+      borderWidth: 1,
+    },
+    buttonContainer: {
+      marginTop: 20,
+      width:"100%"
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(33, 22, 10, .85)',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    toggleButton: {
+      padding: 15,
+      backgroundColor: '#FFA100',
+      borderRadius: 10,
+      marginBottom: 10,
+    },
+    toggleButtonText: {
+      color: 'white',
+      textAlign: 'center',
+      fontSize: scale(16),
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    cancelButton: {
+      flex: 1,
+      marginRight: 5,
+      padding: 15,
+      backgroundColor: 'gray',
+      borderRadius: 10,
+    },
+    confirmButton: {
+      flex: 1,
+      marginLeft: 5,
+      padding: 15,
+      backgroundColor: '#FFA100',
+      borderRadius: 10,
+    },
+    cancelButtonText: {
+      color: 'white',
+      textAlign: 'center',
+      fontSize: scale(16),
+    },
+    confirmButtonText: {
+      color: 'white',
+      textAlign: 'center',
+      fontSize: scale(16),
+    },
+  });
 export default AddEventScreen

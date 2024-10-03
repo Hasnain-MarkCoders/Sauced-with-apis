@@ -75,7 +75,7 @@ dispatch(handleRemoveUserFromUsers(user?._id))
            showButton={auth._id==item._id?false:true}
            cb={handleUser}
            _id={item?._id}
-           title={"Follow"}
+           title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
         item={item}
         url={item.image}
         name={item?.name}

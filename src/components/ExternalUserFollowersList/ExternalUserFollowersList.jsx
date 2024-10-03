@@ -9,6 +9,8 @@ import { handleUsers } from '../../../android/app/Redux/users';
 import { handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
 import { debounce } from 'lodash';
 import { useNavigation } from '@react-navigation/native';
+import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
+import { handleStatsChange } from '../../../android/app/Redux/userStats';
 
 const ExternalUserFollowersList = ({
   numColumns = 2,
@@ -87,8 +89,16 @@ const ExternalUserFollowersList = ({
 
   // Handle follow/unfollow actions
   const handleUser = useCallback(async (user) => {
-    dispatch(handleUsers([user])); // Update user state optimistically
-    dispatch(handleRemoveUserFromFollowers(user?._id)); // Remove user from followers
+    const updatedUser = { ...user, isFollowing: !user.isFollowing };
+    if (user.isFollowing){
+      dispatch(handleRemoveUserFromFollowings(user._id))
+      dispatch(handleUsers([updatedUser])); // Update user state optimistically
+      dispatch(handleStatsChange({ followings: -1 }))
+    }
+    setData(prev => prev.map(item => item._id === user._id ? updatedUser : item))
+    // dispatch(handleRemoveUserFromFollowers(user?._id)); // Remove user from followers
+    dispatch(handleStatsChange({ followings: +1 }))
+
     await axiosInstance.post("/follow", { _id: user?._id });
   }, [dispatch, axiosInstance]);
 
@@ -111,7 +121,7 @@ const ExternalUserFollowersList = ({
           <UserCard
             showButton={auth?._id !== item?._id} // Only show button if not current user
             cb={handleUser}
-            title={item.isFollowing?"Unfollow":"Follow"}
+            title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
             _id={item?._id}
             item={item}
             url={item.image}

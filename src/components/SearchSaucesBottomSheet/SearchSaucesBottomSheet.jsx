@@ -5,7 +5,7 @@ import useAxios from "../../../Axios/useAxios";
 import { scale } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
 
-const SearchSaucesBottomSheet = ({photo={}, fn=()=>{}}) => {
+const SearchSaucesBottomSheet = ({photo={}, fn=()=>{}, setCapturedImage=()=>{}}) => {
   const sheetRef = useRef(null);
   const [sauces, setSauces] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -103,6 +103,7 @@ console.log("photo ha ", photo)
           onPress={() => {
             if (selectedSauce) {
               console.log("Quick Checkin for:", selectedSauce); // Log selected sauce on quick checkin
+              setCapturedImage(null)
                 navigation.navigate("Checkin", { product:selectedSauce,routerNumber:4, photo, fn})
             }
             

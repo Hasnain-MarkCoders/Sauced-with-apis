@@ -5,7 +5,8 @@ import { scale } from 'react-native-size-matters'
 import { generateThreeDigitRandomNumber, messagesData } from '../../../utils'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
 import filledHeart from "./../../../assets/images/filledHeart.png"
-import Lightbox from 'react-native-lightbox';
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 import NestedComment from '../NestedComment/NestedComment'
 import UserDetailsModal from '../UserDetailsModal/UserDetailsModal'
 import useAxios from '../../../Axios/useAxios'
@@ -173,25 +174,39 @@ console.log(profileUri)
             }}>
 
                 {
-                    assets.map(uri =>uri&& <Lightbox
-                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-                        springConfig={{ tension: 30, friction: 7 }}
-                        onOpen={() => setLightBox(true)}
-                        willClose={() => setLightBox(false)}
-                    >
-                      {uri&&  <Image
-                            style={{
-                                width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(100),
+                    assets.map(uri =>uri&&
+                        <Lightbox
+                        // springConfig={{ tension: 30, friction: 7 }}
+                        activeProps={{
+                            resizeMode: 'contain',
+                            style: {
+                                width: '100%',
+                                height: '100%',
                                 minWidth: scale(120),
                                 minHeight: scale(100),
-                                borderRadius: LightBox ? 0 : scale(10),
-                                borderColor: LightBox ? 0 : "#FFA100",
-                                borderWidth: LightBox ? 0 : scale(1)
-                            }}
-                            source={{ uri }}
-                        />}
-                    </Lightbox>)
+                                borderRadius: 0,
+                                borderColor: 'transparent',
+                                borderWidth: 0,
+                            },
+                        }}
+                    >
+                        {uri && (
+                            <Image
+                                style={{
+                                    width: scale(120),
+                                    height: scale(100),
+                                    minWidth: scale(120),
+                                    minHeight: scale(100),
+                                    borderRadius: scale(10),
+                                    borderColor: '#FFA100',
+                                    borderWidth: scale(1),
+                                }}
+                                source={{ uri }}
+                                resizeMode="cover"
+                            />
+                        )}
+                    </Lightbox>
+                    )
                 }
 
 

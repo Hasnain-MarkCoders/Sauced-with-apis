@@ -34,6 +34,9 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
 import darkArrow from "./../../../assets/images/darkArrow.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
+import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
 
 const EventPage = () => {
   const route = useRoute();
@@ -48,7 +51,11 @@ const EventPage = () => {
   const [currentCoords, setCurrentCoords] = useState(null)
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [isFullScreenMap, setIsFullScreenMap] = useState(false);
+ const interestedEvents = useSelector(state=>state?.interestedEvents)
+ const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
+ const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
   const axiosInstance = useAxios()
+  const dispatch = useDispatch()
   const [region, setRegion] = useState({
     latitude: 37.78825, // Default latitude
     longitude: -122.4324, // Default longitude
@@ -125,7 +132,37 @@ const EventPage = () => {
 
     return points;
   };
+//   const handleInterestedEvent = async()=>{
+//     setTempIsInterested(prev=>!prev)
+//     const x = interestedEvents?.find(item=>item?._id==event?._id)
+//     if(!!x){
+//       dispatch(handleRemoveInterestedEvents(event?._id))
+// }
+//     if(!x){
+//             //  dispatch(handleRemoveAllEventsExceptInterested(event?._id))
+//         // return dispatch(handleRemoveInterestedEvents(event?._id))
+//         dispatch(handleAllEventsExceptInterested([event]))
 
+//         dispatch(handleInterestedEvents([event]))
+//       }
+//       const res = await axiosInstance.post(`/interest-event`, {
+//           eventId:event?._id
+//       });
+  
+
+// }
+const handleInterestedEvent = async () => {
+    setTempIsInterested(prev=>!prev)
+
+  const eventExists = interestedEvents?.some(item => item?._id === event?._id);
+  if (eventExists) {
+    dispatch(handleRemoveInterestedEvents(event?._id));
+  } else {
+    dispatch(handleInterestedEvents([event]));
+  }
+  // Update the backend
+  await axiosInstance.post('/interest-event', { eventId: event?._id });
+};
 
   useEffect(() => {
     const fakeFetch = async () => {
@@ -407,6 +444,7 @@ const EventPage = () => {
                             </Text>
                           }
                           <TouchableOpacity
+                          onPress={handleInterestedEvent}
                             style={{
                               paddingHorizontal: scale(10),
                               paddingVertical: scale(6),
@@ -420,7 +458,7 @@ const EventPage = () => {
                                 color: 'black',
                                 fontWeight: '700',
                               }}>
-                              Interested
+                              {tempIsInterested?"Not-Interested":"Interested"}
                             </Text>
                           </TouchableOpacity>
                         </View>
@@ -483,6 +521,9 @@ const EventPage = () => {
                             }}>
                             {
                               formatEventDate(event?.eventDate)
+                            }
+                            {
+                              console.log(event?.eventDate)
                             }
                           </Text>
                         </View>

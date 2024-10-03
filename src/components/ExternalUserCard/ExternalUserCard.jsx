@@ -6,6 +6,9 @@ import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../..
 import { useNavigation } from '@react-navigation/native'
 import flames from "./../../../assets/images/flames.png"
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
+
 const ExternalUserCard = ({
     totalCheckIns=0,
     totalFollowersCount=0,
@@ -19,6 +22,8 @@ const ExternalUserCard = ({
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
     const [isLoading, setIsLoading] = useState(true);
+    const [LightBox, setLightBox] = useState(false)
+
 
     return (
         <View style={{
@@ -49,20 +54,35 @@ const ExternalUserCard = ({
         </SkeletonPlaceholder>
       )}
 
-                <Image
-                    style={{
-                        display:isLoading?"none":"flex",
-                        width: scale(100),
-                        height: scale(100),
-                        borderRadius: scale(50),
-                        borderColor: "#FFA100",
-                        borderWidth: scale(1)
-                    }}
-                    // source={{ uri: url }}
-                    source={{uri:url}}
-                    onLoad={() => setIsLoading(false)}
 
-                />
+<Lightbox
+    // springConfig={{ tension: 30, friction: 7 }}
+    activeProps={{
+        style: {
+            width: '100%',
+            height: '100%',
+            borderRadius: 0,
+            borderColor: 'transparent',
+            borderWidth: 0,
+        },
+        resizeMode: 'contain',
+    }}
+>
+    <Image
+        style={{
+            display: isLoading ? 'none' : 'flex',
+            width: scale(100),
+            height: scale(100),
+            borderRadius: scale(50),
+            borderColor: '#FFA100',
+            borderWidth: scale(1),
+        }}
+        source={{ uri: url }}
+        resizeMode="cover"
+        onLoad={() => setIsLoading(false)}
+    />
+</Lightbox>
+
                 <View style={{
                     // gap:scale(14)
                     flexGrow: 1

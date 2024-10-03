@@ -1,4 +1,4 @@
-import { ImageBackground, Text, TouchableOpacity, Vibration, View, Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, FlatList } from 'react-native';
+import { ImageBackground, Text, TouchableOpacity, Vibration, View, Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, FlatList, TouchableWithoutFeedback, Alert } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import home from "./../../../assets/images/home.png";
 import { handleText } from '../../../utils';
@@ -95,6 +95,12 @@ const SearchScreen = () => {
                     flex: 1,
                 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+
+                <TouchableWithoutFeedback 
+                 accessible={false}
+                onPress={()=>{setData([])}}
+                >
+
                 <View style={{ flex: 1, position: "relative" }}>
                     {/* Search Input */}
                     <View style={{ marginBottom: scale(10) }}>
@@ -105,6 +111,7 @@ const SearchScreen = () => {
                             gap: 10,
                         }}>
                             <CustomInput
+                             onSubmitEditing={() => setData([])} 
                                 autoFocus={true}
                                 imageStyles={{
                                     top: '50%',
@@ -204,6 +211,7 @@ const SearchScreen = () => {
                         />
                     </View>
                 </View>
+                </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         </ImageBackground>
     );

@@ -62,23 +62,23 @@ const persistConfig = {
   storage: AsyncStorage,
   whitelist: [
     'auth', 
-    'topRatedSauces', 
-    'featuredSauces',
-    'favoriteSauces',
-    'checkedInSauces',
-    'saucesListOne', 
-    'saucesListTwo', 
-    'saucesListThree', 
+    // 'topRatedSauces', 
+    // 'featuredSauces',
+    // 'favoriteSauces',
+    // 'checkedInSauces',
+    // 'saucesListOne', 
+    // 'saucesListTwo', 
+    // 'saucesListThree', 
     'interestedEvents', 
-    'users', 
-    'followers', 
-    'followings', 
+    // 'users', 
+    // 'followers', 
+    // 'followings', 
     'userStats', 
-    'searchedUsers',
+    // 'searchedUsers',
     'notifications',
     'wishlist',
     'quickcheckin',
-    'reviewedsauces'
+    // 'reviewedsauces'
 
   ]
 };

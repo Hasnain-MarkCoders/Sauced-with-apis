@@ -21,10 +21,24 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const axiosInstance = useAxios();
   const route = useRoute();
   const _id = route?.params?._id;
-  const setReviewCount = route?.params?.setReviewCount|| function(){}
-  const reviewCount = route?.params?.reviewCount|| null
+  // const setReviewCount = route?.params?.setReviewCount|| function(){}
+  // const reviewCount = route?.params?.reviewCount|| null
+  // const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
+  // const product = route?.params?.product||{};
+  // const sauceType = route?.params?.sauceType;
+  // const mycb = route?.params?.mycb || function(){};
 
-  const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
+  const sauceType = route?.params?.sauceType||"" 
+  const url = route?.params?.url||"" 
+  const title = route?.params?.title||"" 
+  const item = route?.params?.item||{}
+  const mycb = route?.params?.mycb||function(){}
+  const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
+  const setReviewCount = route?.params?.setReviewCount||function(){}
+  const reviewCount = route?.params?.reviewCount||"" 
+  const handleLike = route?.params?.handleLike|| function(){}
+
+
 
 
   const [hasMore, setHasMore] = useState(true);
@@ -33,6 +47,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const [page, setPage] = useState(1);
 
   const fetchReviews = useCallback(async () => {
+    if (!hasMore || loading) return;
     setLoading(true);
     try {
       const res = await axiosInstance.get(`/get-sauce-reviews`, {
@@ -42,8 +57,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
         },
       });
       setHasMore(res.data.pagination.hasNextPage);
-      setData(res?.data?.reviews);
-      console.log(res.data);
+      setData(prev=>[...prev, ...res?.data?.reviews]);
     } catch (error) {
       console.error('Failed to fetch reviews:', error);
     } finally {
@@ -53,13 +67,17 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
 
   const navigation = useNavigation();
   React.useEffect(() => {
-    fetchReviews();
-    const interval = setInterval(() => {
+    navigation.addListener("focus", ()=>{
       fetchReviews();
-      setPage(1);
-    }, 10000); // 10000 milliseconds = 10 seconds
-    return () => clearInterval(interval);
-  }, [page, _id]);
+
+    })
+    return () => {
+      navigation.removeListener("focus", ()=>{
+        fetchReviews();
+      })
+    }
+  }, [fetchReviews]);
+
   return (
     <ImageBackground
       style={{flex: 1, width: '100%', height: '100%'}}
@@ -72,7 +90,22 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
           <Header
             showMenu={false}
             showText={false}
-            cb={() => navigation.goBack()}
+            cb={() => 
+              // navigation.goBack()
+              {
+                navigation.navigate("ProductDetail", {
+                  url,
+                  title,
+                  item,
+                  reviewCount,
+                  setReviewCount,
+                  handleIncreaseReviewCount,
+                  sauceType,
+                  mycb
+                 })
+              }
+            
+            }
             showProfilePic={false}
             showDescription={false}
           />
@@ -107,7 +140,12 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                 {showAddReviewButton && (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate('AddReview', {sauceId: _id, setPage, handleIncreaseReviewCount, setReviewCount, reviewCount});
+                      navigation.navigate('AddReview', {sauceId: _id, setPage,
+                        //  handleIncreaseReviewCount, setReviewCount, reviewCount, mycb, sauceType, product
+                        item,title, url, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
+
+                        
+                        });
                     }}
                     style={{
                       backgroundColor: '#2e210a',
@@ -130,9 +168,6 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
 
              {data?.length>0
              ? <FlatList
-                contentContainerStyle={{
-                  gap: scale(10),
-                }}
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 data={data}

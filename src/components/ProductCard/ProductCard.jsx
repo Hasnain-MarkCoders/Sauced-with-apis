@@ -4,7 +4,8 @@ import { scale } from 'react-native-size-matters'
 import { useDispatch, useSelector } from 'react-redux'
 import emptyheart from "./../../../assets/images/emptyHeart.png"
 import filledHeart from "./../../../assets/images/filledHeart.png"
-import Lightbox from 'react-native-lightbox';
+// import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 import wishlist_icon from "./../../../assets/images/wishlist_icon.png"
 import wishlist_filled from "./../../../assets/images/wishlist_filled.png"
 import CustomRating from '../CustomRating/CustomRating'
@@ -30,7 +31,8 @@ const ProductCard = ({
     sauceType = "",
     mycb=()=>{},
     handleIncreaseReviewCount=()=>{},
-    handleLike=()=>{}
+    handleLike=()=>{},
+    setSelected=()=>{}
 }) => {
     const wishListSlices = useSelector(state => state?.wishlist)
     const isInWishList=(id=product?._id)=>{
@@ -61,7 +63,10 @@ const ProductCard = ({
 
     const handleToggleLike = async () => {
         handleLike(product?._id, setproductStatus)
-
+        setSelected((prev)=>({
+            ...prev,
+            isChecked: !prev?.isChecked
+          }))
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, { sauceId: product?._id });
@@ -75,6 +80,7 @@ const ProductCard = ({
                 }
             }
             if (sauceType == "featured") {
+                console.log("sauceType============================>", sauceType)
                 dispatch(handleToggleFeaturedSauce(product?._id))
                    if(productStatus?.isChecked){
                     dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
@@ -194,20 +200,30 @@ const ProductCard = ({
                 }}>
 
                     <Lightbox
-                        activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
-                        springConfig={{ tension: 30, friction: 7 }}
-                        onOpen={() => setLightBox(true)}
-                        willClose={() => setLightBox(false)}
+                        // activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
+                        activeProps={{
+                            resizeMode: 'contain',
+                            style: {
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 0,
+                                borderColor: 'transparent',
+                                borderWidth: 0,
+                            },
+                        }}
+                        // springConfig={{ tension: 0, friction: 0 }}
+                        // onOpen={() => setLightBox(true)}
+                        // willClose={() => setLightBox(false)}
                     >
                         <Image
                             style={{
-                                width: LightBox ? "100%" : scale(120),
-                                height: LightBox ? "100%" : scale(150),
+                                width: scale(120),
+                                height: scale(150),
                                 minWidth: scale(120),
                                 minHeight: scale(150),
-                                borderRadius: LightBox ? 0 : scale(10),
-                                borderColor: LightBox ? 0 : "#FFA100",
-                                borderWidth: LightBox ? 0 : scale(1)
+                                borderRadius: scale(10),
+                                borderColor: '#FFA100',
+                                borderWidth: scale(1),
                             }}
                             source={{ uri: url }}
                         />
@@ -243,7 +259,10 @@ const ProductCard = ({
                             justifyContent: "space-between"
                         }}>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllReviews", { _id: product?._id, setReviewCount, handleIncreaseReviewCount , reviewCount})
+                                navigation.navigate("AllReviews", { _id: product?._id,
+                                    //  setReviewCount, handleIncreaseReviewCount , reviewCount
+                                    item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
+                                    })
                             }}>
                                 <Text style={{
                                     color: "white",
@@ -319,7 +338,7 @@ const ProductCard = ({
                                         dispatch(handleToggleWishList(product))
                                         handleWishlist()
                                         Snackbar.show({
-                                            text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product in Wishlist.",
+                                            text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product from Wishlist.",
                                             duration: Snackbar.LENGTH_SHORT,
                                             // action: {
                                             //     text: 'UNDO',
@@ -450,7 +469,7 @@ const ProductCard = ({
             <View style={{ flexDirection: "row", flexGrow: 1, gap: scale(10) }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id , sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount})
+                        navigation.navigate("AddReview", { sauceId: product?._id ,item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{
@@ -473,7 +492,7 @@ const ProductCard = ({
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", { product,routerNumber:3, photo:{}, fn:()=>{}})
+                        navigation.navigate("Checkin", { routerNumber:3, photo:{}, fn:()=>{},item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{

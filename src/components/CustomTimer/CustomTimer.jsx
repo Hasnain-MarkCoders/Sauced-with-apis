@@ -10,19 +10,28 @@ const CustomTimer = ({ eventTime }) => {
     const [days, setDays] = useState(0);
 
     useEffect(() => {
-        // Parse the eventTime string into a JavaScript Date object
-        const targetDate = new Date(eventTime);
-
+        const targetTime = new Date(eventTime).getTime(); // Milliseconds since epoch (UTC)
+        
         const interval = setInterval(() => {
-            const now = new Date();
-            const difference = targetDate - now;
+            const nowTime = new Date().getTime(); // Milliseconds since epoch (local time)
+            const difference = targetTime - nowTime;
 
             if (difference > 0) {
-                // Calculate days, hours, minutes, and seconds
-                setDays(Math.floor(difference / (1000 * 60 * 60 * 24)));
-                setHours(Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-                setMinutes(Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)));
-                setSeconds(Math.floor((difference % (1000 * 60)) / 1000));
+                let totalSeconds = Math.floor(difference / 1000);
+
+                const days = Math.floor(totalSeconds / (3600 * 24));
+                totalSeconds %= (3600 * 24);
+
+                const hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+
+                setDays(days);
+                setHours(hours);
+                setMinutes(minutes);
+                setSeconds(seconds);
             } else {
                 // Clear the interval and set everything to zero when the countdown ends
                 clearInterval(interval);
@@ -61,5 +70,7 @@ const styles = StyleSheet.create({
         fontSize: scale(50),
     },
 });
+
+
 
 export default React.memo(CustomTimer);

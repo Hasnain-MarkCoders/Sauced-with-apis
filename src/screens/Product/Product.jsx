@@ -46,14 +46,14 @@ const Product = () => {
 
   const route = useRoute();
   const auth = useSelector(state=>state?.auth)
-  const {url = '', title = ''} = route?.params;
+  const title = route?.params?.title;
+  const url= route?.params?.url;
   const product = route?.params?.item;
   const mycb = route?.params?.mycb|| function(){}
   const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
   const handleLike = route?.params?.handleLike|| function(){}
-
-
-  const sauceType = route?.params?.sauceType;
+  const setSelected = route?.params?.setSelected|| function(){}
+  const sauceType = route?.params?.sauceType||"";
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -308,6 +308,7 @@ useEffect(()=>{
                     }}>
                       
                     <ProductCard
+                    setSelected={setSelected}
                     handleLike={handleLike}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     mycb={mycb}

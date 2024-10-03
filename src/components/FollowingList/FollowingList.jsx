@@ -6,8 +6,8 @@ import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleUsers } from '../../../android/app/Redux/users';
-import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
-import { handleStatsChange } from '../../../android/app/Redux/userStats';
+import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings, handleToggleIsFollowing } from '../../../android/app/Redux/followings';
+import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
 import { debounce } from 'lodash';
 
 const FollowingList = ({
@@ -20,6 +20,8 @@ const FollowingList = ({
   const [loading, setLoading] = useState(false);
   const axiosInstance = useAxios();
   const followings = useSelector(state => state?.followings);
+  const userStats = useSelector(state=>state?.userStats)
+
   const dispatch = useDispatch();
 
   // Fetch followings with or without a search term
@@ -66,11 +68,22 @@ const FollowingList = ({
 
   // Handle follow/unfollow actions
   const handleUser = useCallback(async (user) => {
-    dispatch(handleUsers([{ ...user, isFollowing: false }]));
-    dispatch(handleRemoveUserFromFollowings(user?._id));
-    dispatch(handleStatsChange({
-      followings: -1,
-    }));
+    // dispatch(handleUsers([{ ...user, isFollowing: false }]));
+    // dispatch(handleRemoveUserFromFollowings(user?._id));
+    // dispatch(handleStatsChange({
+    //   followings: -1,
+    // }));
+    if(user?.isFollowing){
+      dispatch(handleStatsChange({
+        followings:-1,
+    }))
+
+    }else{
+      dispatch(handleStatsChange({
+        followings:+1,
+    }))
+    }
+    dispatch(handleToggleIsFollowing(user?._id))
     await axiosInstance.post("/follow", { _id: user?._id });
   }, []);
 
@@ -91,7 +104,7 @@ const FollowingList = ({
         renderItem={({ item }) =>
           <UserCard
             cb={handleUser}
-            title={item?.isFollowing ? "Unfollow" : "Follow back"}
+            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
             _id={item?._id}
             item={item}
             url={item.image}

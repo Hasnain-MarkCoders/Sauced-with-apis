@@ -1,4 +1,4 @@
-import React, {    useState } from 'react';
+import React, {    useCallback, useEffect, useState } from 'react';
 import { View, SafeAreaView, ImageBackground, ScrollView, Image, Text, TouchableOpacity, StyleSheet, Alert, Linking } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
@@ -21,16 +21,28 @@ import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 const CheckinScreen = () => {
     const axiosInstance = useAxios()
     const route = useRoute()
-    const product = route?.params?.product
-    const fn = route?.params?.fn 
+    // const item = route?.params?.item
+    const fn = route?.params?.fn ||function(){}
     const routerNumber = route?.params?.routerNumber
     const photo = route?.params?.photo||null
     const auth = useSelector(state => state.auth)
+    const sauceType = route?.params?.sauceType||"" 
+    const url = route?.params?.url||"" 
+    const title = route?.params?.title||"" 
+    const item = route?.params?.item||{}
+    const mycb = route?.params?.mycb||function(){}
+    const handleLike = route?.params?.handleLike||function(){}
+    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
+    const setReviewCount = route?.params?.setReviewCount||function(){}
+    const reviewCount = route?.params?.reviewCount||"" 
+
+        
     const [isSelected, setIsSelected] = useState(true)
     const navigation = useNavigation()
     const [loading, setLoading] = useState(false)
     const [imageUris, setImageUris] = useState(photo?.uri?[photo]:[]);
     const [fetchLocation, setFetchLocation] = useState(false)
+    const [isClearChips,setIsClearChips] = useState(false)
     const [yesNoModal, setYesNoModal] = useState({
         open:false,
         message:"",
@@ -46,6 +58,7 @@ const CheckinScreen = () => {
         message: "",
         success:true,
         openYesNoModal:false,
+        buttonText:"Cancel",
         cb:()=>{}
     })
  
@@ -57,6 +70,7 @@ const CheckinScreen = () => {
         coordinates:{},
         foodPairings:[]
     });
+
 
 
     const checkLocationServiceAndNavigate = () => {
@@ -157,7 +171,90 @@ const CheckinScreen = () => {
         setData(prev => ({ ...prev, ["address"]: coords?.destination, ["coordinates"]: { latitude: coords?.latitude, longitude: coords?.longitude } }))
     }
 
-    const handleImagePicker = () => {
+
+
+
+    const handleImagePickerPermission = (isSelected=true) => {
+        const cameraPermission = Platform.OS === 'ios' 
+            ? PERMISSIONS.IOS.CAMERA 
+            : PERMISSIONS.ANDROID.CAMERA;
+    
+        const galleryPermission = Platform.OS === 'ios' 
+            ? PERMISSIONS.IOS.PHOTO_LIBRARY 
+            : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+    
+        const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
+    
+        check(permissionToCheck).then(result => {
+            if (result === RESULTS.GRANTED) {
+                handleImagePicker(isSelected); // Proceed with image picking
+            } else if (result === RESULTS.DENIED) {
+    
+                setYesNoModal({
+                    open: true,
+                    message: isSelected 
+                        ? "Camera Permission Required. Would you like to grant permission?" 
+                        : "Gallery Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permissionToCheck).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                handleImagePicker(isSelected);
+                            } else {
+                                Alert.alert(
+                                    isSelected 
+                                        ? "Camera Permission Blocked" 
+                                        : "Gallery Permission Blocked",
+                                    `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                            }
+                        });
+                    }
+                });
+            } else {
+                setYesNoModal({
+                    open: true,
+                    message: isSelected 
+                        ? "Camera Permission Required. Would you like to grant permission?" 
+                        : "Gallery Permission Required. Would you like to grant permission?",
+                    success: true,
+                    cb: () => {
+                        request(permissionToCheck).then(result => {
+                            if (result === RESULTS.GRANTED) {
+                                handleImagePicker(isSelected);
+                            } else {
+                                Alert.alert(
+                                    isSelected 
+                                        ? "Camera Permission Blocked" 
+                                        : "Gallery Permission Blocked",
+                                    `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
+                                    [
+                                        { text: "Cancel", style: "cancel" },
+                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                    ]
+                                );
+                            }
+                        });
+                    }
+                });
+            }
+        }).catch(error => {
+            console.warn("Error checking camera/gallery permission:", error);
+            setAlertModal({
+                open: true,
+                message: `An error occurred while checking ${isSelected ? 'camera' : 'gallery'} permission. Please try again.`,
+                success: false,
+            });
+        });
+    };
+    
+
+    const handleImagePicker = (isSelected) => {
+
         const options = {
             mediaType: 'photo',
             quality: 1,
@@ -187,7 +284,7 @@ const CheckinScreen = () => {
         });
     };
     
- 
+
 
 const handleSubmit = async () => {
     try {
@@ -199,14 +296,22 @@ const handleSubmit = async () => {
           success: false,
         });
       }
-  
-      if (!data.coordinates?.latitude || !data?.coordinates?.longitude || !data?.address) {
+
+      if (imageUris.length<1) {
         return setAlertModal({
           open: true,
-          message: 'Location is required!',
+          message: 'Images required!',
           success: false,
         });
       }
+  
+    //   if (!data.coordinates?.latitude || !data?.coordinates?.longitude || !data?.address) {
+    //     return setAlertModal({
+    //       open: true,
+    //       message: 'Location is required!',
+    //       success: false,
+    //     });
+    //   }
   
       // Set loading state
       setLoading(true);
@@ -231,7 +336,7 @@ const handleSubmit = async () => {
       formData.append('text', data?.description);
       formData.append('latitude', data.coordinates?.latitude);
       formData.append('longitude', data.coordinates?.longitude);
-      formData.append('sauceId', product?._id); // Assuming product._id contains the sauceId
+      formData.append('sauceId', item?._id); // Assuming item._id contains the sauceId
   
       // Append foodPairings
       data?.foodPairings.forEach(item => {
@@ -245,13 +350,18 @@ const handleSubmit = async () => {
           'Content-Type': 'multipart/form-data', // Set the content type
         },
       });
+      console.log("response.data===============>",response.data)
   
       // Handle successful response
       if (response?.data?.message) {
         setAlertModal({
           open: true,
           message: response?.data?.message,
-          success: true, // Success is true for a successful response
+          success: true, // Success is true for a successful response,
+          buttonText:"View all check-ins",
+          cb:()=>{
+            navigation.navigate('AllCheckinsScreen', { _id: item?._id, routerNumber, fn, item,url, title , reviewCount, setReviewCount, handleIncreaseReviewCount, mycb, sauceType, handleLike }) 
+          }
         });
   
         // Reset form fields after successful submission
@@ -265,11 +375,13 @@ const handleSubmit = async () => {
         });
   
         setImageUris([]);
+        setIsSelected(true);
+        setIsClearChips(true)
   
         // Navigate back after successful check-in
-        setTimeout(() => {
-          navigation.navigate('AllCheckinsScreen', { _id: product?._id, routerNumber, fn });
-        }, 2000);
+        // setTimeout(() => {
+        //   navigation.navigate('AllCheckinsScreen', { _id: item?._id, routerNumber, fn })
+        // }, 2000);
       }
     } catch (error) {
       // Handle error response (e.g., 400 error)
@@ -345,7 +457,7 @@ const handleSubmit = async () => {
 
                             title={data?.address ? data?.address : "Address"}
                         />
-                          <SelectableChips setData={setData}/>
+                          <SelectableChips isClearChips={isClearChips} setData={setData}/>
                           <View style={{
                             width:"100%",
 
@@ -365,7 +477,10 @@ const handleSubmit = async () => {
                           }}>
                                     <TouchableOpacity 
                                     
-                                    onPress={()=>{setIsSelected(true)}}
+                                    onPress={()=>{
+                                        setIsSelected(true)
+                                        handleImagePickerPermission(true)
+                                    }}
                                     style={{
     backgroundColor: isSelected?'#FFA500':'#2e210a', // Dark box for unselected chips
     borderRadius: scale(20),
@@ -385,7 +500,10 @@ const handleSubmit = async () => {
                                     </TouchableOpacity>
                                     <TouchableOpacity 
                                     
-                                    onPress={()=>{setIsSelected(false)}}
+                                    onPress={()=>{
+                                        setIsSelected(false)
+                                        handleImagePickerPermission(false)
+                                    }}
                                     style={{
     backgroundColor: isSelected? '#2e210a':'#FFA500', // Dark box for unselected chips
     borderRadius: scale(20),
@@ -421,7 +539,7 @@ const handleSubmit = async () => {
                                
                                 <TouchableOpacity
 
-                                    onPress={handleImagePicker}
+                                    onPress={()=>{handleImagePickerPermission(isSelected)}}
                                     style={{
                                         width: imageUris[0] ? scale(100) : "100%",
 
@@ -490,6 +608,8 @@ const handleSubmit = async () => {
                      success={alertModal?.success}
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}
+                    buttonText = {alertModal.buttonText}
+                    cb={alertModal.cb||function(){}}
                     setModalVisible={() => setAlertModal({
                         open: false,
                         messsage: ""
@@ -503,9 +623,13 @@ const handleSubmit = async () => {
                             messsage: "",
                             severity:true,
                         })
+                        setIsLoading(prev=>({
+                            ...prev,
+                            loadMap:false
+                        }))
                     }}
                     success={yesNoModal.severity}
-                    title={"Location Request"}
+                    title={yesNoModal.message}
                     cb={yesNoModal.cb}
                                     
                     />

@@ -23,7 +23,7 @@ const AllUserReviews = () => {
     const navigation = useNavigation()
     const auth = useSelector(state => state.auth)
     useEffect(() => {
-        const fetchPhotos = async () => {
+        const fetchReviews = async () => {
             if (!hasMore || loading) return;
 
             setLoading(true);
@@ -44,7 +44,7 @@ const AllUserReviews = () => {
             }
         };
 
-        fetchPhotos();
+        fetchReviews();
     }, [page]);
 
     return (
@@ -70,7 +70,7 @@ const AllUserReviews = () => {
                     fontSize: scale(35),
                     lineHeight: scale(50),
                 }}>
-                    Reviews
+                    Reviews 
                 </Text>
 
 

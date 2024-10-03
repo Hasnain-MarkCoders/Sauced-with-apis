@@ -16,9 +16,15 @@ const usersSlice = createSlice({
     handleRemoveSearchedUsers: (state, action) => {
         return state.filter(x => x._id !== action.payload);
       },
+      handleToggleSearchedUserIsFollowing:(state, action)=>{
+        const user = state.find(x=>x._id==action.payload)
+        if(user){
+          user.isFollowing  =!user.isFollowing
+        }
+      },
 
   },
 });
 
-export const { handleSearchedUsers, handleRemoveSearchedUsers , appendSearchedUsers} = usersSlice.actions;
+export const { handleSearchedUsers, handleRemoveSearchedUsers , appendSearchedUsers, handleToggleSearchedUserIsFollowing} = usersSlice.actions;
 export default usersSlice.reducer;

@@ -17,6 +17,7 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     const featuredSauces = useSelector(state=>state.featuredSauces)
     const navigation = useNavigation()
     const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
+        console.log("handleIncreaseReviewCount")
         setReviewCount(reviewCount+1)
         dispatch(handleIncreaseReviewCountOfFeaturedSauce({_id, setReviewCount}))
     },[])
@@ -45,7 +46,11 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     }, [fetchSauces]);
 
 
-  
+useEffect(() => {
+    navigation.addListener('focus', () => {
+        fetchSauces()
+    });
+}, [navigation]);
 
     return (
         <>

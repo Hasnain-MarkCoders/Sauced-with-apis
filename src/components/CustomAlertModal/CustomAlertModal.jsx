@@ -11,6 +11,8 @@ const CustomAlertModal = ({
   setModalVisible = () => { },
   success=true,
   title="",
+  cb=()=>{},
+  buttonText=""
 }) => {
   useEffect(()=>{
     // setTimeout(()=>{
@@ -96,7 +98,10 @@ const CustomAlertModal = ({
 
                 <TouchableOpacity
                 
-                onPress={setModalVisible}
+                onPress={()=>{
+                  setModalVisible()
+                  cb()
+                }}
                 style={{
                   backgroundColor:"white",
                   paddingHorizontal:scale(60),
@@ -109,7 +114,7 @@ const CustomAlertModal = ({
                     fontWeight:800,
                     fontSize:scale(14)
                   }}>
-                  Close
+                 {buttonText?buttonText: "cancel"}
                   </Text>
                 </TouchableOpacity>
 
