@@ -11,6 +11,7 @@ import { debounce } from 'lodash';
 import { useNavigation } from '@react-navigation/native';
 import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
 import { handleStatsChange } from '../../../android/app/Redux/userStats';
+import NotFound from '../NotFound/NotFound';
 
 const ExternalUserFollowersList = ({
   numColumns = 2,
@@ -19,7 +20,7 @@ const ExternalUserFollowersList = ({
 }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const axiosInstance = useAxios();
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const ExternalUserFollowersList = ({
   // Fetch followers without search term
   const fetchFollowers = useCallback(async () => {
     if (searchTerm) return;
-    if (!hasMore || loading) return;
+    if (!hasMore) return;
 
     setLoading(true);
     try {
@@ -49,7 +50,7 @@ const ExternalUserFollowersList = ({
   // Fetch followers with search term
   const fetchFollowersWithSearchTerm = useCallback(debounce(async () => {
     if (!searchTerm) return;
-    if (!hasMore || loading) return;
+    if (!hasMore ) return;
 
     setLoading(true);
     try {
@@ -104,6 +105,14 @@ const ExternalUserFollowersList = ({
 
   return (
     <View style={{ gap: scale(20), flex: 1 }}>
+      {loading && data.length<1
+              ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
+              :data.length<1
+              ?
+              <NotFound
+              title='No users found'
+              />
+              :
       <FlatList
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -131,6 +140,7 @@ const ExternalUserFollowersList = ({
         }
         ListFooterComponent={loading && <ActivityIndicator size="small" color="#FFA100" />}
       />
+}
     </View>
   );
 };

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 // import Lightbox from 'react-native-lightbox';
 import Lightbox from 'react-native-lightbox-v2';
+import { Pencil } from 'lucide-react-native'
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -34,7 +35,34 @@ reviewsCount=0
             borderColor: "#FFA100",
             borderWidth: scale(1),
             gap: scale(10),
+            position:"relative"
         }}>
+            <View 
+                style={{
+            position:"absolute",
+            top:scale(20),
+            right:scale(20),
+            zIndex:1
+
+                }}
+                
+>
+
+
+    <TouchableOpacity
+    
+    onPress={
+        ()=>{
+            navigation.navigate("Edit Profile")
+        }
+    }>
+            <Pencil
+            color={"#FFA500"}
+            fill={"#FFA500"}
+            size={20}
+            />
+    </TouchableOpacity>
+            </View>
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
@@ -190,7 +218,7 @@ reviewsCount=0
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllCheckinsScreen", {routerNumber:1, _id})
+                                navigation.navigate("AllCheckinsScreen", {routerNumber:1, _id, isBack:true})
 
                             }}>
 

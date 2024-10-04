@@ -21,6 +21,8 @@ const AllCheckinsScreen = ({
  
     const fn = route?.params?.fn||function(){}
     const numberOfRoutesBack = route?.params?.routerNumber||1
+    
+    const isBack = route?.params?.isBack||false 
     const auth = useSelector(state => state.auth)
     const url  = route?.params.url||""
     const title = route?.params.title||""
@@ -51,7 +53,8 @@ const AllCheckinsScreen = ({
         return setId(id)
     }
     const handleUserProfileView = (data) => {
-        navigation.navigate("ExternalProfileScreen", { url: data.profileUri, name: data.name })
+        console.log(data.item.owner._id)
+        navigation.navigate("ExternalProfileScreen", { url: data.profileUri, name: data.name, _id:data.item.owner._id })
     }
     const handleAddMessage = async () => {
         const existingMessage = data.find(item => item?._id == id)
@@ -129,17 +132,20 @@ const AllCheckinsScreen = ({
                     showMenu={false}
                     // cb={() => (navigation.pop(numberOfRoutesBack), fn())} 
                     cb={() => {
-                        navigation.navigate("ProductDetail", {
-                             url,
-                             title,
-                             item,
-                             reviewCount,
-                             setReviewCount,
-                             handleIncreaseReviewCount,
-                             sauceType,
-                             mycb,
-                             handleLike
-                            })
+                        if(!isBack){
+                          return  navigation.navigate("ProductDetail", {
+                                 url,
+                                 title,
+                                 item,
+                                 reviewCount,
+                                 setReviewCount,
+                                 handleIncreaseReviewCount,
+                                 sauceType,
+                                 mycb,
+                                 handleLike
+                                })
+                        }
+                        navigation.goBack()
 
 
                     }} 

@@ -70,7 +70,8 @@ console.log("product==============>", product)
 
                     <View style={{
                         gap: scale(10),
-                        flexBasis: "50%"
+                        // flexBasis: "50%",
+                        // justifyContent:"center"
                     }}>
                         <View>
                             <Text
@@ -85,12 +86,105 @@ console.log("product==============>", product)
                         </View>
                     </View>
 
-                    <View style={
-                        {
+                  
+                        {/* <View style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}>
+                            <View style={{
+                                alignItems: "center",
+                                gap: scale(10)
+                            }}>
+                                <View style={{
+                                    gap: scale(1),
 
-                        }
-                    }>
-                        <View style={{
+                                }}>
+
+                                    <Text style={{
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(30),
+                                        lineHeight: scale(36),
+                                        textAlign:"center",
+                                    }}>{product?.totalCheckins}</Text>
+                                    <Text style={{
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: scale(10),
+                                        lineHeight: scale(25),
+                                        marginTop: scale(-6)
+                                    }}>Check-ins</Text>
+                                </View>
+                                
+                            </View>
+                        </View> */}
+
+                        
+                </View>
+              
+            </View>
+            <View style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: scale(20),
+                alignItems:"flex-end"
+            }}>
+
+            <View style={{
+                flexDirection:"row",
+                gap:scale(20)
+            }}>
+
+<View>
+<Text style={{
+    color:"white"
+}}>
+    Website Link:
+</Text>
+<TouchableOpacity onPress={() => {
+   product?.brand?.websiteLink&& Linking.openURL(product?.brand?.websiteLink)
+}}>
+    <Text 
+     numberOfLines={1}
+    ellipsizeMode='tail'
+    style={{
+        maxWidth:scale(155),
+        color: "#FFA100",
+        fontWeight: 600,
+        fontSize: scale(12),
+        lineHeight: scale(25),
+        textDecorationStyle:"solid",
+        textDecorationLine:product?.brand?.websiteLink ?"underline":"none"
+    }}>{product?.brand?.websiteLink?"Visit Website":"Website Link not available."}</Text>
+
+</TouchableOpacity>
+</View>
+
+<View>
+<Text style={{
+    color:"white"
+}}>
+    Amazon Link:
+</Text>
+<TouchableOpacity onPress={() => {
+    product?.brand?.amazonLink &&Linking.openURL(product?.brand?.amazonLink)
+}}>
+    <Text 
+     numberOfLines={1}
+    ellipsizeMode='tail'
+    style={{
+        maxWidth:scale(155),
+        color: "#FFA100",
+        fontWeight: 600,
+        fontSize: scale(12),
+        lineHeight: scale(25),
+        textDecorationStyle:"solid",
+        textDecorationLine:product?.brand?.amazonLink ?"underline":"none"
+    }}>{product?.brand?.amazonLink?"Visit Website":"Amazon Link not available."}</Text>
+</TouchableOpacity>
+</View>
+</View>
+<View style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
                         }}>
@@ -121,59 +215,8 @@ console.log("product==============>", product)
                                 
                             </View>
                         </View>
-                    </View>
-                </View>
-              
             </View>
-            <View style={{
-                flexDirection:"row",
-                gap:scale(20)
-            }}>
 
-<View>
-<Text style={{
-    color:"white"
-}}>
-    Website Link:
-</Text>
-<TouchableOpacity onPress={() => {
-   product?.brand?.websiteLink&& Linking.openURL(product?.brand?.websiteLink)
-}}>
-    <Text 
-     numberOfLines={1}
-    ellipsizeMode='tail'
-    style={{
-        maxWidth:scale(155),
-        color: "#FFA100",
-        fontWeight: 600,
-        fontSize: scale(12),
-        lineHeight: scale(25),
-    }}>{product?.brand?.websiteLink}</Text>
-</TouchableOpacity>
-</View>
-
-<View>
-<Text style={{
-    color:"white"
-}}>
-    Amazon Link:
-</Text>
-<TouchableOpacity onPress={() => {
-    product?.brand?.amazonLink &&Linking.openURL(product?.brand?.amazonLink)
-}}>
-    <Text 
-     numberOfLines={1}
-    ellipsizeMode='tail'
-    style={{
-        maxWidth:scale(155),
-        color: "#FFA100",
-        fontWeight: 600,
-        fontSize: scale(12),
-        lineHeight: scale(25),
-    }}>{product?.brand?.amazonLink}</Text>
-</TouchableOpacity>
-</View>
-</View>
         </View>
     )
 }

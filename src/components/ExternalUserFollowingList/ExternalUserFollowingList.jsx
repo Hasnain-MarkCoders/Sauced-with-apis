@@ -9,6 +9,7 @@ import { handleUsers } from '../../../android/app/Redux/users';
 import { handleFollowingSearch, handleFollowings, handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
 import { handleStatsChange } from '../../../android/app/Redux/userStats';
 import { debounce } from 'lodash';
+import NotFound from '../NotFound/NotFound';
 
 const ExternalUserFollowingList = ({
   numColumns = 2,
@@ -17,7 +18,7 @@ const ExternalUserFollowingList = ({
 }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const axiosInstance = useAxios();
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const ExternalUserFollowingList = ({
 
   // Fetch followings without search term
   const fetchFollowings = useCallback(async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore) return;
     if (searchTerm) return;
 
     setLoading(true);
@@ -49,7 +50,7 @@ const ExternalUserFollowingList = ({
   // Fetch followings with search term
   const fetchFollowingWithSearchTerm = useCallback(debounce(async () => {
     if (!searchTerm) return;
-    if (!hasMore || loading) return;
+    if (!hasMore) return;
 
     setLoading(true);
     try {
@@ -111,6 +112,14 @@ const ExternalUserFollowingList = ({
 
   return (
     <View style={{ gap: scale(20), flex: 1 }}>
+      {loading && data.length<1
+              ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
+              :data.length<1
+              ?
+              <NotFound
+              title='No users found'
+              />
+              :
       <FlatList
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -138,6 +147,7 @@ const ExternalUserFollowingList = ({
         }
         ListFooterComponent={loading && <ActivityIndicator size="small" color="#FFA100" />}
       />
+}
     </View>
   );
 };

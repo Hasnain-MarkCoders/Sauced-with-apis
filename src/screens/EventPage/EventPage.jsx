@@ -37,6 +37,7 @@ import darkArrow from "./../../../assets/images/darkArrow.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
 import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
+import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 
 const EventPage = () => {
   const route = useRoute();
@@ -53,7 +54,13 @@ const EventPage = () => {
   const [isFullScreenMap, setIsFullScreenMap] = useState(false);
  const interestedEvents = useSelector(state=>state?.interestedEvents)
  const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
+ const [isLocationAvailable, setIsLocationAvailable] = useState(false)
  const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
+ const [alertModal, setAlertModal] = useState({
+  open: false,
+  message: "",
+  success: true
+})
   const axiosInstance = useAxios()
   const dispatch = useDispatch()
   const [region, setRegion] = useState({
@@ -175,6 +182,10 @@ const handleInterestedEvent = async () => {
   }, []);
 
   useEffect(() => {
+    setEventsCoords({
+      latitude: parseFloat(event.venueLocation.latitude),
+      longitude: parseFloat(event.venueLocation.longitude),
+    });
 
     const checkLocationServiceAndNavigate = () => {
       setLoading(true); // Start loading indicator
@@ -185,22 +196,40 @@ const handleInterestedEvent = async () => {
       check(permission).then(result => {
         if (result === RESULTS.GRANTED) {
           fetchCurrentLocation();
+          setIsLocationAvailable(true)
+
         } else if (result === RESULTS.DENIED) {
           request(permission).then(result => {
             if (result === RESULTS.GRANTED) {
               fetchCurrentLocation();
+              setIsLocationAvailable(true)
             } else {
-              Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+              // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+              setAlertModal({
+                open: true,
+                message:  "Location Permission RequiredPlease grant location permission to use this feature.",
+                success: false
+            })
               setLoading(false); // Stop loading indicator
             }
           });
         } else {
           setLoading(false); // Stop loading indicator
-          Alert.alert("Location Permission", "Location permission is not available or blocked. Please enable it in settings.");
+          setAlertModal({
+            open: true,
+            message:  "Location Permission, Location permission is not available or blocked. Please enable it in settings.",
+            success: false
+        })
+          // Alert.alert("Location Permission, Location permission is not available or blocked. Please enable it in settings.");
         }
       }).catch(error => {
         console.warn("Error checking location permission:", error);
-        Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+        setAlertModal({
+          open: true,
+          message:  "Error An error occurred while checking location permission. Please try again.",
+          success: false
+      })
+        // Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
         setLoading(false); // Stop loading indicator
       });
     };
@@ -237,9 +266,12 @@ const handleInterestedEvent = async () => {
             const elements = response.data.rows[0].elements;
 
             // Check if elements exist and status is not "NOT_FOUND"
-            if (elements.length > 0 && elements[0].status !== "NOT_FOUND") {
-              const distanceInMeters = elements[0].distance.value;
-              setEventDistance(distanceInMeters)
+            if (elements.length > 0 && elements[0]?.status !== "NOT_FOUND") {
+              const distanceInMeters = elements[0]?.distance?.value;
+              const distanceInMiles = distanceInMeters / 1609.34;
+              if(distanceInMiles){
+                setEventDistance(distanceInMiles?.toFixed(2))
+              }
               console.log(`Distance from origin to destination: ${distanceInMeters} meters`);
             } else {
               console.log("Distance could not be calculated. Check origin and destination addresses.");
@@ -254,7 +286,12 @@ const handleInterestedEvent = async () => {
         },
         (error) => {
           console.log("Error fetching current location:", error);
-          Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+          setAlertModal({
+            open: true,
+            message:  "Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.",
+            success: false
+        })
+          // Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
           setLoading(false); // Stop loading indicator
         },
         { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
@@ -273,11 +310,17 @@ const handleInterestedEvent = async () => {
         setRegion({
           latitude: parseFloat(latitude),
           longitude: parseFloat(longitude),
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 2,
+          longitudeDelta: 2,
         });
       } else {
-        Alert.alert('Invalid Coordinates', 'Latitude and longitude must be valid numbers.');
+        // Alert.alert('Invalid Coordinates', 'Latitude and longitude must be valid numbers.');
+        setAlertModal({
+          open: true,
+          message:  "Invalid Coordinates', 'Latitude and longitude must be valid numbers.",
+          success: false
+      })
+        // "Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again."
       }
     }
   }, [event]);
@@ -320,8 +363,8 @@ const handleInterestedEvent = async () => {
                         zoomTapEnabled={true}
                         initialRegion={{
                           ...region,
-                          latitudeDelta: 0.01,
-                          longitudeDelta: 0.01,
+                          latitudeDelta: 5,
+                          longitudeDelta:5,
                         }}
 
                       >
@@ -431,10 +474,10 @@ const handleInterestedEvent = async () => {
                           {
                             event?.eventName &&
                             <Text
-                              ellipsizeMode='tail'
-                              numberOfLines={1}
+                              // ellipsizeMode='tail'
+                              // numberOfLines={1}
                               style={{
-                                maxWidth: scale(200),
+                                // maxWidth: scale(200),
                                 fontSize: scale(25),
                                 fontWeight: 800,
                                 lineHeight: scale(33),
@@ -443,7 +486,7 @@ const handleInterestedEvent = async () => {
                               {event?.eventName}
                             </Text>
                           }
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                           onPress={handleInterestedEvent}
                             style={{
                               paddingHorizontal: scale(10),
@@ -460,7 +503,7 @@ const handleInterestedEvent = async () => {
                               }}>
                               {tempIsInterested?"Not-Interested":"Interested"}
                             </Text>
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
 
                         <View
@@ -483,6 +526,7 @@ const handleInterestedEvent = async () => {
                               <Text
                                 style={{
                                   color: '#FFA100',
+                                  textDecorationLine:"underline"
                                 }}>
                                 {event?.owner?.name}
                               </Text>
@@ -534,20 +578,23 @@ const handleInterestedEvent = async () => {
                           style={{
                             flexDirection: 'row',
                             gap: scale(10),
+                            flexWrap:"wrap"
                           }}>
-                          <Image
+                            <View style={{
+                              flexDirection:"row",
+                              gap:scale(5),
+                              alignItems:"center",
+                              flexWrap:"wrap"
+                            }}>
+                            <Image
                             style={{
                               width: scale(18),
                               height: scale(23),
                             }}
                             source={Location}
                           />
-                          <View
-                            style={{
-                              gap: scale(6),
-                            }}>
                             <Text
-                              ellipsizeMode='tail'
+                              // ellipsizeMode='tail'
                               style={{
                                 // maxWidth: scale(100),
                                 fontSize: scale(16),
@@ -556,12 +603,21 @@ const handleInterestedEvent = async () => {
                               }}>
                               {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()}
                             </Text>
+                            </View>
+                      
+                          <View
+                            style={{
+                              gap: scale(6),
+
+                            }}>
+                          
                             <Text
                               style={{
                                 color: 'white',
                                 fontSize: scale(11),
                                 lineHeight: scale(14),
-                                flexShrink: 1
+                                
+                                // flexShrink: 1
 
                               }}>
                               {event?.venueDescription}
@@ -580,6 +636,26 @@ const handleInterestedEvent = async () => {
                       marginBottom: scale(20),
                       gap: scale(20),
                     }}>
+                      <View>
+
+                       <TouchableOpacity
+                          onPress={handleInterestedEvent}
+                            style={{
+                              paddingHorizontal: scale(10),
+                              paddingVertical: scale(6),
+                              backgroundColor: '#FFA100',
+                              borderRadius: scale(5),
+                              elevation: scale(5),
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                color: 'black',
+                                fontWeight: '700',
+                              }}>
+                              {tempIsInterested?"Not-Interested":"Interested"}
+                            </Text>
+                          </TouchableOpacity>
                     <Text
                       style={{
                         color: 'white',
@@ -590,8 +666,12 @@ const handleInterestedEvent = async () => {
                       }}>
                       Details
                     </Text>
+                      </View>
 
                     <ProductsBulletsList
+                        bulletGap={{
+                          height:scale(10)
+                        }}
                       data={event?.eventDetails}
                       textStyles={{
                         fontWeight: 700,
@@ -708,7 +788,11 @@ const handleInterestedEvent = async () => {
                           lineHeight: scale(22),
                           color: '#FFA100',
                         }}>
-                        {eventDistance} m distance from your home
+                          {
+                            // isLocationAvailable?eventDistance?" m":"" "distance from you":"Distance from you not available"
+                            isLocationAvailable?eventDistance?`${eventDistance} M from you.`:"":"Please enable location to use this feature"
+                          }
+                        {/* {eventDistance+ `${eventDistance?" m":""}`}  distance from you */}
                       </Text>
                       {/* <Text
                         style={{
@@ -726,11 +810,20 @@ const handleInterestedEvent = async () => {
           }}
         />
       </SafeAreaView>
+      <CustomAlertModal
+                    title={alertModal?.message}
+                    modalVisible={alertModal?.open}
+                    success={alertModal?.success}
+                    setModalVisible={() => setAlertModal({
+                        alertModal: false,
+                        message: ""
+                    })}
+                />
       <UserDetailsModal
         name={event?.owner?.name}
         email={event?.owner?.email}
         profilePicture={event?.owner?.image}
-        number={"+1 234-567-0890"}
+        number={event?.owner?.phone?event?.owner?.phone:"N/A"}
         modalVisible={openUserDetailsModal}
         setModalVisible={setOpenUserDetailsModal}
       />

@@ -18,6 +18,7 @@ const SearchScreen = () => {
     const [data, setData] = useState();
     const [initialLoading, setInitialLoading] = useState(true);
     const navigation = useNavigation();
+    const [ showResult, setShowResults] = useState(false)
 
     useEffect(() => {
         setTimeout(() => {
@@ -30,6 +31,13 @@ const SearchScreen = () => {
      
        })
     }, [data]);
+
+
+    useEffect(()=>{
+            if(query.search){
+                setShowResults(true)
+            }
+    }, [query.search])
 
 
     const handleIncreaseReviewCount = useCallback((id, setReviewCount)=>{
@@ -98,7 +106,7 @@ const SearchScreen = () => {
 
                 <TouchableWithoutFeedback 
                  accessible={false}
-                onPress={()=>{setData([])}}
+                onPress={()=>{setData([]);setShowResults(false)}}
                 >
 
                 <View style={{ flex: 1, position: "relative" }}>
@@ -111,7 +119,7 @@ const SearchScreen = () => {
                             gap: 10,
                         }}>
                             <CustomInput
-                             onSubmitEditing={() => setData([])} 
+                             onSubmitEditing={() => {setData([]); setShowResults(false)}} 
                                 autoFocus={true}
                                 imageStyles={{
                                     top: '50%',
@@ -174,7 +182,7 @@ const SearchScreen = () => {
                     </View>
 
                     {/* Search Suggestion List */}
-                    {(data?.length > 0 && query?.search) && (
+                    {(data?.length > 0 && query?.search && showResult) && (
                         <View
                             style={{
                                 backgroundColor: '#FFFFFF',  // White background like search engines

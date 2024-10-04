@@ -5,6 +5,7 @@ import DetailKeyValue from '../DetailKeyValue/DetailKeyValue';
 // import Lightbox from 'react-native-lightbox';
 import Lightbox from 'react-native-lightbox-v2';
 import closeIcon from './../../../assets/images/close.png';
+import { getFormattedName } from '../../../utils';
 
 const UserDetailsModal = ({
   modalVisible = false,
@@ -100,7 +101,7 @@ const UserDetailsModal = ({
                       marginBottom:scale(20)
                     }}>
 
-<Lightbox
+{/* <Lightbox
     activeProps={{
         resizeMode: 'contain',
         style: {
@@ -110,18 +111,18 @@ const UserDetailsModal = ({
         },
     }}
     // springConfig={{ tension: 30, friction: 7 }}
->
+> */}
     <Image
         style={{
-            resizeMode: 'contain',
+            resizeMode: 'cover',
             width: scale(50),
             height: scale(50),
-            borderRadius: scale(20),
+            borderRadius: scale(100),
         }}
         source={{ uri: profilePicture }}
     />
-</Lightbox>
-                  <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={name} />
+{/* </Lightbox> */}
+                  <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={getFormattedName(name)} />
                     </View>
                   <DetailKeyValue Key="Email:" value={email} />
                   <DetailKeyValue Key="Number:" value={number} />

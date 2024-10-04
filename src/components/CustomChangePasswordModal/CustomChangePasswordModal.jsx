@@ -93,15 +93,22 @@ const CustomChangePasswordModal = ({
               }} source={closeIcon} />
             </TouchableOpacity>
             <View style={{
-                borderColor: "#FFA100",
-                borderWidth: 1,
+                // borderColor: "#FFA100",
+                // borderWidth: 1,
                 borderRadius: 10,
-                padding: 15,
+                padding: scale(15),
                 marginTop: scale(30),
+                backgroundColor:"#FFA500",
+                alignItems:"center",
+                justifyContent:"center",
+                width:"100%",
+                opacity:.7
+
 
               }}>
               <Text style={{
-                color:"white"
+                color:"white",
+
               }}>
               {auth.email}
               </Text>

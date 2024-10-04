@@ -251,7 +251,7 @@ const ProductCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(17),
                                     lineHeight: scale(24),
-                                }}>{title}</Text>
+                                }}>{title?title:"N/A"}</Text>
                         </View>
 
                         <View style={{
@@ -271,7 +271,7 @@ const ProductCard = ({
                                     lineHeight: scale(14),
                                     textDecorationStyle:"solid",
                                     textDecorationLine:"underline"
-                                }}>{`${reviewCount} Reviews`}</Text>
+                                }}>{ !isNaN(reviewCount) && reviewCount>-1 ?`${reviewCount} Reviews`:"N/A"}</Text>
                                 <CustomRating
                                     initialRating={product?.averageRating}
                                     ratingContainerStyle={{
@@ -296,7 +296,7 @@ const ProductCard = ({
                                             }));
                                         }
                                         Snackbar.show({
-                                            text: !productStatus.isChecked ? 'Like' : "Unlike",
+                                            text: !productStatus.isChecked ? 'Liked' : "Unliked",
                                             duration: Snackbar.LENGTH_SHORT,
                                             // action: {
                                             //     text: 'UNDO',
@@ -540,7 +540,7 @@ const ProductCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(30),
                                     lineHeight: scale(36),
-                                }}>{product?.checkIn}</Text>
+                                }}>{!isNaN(product?.checkIn) && product?.checkIn>-1 ?product?.checkIn:"N/A"}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,

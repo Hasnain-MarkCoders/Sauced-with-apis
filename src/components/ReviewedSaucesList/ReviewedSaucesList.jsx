@@ -130,7 +130,7 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                 }}>
 
                     <NotFound
-                    title='Reviewed Sauces Not available'
+                    title='No sauces added yet.'
                     />
                 </View>
                 :

@@ -92,7 +92,10 @@ const CustomOfficialReviewsListCarousel = ({
                 </>)}
             />
             :
-            <NotFound/>
+            <NotFound
+            
+            title='No official reviews found'
+            />
 
         }
         <View style={{

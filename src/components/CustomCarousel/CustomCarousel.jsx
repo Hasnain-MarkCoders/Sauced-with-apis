@@ -10,6 +10,7 @@ import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../a
 import { useDispatch, useSelector } from 'react-redux';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
+import NotFound from '../NotFound/NotFound';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
@@ -93,7 +94,10 @@ setTimeout(()=>{
             initialLoading
             ?
             <CarouselSkeleton/>
-            :<Carousel
+            :
+            allEventsExceptInterested.length>0
+            ?
+            <Carousel
             
             autoPlayInterval={7000}
                 loop
@@ -118,6 +122,16 @@ setTimeout(()=>{
                 </>)
                 }
             />
+            :
+            <View style={{
+                marginBottom:scale(20)
+            }}>
+
+                <NotFound
+            
+                title='No events found'
+                />
+            </View>
 
         }
         <View style={{

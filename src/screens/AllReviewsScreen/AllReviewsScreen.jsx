@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   BackHandler,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
@@ -208,7 +209,12 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                 )}
               />
             :
-            <NotFound/>}
+            loading?
+            <ActivityIndicator size="small" color="#FFA100" />
+            :
+            <NotFound/>
+            
+            }
            
             </View>
           </View>

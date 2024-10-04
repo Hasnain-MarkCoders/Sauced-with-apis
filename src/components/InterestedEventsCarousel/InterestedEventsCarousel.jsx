@@ -129,7 +129,7 @@ setTimeout(()=>{
             />
             :
             <NotFound
-            title='Interested events Not available'
+            title='No events added yet.'
             />
 
         }

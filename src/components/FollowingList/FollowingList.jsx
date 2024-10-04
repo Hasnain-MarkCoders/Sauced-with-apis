@@ -9,6 +9,7 @@ import { handleUsers } from '../../../android/app/Redux/users';
 import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings, handleToggleIsFollowing } from '../../../android/app/Redux/followings';
 import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
 import { debounce } from 'lodash';
+import NotFound from '../NotFound/NotFound';
 
 const FollowingList = ({
   numColumns = 2,
@@ -17,7 +18,7 @@ const FollowingList = ({
 }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const axiosInstance = useAxios();
   const followings = useSelector(state => state?.followings);
   const userStats = useSelector(state=>state?.userStats)
@@ -26,7 +27,7 @@ const FollowingList = ({
 
   // Fetch followings with or without a search term
   const fetchFollowings = useCallback(debounce(async () => {
-    if (loading || !hasMore) return;
+    if (!hasMore) return;
 
     setLoading(true);
     try {
@@ -89,30 +90,41 @@ const FollowingList = ({
 
   return (
     <View style={{ gap: scale(20), flex: 1 }}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        numColumns={numColumns}
-        data={followings}
-        onEndReachedThreshold={0.5} // Adjusted threshold
-        onEndReached={() => {
-          if (!loading && hasMore) {
-            setPage(currentPage => currentPage + 1); // Fetch next page
+      {
+        followings.length>0
+        ?
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          numColumns={numColumns}
+          data={followings}
+          onEndReachedThreshold={0.5} // Adjusted threshold
+          onEndReached={() => {
+            if (!loading && hasMore) {
+              setPage(currentPage => currentPage + 1); // Fetch next page
+            }
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) =>
+            <UserCard
+              cb={handleUser}
+              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
+              _id={item?._id}
+              item={item}
+              url={item.image}
+              name={item?.name}
+              showText={false}
+            />
           }
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) =>
-          <UserCard
-            cb={handleUser}
-            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
-            _id={item?._id}
-            item={item}
-            url={item.image}
-            name={item?.name}
-            showText={false}
-          />
-        }
-      />
+        />
+        :!loading &&followings.length<1
+        ?
+        <NotFound
+        title='No users found'
+        />
+        :null
+
+      }
       {loading && <ActivityIndicator size="small" color="#FFA100" />}
     </View>
   );

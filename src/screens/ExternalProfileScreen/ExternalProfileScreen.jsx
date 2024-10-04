@@ -23,9 +23,9 @@ import { useDispatch, useSelector } from 'react-redux';
 const ExternalProfileScreen = ({
 }) => {
     const route = useRoute()
-    const _id = route?.params?._id
-    const name = route?.params?.name
-    const url = route?.params?.url
+    const _id = route?.params?._id||""
+    const name = route?.params?.name||""
+    const url = route?.params?.url||""
     const [user, setUser] = useState(null)
     const axiosInstance = useAxios()
     // const [initialLoading, setInitialLoading] = useState(true)

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
-import { ActivityIndicator, ImageBackground, Text, Vibration, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { ActivityIndicator, ImageBackground, StyleSheet, Text, TouchableOpacity, Vibration, View } from 'react-native';
+import { DrawerContentScrollView, DrawerItemList, createDrawerNavigator } from '@react-navigation/drawer';
 import FollowerScreen from '../FollowerScreen/FollowerScreen';
 import FollowingScreen from '../FollowingScreen/FollowingScreen';
 import SettingScreen from '../SettingScreen/SettingScreen';
@@ -14,11 +14,31 @@ import auth from '@react-native-firebase/auth';
 import home from './../../../assets/images/home.png';
 import { persistor, store } from '../../../android/app/Redux/store';
 import NotificationsScreen from '../NotificationsScreen/NotificationsScreen';
+import YesNoModal from '../../components/YesNoModal/YesNoModal';
+import { scale } from 'react-native-size-matters';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const DrawerStack = () => {
     let count = useSelector(state=>state.notifications)
+    const [showModal, setShowModal] = useState(false)
+
+    const CustomDrawerContent = ({ setShowModal, ...props }) => {
+      // const count = useSelector(state => state.notifications.count);
+  
+      return (
+          <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
+              <DrawerItemList {...props} />
+              {/* Add a separator or any custom styling if needed */}
+              <TouchableOpacity
+                  onPress={() => setShowModal(true)}
+                  style={styles.logoutButton}
+              >
+                  <Text style={styles.logoutText}>Log Out</Text>
+              </TouchableOpacity>
+          </DrawerContentScrollView>
+      );
+  };
     count = count.count
 
     const navigation = useNavigation()
@@ -29,6 +49,7 @@ const DrawerStack = () => {
         },
     });
     const handleLogout = async () => {
+      setShowModal(false)
         navigation.navigate("Public")
         store.dispatch({ type: 'LOGOUT' });
         // Clear persisted state
@@ -48,13 +69,14 @@ const DrawerStack = () => {
             "authenticated": false,
             "welcome": false,
         }))
+      
     }
 
 
 
 
     return (
-
+<>
         <Drawer.Navigator
             screenOptions={{
                 headerShown: false,
@@ -67,7 +89,8 @@ const DrawerStack = () => {
                     width: 240,
                 },
                 swipeEnabled: false,
-            }}
+              }}
+              drawerContent={(props) => <CustomDrawerContent {...props} setShowModal={setShowModal} />}
         >
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Profile" component={PrivateStack} />
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Following" component={FollowingScreen} />
@@ -105,17 +128,37 @@ const DrawerStack = () => {
 
 
 
-            <Drawer.Screen listeners={() => {
-                handleLogout()
+            {/* <Drawer.Screen listeners={() => {
+                // handleLogout()
+                setShowModal(true)
             }} name="Log Out" component={() => <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>
                 <ActivityIndicator color="#FFA100" size="large" />
-            </ImageBackground>} />
+            </ImageBackground>} /> */}
 
         </Drawer.Navigator>
+       <YesNoModal
+                cb={handleLogout}
+                title="Are you sure you want to logout?"
+                success={false}
+                setModalVisible={setShowModal}
+                modalVisible={showModal}
+            />
+</>
 
 
 
     );
 };
-
+const styles = StyleSheet.create({
+  logoutButton: {
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+logoutText: {
+    color: 'white',
+    fontSize: scale(14),
+    marginLeft:scale(3)
+},
+})
 export default memo(DrawerStack);

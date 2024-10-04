@@ -74,7 +74,7 @@ const NestedComment = ({
                     Vibration.vibrate(10)
                     setCommentStatus(prev => !prev);
                     Snackbar.show({
-                        text: !commentStatus ? 'Like' : "Unlike",
+                        text: !commentStatus ? 'Liked' : "Unliked",
                         duration: Snackbar.LENGTH_SHORT,
                         // action: {
                         //     text: 'UNDO',

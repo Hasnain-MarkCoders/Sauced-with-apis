@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 import SingleBrand from '../SingleBrand/SingleBrand';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
+import NotFound from '../NotFound/NotFound';
 
 const BrandList = ({  title = null }) => {
 
@@ -42,9 +43,13 @@ const BrandList = ({  title = null }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{title}</Text>
+            { 
+                data.length>0
+                ?
             <View style={{
                 gap: scale(7)
             }}>
+              
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
@@ -61,7 +66,14 @@ const BrandList = ({  title = null }) => {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleBrand item={item} url={item?.brand?.image} title={item?.brand?.name} />}
                 />
+              
             </View>
+              :
+              <NotFound
+          
+              title='No popular brands found'
+              />
+          }
         </View>
     );
 };

@@ -60,9 +60,11 @@ const Banner = ({
                 {showOverlay &&<View style={styles.overlay}></View>}
             {
                 showText?
-                <View style={{ paddingVertical: scale(10),paddingHorizontal: scale(10), gap: scale(5),flex:1,justifyContent:"space-between" }}>
+                <View style={{ paddingTop: scale(7), paddingBottom:scale(20),paddingHorizontal: scale(10), gap: scale(5),flex:1,justifyContent:"space-between" }}>
                     <View>
-                        <Text style={[styles.bannerText, {
+                        <Text
+                        numberOfLines={1}
+                        style={[styles.bannerText, {
                             color: 'white',
                             fontSize: 24,
                             fontWeight: 'bold',
@@ -73,7 +75,7 @@ const Banner = ({
                         <View style={{
                             gap: scale(10)
                         }}>
-                            <Text style={{
+                            {/* <Text style={{
                                 color: "white",
                                 fontSize: scale(10),
                                 lineHeight: scale(13),
@@ -90,7 +92,7 @@ const Banner = ({
 
                                 {event?.venueDescription}
 
-                            </Text>
+                            </Text> */}
                         
                         </View>
                     </View>

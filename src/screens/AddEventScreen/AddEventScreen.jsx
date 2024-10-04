@@ -44,7 +44,7 @@ const AddEventScreen = () => {
     const navigation = useNavigation()
     const [pickerMode, setPickerMode] = useState('date');
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [isNext, setIsNext] = useState(false)
+    const [isNext, setIsNext] = useState(true)
     const [currentStep, setCurrentStep] = useState('date'); // 'date' or 'time'
     const auth = useSelector(state=>state.auth)
 
@@ -118,8 +118,13 @@ console.log("auth.token", auth.token)
             }
         }).catch(error => {
             console.warn("Error checking location permission:", error);
-            Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+            // Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
             setLoading(false); // Stop loading indicator
+            setAlertModal({
+                open: true,
+                message:  "Error An error occurred while checking location permission. Please try again.",
+                success: false
+            })
         });
     };
 
@@ -135,9 +140,14 @@ console.log("auth.token", auth.token)
                 setLoading(false); // Stop loading indicator
             },
             (error) => {
-                console.log("Error fetching current location:", error);
-                Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
                 setLoading(false); // Stop loading indicator
+                console.log("Error fetching current location:", error);
+                setAlertModal({
+                    open: true,
+                    message: "Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.",
+                    success: false
+                })
+                // Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
             },
             { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
         );
@@ -280,7 +290,7 @@ console.log("selectedDate======================>", selectedDate)
         // Close the modal and reset the picker
         setOpenDate(false);
         setCurrentStep('date');
-        setIsNext(false)
+        // setIsNext(false)
       };
 
     return (
@@ -334,7 +344,7 @@ console.log("selectedDate======================>", selectedDate)
                                         updaterFn={setQuery}
                                         value={query.title}
                                         showTitle={false}
-                                        placeholder="Title"
+                                        placeholder=" e.g. HS2024 Hot Sauce Festiva"
                                         containterStyle={{
                                             flexGrow: 1,
                                         }}
@@ -364,7 +374,7 @@ console.log("selectedDate======================>", selectedDate)
                                         updaterFn={setQuery}
                                         value={query.eventOrganizer}
                                         showTitle={false}
-                                        placeholder="Event Organizer"
+                                        placeholder="e.g. Spicy Events Co."
                                         containterStyle={{
                                             flexGrow: 1,
                                         }}
@@ -451,7 +461,7 @@ console.log("selectedDate======================>", selectedDate)
                                             updaterFn={setQuery}
                                             value={query.destinationDetails}
                                             showTitle={false}
-                                            placeholder="Details"
+                                            placeholder="e.g. Join us for a fiery celebration of hot sauces! Sample and vote for your favorite flavors."
                                             containterStyle={{
                                                 flexGrow: 1,
                                             }}
@@ -515,7 +525,7 @@ console.log("selectedDate======================>", selectedDate)
                                         }}
                                         onPress={checkLocationServiceAndNavigate}
 
-                                        title={query.address ? query.address : "Location"}
+                                        title={query?.address ? query?.address?.slice(0,35) +`${query?.address?.length>34?"...":""}`: "e.g. 123 Spicy Lane, Flavor Town, USA"}
                                     />
 
                                 </View>
@@ -645,7 +655,12 @@ console.log("selectedDate======================>", selectedDate)
             }}
           >
             <View style={styles.modalOverlay}>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setOpenDate(false);
+                    setCurrentStep('date');
+                  }}
+                >
                 <View style={styles.modalContainer}>
                   <View style={styles.modalContent}>
                     <Text style={styles.modalTitle}>
@@ -683,7 +698,12 @@ console.log("selectedDate======================>", selectedDate)
                     <View style={styles.buttonContainer}>
                       {currentStep === 'date' ? (
                         <TouchableOpacity
-                          onPress={() => {setCurrentStep('time');setIsNext(false)}}
+                        style={{
+                            margin:"auto"
+                        }}
+                          onPress={() => {setCurrentStep('time');
+                            // setIsNext(false)
+                        }}
                           disabled={!isNext}
                         >
                               
@@ -691,6 +711,9 @@ console.log("selectedDate======================>", selectedDate)
                         </TouchableOpacity>
                       ) : (
                         <TouchableOpacity
+                        style={{
+                            margin:"auto"
+                        }}
                           onPress={()=>{
                             handleConfirmDateTime()
                           }}

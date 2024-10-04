@@ -5,6 +5,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
 import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
 import { useDispatch } from 'react-redux';
+import NotFound from '../NotFound/NotFound';
 const windowWidth = Dimensions.get('window').width;
 const ProductSearchList = ({
     setProductDetails = () => { },
@@ -107,48 +108,56 @@ const ProductSearchList = ({
             flex: 1,
             ...style,
         }}>
-            <FlatList
-                data={data}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: scale(150), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
-                showsHorizontalScrollIndicator={false}
-                // numColumns={3}
-                onEndReachedThreshold={2}
-                onEndReached={() => {
-                    if (!loading && hasMore) {
-                        setPage(currentPage => currentPage + 1);
-                    }
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }) => <SingleSauce
-                
-                    handleLike={handleLike}
-                    handleIncreaseReviewCount={handleIncreaseReviewCount}
-                    mycb={setData}
-                    searchPageSauceStyles={{
-                        objectFit: "cover", width: scale(90), height: scale(130)
-                    }}
-                    fullWidthText={true}
-                    searchPageStyle={true}
-                    showHeart={showHeart}
-                    setProductDetails={setProductDetails}
-                    setAlertModal={setAlertModal}
-                    showPopup={false}
-                    customStyles={
-
-                        {
-                            width: (windowWidth) / 3.8,
-                            marginBottom: scale(-30),
-                            marginHorizontal: "auto",
+            {
+                data.length>0
+                ?
+                <FlatList
+                    data={data}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: scale(150), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
+                    showsHorizontalScrollIndicator={false}
+                    // numColumns={3}
+                    onEndReachedThreshold={2}
+                    onEndReached={() => {
+                        if (!loading && hasMore) {
+                            setPage(currentPage => currentPage + 1);
                         }
-                    }
-                    index={index}
-                    item={item}
-                    url={item?.image}
-                    title={item?.name}
-
-                />}
-            />
+                    }}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item, index }) => <SingleSauce
+                    
+                        handleLike={handleLike}
+                        handleIncreaseReviewCount={handleIncreaseReviewCount}
+                        mycb={setData}
+                        searchPageSauceStyles={{
+                            objectFit: "cover", width: scale(90), height: scale(130)
+                        }}
+                        fullWidthText={true}
+                        searchPageStyle={true}
+                        showHeart={showHeart}
+                        setProductDetails={setProductDetails}
+                        setAlertModal={setAlertModal}
+                        showPopup={false}
+                        customStyles={
+    
+                            {
+                                width: (windowWidth) / 3.8,
+                                marginBottom: scale(-30),
+                                marginHorizontal: "auto",
+                            }
+                        }
+                        index={index}
+                        item={item}
+                        url={item?.image}
+                        title={item?.name}
+    
+                    />}
+                />
+                :!loading
+                ?
+                <NotFound title='No results available'/>
+                :null
+            }
             {loading && (
                 <ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
             )}

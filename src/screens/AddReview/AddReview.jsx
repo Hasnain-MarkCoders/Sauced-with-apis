@@ -42,15 +42,15 @@ const AddReview = () => {
     const route = useRoute();
     const [imageUris, setImageUris] = useState([]);
     const sauceId = route?.params?.sauceId;
-    const sauceType = route?.params?.sauceType||"" 
-    const url = route?.params?.url||"" 
-    const title = route?.params?.title||"" 
-    const item = route?.params?.item||{}
-    const mycb = route?.params?.mycb||function(){}
-    const handleLike = route?.params?.handleLike|| function(){}
-    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
-    const setReviewCount = route?.params?.setReviewCount||function(){}
-    const reviewCount = route?.params?.reviewCount||"" 
+    const sauceType = route?.params?.sauceType || ""
+    const url = route?.params?.url || ""
+    const title = route?.params?.title || ""
+    const item = route?.params?.item || {}
+    const mycb = route?.params?.mycb || function () { }
+    const handleLike = route?.params?.handleLike || function () { }
+    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount || function () { }
+    const setReviewCount = route?.params?.setReviewCount || function () { }
+    const reviewCount = route?.params?.reviewCount || ""
     const [isSelected, setIsSelected] = useState(true)
     const [isKeyBoard, setIsKeyBoard] = useState(false);
     const axiosInstance = useAxios();
@@ -60,19 +60,19 @@ const AddReview = () => {
     const max = useSharedValue(10);
     const dispatch = useDispatch()
     const auth = useSelector(state => state?.auth);
-    const featuredSauces = useSelector(state=>state?.featuredSauces)
+    const featuredSauces = useSelector(state => state?.featuredSauces)
     console.log(auth?.token);
     const [yesNoModal, setYesNoModal] = useState({
-        open:false,
-        message:"",
-        severity:"success",
-        cb:()=>{}
+        open: false,
+        message: "",
+        severity: "success",
+        cb: () => { }
     })
     const [alertModal, setAlertModal] = useState({
         open: false,
         message: '',
-        success:true,
-        cb:()=>{}
+        success: true,
+        cb: () => { }
     });
     const [data, setData] = useState({
         review: '',
@@ -85,26 +85,26 @@ const AddReview = () => {
 
 
 
-    const handleImagePickerPermission = (isSelected=true) => {
-        const cameraPermission = Platform.OS === 'ios' 
-            ? PERMISSIONS.IOS.CAMERA 
+    const handleImagePickerPermission = (isSelected = true) => {
+        const cameraPermission = Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.CAMERA
             : PERMISSIONS.ANDROID.CAMERA;
-    
-        const galleryPermission = Platform.OS === 'ios' 
-            ? PERMISSIONS.IOS.PHOTO_LIBRARY 
+
+        const galleryPermission = Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.PHOTO_LIBRARY
             : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
-    
+
         const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
-    
+
         check(permissionToCheck).then(result => {
             if (result === RESULTS.GRANTED) {
                 handleImagePicker(isSelected); // Proceed with image picking
             } else if (result === RESULTS.DENIED) {
-    
+
                 setYesNoModal({
                     open: true,
-                    message: isSelected 
-                        ? "Camera Permission Required. Would you like to grant permission?" 
+                    message: isSelected
+                        ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
                     cb: () => {
@@ -113,8 +113,8 @@ const AddReview = () => {
                                 handleImagePicker(isSelected);
                             } else {
                                 Alert.alert(
-                                    isSelected 
-                                        ? "Camera Permission Blocked" 
+                                    isSelected
+                                        ? "Camera Permission Blocked"
                                         : "Gallery Permission Blocked",
                                     `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
                                     [
@@ -129,8 +129,8 @@ const AddReview = () => {
             } else {
                 setYesNoModal({
                     open: true,
-                    message: isSelected 
-                        ? "Camera Permission Required. Would you like to grant permission?" 
+                    message: isSelected
+                        ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
                     cb: () => {
@@ -139,8 +139,8 @@ const AddReview = () => {
                                 handleImagePicker(isSelected);
                             } else {
                                 Alert.alert(
-                                    isSelected 
-                                        ? "Camera Permission Blocked" 
+                                    isSelected
+                                        ? "Camera Permission Blocked"
                                         : "Gallery Permission Blocked",
                                     `Please enable ${isSelected ? 'Camera' : 'Gallery'} permission in your device settings to use this feature.`,
                                     [
@@ -162,7 +162,7 @@ const AddReview = () => {
             });
         });
     };
-    
+
 
     const handleImagePicker = (isSelected) => {
         const options = {
@@ -192,59 +192,59 @@ const AddReview = () => {
         });
     };
 
-const handleUpdateReviewsCount = ()=>{
-    if (sauceType == "toprated") {
-        dispatch(handleIncreaseReviewCountOfTopRatedSauce(sauceId))
+    const handleUpdateReviewsCount = () => {
+        if (sauceType == "toprated") {
+            dispatch(handleIncreaseReviewCountOfTopRatedSauce(sauceId))
+        }
+        if (sauceType == "featured") {
+            dispatch(handleIncreaseReviewCountOfFeaturedSauce(sauceId))
+        }
+        if (sauceType == "favourite") {
+            dispatch(handleIncreaseReviewCountOfFavoriteSauce(sauceId))
+        }
+        if (sauceType == "checkedin") {
+            dispatch(handleIncreaseReviewCountOfCheckedInSauce(sauceId))
+        }
+        if (sauceType == 1) {
+            dispatch(handleIncreaseReviewCountOfListOneSauce(sauceId))
+        }
+        if (sauceType == 2) {
+            dispatch(handleIncreaseReviewCountOfListTwoSauce(sauceId))
+        }
+        if (sauceType == 3) {
+            dispatch(handleIncreaseReviewCountOfListThreeSauce(sauceId))
+        }
     }
-    if (sauceType == "featured") {
-        dispatch(handleIncreaseReviewCountOfFeaturedSauce(sauceId))
-    }
-    if (sauceType == "favourite") {
-        dispatch(handleIncreaseReviewCountOfFavoriteSauce(sauceId))
-    }
-    if (sauceType == "checkedin") {
-        dispatch(handleIncreaseReviewCountOfCheckedInSauce(sauceId))
-    }
-    if (sauceType == 1) {
-        dispatch(handleIncreaseReviewCountOfListOneSauce(sauceId))
-    }
-    if (sauceType == 2) {
-        dispatch(handleIncreaseReviewCountOfListTwoSauce(sauceId))
-    }
-    if (sauceType == 3) {
-        dispatch(handleIncreaseReviewCountOfListThreeSauce(sauceId))
-    }
-}
 
 
 
     const handleSubmit = async () => {
         try {
             if (!data?.review) {
-               return setAlertModal({
+                return setAlertModal({
                     open: true,
                     message: 'Review is required!',
-                    success:false
+                    success: false
 
                 });
             }
             if (!data?.rating) {
-               return setAlertModal({
+                return setAlertModal({
                     open: true,
                     message: 'Rating is required!',
-                    success:false
+                    success: false
 
                 });
             }
             if (!data?.heatLevel) {
                 return setAlertModal({
-                     open: true,
-                     message: 'Heat level is required!',
-                     success:false
+                    open: true,
+                    message: 'Heat level is required!',
+                    success: false
 
-                 });
-             }
-             setLoading(true)
+                });
+            }
+            setLoading(true)
             const formData = new FormData();
             imageUris.forEach(imageUri => {
                 console.log(imageUri.type);
@@ -284,26 +284,27 @@ const handleUpdateReviewsCount = ()=>{
                 setAlertModal({
                     open: true,
                     message: res?.data?.message,
-                    success:true,
-                    buttonText:"View Reviews",
-                    cb:()=>{
-                        navigation.navigate("AllReviews", 
-                            { _id: sauceId, 
+                    success: true,
+                    buttonText: "View Reviews",
+                    cb: () => {
+                        navigation.navigate("AllReviews",
+                            {
+                                _id: sauceId,
                                 // setReviewCount, handleIncreaseReviewCount , reviewCount, product, mycb
-                                item,title, url, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
+                                item, title, url, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike
                             })
                     }
 
                 });
                 handleUpdateReviewsCount()
-                
-                
+
+
                 setData({
                     review: '',
                     rating: '',
                     heatLevel: 0,
                 });
-                progress.value=0
+                progress.value = 0
                 setImageUris([]);
                 // setTimeout(()=>{
                 // navigation.goBack();
@@ -313,7 +314,7 @@ const handleUpdateReviewsCount = ()=>{
             return setAlertModal({
                 open: true,
                 message: error.message,
-                success:false
+                success: false
 
             });
         } finally {
@@ -357,7 +358,7 @@ const handleUpdateReviewsCount = ()=>{
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    data={[1, 1]}
+                    data={[1, 1, 1]}
                     renderItem={({ item, index }) => {
                         return (
                             <View
@@ -409,233 +410,264 @@ const handleUpdateReviewsCount = ()=>{
                                                 }}
                                             />
                                             <View style={{
-                                                gap:scale(30)
+                                                gap: scale(30)
                                             }}>
 
-                                            <View style={{
-                                                gap:scale(50)
-                                            }}>
+                                                <View style={{
+                                                    gap: scale(50)
+                                                }}>
 
 
-                                            <SwipeableRating
-                                                rating={data.rating}
-                                                allowHalves={true}
-                                                style={{
-                                                    margin: 'auto',
-                                                }}
-                                                size={50}
-                                                color="#FFA100"
-                                                emptyColor="#FFA100"
-                                                gap={4}
-                                                onPress={e => {
-                                                    setData(prev => ({ ...prev, rating: e }));
-                                                }}
-                                                xOffset={30}
-                                            />
-                                            <View style={{
-                                                gap: scale(20)
-                                            }}>
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'flex-end',
+                                                    <SwipeableRating
+                                                        rating={data.rating}
+                                                        allowHalves={true}
+                                                        style={{
+                                                            margin: 'auto',
+                                                        }}
+                                                        size={50}
+                                                        color="#FFA100"
+                                                        emptyColor="#FFA100"
+                                                        gap={4}
+                                                        onPress={e => {
+                                                            setData(prev => ({ ...prev, rating: e }));
+                                                        }}
+                                                        xOffset={30}
+                                                    />
+                                                    <View style={{
+                                                        gap: scale(20)
                                                     }}>
-                                                    <Text
-                                                        style={{
-                                                            color: 'white',
-                                                            fontSize: scale(20),
-                                                        }}>
-                                                        Heat Level
-                                                    </Text>
-                                                    <View
-                                                        style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                        }}>
                                                         <View
                                                             style={{
-                                                                backgroundColor: '#2e210a',
-                                                                borderColor: '#FFA100',
-                                                                borderWidth: 1,
-                                                                paddingVertical: scale(10),
-                                                                paddingHorizontal: scale(20),
-
-                                                                borderRadius: scale(10),
+                                                                flexDirection: 'row',
+                                                                justifyContent: 'space-between',
+                                                                alignItems: 'flex-end',
                                                             }}>
                                                             <Text
                                                                 style={{
                                                                     color: 'white',
                                                                     fontSize: scale(20),
-                                                                    textAlign: 'center',
                                                                 }}>
-                                                                {data.heatLevel}
+                                                                Heat Level
                                                             </Text>
+                                                            <View
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                }}>
+                                                                <View
+                                                                    style={{
+                                                                        backgroundColor: '#2e210a',
+                                                                        borderColor: '#FFA100',
+                                                                        borderWidth: 1,
+                                                                        paddingVertical: scale(10),
+                                                                        paddingHorizontal: scale(20),
+
+                                                                        borderRadius: scale(10),
+                                                                    }}>
+                                                                    <Text
+                                                                        style={{
+                                                                            color: 'white',
+                                                                            fontSize: scale(20),
+                                                                            textAlign: 'center',
+                                                                        }}>
+                                                                        {data.heatLevel}
+                                                                    </Text>
+                                                                </View>
+                                                            </View>
                                                         </View>
+                                                        <Slider
+                                                            heartbeat={false}
+                                                            onSlidingComplete={e => {
+                                                                setData(prev => ({
+                                                                    ...prev,
+                                                                    heatLevel: e.toFixed(2),
+                                                                }));
+                                                            }}
+                                                            theme={{
+                                                                disableMinTrackTintColor: '#FFA100',
+                                                                maximumTrackTintColor: '#FFA100',
+                                                                minimumTrackTintColor: '#FFA100',
+                                                                cacheTrackTintColor: '#FFA100',
+                                                                bubbleBackgroundColor: '#FFA100',
+                                                                heartbeatColor: '#FFA100',
+                                                            }}
+                                                            progress={progress}
+                                                            minimumValue={min}
+                                                            maximumValue={max}
+
+
+                                                        />
                                                     </View>
                                                 </View>
-                                                <Slider
-                                                    heartbeat={false}
-                                                    onSlidingComplete={e => {
-                                                        setData(prev => ({
-                                                            ...prev,
-                                                            heatLevel: e.toFixed(2),
-                                                        }));
-                                                    }}
-                                                    theme={{
-                                                        disableMinTrackTintColor: '#FFA100',
-                                                        maximumTrackTintColor: '#FFA100',
-                                                        minimumTrackTintColor: '#FFA100',
-                                                        cacheTrackTintColor: '#FFA100',
-                                                        bubbleBackgroundColor: '#FFA100',
-                                                        heartbeatColor: '#FFA100',
-                                                    }}
-                                                    progress={progress}
-                                                    minimumValue={min}
-                                                    maximumValue={max}
+                                                <View style={{
+                                                    width: "100%",
 
-                                                    
-                                                />
-                                            </View>
-                                            </View>
-                                            <View style={{
-                            width:"100%",
-
-                          }}>
-                            <Text style={{
-                                fontSize:scale(18),
-                                color:"white"
-                            }}>
-                                Choose image from 
-                            </Text>
-
-                          </View>
-
-                          <View style={{
-                            width:"100%",
-                            flexDirection:"row",
-                            gap:scale(10)
-                          }}>
-                                    <TouchableOpacity 
-                                    
-                                    onPress={()=>{
-                                        setIsSelected(true)
-                                        handleImagePickerPermission(true)
-                                    }}
-                                    style={{
-    backgroundColor: isSelected?'#FFA500':'#2e210a', // Dark box for unselected chips
-    borderRadius: scale(20),
-    paddingVertical: scale(6),
-    paddingHorizontal: scale(10),
-    borderColor: '#FFA500', // Orange border for chips to match the theme
-    borderWidth: scale(1),
-    alignItems: 'center',
-  }}>
-                                        <Text
-                                        style={{
-                                            color:isSelected?'#000':'#fff'
-                                        }}
-                                        >
-                                            Camera
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                    
-                                    onPress={()=>{
-                                        setIsSelected(false)
-                                        handleImagePickerPermission(false)
-                                    }}
-                                    style={{
-    backgroundColor: isSelected? '#2e210a':'#FFA500', // Dark box for unselected chips
-    borderRadius: scale(20),
-    paddingVertical: scale(6),
-    paddingHorizontal: scale(10),
-    borderColor: '#FFA500', // Orange border for chips to match the theme
-    borderWidth: scale(1),
-    alignItems: 'center',
-  }}>
-                                        <Text
-                                         style={{
-                                            color:isSelected?'#fff':'#000'
-                                        }}
-                                        >
-                                            Gallery
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                            <View
-                                                style={{
-                                                    width: 'flex',
-                                                    width: '100%',
-                                                    flexWrap: 'wrap',
-                                                    flexDirection: 'row',
-                                                    gap: scale(20),
-                                                    justifyContent: 'center',
                                                 }}>
-                                                {imageUris.map((uri, index) => (
-                                                    <Image
-                                                        key={index}
-                                                        source={{ uri: uri?.uri }}
-                                                        style={{
-                                                            width: scale(100),
-                                                            borderColor: '#FFA100',
-                                                            borderWidth: 1,
-                                                            height: scale(100),
-                                                            borderRadius: scale(12),
-                                                        }}
-                                                    />
-                                                ))}
-                                                <TouchableOpacity
-                                                    onPress={()=>{
-                                                        handleImagePickerPermission(isSelected)
-                                                    }}
-                                                    style={{
-                                                        width: imageUris[0]?.uri ? scale(100) : '100%',
+                                                    <Text style={{
+                                                        fontSize: scale(18),
+                                                        color: "white"
                                                     }}>
-                                                    <View
+                                                        Choose image from
+                                                    </Text>
+
+                                                </View>
+
+                                                <View style={{
+                                                    width: "100%",
+                                                    flexDirection: "row",
+                                                    gap: scale(10)
+                                                }}>
+                                                    <TouchableOpacity
+
+                                                        onPress={() => {
+                                                            setIsSelected(true)
+                                                            handleImagePickerPermission(true)
+                                                        }}
                                                         style={{
-                                                            minHeight: scale(100),
-                                                            paddingHorizontal: scale(20),
-                                                            borderColor: '#FFA100',
-                                                            borderWidth: 1,
-                                                            backgroundColor: '#2e210a',
-                                                            borderRadius: scale(12),
-                                                            width: '100%',
-                                                            marginBottom: scale(60),
-                                                            justifyContent: 'center',
+                                                            backgroundColor: isSelected ? '#FFA500' : '#2e210a', // Dark box for unselected chips
+                                                            borderRadius: scale(20),
+                                                            paddingVertical: scale(6),
+                                                            paddingHorizontal: scale(10),
+                                                            borderColor: '#FFA500', // Orange border for chips to match the theme
+                                                            borderWidth: scale(1),
                                                             alignItems: 'center',
-                                                            borderStyle: 'dashed',
                                                         }}>
                                                         <Text
                                                             style={{
-                                                                fontSize: scale(16),
-                                                                lineHeight: scale(19),
-                                                                color: 'white',
-                                                                fontWeight: 700,
-                                                            }}>
-                                                            {imageUris[0]?.uri ? '+' : 'Upload a picture'}
+                                                                color: isSelected ? '#000' : '#fff'
+                                                            }}
+                                                        >
+                                                            Camera
                                                         </Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+
+                                                        onPress={() => {
+                                                            setIsSelected(false)
+                                                            handleImagePickerPermission(false)
+                                                        }}
+                                                        style={{
+                                                            backgroundColor: isSelected ? '#2e210a' : '#FFA500', // Dark box for unselected chips
+                                                            borderRadius: scale(20),
+                                                            paddingVertical: scale(6),
+                                                            paddingHorizontal: scale(10),
+                                                            borderColor: '#FFA500', // Orange border for chips to match the theme
+                                                            borderWidth: scale(1),
+                                                            alignItems: 'center',
+                                                        }}>
+                                                        <Text
+                                                            style={{
+                                                                color: isSelected ? '#fff' : '#000'
+                                                            }}
+                                                        >
+                                                            Gallery
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View
+                                                    style={{
+                                                        width: 'flex',
+                                                        width: '100%',
+                                                        flexWrap: 'wrap',
+                                                        flexDirection: 'row',
+                                                        gap: scale(20),
+                                                        justifyContent: 'center',
+                                                    }}>
+                                                    {imageUris.map((uri, index) => (
+                                                        <Image
+                                                            key={index}
+                                                            source={{ uri: uri?.uri }}
+                                                            style={{
+                                                                width: scale(100),
+                                                                borderColor: '#FFA100',
+                                                                borderWidth: 1,
+                                                                height: scale(100),
+                                                                borderRadius: scale(12),
+                                                            }}
+                                                        />
+                                                    ))}
+                                                    <TouchableOpacity
+                                                        onPress={() => {
+                                                            handleImagePickerPermission(isSelected)
+                                                        }}
+                                                        style={{
+                                                            width: imageUris[0]?.uri ? scale(100) : '100%',
+                                                        }}>
+                                                        <View
+                                                            style={{
+                                                                minHeight: scale(100),
+                                                                paddingHorizontal: scale(20),
+                                                                borderColor: '#FFA100',
+                                                                borderWidth: 1,
+                                                                backgroundColor: '#2e210a',
+                                                                borderRadius: scale(12),
+                                                                width: '100%',
+                                                                marginBottom: scale(60),
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center',
+                                                                borderStyle: 'dashed',
+                                                            }}>
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: scale(16),
+                                                                    lineHeight: scale(19),
+                                                                    color: 'white',
+                                                                    fontWeight: 700,
+                                                                }}>
+                                                                {imageUris[0]?.uri ? '+' : 'Upload a picture'}
+                                                            </Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
+                                        <View
+                    style={{
+                        // position: 'absolute',
+                        bottom: scale(20),
+                        width: '100%',
+                        // paddingHorizontal: scale(20),
+                    }}>
+                    <CustomButtom
+                        disabled={loading}
+                        showIcon={false}
+                        buttonTextStyle={{ fontSize: scale(14) }}
+                        buttonstyle={{
+                            width: '100%',
+                            // marginTop: scale(60),
+                            borderColor: '#FFA100',
+                            backgroundColor: '#2e210a',
+                            // paddingHorizontal: scale(15),
+                            paddingVertical: scale(13),
+                            display: 'flex',
+                            gap: 10,
+                            flexDirection: 'row-reverse',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                        loading={loading}
+                        onPress={handleSubmit}
+                        title={'Submit'}
+                    />
+                </View>
                                     </View>
                                 )}
+
                             </View>
                         );
                     }}
                 />
 
-                <View
+                {/* <View
                     style={{
-                        position: 'absolute',
+                        // position: 'absolute',
                         bottom: scale(20),
                         width: '100%',
                         paddingHorizontal: scale(20),
+                        backgroundColor:"red"
                     }}>
                     <CustomButtom
-                    disabled={loading}
+                        disabled={loading}
                         showIcon={false}
                         buttonTextStyle={{ fontSize: scale(14) }}
                         buttonstyle={{
@@ -655,34 +687,34 @@ const handleUpdateReviewsCount = ()=>{
                         onPress={handleSubmit}
                         title={'Submit'}
                     />
-                </View>
+                </View> */}
                 <YesNoModal
                     modalVisible={yesNoModal.open}
-                    setModalVisible={()=>{
+                    setModalVisible={() => {
                         setYesNoModal({
                             open: false,
                             messsage: "",
-                            severity:true,
+                            severity: true,
                         })
                     }}
                     success={yesNoModal.severity}
                     title={yesNoModal.message}
                     cb={yesNoModal.cb}
-                                    
-                    />
+
+                />
             </SafeAreaView>
             <CustomAlertModal
                 title={alertModal?.message}
                 success={alertModal?.success}
                 modalVisible={alertModal?.open}
                 buttonText={alertModal.buttonText}
-                cb={alertModal.cb||function(){}}
+                cb={alertModal.cb || function () { }}
                 setModalVisible={() =>
                     setAlertModal({
                         open: false,
                         messsage: '',
                     })
-                    
+
                 }
             />
         </ImageBackground>

@@ -690,7 +690,7 @@ const Home = () => {
                                 textDecorationLine: "underline", fontWeight: 700,
                                 marginLeft:scale(2)
                             }]}>
-                                Want to recomend a local store?
+                                Want to recommend a local store?
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -745,7 +745,8 @@ const Home = () => {
                             open: false,
                             messsage: "",
                             severity:true,
-                        })
+                        });
+                        setLoading(false)
                     }}
                     success={yesNoModal.severity}
                     title={"Location Request"}

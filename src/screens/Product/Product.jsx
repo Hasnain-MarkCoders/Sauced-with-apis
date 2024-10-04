@@ -66,7 +66,12 @@ const Product = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState(0);
   const [query, setQuery] = useState({search: ''});
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    image: "",
+    name: "",
+    email:"",
+    phone:""
+  });
   const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
   const [isEnabled, setisEnabled] = useState(true);
   const navigation = useNavigation();
@@ -255,10 +260,19 @@ useEffect(()=>{
     }
   };
   const handleUserProfileView = data => {
-    navigation.navigate('ExternalProfileScreen', {
-      url: data.profileUri,
-      name: data.name,
-    });
+    console.log(data.item._id)
+    setOpenUserDetailsModal(true)
+    setUserData({
+      image: data.item?.owner?.image,
+      name: data.item?.owner?.name,
+      email:data.item?.owner?.email,
+      phone:data.item?.owner?.phone||"N/A"
+    })
+    // navigation.navigate('ExternalProfileScreen', {
+    //   url: data.item.image,
+    //   name: data.item.name,
+    //    _id:data.item._id
+    // });
   };
 
 
@@ -335,7 +349,7 @@ useEffect(()=>{
                         fontSize: moderateScale(24),
                         fontWeight: 600,
                       }}>
-                      About {product?.name}
+                      { product?.name?"About "+ product?.name:"N?A"}
                     </Text>
 
                     <Text
@@ -346,7 +360,7 @@ useEffect(()=>{
                         fontWeight: 400,
                         lineHeight: 20,
                       }}>
-                      {product?.description}
+                      {product?.description? product?.description:"N/A"}
                     </Text>
 
                     <Text
@@ -389,7 +403,7 @@ useEffect(()=>{
                         fontWeight: 700,
                         lineHeight: 18,
                       }}>
-                      {product?.ingredients}
+                      {product?.ingredients?product?.ingredients:"N/A"}
                     </Text>
                   </View>
                 )}
@@ -522,8 +536,8 @@ useEffect(()=>{
       <UserDetailsModal
         name={userData.name}
         email={userData.email}
-        number={userData.number}
-        profilePicture={userData.profileUri}
+        number={userData.phone}
+        profilePicture={userData.image}
         modalVisible={openUserDetailsModal}
         setModalVisible={setOpenUserDetailsModal}
       />

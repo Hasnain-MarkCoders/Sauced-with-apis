@@ -32,6 +32,7 @@ const UploadImage = () => {
             });
             dispatch(handleAuth({ url }));
             setImageUri(url);
+            console.log("response?.data?.message======================>", response?.data?.message)
             setAlertModal({
                 open: true,
                 message: response?.data?.message,

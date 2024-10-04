@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleFollowers, handleFollowersSearch, clearFollowersState } from '../../../android/app/Redux/followers';
 import { debounce } from 'lodash';
 import { useNavigation } from '@react-navigation/native';
+import NotFound from '../NotFound/NotFound';
 
 const FollowersList = ({
   numColumns = 2,
@@ -16,7 +17,7 @@ const FollowersList = ({
 }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const axiosInstance = useAxios();
   const followers = useSelector(state => state?.followers);
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const FollowersList = ({
 
   // Unified function for fetching followers (with or without search term)
   const fetchFollowers = useCallback(debounce(async () => {
-    if (loading || !hasMore) return;
+    if ( !hasMore) return;
 
     setLoading(true);
     try {
@@ -72,32 +73,49 @@ const FollowersList = ({
 
   return (
     <View style={{ gap: scale(20), flex: 1 }}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        numColumns={numColumns}
-        data={followers}
-        extraData={followers}
-        onEndReachedThreshold={0.5} // Adjusted threshold
-        onEndReached={() => {
-          if (!loading && hasMore) {
-            setPage(currentPage => currentPage + 1); // Fetch next page
+      
+        
+        {
+          followers?.length > 0
+          ?
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          numColumns={numColumns}
+          data={followers}
+          extraData={followers}
+          onEndReachedThreshold={0.5} // Adjusted threshold
+          onEndReached={() => {
+            if (!loading && hasMore) {
+              setPage(currentPage => currentPage + 1); // Fetch next page
+            }
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) =>
+            <UserCard
+              cb={handleUser}
+              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
+              _id={item?._id}
+              item={item}
+              url={item.image}
+              name={item?.name}
+              showText={false}
+            />
           }
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) =>
-          <UserCard
-            cb={handleUser}
-            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
-            _id={item?._id}
-            item={item}
-            url={item.image}
-            name={item?.name}
-            showText={false}
-          />
-        }
-        ListFooterComponent={loading && <ActivityIndicator size="small" color="#FFA100" />}
-      />
+          ListFooterComponent={loading && <ActivityIndicator size="small" color="#FFA100" />}
+        />
+        :
+        loading && followers.length<1
+        ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
+        :followers.length<1
+        ?
+        <NotFound
+        title='No users found'
+        />
+        :null
+        
+
+      }
     </View>
   );
 };

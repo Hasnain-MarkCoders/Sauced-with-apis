@@ -121,7 +121,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
             !loading
             ?
             <NotFound
-            title='Checked In Sauces Not available'
+            title='No sauces added yet.'
             />
             :null
 

@@ -151,7 +151,7 @@ const RequestASauceScreen = () => {
                                 fontSize:scale(17),
                                 color:"white"
                             }}>
-                                Sauce Name
+                                Sauce Name *
                             </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
@@ -160,7 +160,7 @@ const RequestASauceScreen = () => {
                                 updaterFn={setQuery}
                                 value={query.sauceName}
                                 showTitle={false}
-                                placeholder="Sauce Name"
+                                placeholder="e.g. Blazin’ Habanero Inferno"
                                 containterStyle={{
                                     flexGrow: 1,
                                 }}
@@ -181,7 +181,7 @@ const RequestASauceScreen = () => {
                                 fontSize:scale(17),
                                 color:"white"
                             }}>
-                                Brand Name
+                                Brand Name *
                             </Text>
                             <CustomInput
                                 // cb={() => setPage(1)}
@@ -190,7 +190,7 @@ const RequestASauceScreen = () => {
                                 updaterFn={setQuery}
                                 value={query.brandName}
                                 showTitle={false}
-                                placeholder="Brand Name"
+                                placeholder=" e.g. The Heat Exchange"
                                 containterStyle={{
                                     flexGrow: 1,
                                 }}
@@ -207,15 +207,27 @@ const RequestASauceScreen = () => {
 
 
                                 <View  style={{
-                                gap:scale(10)
+                                gap:scale(10),
+                                position:"relative"
                             }}>
+                                <View style={{
+                                    flexDirection:"row",
+                                    alignItems:"center"
+                                }}>
 
                                 <Text style={{
                                 fontSize:scale(17),
-                                color:"white"
-                            }}>
-                                Website Link
+                                color:"white",
+                                justifyContent:"center"}}>
+                                Website Link 
+                              
                             </Text>
+                            <Text style={{
+                                    color:"#FFA100",
+                                    fontSize:scale(8)
+                                }}> (Optional)</Text>
+
+                                </View>
                             <View style={{
                                 gap: scale(10)
                             }}>
@@ -227,7 +239,7 @@ const RequestASauceScreen = () => {
                                     updaterFn={setQuery}
                                     value={query.webLink}
                                     showTitle={false}
-                                    placeholder="Website Link"
+                                    placeholder="e.g. https://example.com"
                                     containterStyle={{
                                         flexGrow: 1,
                                     }}
@@ -240,11 +252,11 @@ const RequestASauceScreen = () => {
                                         padding: 15,
 
                                     }} />
-                                <Text style={{
+                                {/* <Text style={{
                                     color: "#FFA100",
                                     alignSelf: "flex-end",
                                     fontSize: scale(10)
-                                }}>Web-Link Optional</Text>
+                                }}>Web-Link Optional</Text> */}
                             </View>
                                 </View>
                         </View>

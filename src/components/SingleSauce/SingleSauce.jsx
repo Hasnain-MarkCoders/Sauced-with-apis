@@ -228,8 +228,8 @@ const SingleSauce = ({
                     handleToggleLike();
                     Snackbar.show({
                       text: !selected.isChecked
-                        ? 'Like'
-                        : 'Unlike',
+                        ? 'Liked'
+                        : 'Unliked',
                       duration: Snackbar.LENGTH_SHORT,
                       // action: {
                       //   text: 'UNDO',

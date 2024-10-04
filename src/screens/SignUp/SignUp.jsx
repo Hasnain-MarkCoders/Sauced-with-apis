@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import { handleText } from '../../../utils';
+import { handleText, validateEmail } from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from "./../../../assets/images/google-icon.png";
 import apple from "./../../../assets/images/apple-icon.png";
@@ -98,6 +98,27 @@ const SignUp = () => {
     
     })
       return
+    }
+    
+    if (!validateEmail(data.email)) {
+
+      setAlertModal({
+        open: true,
+        message: "Please use valid email address!",
+        success:false
+
+    });
+      return;
+    }
+    if (data.password.length<6) {
+
+      setAlertModal({
+        open: true,
+        message: "Password at least 6 characters",
+        success:false
+
+    });
+      return;
     }
     if (!data.password) {
       setIsEnabled(true); // Re-enable the button
@@ -428,18 +449,18 @@ if(authLoading){
                 secureTextEntry={true}
               />
 
-              <TouchableOpacity 
+              {/* <TouchableOpacity 
               onPress={()=>{
                 setAlertModal(true)
                 setMessage("Feature Coming Soon.")}
               }
-              >
+              > */}
               <Text style={{
                 color:"#C1C1C1",
                 fontSize:scale(12),
                 lineHeight:scale(25),
               }}>Please create a strong password</Text>
-              </TouchableOpacity>
+              {/* </TouchableOpacity> */}
               </View>
             </View>
             <View style={{ alignItems: "center", gap: 20 }}>

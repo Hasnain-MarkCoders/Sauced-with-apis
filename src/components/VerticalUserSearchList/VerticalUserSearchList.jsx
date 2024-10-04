@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers, handleToggleSearchedUserIsFollowing } from '../../../android/app/Redux/searchedUsers';
 import { handleStats } from '../../../android/app/Redux/userStats';
+import NotFound from '../NotFound/NotFound';
 
 const VerticalUserSearchList = ({
   numColumns = 1,
@@ -16,7 +17,7 @@ const VerticalUserSearchList = ({
 }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const axiosInstance = useAxios();
   const users = useSelector(state => state?.searchedUsers);
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const VerticalUserSearchList = ({
 
   const fetchUsersWithSearchTerm = useCallback(debounce(async () => {
     // Only block fetch if it's already loading or no more data
-    if (loading || !hasMore) return;
+    if ( !hasMore) return;
 
     setLoading(true);
     try {
@@ -83,32 +84,44 @@ const VerticalUserSearchList = ({
 
   return (
     <View style={{ gap: scale(20), flex: 1 }}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        numColumns={numColumns}
-        showsVerticalScrollIndicator={false}
-        horizontal={horizontal}
-        data={users}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          if (!loading && hasMore) {
-            setPage(currentPage => currentPage + 1);
-          }
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <UserCard
-          showButton={auth._id==item._id?false:true}
-            cb={handleUser}
-            _id={item?._id}
-            title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
-            item={item}
-            url={item.image}
-            name={item?.name}
-            showText={false}
-          />
-        )}
-      />
+      {
+        users.length>0
+        ?
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          numColumns={numColumns}
+          showsVerticalScrollIndicator={false}
+          horizontal={horizontal}
+          data={users}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (!loading && hasMore) {
+              setPage(currentPage => currentPage + 1);
+            }
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <UserCard
+            showButton={auth._id==item._id?false:true}
+              cb={handleUser}
+              _id={item?._id}
+              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
+              item={item}
+              url={item.image}
+              name={item?.name}
+              showText={false}
+            />
+          )}
+        />
+        :
+        !loading && users.length==0 
+        ?
+        <NotFound
+        title='No results found'
+        />
+        :null
+
+      }
       {loading && <ActivityIndicator size="small" color="#FFA100" />}
     </View>
   );

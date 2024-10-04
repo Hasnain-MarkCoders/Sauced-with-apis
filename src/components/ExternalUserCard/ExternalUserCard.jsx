@@ -153,7 +153,7 @@ const ExternalUserCard = ({
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                  onPress={()=>{
-                                    navigation.navigate("AllCheckinsScreen", {routerNumber:1,  _id})
+                                    navigation.navigate("AllCheckinsScreen", {routerNumber:1,  _id, isBack:true})
                                 }}
                                 >
 

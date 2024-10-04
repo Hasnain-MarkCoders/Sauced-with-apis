@@ -1,15 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert, Modal,  Text,  View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
+import QuestionMark from "./../../../assets/images/question-mark.png"
 import ErrorLogo from "./../../../assets/images/ErrorLogo.png"
+
 import SuccessLogo from "./../../../assets/images/SuccessLogo.png"
 import LinearGradient from 'react-native-linear-gradient';
-const YesNoModal = ({
+import CustomInput from '../CustomInput/CustomInput';
+import { handleText } from '../../../utils';
+const ModalWithInput = ({
   modalVisible = false,
   setModalVisible = () => { },
   success=true,
   title="",
   cb=()=>{},
+  setInput=()=>{},
+  input="",
+  placeholder="",
+  loading=false
 }) => {
   useEffect(()=>{
     // setTimeout(()=>{
@@ -17,12 +25,15 @@ const YesNoModal = ({
     //     setModalVisible()
     //   }
     // },4000)
-    console.log("title===================>", title)
+    console.log(modalVisible)
   },[modalVisible])
   const handleBackgroundTouch = () => {
-    setModalVisible(false);
+    setModalVisible(prev=>({...prev, open:false}));
    
   };
+  const [query, setQuery]= useState({
+    email:""
+  })
   return (
     modalVisible && <View   style={{
       flex: 1,
@@ -38,7 +49,7 @@ const YesNoModal = ({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          // setModalVisible(!modalVisible);
          
         }}>
           <TouchableOpacity  style={{
@@ -49,7 +60,8 @@ const YesNoModal = ({
                 backgroundColor: 'rgba(33, 22, 10, .85)',
               }}
               activeOpacity={1}
-              onPressOut={handleBackgroundTouch}>
+              onPressOut={handleBackgroundTouch}
+              >
 
         <View style={{
           flex: 1,
@@ -84,7 +96,7 @@ const YesNoModal = ({
             <Image style={{
               width:scale(90),
               height:scale(90)
-            }} source={success?SuccessLogo:ErrorLogo}/>
+            }} source={success?SuccessLogo:QuestionMark}/>
          
                 <Text style={{
                     color:"white",
@@ -95,6 +107,32 @@ const YesNoModal = ({
                 }}>
                   {title}  
                 </Text>
+
+                <CustomInput
+                                          imageStyles={{top:"50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain',width:scale(25), height:scale(25), aspectRatio:"1/1"}}
+                                          isURL={false}
+                                          showImage={false}
+                                          // uri={search}
+                                            // cb={() => setPage(1)}
+                                            name="email"
+                                            onChange={handleText}
+                                            updaterFn={setQuery}
+                                            value={query.email}
+                                            showTitle={false}
+                                            placeholder={placeholder}
+                                            containterStyle={{
+                                                flexGrow: 1,
+                                                width:"100%"
+                                            }}
+                                            inputStyle={{
+                                                borderColor: "white",
+                                                borderWidth: 1,
+                                                borderRadius: 10,
+                                                padding: 15,
+                                                // paddingLeft:scale(45),
+                                                // width:"100%"
+
+                                            }} />
                   <View style={{
                     flexDirection:"row",
                     gap:scale(20),
@@ -102,9 +140,9 @@ const YesNoModal = ({
                   }}>
 
                 <TouchableOpacity
-                
+                disabled={loading}
                 onPress={()=>{
-                  setModalVisible(false)
+                  setModalVisible(prev=>({...prev, open:false}))
                  
                 
                 }}
@@ -125,10 +163,11 @@ const YesNoModal = ({
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                disabled={loading}
                 
                 onPress={()=>{
-                  cb()
-                  setModalVisible(false)
+                  cb(query.email, setQuery)
+                  // setModalVisible(false)
                 
                 }}
                 style={{
@@ -159,4 +198,4 @@ const YesNoModal = ({
 
 }
 
-export default YesNoModal
+export default ModalWithInput

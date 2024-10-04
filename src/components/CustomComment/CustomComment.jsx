@@ -48,7 +48,7 @@ const CustomComment = ({
             const res = await axiosInstance.post(`/like-checkin`, { checkinId: _id });
             setLikesCount(res.data?.likesCount)
             Snackbar.show({
-                text: !commentStatus ? 'Like' : "Unlike",
+                text: !commentStatus ? 'Liked' : "Unliked",
                 duration: Snackbar.LENGTH_SHORT,
                 // action: {
                 //     text: 'UNDO',
@@ -107,7 +107,7 @@ console.log(profileUri)
                     }}>
                         <TouchableOpacity onPress={() => {
                             setOpenUserDetailsModal(true)
-                            cb({profileUri,name:title, email,number:"+1234567890"})
+                            cb({profileUri,name:title, email,number:"+1234567890", item})
                         }}>
 
                             <Text style={{

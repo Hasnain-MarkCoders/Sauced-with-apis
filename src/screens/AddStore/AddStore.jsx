@@ -246,7 +246,7 @@ const AddStore = () => {
                                     updaterFn={setQuery}
                                     value={query.storeName}
                                     showTitle={false}
-                                    placeholder="Store Name"
+                                    placeholder="e.g. The Heat Exchange"
                                     containterStyle={{
                                         flexGrow: 1,
                                     }}
@@ -283,7 +283,7 @@ const AddStore = () => {
                                     }}
                                     onPress={checkLocationServiceAndNavigate}
 
-                                    title={query?.address ? query?.address : "Address"}
+                                    title={query?.address ? query?.address?.slice(0,35)+`${query?.address.length>34?"...":""}` : "e.g. 123 Spicy Lane, Flavor Town, USA"}
                                 />
 
                             </View>
@@ -313,6 +313,7 @@ const AddStore = () => {
                             messsage: "",
                             severity:true,
                         })
+                        setIsLoading(prev => ({ ...prev, loadMap: false }))
                     }}
                     success={yesNoModal.severity}
                     title={"Location Request"}

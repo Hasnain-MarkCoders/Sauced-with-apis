@@ -20,6 +20,7 @@ const CustomAlertModal = ({
     //     setModalVisible()
     //   }
     // },4000)
+    console.log("title=========================>", title)
   },[modalVisible])
   const handleBackgroundTouch = () => {
     setModalVisible(false);
@@ -90,7 +91,7 @@ const CustomAlertModal = ({
                     color:"white",
                     fontSize:scale(16),
                     fontWeight:400,
-                    lineHeight:scale(50),
+                    lineHeight:scale(25),
                     textAlign:"center"
                 }}>
                   {title}  

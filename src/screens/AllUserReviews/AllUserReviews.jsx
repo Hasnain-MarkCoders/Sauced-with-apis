@@ -63,7 +63,7 @@ const AllUserReviews = () => {
 
                 <Header showText={false} showMenu={false} showProfilePic={false} cb={() => { navigation.goBack(); Vibration.vibrate(10) }} headerContainerStyle={{ paddingTop: scale(0), paddingHorizontal: 0 }} title="Reviewed Sauces" showDescription={false} description="" />
             </View>
-            <View style={{ paddingHorizontal: scale(20), flex: 1, justifyContent: "space-between", paddingBottom: scale(6), gap: scale(10) }}>
+            <View style={{ paddingHorizontal: scale(20), flex: 1, paddingBottom: scale(6), gap: scale(10) }}>
                 <Text style={{
                     color: "white",
                     fontWeight: 600,
@@ -81,7 +81,7 @@ const AllUserReviews = () => {
               :!loading && data.length<1
               ?
               <NotFound
-              title='No Reviews Found'
+              title='No reviews Found'
               />
               :
              <FlatList

@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import { handleText } from '../../../utils';
+import { handleText, validateEmail } from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from "./../../../assets/images/google-icon.png";
 import fb from "./../../../assets/images/facebook-icon.png";
@@ -18,6 +18,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import messaging from '@react-native-firebase/messaging';
+import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
 
 
 
@@ -37,6 +38,14 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false)
   const axiosInstance = useAxios()
   const navigation = useNavigation()
+  const [ForgetPasswordModal, setForgotPasswordModal] = useState({
+    open: false,
+    loading: false,
+    success: false,
+    message: "",
+    cb:function(){}
+  })
+  const [forgetPasswordEmail, setForgetPasswordEmail] = useState("")
   const [data, setData] = useState({
     email: "",
     password: ""
@@ -45,6 +54,107 @@ const SignIn = () => {
 
 
 
+
+// const handleForgetPassword = async()=>{
+//     console.log("forgetPasswordEmail.email=============>", forgetPasswordEmail)
+
+
+//   // try{
+//   //   console.log("forgetPasswordEmail.email=============>", forgetPasswordEmail)
+//   //   if(!forgetPasswordEmail.email){
+//   //     setAlertModal({
+//   //       open: true,
+//   //       message: "Email address can not be empty",
+//   //       success:false
+
+//   //   });
+//   //   setForgetPasswordEmail({email:""})
+
+//   //   return
+//   //   }
+//   //   if(!validateEmail(forgetPasswordEmail.email)){
+//   //    setForgotPasswordModal(prev=>({...prev,open:false }))
+//   //      setAlertModal({
+//   //       open: true,
+//   //       message: "Please enter a valid email address!",
+//   //       success:false
+
+//   //   });
+//   //   setForgetPasswordEmail({email:""})
+
+//   //   return
+//   //   }
+//   //  await auth().sendPasswordResetEmail(forgetPasswordEmail.email)
+//   //   setAlertModal({
+//   //     open: true,
+//   //     message: "Please check your email",
+//   //     success:true
+
+//   // });
+//   // setForgetPasswordEmail({email:""})
+
+//   // }catch(error){
+//   //   console.log(error)
+//   //   setForgotPasswordModal(prev=>({...prev,open:false }))
+
+//   //   setAlertModal({
+//   //     open: true,
+//   //     message: error?.message,
+//   //     success:false
+
+//   // });
+//   // setForgetPasswordEmail({email:""})
+
+//   // }finally{
+//   //   setForgotPasswordModal({open:false})
+//   // }
+
+// }
+
+const handleForgetPassword = async (email,setEmail) => {
+  console.log("forgetPasswordEmail=============>", email);
+
+  try {
+    // Input validation
+    if (!email) {
+      setAlertModal({
+        open: true,
+        message: "Email address cannot be empty",
+        success: false,
+      });
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setForgotPasswordModal((prev) => ({ ...prev, open: false }));
+      setAlertModal({
+        open: true,
+        message: "Please enter a valid email address!",
+        success: false,
+      });
+      return;
+    }
+
+    // Send password reset email
+    await auth().sendPasswordResetEmail(email);
+    setAlertModal({
+      open: true,
+      message: "Please check your email for password reset instructions.",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    setForgotPasswordModal((prev) => ({ ...prev, open: false }));
+    setAlertModal({
+      open: true,
+      message: error?.message || "An error occurred while resetting the password.",
+      success: false,
+    });
+  } finally {
+    setForgotPasswordModal({ open: false });
+    setEmail({ email: "" })
+  }
+};
 
 
   const updateTokenOnServer = async (authToken,newFcmToken) => {
@@ -83,11 +193,33 @@ const SignIn = () => {
       });
         return;
       }
+
+      if (!validateEmail(data.email)) {
+
+        setAlertModal({
+          open: true,
+          message: "Please use valid email address!",
+          success:false
+
+      });
+        return;
+      }
       if (!data.password) {
 
         setAlertModal({
           open: true,
           message: "Password is required!",
+          success:false
+
+      });
+        return;
+      }
+
+      if (data.password.length<6) {
+
+        setAlertModal({
+          open: true,
+          message: "Password at least 6 characters",
           success:false
 
       });
@@ -423,8 +555,20 @@ if(authLoading){
         />
            <TouchableOpacity 
               onPress={()=>
-                {setAlertModal(true)
-                setMessage('Feature Coming Soon.')}
+                {
+                  // setShowForgotPasswordModal(true)
+                  setForgotPasswordModal({
+                      open: true,
+                      loading: false,
+                      success: false,
+                      message: "PLease enter your email address",
+                      cb:handleForgetPassword
+                  })
+                //   setAlertModal(true)
+                // Alert.alert("hello")
+                // setMessage('Feature Coming Soon.')
+              
+              }
               }>
               <Text style={{
                 color:"#C1C1C1",
@@ -501,6 +645,17 @@ if(authLoading){
     </View>
 
     </ScrollView>
+    <ModalWithInput
+   setInput={setForgetPasswordEmail}
+   setModalVisible={setForgotPasswordModal}
+   modalVisible={ForgetPasswordModal.open}
+   success={ForgetPasswordModal.success}
+   title={ForgetPasswordModal.message}
+   cb={ForgetPasswordModal.cb}
+   input={forgetPasswordEmail}
+   loading={ForgetPasswordModal.loading}
+   placeholder='Email'
+    />
 
     <CustomAlertModal
                             title={alertModal?.message}

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCount, clearNotifications, deleteNotification } from '../../../android/app/Redux/notifications.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
+import NotFound from '../../components/NotFound/NotFound.jsx';
 const NotificationsScreen = ({
 }) => {
     const navigation = useNavigation()
@@ -91,32 +92,39 @@ const NotificationsScreen = ({
                                     </Text></TouchableOpacity>}
 
                             </View>
-
-
-                            <FlatList
-                                contentContainerStyle={{
-                                    gap: scale(10)
-                                }}
-                                showsHorizontalScrollIndicator={false}
-                                showsVerticalScrollIndicator={false}
-                                data={notifications}
-                                extranotifications={notifications}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item, index }) =>
-
-                                    <Swipeable
-                                    renderRightActions={() => renderRightActions(index)}
-                                  >
-                                    <CustomNotification
-                                      title={item.title}
-                                      body={item.body}
+                                {
+                                    notifications.length>0
+                                    ?
+                                    <FlatList
+                                        contentContainerStyle={{
+                                            gap: scale(10)
+                                        }}
+                                        showsHorizontalScrollIndicator={false}
+                                        showsVerticalScrollIndicator={false}
+                                        data={notifications}
+                                        extranotifications={notifications}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) =>
+        
+                                            <Swipeable
+                                            renderRightActions={() => renderRightActions(index)}
+                                          >
+                                            <CustomNotification
+                                              title={item.title}
+                                              body={item.body}
+                                            />
+                                          </Swipeable>
+                                            // <CustomNotification title={item.title} body={item.body} />
+        
+                                        }
+        
                                     />
-                                  </Swipeable>
-                                    // <CustomNotification title={item.title} body={item.body} />
+                                    :
+                                    <NotFound
+                                        title={"No Notifications"}
+                                    />
+                                }   
 
-                                }
-
-                            />
                         </View>
                     </View>
                 </ScrollView>

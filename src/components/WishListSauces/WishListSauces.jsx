@@ -111,7 +111,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
                 !loading
                 ?
                 <NotFound
-                title='Wishlist sauces Not available'
+                title='No sauces added yet.'
                 />
                 :null
             }

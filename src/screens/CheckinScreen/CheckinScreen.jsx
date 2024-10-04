@@ -135,7 +135,7 @@ const CheckinScreen = () => {
             console.warn("Error checking location permission:", error);
             setAlertModal({
                 open: true,
-                messsage: "An error occurred while checking location permission. Please try again.",
+                message: "An error occurred while checking location permission. Please try again.",
                 success: false
             })
             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
@@ -156,7 +156,7 @@ const CheckinScreen = () => {
             (error) => {
                 setAlertModal({
                     open: true,
-                    messsage: "Could not fetch current location. Please ensure your location services are enabled and try again.",
+                    message: "Could not fetch current location. Please ensure your location services are enabled and try again.",
                     success: false
                 })
                 setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
@@ -297,13 +297,13 @@ const handleSubmit = async () => {
         });
       }
 
-      if (imageUris.length<1) {
-        return setAlertModal({
-          open: true,
-          message: 'Images required!',
-          success: false,
-        });
-      }
+    //   if (imageUris.length<1) {
+    //     return setAlertModal({
+    //       open: true,
+    //       message: 'Images required!',
+    //       success: false,
+    //     });
+    //   }
   
     //   if (!data.coordinates?.latitude || !data?.coordinates?.longitude || !data?.address) {
     //     return setAlertModal({
@@ -593,7 +593,7 @@ const handleSubmit = async () => {
                     setModalVisible={()=>{
                         setAlertModal({
                             open: false,
-                            messsage: "",
+                            message: "",
                             success:true,
                             openYesNoModal:false
                         })
@@ -612,7 +612,7 @@ const handleSubmit = async () => {
                     cb={alertModal.cb||function(){}}
                     setModalVisible={() => setAlertModal({
                         open: false,
-                        messsage: ""
+                        message: ""
                     })}
                 />
              <YesNoModal
@@ -620,7 +620,7 @@ const handleSubmit = async () => {
                     setModalVisible={()=>{
                         setYesNoModal({
                             open: false,
-                            messsage: "",
+                            message: "",
                             severity:true,
                         })
                         setIsLoading(prev=>({
