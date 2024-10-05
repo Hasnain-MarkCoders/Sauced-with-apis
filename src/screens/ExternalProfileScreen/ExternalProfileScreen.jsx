@@ -234,17 +234,18 @@ const ExternalProfileScreen = ({
                                         }}>
 
                                             <Text
-                                                numberOfLines={1} ellipsizeMode="tail"
+                                                // numberOfLines={1} ellipsizeMode="tail"
                                                 style={{
                                                     color: "white",
                                                     fontWeight: 600,
                                                     fontSize: scale(35),
                                                     lineHeight: scale(50),
                                                     marginBottom: scale(20),
-                                                    maxWidth: scale(200)
+                                                    // maxWidth: scale(200)
 
                                                 }}>
-                                                {getFormattedName(user?.name?user?.name:"")}
+                                                {/* {getFormattedName(user?.name?user?.name:"")} */}
+                                                {user?.name}
 
                                             </Text>
                                         </View>
@@ -371,7 +372,7 @@ const ExternalProfileScreen = ({
                                             /> */}
 
 
-                                            <CustomButtom
+                                            {/* <CustomButtom
                                              disabled={loading?.initialLoading}
 
 
@@ -386,7 +387,7 @@ const ExternalProfileScreen = ({
                                                 // }}
                                                 title={`Share`}
 
-                                            />
+                                            /> */}
                                         </View>
                                     </View>
 

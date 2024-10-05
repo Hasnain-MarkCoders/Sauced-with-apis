@@ -36,9 +36,15 @@ import CameraScreen from './src/screens/CameraScreen/CameraScreen';
 import SearchScreen from './src/screens/SearchScreen/SearchScreen';
 import Test from './src/screens/Test/Test';
 import BlockedUsersScreen from './src/screens/BlockedUsersScreen/BlockedUsersScreen';
+import NetInfo from '@react-native-community/netinfo';
+import Toast from 'react-native-toast-message';
+
+// Check network status before attempting upload
 
 const Stack = createNativeStackNavigator();
 function AppRouter() {
+
+
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [initialState, setInitialState] = React.useState(true)
   const userAuth = useSelector(state => state.auth)
@@ -68,7 +74,35 @@ function AppRouter() {
     });
   }, []);
 
+
+
+  // React.useEffect(()=>{
+  //   const handleNetwork =async()=>{
+  //     const isConnected = await NetInfo.fetch().then(state => state.isConnected);
+  //     if (!isConnected) {
+  //       Toast.show({
+  //         type: 'error',
+  //         text1: "Network disconnected",
+  //         text2: 'No internet connection. Please try again later.'
+        
+  //       })
+  //       return;
+  //   }else{
+  //     Toast.show({
+  //       type: 'success',
+  //       text1: "Network connected",
+  //       text2: 'back online.'
+      
+  //     })
+  //     return;
+  //   }
+  //   }
+  //   handleNetwork()
+  // },[])
   React.useEffect(() => {
+
+
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
         Toast.show({
             type: 'success',

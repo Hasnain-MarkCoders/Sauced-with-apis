@@ -158,7 +158,7 @@ setTimeout(()=>{
                         justifyContent: "flex-start",
                         gap: scale(3),
                     }}>
-                        {Array.from({ length: paginationBullets }).map((_, index) => (  // Only create 8 dots
+                        {Array.from({ length: interestedEvents }).map((_, index) => (  // Only create 8 dots
                             <View
                                 key={index}
                                 style={{

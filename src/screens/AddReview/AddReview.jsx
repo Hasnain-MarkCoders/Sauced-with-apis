@@ -38,6 +38,8 @@ import { handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/
 import { handleIncreaseReviewCountOfTopRatedSauce } from '../../../android/app/Redux/topRatedSauces.js';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
+import { X } from 'lucide-react-native';
+import Lightbox from 'react-native-lightbox-v2';
 const AddReview = () => {
     const route = useRoute();
     const [imageUris, setImageUris] = useState([]);
@@ -77,7 +79,7 @@ const AddReview = () => {
     const [data, setData] = useState({
         review: '',
         rating: '',
-        heatLevel: 0,
+        heatLevel: 0.5,
     });
     const navigation = useNavigation();
 
@@ -92,7 +94,9 @@ const AddReview = () => {
 
         const galleryPermission = Platform.OS === 'ios'
             ? PERMISSIONS.IOS.PHOTO_LIBRARY
-            : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+            : (Platform.Version >= 33
+                ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES // Use new media permissions for Android 13+
+                : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE); // Fallback for older Android versions
 
         const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
 
@@ -244,6 +248,15 @@ const AddReview = () => {
 
                 });
             }
+            if (data?.heatLevel<0.5) {
+                return setAlertModal({
+                    open: true,
+                    message: 'Heat level at least 0.5',
+                    success: false
+
+                });
+            }
+
             setLoading(true)
             const formData = new FormData();
             imageUris.forEach(imageUri => {
@@ -334,6 +347,11 @@ const AddReview = () => {
             hideSubscription.remove();
         };
     }, []);
+
+    const deleteImage = (index) => {
+        setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
+    };
+
 
     return (
         <ImageBackground
@@ -518,6 +536,7 @@ const AddReview = () => {
                                                     gap: scale(10)
                                                 }}>
                                                     <TouchableOpacity
+                                                            disabled={loading}
 
                                                         onPress={() => {
                                                             setIsSelected(true)
@@ -541,6 +560,7 @@ const AddReview = () => {
                                                         </Text>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
+                                                            disabled={loading}
 
                                                         onPress={() => {
                                                             setIsSelected(false)
@@ -574,19 +594,61 @@ const AddReview = () => {
                                                         justifyContent: 'center',
                                                     }}>
                                                     {imageUris.map((uri, index) => (
-                                                        <Image
-                                                            key={index}
-                                                            source={{ uri: uri?.uri }}
-                                                            style={{
-                                                                width: scale(100),
-                                                                borderColor: '#FFA100',
-                                                                borderWidth: 1,
-                                                                height: scale(100),
-                                                                borderRadius: scale(12),
-                                                            }}
-                                                        />
+
+
+                                                        <View  style={{
+                                                            position: "relative"
+                                                        }}>
+                                                            <View style={styles.closeButton}>
+
+                                                            <TouchableOpacity
+                                                            disabled={loading}
+                                                            style={
+                                                                styles.closeButtonInner
+                                                            }
+                                                                onPress={async () => {
+                                                                    deleteImage(index)
+                                                                }}
+                                                            >
+                                                                
+                                                                    <X color="#fff" size={scale(15)} />
+                                                            </TouchableOpacity>
+                                                            </View>
+
+                                                            <Lightbox
+                                                            disabled={loading}
+                                                                // springConfig={{ tension: 30, friction: 7 }}
+                                                                activeProps={{
+                                                                    style: {
+                                                                        width: '100%',
+                                                                        height: scale(400),
+                                                                        borderColor: 'transparent',
+                                                                        borderWidth: 0,
+                                                                        borderRadius: 0,
+                                                                        opacity: loading ? 0 : 1,
+                                                                    },
+                                                                }}
+                                                            >
+
+                                                                <Image
+                                                                    key={index}
+                                                                    source={{ uri: uri?.uri }}
+                                                                    style={{
+                                                                        width: scale(100),
+                                                                        borderColor: '#FFA100',
+                                                                        borderWidth: 1,
+                                                                        height: scale(100),
+                                                                        borderRadius: scale(12),
+                                                                    }}
+                                                                />
+
+                                                            </Lightbox>
+
+                                                        </View>
+
                                                     ))}
                                                     <TouchableOpacity
+                                                    disabled={loading}
                                                         onPress={() => {
                                                             handleImagePickerPermission(isSelected)
                                                         }}
@@ -622,34 +684,34 @@ const AddReview = () => {
                                             </View>
                                         </View>
                                         <View
-                    style={{
-                        // position: 'absolute',
-                        bottom: scale(20),
-                        width: '100%',
-                        // paddingHorizontal: scale(20),
-                    }}>
-                    <CustomButtom
-                        disabled={loading}
-                        showIcon={false}
-                        buttonTextStyle={{ fontSize: scale(14) }}
-                        buttonstyle={{
-                            width: '100%',
-                            // marginTop: scale(60),
-                            borderColor: '#FFA100',
-                            backgroundColor: '#2e210a',
-                            // paddingHorizontal: scale(15),
-                            paddingVertical: scale(13),
-                            display: 'flex',
-                            gap: 10,
-                            flexDirection: 'row-reverse',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                        loading={loading}
-                        onPress={handleSubmit}
-                        title={'Submit'}
-                    />
-                </View>
+                                            style={{
+                                                // position: 'absolute',
+                                                bottom: scale(20),
+                                                width: '100%',
+                                                // paddingHorizontal: scale(20),
+                                            }}>
+                                            <CustomButtom
+                                                disabled={loading}
+                                                showIcon={false}
+                                                buttonTextStyle={{ fontSize: scale(14) }}
+                                                buttonstyle={{
+                                                    width: '100%',
+                                                    // marginTop: scale(60),
+                                                    borderColor: '#FFA100',
+                                                    backgroundColor: '#2e210a',
+                                                    // paddingHorizontal: scale(15),
+                                                    paddingVertical: scale(13),
+                                                    display: 'flex',
+                                                    gap: 10,
+                                                    flexDirection: 'row-reverse',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                                loading={loading}
+                                                onPress={handleSubmit}
+                                                title={'Submit'}
+                                            />
+                                        </View>
                                     </View>
                                 )}
 
@@ -726,5 +788,16 @@ export default AddReview;
 const styles = StyleSheet.create({
     separator: {
         marginRight: scale(20),
+    },
+    closeButton: {
+        top: scale(10),
+        position: "absolute",
+        zIndex: 111,
+        right: scale(10),
+    },
+    closeButtonInner: {
+        backgroundColor: "rgba(0,0,0,0.2)",
+        padding: scale(2),
+        borderRadius: 100,
     },
 });

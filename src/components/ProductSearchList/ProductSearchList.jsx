@@ -64,6 +64,7 @@ const ProductSearchList = ({
     }, [])
 
     const handleLike = useCallback((id, setproductStatus) => {
+        console.log("id=========================>", id)
        
         setData(prev => {
             return prev.map(item => {
@@ -114,7 +115,7 @@ const ProductSearchList = ({
                 <FlatList
                     data={data}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: scale(150), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
+                    contentContainerStyle={{ paddingBottom: scale(100), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
                     showsHorizontalScrollIndicator={false}
                     // numColumns={3}
                     onEndReachedThreshold={2}

@@ -272,7 +272,7 @@ console.log(profileUri)
                     paddingHorizontal:scale(10),
                     paddingVertical:scale(5),
                     color:"#000"
-                }}>{showReplies ? "Hide Replies":"Show replies"}</Text>}
+                }}>{showReplies ? "Hide replies":"Show replies"}</Text>}
             </TouchableOpacity>}
            
         </View>

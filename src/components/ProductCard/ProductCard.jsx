@@ -251,7 +251,7 @@ const ProductCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(17),
                                     lineHeight: scale(24),
-                                }}>{title?title:"N/A"}</Text>
+                                }}>{product?.name?product?.name:"N/A"}</Text>
                         </View>
 
                         <View style={{
@@ -261,7 +261,7 @@ const ProductCard = ({
                             <TouchableOpacity onPress={() => {
                                 navigation.navigate("AllReviews", { _id: product?._id,
                                     //  setReviewCount, handleIncreaseReviewCount , reviewCount
-                                    item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
+                                    item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
                                     })
                             }}>
                                 <Text style={{
@@ -475,7 +475,7 @@ const ProductCard = ({
 
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id ,item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
+                        navigation.navigate("AddReview", { sauceId: product?._id ,item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{
@@ -498,7 +498,7 @@ const ProductCard = ({
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", { routerNumber:3, photo:{}, fn:()=>{},item:product,title:product?.title, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
+                        navigation.navigate("Checkin", { routerNumber:3, photo:{}, fn:()=>{},item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{

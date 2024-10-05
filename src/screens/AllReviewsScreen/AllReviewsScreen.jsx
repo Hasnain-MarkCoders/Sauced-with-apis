@@ -114,6 +114,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
               // navigation.goBack()
               {
                 navigation.navigate("ProductDetail", {
+                  _id,
                   url,
                   title,
                   item,
@@ -121,7 +122,8 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                   setReviewCount,
                   handleIncreaseReviewCount,
                   sauceType,
-                  mycb
+                  mycb,
+                  handleLike
                  })
               }
             

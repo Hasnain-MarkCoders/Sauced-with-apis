@@ -96,7 +96,7 @@ const ExternalUserCard = ({
                             fontWeight: 600,
                             fontSize: scale(20),
                             lineHeight: scale(24),
-                            maxWidth: scale(100)
+                            // maxWidth: scale(100)
                         }}>{name}</Text>
                     <View >
                         <View style={{
