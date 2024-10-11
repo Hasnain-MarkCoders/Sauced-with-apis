@@ -5,7 +5,7 @@ import Header from '../../components/Header/Header';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { handleText } from '../../../utils.js';
 import useAxios, { host } from '../../../Axios/useAxios';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
@@ -19,6 +19,9 @@ import axios from 'axios';
 import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { X } from 'lucide-react-native';
+import { handleCheckedInSauces } from '../../../android/app/Redux/checkedInSauces.js';
+import ImageView from "react-native-image-viewing";
+
 const CheckinScreen = () => {
     const axiosInstance = useAxios()
     const route = useRoute()
@@ -36,7 +39,10 @@ const CheckinScreen = () => {
     const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount || function () { }
     const setReviewCount = route?.params?.setReviewCount || function () { }
     const reviewCount = route?.params?.reviewCount || ""
+    const _id = route?.params?._id || ""
+    const [visible, setIsVisible] = useState(false)
 
+    const dispatch = useDispatch()
 
     const [isSelected, setIsSelected] = useState(true)
     const navigation = useNavigation()
@@ -44,11 +50,13 @@ const CheckinScreen = () => {
     const [imageUris, setImageUris] = useState(photo?.uri ? [photo] : []);
     const [fetchLocation, setFetchLocation] = useState(false)
     const [isClearChips, setIsClearChips] = useState(false)
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [yesNoModal, setYesNoModal] = useState({
         open: false,
         message: "",
         severity: "success",
-        cb: () => { }
+        cb: () => { },
+        isQuestion: false
     })
     const [isloading, setIsLoading] = useState({
         submitForm: false,
@@ -89,6 +97,7 @@ const CheckinScreen = () => {
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion: true,
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -113,6 +122,8 @@ const CheckinScreen = () => {
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion: true,
+
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -182,9 +193,14 @@ const CheckinScreen = () => {
 
         const galleryPermission = Platform.OS === 'ios'
             ? PERMISSIONS.IOS.PHOTO_LIBRARY
-            : (Platform.Version >= 33
-                ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES // Use new media permissions for Android 13+
-                : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE); // Fallback for older Android versions
+            // : (Platform.Version >= 33
+            //     ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES // Use new media permissions for Android 13+
+            //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE); // Fallback for older Android versions
+            : Platform.Version >= 34
+                ? PERMISSIONS.ANDROID.CAMERA
+                : PERMISSIONS.ANDROID.READ_MEDIA_VISUAL_USER_SELECTED
+                    ? PERMISSIONS.ANDROID.CAMERA
+                    : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
         const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
 
         check(permissionToCheck).then(result => {
@@ -198,6 +214,8 @@ const CheckinScreen = () => {
                         ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion: true,
+
                     cb: () => {
                         request(permissionToCheck).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -224,6 +242,8 @@ const CheckinScreen = () => {
                         ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion: true,
+
                     cb: () => {
                         request(permissionToCheck).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -285,7 +305,12 @@ const CheckinScreen = () => {
             }
         });
     };
+    const handleCheckedIn = (data) => {
+        if (!!data) {
 
+            dispatch(handleCheckedInSauces([data]))
+        }
+    }
 
 
     const handleSubmit = async () => {
@@ -338,7 +363,7 @@ const CheckinScreen = () => {
             formData.append('text', data?.description);
             formData.append('latitude', data.coordinates?.latitude);
             formData.append('longitude', data.coordinates?.longitude);
-            formData.append('sauceId', item?._id); // Assuming item._id contains the sauceId
+            formData.append('sauceId', _id); // Assuming item._id contains the sauceId
 
             // Append foodPairings
             data?.foodPairings.forEach(item => {
@@ -353,6 +378,13 @@ const CheckinScreen = () => {
                 },
             });
             console.log("response.data===============>", response.data)
+            const reviewedSauce = await axios.post(host + '/view-sauce', { sauceId: _id }, {
+                headers: {
+                    Authorization: `Bearer ${auth?.token}`,
+
+                },
+            });
+            handleCheckedIn(reviewedSauce.data.sauce)
 
             // Handle successful response
             if (response?.data?.message) {
@@ -362,7 +394,7 @@ const CheckinScreen = () => {
                     success: true, // Success is true for a successful response,
                     buttonText: "View all check-ins",
                     cb: () => {
-                        navigation.navigate('AllCheckinsScreen', { _id: item?._id, routerNumber, fn, item, url, title, reviewCount, setReviewCount, handleIncreaseReviewCount, mycb, sauceType, handleLike })
+                        navigation.navigate('AllCheckinsScreen', { _id, routerNumber, fn, item, url, title, reviewCount, setReviewCount, handleIncreaseReviewCount, mycb, sauceType, handleLike })
                     }
                 });
 
@@ -404,6 +436,8 @@ const CheckinScreen = () => {
         setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
     };
 
+    
+
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView style={{ flex: 1 }}>
@@ -412,7 +446,7 @@ const CheckinScreen = () => {
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}>
-                    <Header showMenu={false} cb={() =>!loading&& navigation.goBack()} showProfilePic={false} showDescription={false} title="Add Check-in" />
+                    <Header showMenu={false} cb={() => !loading && navigation.goBack()} showProfilePic={false} showDescription={false} title="Add Check-in" />
                     <View style={{ paddingHorizontal: 20, flex: 1, justifyContent: "space-between", paddingVertical: 40, paddingBottom: 100, gap: scale(10) }}>
 
                         <View style={{ alignItems: "center", gap: 20 }}>
@@ -481,7 +515,7 @@ const CheckinScreen = () => {
                                 gap: scale(10)
                             }}>
                                 <TouchableOpacity
-                                        disabled={loading}
+                                    disabled={loading}
                                     onPress={() => {
                                         setIsSelected(true)
                                         handleImagePickerPermission(true)
@@ -504,7 +538,7 @@ const CheckinScreen = () => {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                        disabled={loading}
+                                    disabled={loading}
                                     onPress={() => {
                                         setIsSelected(false)
                                         handleImagePickerPermission(false)
@@ -536,21 +570,34 @@ const CheckinScreen = () => {
                                 justifyContent: "center"
                             }}>
                                 {imageUris.map((uri, index) => (
-                                    <View style={{
-                                        position: "relative"
+                                    <TouchableOpacity onPress={() => {
+                                        setIsVisible(true)
+                                        console.log("index==========================================>", index)
+                                        setCurrentImageIndex(index)
+
                                     }}>
-                                        <TouchableOpacity
-                                          disabled={loading}
-                                            onPress={async () => {
-                                                deleteImage(index)
-                                            }}
-                                            style={styles.closeButton}
-                                        >
-                                            <View style={styles.closeButtonInner}>
-                                                <X color="#fff" size={scale(15)} />
-                                            </View>
-                                        </TouchableOpacity>
-                                        <Lightbox
+                                        <View style={{
+                                            position: "relative"
+                                        }}>
+                                            <TouchableOpacity
+                                                disabled={loading}
+                                                onPress={async () => {
+                                                    deleteImage(index)
+                                                }}
+                                                style={styles.closeButton}
+                                            >
+                                                <View style={styles.closeButtonInner}>
+                                                    <X color="#fff" size={scale(15)} />
+                                                </View>
+                                            </TouchableOpacity>
+                                            {/* <ImageView
+                                                 images={imageUris.map(uri => ({ uri: uri.uri }))}
+                                                imageIndex={index}
+                                                visible={visible}
+                                                onRequestClose={() => setIsVisible(false)}
+                                            /> */}
+
+                                            {/* <Lightbox
                                           disabled={loading}
                                             // springConfig={{ tension: 30, friction: 7 }}
                                             activeProps={{
@@ -563,19 +610,22 @@ const CheckinScreen = () => {
                                                     opacity: loading ? 0 : 1,
                                                 },
                                             }}
-                                        >
-                                            <Image key={index} source={{ uri: uri?.uri }} style={{
+                                        > */}
+
+                                            <Image key={`${index}_${uri?.uri}`} source={{ uri: uri?.uri }} style={{
                                                 width: scale(100), borderColor: "#FFA100",
                                                 borderWidth: 1, height: scale(100), borderRadius: scale(12)
                                             }} />
 
-                                        </Lightbox>
+                                            {/* </Lightbox> */}
 
-                                    </View>
+                                        </View>
+                                    </TouchableOpacity>
+
                                 ))}
 
                                 <TouchableOpacity
-                                disabled={loading}
+                                    disabled={loading}
                                     onPress={() => { handleImagePickerPermission(isSelected) }}
                                     style={{
                                         width: imageUris[0] ? scale(100) : "100%",
@@ -653,6 +703,7 @@ const CheckinScreen = () => {
                         })}
                     />
                     <YesNoModal
+                        isQuestion={yesNoModal.isQuestion}
                         modalVisible={yesNoModal.open}
                         setModalVisible={() => {
                             setYesNoModal({
@@ -669,6 +720,12 @@ const CheckinScreen = () => {
                         title={yesNoModal.message}
                         cb={yesNoModal.cb}
 
+                    />
+                          <ImageView
+                            imageIndex={currentImageIndex}
+                        images={imageUris.map(uri => ({ uri: uri.uri }))}
+                        visible={visible}
+                        onRequestClose={() => setIsVisible(false)}
                     />
                 </ScrollView>
             </SafeAreaView>

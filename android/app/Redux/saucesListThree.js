@@ -33,7 +33,10 @@ const saucesListThreeSlice = createSlice({
     },
 
     handleIncreaseReviewCountOfListThreeSauce:(state, action)=>{
-      return state.filter(x => x._id !== action.payload);
+      const sauce = state.find(x=>x._id==action.payload)
+      if(sauce){
+        sauce.hasLiked  =!sauce.hasLiked
+      }
     },
     handleIncreaseReviewCountOfListOneSauce:(state, action)=>{
       const _id = action.payload?._id;

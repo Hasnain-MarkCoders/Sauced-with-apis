@@ -97,6 +97,7 @@ featuredSauces?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => item?._id}
                     renderItem={({ item }) => <SingleSauce
+                    _id={item?._id}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="featured"
                     item={item}

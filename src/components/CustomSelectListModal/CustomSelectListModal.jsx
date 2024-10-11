@@ -1,125 +1,196 @@
-import React, { useState } from 'react'
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, TouchableOpacity } from 'react-native';
-import close from "./../../../assets/images/close.png"
+import React, { useState } from 'react';
+import {
+  Modal,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import { scale } from 'react-native-size-matters';
-import closeIcon from "./../../../assets/images/close.png"
-import CustomInput from '../CustomInput/CustomInput';
-import { handleText } from '../../../utils';
-import CustomButtom from '../CustomButtom/CustomButtom';
+import Snackbar from 'react-native-snackbar';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  handleRemoveSauceFromListOne,
+  handleSaucesListOne,
+} from '../../../android/app/Redux/saucesListOne';
+import {
+  handleRemoveSauceFromListTwo,
+  handleSaucesListTwo,
+} from '../../../android/app/Redux/saucesListTwo';
+import {
+  handleRemoveSauceFromListThree,
+  handleSaucesListThree,
+} from '../../../android/app/Redux/saucesListThree';
+import useAxios from '../../../Axios/useAxios';
+import CustomButton from '../../../src/components/CustomButtom/CustomButtom';
+import closeIcon from './../../../assets/images/close.png';
+
 const CustomSelectListModal = ({
   modalVisible = false,
-  setModalVisible = () => { },
-  cb=()=>{},
-  isEnabled=true,
-  loading1=false,
-  loading2=false,
-  loading3=false,
-    title1="",
-    title2="",
-    title3=""
+  setModalVisible = () => {},
+  sauce = {},
 }) => {
-  const handleBackgroundTouch = () => {
-    setModalVisible(false);
+  const [loading, setLoading] = useState({ 1: false, 2: false, 3: false });
+  const [isEnabled, setIsEnabled] = useState(true);
+  const axiosInstance = useAxios();
+  const dispatch = useDispatch();
+  const sauceId = sauce?._id;
+
+  const list1 = useSelector((state) => state?.saucesListOne || []);
+  const list2 = useSelector((state) => state?.saucesListTwo || []);
+  const list3 = useSelector((state) => state?.saucesListThree || []);
+
+  const listStatus = {
+    1: list1.some((item) => item._id === sauceId),
+    2: list2.some((item) => item._id === sauceId),
+    3: list3.some((item) => item._id === sauceId),
   };
+
+  const titles = {
+    1: listStatus[1] ? 'Remove from List 1' : 'Add to List 1',
+    2: listStatus[2] ? 'Remove from List 2' : 'Add to List 2',
+    3: listStatus[3] ? 'Remove from List 3' : 'Add to List 3',
+  };
+
+  const handleLoading = (listNumber, action) => {
+    setLoading((prev) => ({ ...prev, [listNumber]: action }));
+  };
+
+  const modifyList = async (listNumber) => {
+    if (!isEnabled) return;
+
+    try {
+      setIsEnabled(false);
+      handleLoading(listNumber, true);
+
+      const type =
+        listNumber === 1
+          ? 'triedSauces'
+          : listNumber === 2
+          ? 'toTrySauces'
+          : 'favoriteSauces';
+
+      const isInList = listStatus[listNumber];
+      Snackbar.show({
+        text: `Sauce ${isInList ? 'removing from' : 'adding to'} List ${listNumber}`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
+
+      const action = isInList
+        ? (listNumber === 1 ? handleRemoveSauceFromListOne : listNumber === 2 ? handleRemoveSauceFromListTwo : handleRemoveSauceFromListThree)
+        : (listNumber === 1 ? handleSaucesListOne : listNumber === 2 ? handleSaucesListTwo : handleSaucesListThree);
+      
+      dispatch(action(isInList ? sauceId : [sauce]));
+
+     const response = await axiosInstance.post('/bookmark', {
+        sauceId,
+        listType: type,
+      });
+      console.log("response.data=========================>", response.data)
+    } catch (error) {
+      console.error('Failed to update the list:', error);
+      Snackbar.show({
+        text: 'Failed to update the list. Please try again.',
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: 'red',
+      });
+    } finally {
+      handleLoading(listNumber, false);
+      setModalVisible(false);
+      setIsEnabled(true);
+    }
+  };
+
   return (
-   modalVisible&& <View style={{
+    <Modal
+      animationType="slide"
+      transparent
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPress={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.closeIconContainer}
+              onPress={() => setModalVisible(false)}
+            >
+              <Image style={styles.closeIcon} source={closeIcon} />
+            </TouchableOpacity>
+            {[1, 2, 3].map((listNumber) => (
+              <CustomButton
+                key={listNumber}
+                loading={loading[listNumber]}
+                buttonTextStyle={styles.buttonText}
+                buttonstyle={styles.button}
+                onPress={() => modifyList(listNumber)}
+                title={titles[listNumber]}
+              />
+            ))}
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(33, 22, 10, 0.85)',
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  modalContent: {
+    borderWidth: scale(0.5),
+    borderColor: '#FFA100',
+    borderRadius: scale(12),
+    backgroundColor: '#2E210A',
+    paddingVertical:scale(20),
+    padding: scale(50),
+    shadowColor: '#000',
+    minHeight: scale(200),
+    width: '90%',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    position: 'relative',
+  },
+  closeIconContainer: {
     position: 'absolute',
-    backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
-    width: '100%', // Ensure it covers the full screen width
-    height: '100%', // Ensure it covers the full screen height
-  }}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-          <TouchableOpacity
-          
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          activeOpacity={1}
-          onPressOut={handleBackgroundTouch}
-          >
+    right: scale(20),
+    top: scale(20),
+    zIndex: 1,
+  },
+  closeIcon: {
+    width: scale(20),
+    height: scale(20),
+  },
+  button: {
+    width: '100%',
+    borderColor: 'red',
+    padding: scale(15),
+    marginTop: scale(20),
+    backgroundColor: '#2E210A',
+    borderWidth: scale(1),
+  },
+  buttonText: {
+    color: '#FFA100',
+    fontSize: scale(12),
+  },
+});
 
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width:"100%"
-        }}>
-          <View style={{
-            margin: 20,
-            borderWidth: scale(.5),
-            borderColor: "#FFA100",
-            borderRadius: scale(12),
-            position: "relative",
-            backgroundColor: '#2E210A',
-            borderRadius: 20,
-            padding: 35,
-            shadowColor: '#000',
-            minHeight:scale(200),
-            width: "90%",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-          }}>
-            {/* <TouchableOpacity
-
-              style={{
-                position: "absolute",
-                right: scale(20),
-                top: scale(20)
-              }}
-              onPress={() => {
-                setModalVisible(false)
-              }}>
-              <Image style={{
-                width: scale(20),
-                height: scale(20)
-              }} source={closeIcon} />
-            </TouchableOpacity> */}
-              <CustomButtom
-              loading={loading1}
-                buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A", borderWidth:scale(.5) }}
-                onPress={() => isEnabled ? cb(1) : null}
-                title={title1}
-              />
-              
-              <CustomButtom
-              loading={loading2}
-                buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A", borderWidth:scale(.5) }}
-                onPress={() => isEnabled ? cb(2) : null}
-                title={title2}
-              />
-               <CustomButtom
-              loading={loading3}
-                buttonTextStyle={{ fontSize: scale(12) }}
-                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: scale(15), marginTop:scale(20),backgroundColor: "#2E210A" , borderWidth:scale(.5)}}
-                onPress={() => isEnabled ? cb(3) : null}
-                title={title3}
-              />
-          </View>
-        </View>
-          </TouchableOpacity>
-      </Modal>
-    </View>
-  );
-
-
-}
-
-export default CustomSelectListModal
+export default CustomSelectListModal;

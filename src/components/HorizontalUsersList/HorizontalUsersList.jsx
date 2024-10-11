@@ -11,7 +11,8 @@ import { handleStats, handleStatsChange } from '../../../android/app/Redux/userS
 import NotFound from '../NotFound/NotFound';
 const HorizontalUsersList = ({
  numColumns=1,
- horizontal=true
+ horizontal=true,
+ refresh=false
 
 }) => {
     const [page, setPage] = useState(1)
@@ -37,7 +38,7 @@ const HorizontalUsersList = ({
       } finally {
           setLoading(false);
       }
-  },[page]);
+  },[page, refresh]);
 
   useEffect(() => {
       fetchUsers();
@@ -69,6 +70,7 @@ dispatch(handleRemoveUserFromUsers(user?._id))
             showsVerticalScrollIndicator={false}
             horizontal={horizontal}
                data={users}
+               extraData={users}
                onEndReachedThreshold={0.5}
                onEndReached={() => {
                 if (!loading && hasMore) {
@@ -80,7 +82,7 @@ dispatch(handleRemoveUserFromUsers(user?._id))
                showButton={auth._id==item._id?false:true}
                cb={handleUser}
                _id={item?._id}
-               title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
+               title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow Back":"Follow"}
             item={item}
             url={item.image}
             name={item?.name}

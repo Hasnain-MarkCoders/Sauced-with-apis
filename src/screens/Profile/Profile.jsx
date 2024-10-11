@@ -1,10 +1,10 @@
 import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import HorizontalUsersList from '../../components/HorizontalUsersList/HorizontalUsersList.jsx';
 import {  handleText } from '../../../utils.js';
@@ -23,7 +23,7 @@ import WishListSauces from '../../components/WishListSauces/WishListSauces.jsx';
 import ReviewedSaucesList from '../../components/ReviewedSaucesList/ReviewedSaucesList.jsx';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
-    const [initialLoading, setInitialLoading] = useState(true)
+    const [initialLoading, setInitialLoading] = useState(false)
     const axiosInstance = useAxios()
     const saucesListOne = useSelector(state=>state.saucesListOne)
     const saucesListTwo = useSelector(state=>state.saucesListTwo)
@@ -32,6 +32,7 @@ const ProfileScreen = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false)
     const users = useSelector(state=>state?.users)
     const userStats = useSelector(state=>state?.userStats)
+    const [refresh, setRefresh] = useState(false)
     const dispatch = useDispatch()
     const [query, setQuery] = useState({
         search: "",
@@ -81,11 +82,29 @@ const ProfileScreen = () => {
         // Cleanup function to clear interval when component unmounts
         return () => clearInterval(interval);
     }, []);
+// useEffect(()=>{
+// setTimeout(()=>{
+// setInitialLoading(false)
+// },1000)
+// },[])
+
 useEffect(()=>{
-setTimeout(()=>{
-setInitialLoading(false)
-},1000)
+navigation.addListener("focus", ()=>{
+    setRefresh(prev=>!prev)
+})
+return ()=>{
+    navigation.removeListener("focus", ()=>{
+        setRefresh(prev=>!prev)
+    })
+}
 },[])
+// useFocusEffect(
+//     useCallback(() => {
+//         setRefresh(prev=>!prev)
+
+//     }, []) // Ensure _id is included if it can change
+//   );
+  
 if (initialLoading) {
     return (
         <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -229,6 +248,7 @@ if (initialLoading) {
                                         }}>
 
                                         <HorizontalUsersList 
+                                        refresh={refresh}
                                         />
                                         </View>
                                     </View>
@@ -239,14 +259,17 @@ if (initialLoading) {
                                     }}>
 
                                         <FavoriteSaucesList
+                                        refresh={refresh}
                                             title='My Favorites'
                                         />
 
 
                                         <CheckedInSaucesList
+                                        refresh={refresh}
                                             title='Checked-in Sauces'
                                         />
                                         <ReviewedSaucesList
+                                        refresh={refresh}
                                         title='Reviewed Sauces'
                                         />
                                         {/* <SauceList
@@ -265,12 +288,15 @@ if (initialLoading) {
                                         gap:scale(50)
                                     }}>
                                         <SaucesListOne
+                                        refresh={refresh}
                                         title='My List 1'
                                         />
                                          <SaucesListTwo
+                                         refresh={refresh}
                                         title='My List 2'
                                         />
                                          <SaucesListThree
+                                         refresh={refresh}
                                         title='My List 3'
                                         />
                                     </View>
@@ -278,6 +304,7 @@ if (initialLoading) {
                                 }
                              {
                                      index== 4 && <WishListSauces
+                                     refresh={refresh}
                                      title='Wishlist'
                                      />
 
@@ -297,6 +324,7 @@ if (initialLoading) {
                                                 <View>
                                                
                                                 <InterestedEventsCarousel
+                                                refresh={refresh}
                                                 showText={true}
                                                 />
                                                

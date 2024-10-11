@@ -20,8 +20,14 @@ import { scale } from 'react-native-size-matters';
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const DrawerStack = () => {
+
     let count = useSelector(state=>state.notifications)
     const [showModal, setShowModal] = useState(false)
+    const drawerLabelStyles = {
+      fontFamily: 'Montserrat', // Replace with your desired font family
+      fontSize: scale(12),                 // Replace with your desired font size
+      fontWeight: '700',            // Replace with your desired font weight
+  };
 
     const CustomDrawerContent = ({ setShowModal, ...props }) => {
       // const count = useSelector(state => state.notifications.count);
@@ -89,6 +95,7 @@ const DrawerStack = () => {
                     width: 240,
                 },
                 swipeEnabled: false,
+                drawerLabelStyle: drawerLabelStyles,
               }}
               drawerContent={(props) => <CustomDrawerContent {...props} setShowModal={setShowModal} />}
         >
@@ -104,20 +111,25 @@ const DrawerStack = () => {
             options={{
                 drawerLabel: ({ focused, color }) => (
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ color, fontSize: 16 }}>Notifications</Text>
+                    <Text style={{ color,  fontFamily: 'Montserrat', // Replace with your desired font family
+      fontSize: scale(12),                 // Replace with your desired font size
+      fontWeight: '700',     }}>Notifications</Text>
                     {count > 0 && (
                       <View
                         style={{
                           backgroundColor: 'red',
                           borderRadius: 10,
-                          marginLeft: 8,
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
+                          marginLeft: -3,
+                          marginTop:-13,
+                          width: scale(15),
+                          height: scale(15),
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}
                       >
-                        <Text style={{ color: 'white', fontSize: 12 }}>{count}</Text>
+                        <Text style={{ color: 'white'  , fontFamily: 'Montserrat', // Replace with your desired font family
+      fontSize: scale(7),                 // Replace with your desired font size
+      fontWeight: '700',     }}>{count}</Text>
                       </View>
                     )}
                   </View>
@@ -151,14 +163,15 @@ const DrawerStack = () => {
 };
 const styles = StyleSheet.create({
   logoutButton: {
-    padding: 16,
+    padding: scale(16),
     flexDirection: 'row',
     alignItems: 'center',
 },
 logoutText: {
-    color: 'white',
-    fontSize: scale(14),
-    marginLeft:scale(3)
+  fontFamily: 'Montserrat', // Replace with your desired font family
+  fontSize: scale(12),                 // Replace with your desired font size
+  fontWeight: '700',    
+  color:"white"
 },
 })
 export default memo(DrawerStack);

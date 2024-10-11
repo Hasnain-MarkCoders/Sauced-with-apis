@@ -6,11 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useSelector } from 'react-redux';
+import ImageView from "react-native-image-viewing";
 
 const UserCard = ({ url = "",_id="", item = {}, name = "", title = "", cb = () => { }, showButton=true, buttonOpacity=1 }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
  const [isLoading, setIsLoading] = useState(true);
+ const [visible, setIsVisible] = useState(false)
+
 const auth = useSelector(state=>state.auth)
   return (
 
@@ -54,9 +57,17 @@ const auth = useSelector(state=>state.auth)
             />
         </SkeletonPlaceholder>
       )}
-          {url &&
-          
-          
+      <ImageView
+  images={[{ uri: url }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
+
+          {/* <TouchableOpacity onPress={()=>{
+            setIsVisible(true)
+          }}>
+           */}
             <Image
             style={{
               width:scale(58),
@@ -69,8 +80,8 @@ const auth = useSelector(state=>state.auth)
             onLoad={() => setIsLoading(false)}
               source={{ uri: url }}
             ></Image>
+            {/* </TouchableOpacity>           */}
 
-          }
 
         <Text
           numberOfLines={1} ellipsizeMode="tail"

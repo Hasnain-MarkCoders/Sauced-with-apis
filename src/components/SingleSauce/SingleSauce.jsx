@@ -35,7 +35,8 @@ const SingleSauce = ({
   showOverlay = false,
   mycb = () => { },
   handleIncreaseReviewCount = () => { },
-  handleLike = () => { }
+  handleLike = () => { },
+  _id=""
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const axiosInstance = useAxios()
@@ -53,99 +54,102 @@ const SingleSauce = ({
       setProductDetails({ url, title })
       setAlertModal(true)
     } else {
-      navigation.navigate("ProductDetail", { url, title, item, sauceType, setSelected, handleIncreaseReviewCount, mycb, hasnain: "hanain", handleLike })
+      // navigation.navigate("ProductDetail", { url, title, item, sauceType, setSelected, handleIncreaseReviewCount, mycb, hasnain: "hanain", handleLike })
+      navigation.navigate("ProductScreen", { _id,url, title, item, sauceType, setSelected, handleIncreaseReviewCount, mycb, hasnain: "hanain", handleLike })
+
     }
   }
 
   const handleToggleLike = async () => {
+    console.log("_id===============>", _id)
     handleLike(item?._id, setSelected)
     try {
-      if (sauceType == "toprated") {
-        dispatch(handleToggleTopRatedSauce(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
-      }
+    //   if (sauceType == "toprated") {
+    //     dispatch(handleToggleTopRatedSauce(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
+    //   }
 
 
-      if (sauceType == "featured") {
-        console.log("sauceType==================>", sauceType)
-        dispatch(handleToggleFeaturedSauce(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
-      }
-      if (sauceType == "favourite") {
-        dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-      }
+    //   if (sauceType == "featured") {
+    //     console.log("sauceType==================>", sauceType)
+    //     dispatch(handleToggleFeaturedSauce(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
+    //   }
+    //   if (sauceType == "favourite") {
+    //     dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //   }
 
-      if (sauceType == "checkedin") {
-        dispatch(handleToggleCheckedInSauce(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
+    //   if (sauceType == "checkedin") {
+    //     dispatch(handleToggleCheckedInSauce(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
 
-      }
-      if (sauceType == 1) {
-        dispatch(handleToggleSauceListOne(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
+    //   }
+    //   if (sauceType == 1) {
+    //     dispatch(handleToggleSauceListOne(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
 
 
-        if (sauceType == "reviewed") {
-          dispatch(handleToggleReviewedSauce(item?._id))
-          if (selected) {
-            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-          } else {
-            dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-          }
-        }
+    //     if (sauceType == "reviewed") {
+    //       dispatch(handleToggleReviewedSauce(item?._id))
+    //       if (selected) {
+    //         dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //       } else {
+    //         dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //       }
+    //     }
 
-        if (sauceType == "wishlist") {
-          dispatch(handleToggleLikeWishlistSauce(item?._id))
-          if (selected) {
-            dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-          } else {
-            dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-          }
-        }
+    //     if (sauceType == "wishlist") {
+    //       dispatch(handleToggleLikeWishlistSauce(item?._id))
+    //       if (selected) {
+    //         dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //       } else {
+    //         dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //       }
+    //     }
 
-        // console.log("hello g")
+    //     // console.log("hello g")
 
-      }
+    //   }
 
-      if (sauceType == 2) {
-        dispatch(handleToggleSauceListTwo(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
+    //   if (sauceType == 2) {
+    //     dispatch(handleToggleSauceListTwo(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
 
-        // console.log("hello g")
+    //     // console.log("hello g")
 
-      }
-      if (sauceType == 3) {
-        dispatch(handleToggleSauceListThree(item?._id))
-        if (selected) {
-          dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        } else {
-          dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
-        }
+    //   }
+    //   if (sauceType == 3) {
+    //     dispatch(handleToggleSauceListThree(item?._id))
+    //     if (selected) {
+    //       dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+    //     } else {
+    //       dispatch(handleFavoriteSauces([{ ...item, hasLiked: true }]))
+    //     }
 
-        // console.log("hello g")
+    //     // console.log("hello g")
 
-      }
-      const res = await axiosInstance.post(`/like-sauce`, { sauceId: item?._id });
+    //   }
+      const res = await axiosInstance.post(`/like-sauce`, { sauceId: _id });
 
     } catch (error) {
       console.error('Failed to like / dislike:', error);

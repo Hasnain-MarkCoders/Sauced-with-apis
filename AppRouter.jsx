@@ -38,6 +38,7 @@ import Test from './src/screens/Test/Test';
 import BlockedUsersScreen from './src/screens/BlockedUsersScreen/BlockedUsersScreen';
 import NetInfo from '@react-native-community/netinfo';
 import Toast from 'react-native-toast-message';
+import ProductScreen from './src/screens/ProductScreen/ProductScreen';
 
 // Check network status before attempting upload
 
@@ -109,9 +110,13 @@ function AppRouter() {
             text1: remoteMessage.notification.title,
             text2: remoteMessage.notification.body})
             dispatch(addNotification({
-                type: 'success',
-                title: remoteMessage.notification.title,
-                body: remoteMessage.notification.body}
+              type: 'success',
+              title: remoteMessage.notification.title,
+              body: remoteMessage.notification.body,
+              isRead:remoteMessage.data.isRead=="1"?true:false,
+              data: remoteMessage.data
+
+              }
         ));
         dispatch(increaseCount());
         console.log("remoteMessage===============>", remoteMessage)
@@ -139,7 +144,9 @@ function AppRouter() {
           {
             isAuthenticated ?
               <>
+
                 <Stack.Screen name="Main" component={MainNavigation} />
+                <Stack.Screen name="ProductScreen" component={ProductScreen} />
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
                 <Stack.Screen name="QRScreen" component={QRScreen} />

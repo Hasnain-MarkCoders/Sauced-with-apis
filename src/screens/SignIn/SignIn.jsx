@@ -537,7 +537,7 @@ if(authLoading){
           name="email"
         />
         <View  style={{
-                gap:scale(10)
+                gap:scale(10),
               }}>
 
         <CustomInput
@@ -554,6 +554,9 @@ if(authLoading){
           secureTextEntry={true}
         />
            <TouchableOpacity 
+           style={{
+            marginLeft:"auto"
+           }}
               onPress={()=>
                 {
                   // setShowForgotPasswordModal(true)

@@ -1,4 +1,4 @@
-import { ImageBackground, Text, TouchableOpacity, Vibration, View, Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, FlatList, TouchableWithoutFeedback, Alert } from 'react-native';
+import { ImageBackground, Text, TouchableOpacity, Vibration, View, Platform, KeyboardAvoidingView, Dimensions, ActivityIndicator, FlatList, TouchableWithoutFeedback, Alert, Keyboard } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import home from "./../../../assets/images/home.png";
 import { handleText } from '../../../utils';
@@ -38,6 +38,20 @@ const SearchScreen = () => {
                 setShowResults(true)
             }
     }, [query.search])
+
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+            // setIsKeyBoard(true)
+        });
+        const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+            // setIsKeyBoard(false)
+            setData([]);setShowResults(false)
+        });
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
 
 
     const handleIncreaseReviewCount = useCallback((id, setReviewCount)=>{

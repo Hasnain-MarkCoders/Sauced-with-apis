@@ -5,7 +5,6 @@ const SauceMap = () => {
   return (
     <View style={{
         flex:1,
-        backgroundColor:"red"
     }}>
       <MapView
   initialRegion={{

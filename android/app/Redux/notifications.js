@@ -13,6 +13,14 @@ const notificationsSlice = createSlice({
       state.notifications.unshift(action.payload);
       state.count += 1;
     },
+    readAllNotifications: (state) => {
+      state.notifications.forEach(notification => {
+        if (!notification.isRead) {
+          notification.isRead = true;
+        }
+      });
+      state.count = 0; // Reset unread count
+    },
     clearNotifications: (state) => {
       state.notifications = [];
       state.count = 0;
@@ -34,7 +42,8 @@ export const {
   clearNotifications,
   increaseCount,
   clearCount,
-  deleteNotification
+  deleteNotification,
+  readAllNotifications
 } = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;

@@ -9,6 +9,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 // import Lightbox from 'react-native-lightbox';
 import Lightbox from 'react-native-lightbox-v2';
 import { Pencil } from 'lucide-react-native'
+import ImageView from "react-native-image-viewing";
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -25,6 +26,8 @@ reviewsCount=0
     const circles = [1, 1, 1, 1, 1]
     const [isLoading, setIsLoading] = useState(true);
     const [LightBox, setLightBox] = useState(false)
+    const [visible, setIsVisible] = useState(false)
+
 
     return (
         <View style={{
@@ -72,6 +75,10 @@ reviewsCount=0
 
 
             }}>
+                <TouchableOpacity onPress={()=>{
+    setIsVisible(true)
+
+}}>
                 <View style={{
                     width:scale(100),
                     height:scale(100),
@@ -88,7 +95,7 @@ reviewsCount=0
         </SkeletonPlaceholder>
       )}
 
-<Lightbox
+{/* <Lightbox
     activeProps={{
         style: {
             width: '100%',
@@ -103,7 +110,16 @@ reviewsCount=0
         resizeMode: 'contain',
     }}
     // springConfig={{ tension: 30, friction: 7 }}
->
+> */}
+
+<ImageView
+  images={[{ uri: url }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
+
+
     <Image
         style={{
             display: isLoading ? 'none' : 'flex',
@@ -116,11 +132,12 @@ reviewsCount=0
             borderColor: '#FFA100',
             borderWidth: scale(1),
         }}
-        resizeMode="contain"
+        resizeMode="cover"
         source={{ uri: url }}
         onLoad={() => setIsLoading(false)}
     />
-</Lightbox>
+
+{/* </Lightbox> */}
 
 
 
@@ -140,6 +157,8 @@ reviewsCount=0
 
                 />
                 </View>
+</TouchableOpacity>
+
                 <View style={{
                     flexGrow: 1,
                     display:"flex",

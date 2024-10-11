@@ -7,7 +7,7 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
 import NotFound from '../NotFound/NotFound';
-const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -23,7 +23,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
  
 
     const fetchSauces = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if ( loading) return;
         setLoading(true);
         try {
             const res = await axiosInstance.get("/get-sauces", {
@@ -40,7 +40,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
         } finally {
             setLoading(false);
         }
-    },[page,hasMore]);
+    },[page,hasMore, refresh]);
     
     useEffect(() => {
         fetchSauces();
@@ -93,6 +93,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    _id={item?._id}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="favourite"
                     item={item}

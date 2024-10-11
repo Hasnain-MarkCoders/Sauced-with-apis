@@ -77,7 +77,7 @@ const SettingScreen = () => {
                 showsHorizontalScrollIndicator={false} 
                 showsVerticalScrollIndicator={false}
                 style={{ flex: 1 }}>
-                    <Header showMenu={true} cb={() => navigation.goBack()} showProfilePic={false} showDescription={false} title="Setting"/>
+                    <Header showMenu={true} cb={() => navigation.goBack()} showProfilePic={false} showDescription={false} title="Settings"/>
                     <View style={{ paddingHorizontal: 20, flex: 1, justifyContent: "space-between", paddingVertical: 40, paddingBottom: 100, gap: scale(10) }}>
 
                         <View style={{ alignItems: "center", gap: 20 }}>
@@ -89,21 +89,21 @@ const SettingScreen = () => {
                                 onPress={() => navigation.navigate("Edit Profile")}
                                 title={"Edit Profile"}
                             />
-                            <CustomButtom
+                            {/* <CustomButtom
                                 Icon={() => <Image source={arrow} />}
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                 onPress={handleBlock}
                                 title={"Blocked "}
-                            />
+                            /> */}
 
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => Linking.openURL("https://help.unsplash.com/en/")}
+                                onPress={() => Linking.openURL("https://www.saucedapp.com/terms-and-conditions")}
                                 title={"Help & Support"}
                             />
 
@@ -113,10 +113,10 @@ const SettingScreen = () => {
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => Linking.openURL("https://unsplash.com/license")}
+                                onPress={() => Linking.openURL("https://www.saucedapp.com/privacy-policy")}
                                 title={"Privacy Policy"}
                             />
-
+{/* 
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}
                                 showIcon={true}
@@ -124,7 +124,7 @@ const SettingScreen = () => {
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                 // onPress={() => setShowDeleteModal(true)}
                                 title={"Delete Account"}
-                            />
+                            /> */}
 
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}
@@ -132,7 +132,7 @@ const SettingScreen = () => {
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                 onPress={handleLogout}
-                                title={"Log out"}
+                                title={"Log Out"}
                             />
 
                         </View>

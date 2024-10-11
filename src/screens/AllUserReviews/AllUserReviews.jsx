@@ -1,8 +1,8 @@
 import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View, Platform, KeyboardAvoidingView, FlatList, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import home from "./../../../assets/images/home.png"
 import { scale } from 'react-native-size-matters'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import Header from '../../components/Header/Header'
 import useAxios from '../../../Axios/useAxios'
 import SingleReview from '../../components/SingleReview/SingleReview'
@@ -22,7 +22,7 @@ const AllUserReviews = () => {
     const [loading, setLoading] = useState(false);
     const navigation = useNavigation()
     const auth = useSelector(state => state.auth)
-    useEffect(() => {
+    // useEffect(() => {
         const fetchReviews = async () => {
             if (!hasMore || loading) return;
 
@@ -44,8 +44,15 @@ const AllUserReviews = () => {
             }
         };
 
-        fetchReviews();
-    }, [page]);
+    //     fetchReviews();
+    // }, [page]);
+
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchReviews();
+        }, [_id, page]) // Ensure _id is included if it can change
+      );
 
     return (
 
@@ -76,9 +83,9 @@ const AllUserReviews = () => {
 
                
                
-              {loading && data.length<1
+              {loading && data?.length<1
               ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
-              :!loading && data.length<1
+              :!loading && data?.length<1
               ?
               <NotFound
               title='No reviews Found'
@@ -103,11 +110,21 @@ const AllUserReviews = () => {
                     }
                     renderItem={({ item }) =>
                         <SingleReview 
+                    sauceId = {item?.sauceId?._id}
                     isNavigate={true}
                     url={item?.owner.image}
                     name={item?.owner.name}
                     _id={item?.owner?._id}
-                   item={item} />
+                   item={item}
+                    userName={item?.owner?.name}
+                   sauceName={item?.sauceId?.name}
+                   stars={item?.star}
+                   text={item?.text}
+                   textLength={item?.text?.length}
+                   date={item?.createdAt}
+                   images={item?.images}
+                   
+                   />
 
                     }
                 />}

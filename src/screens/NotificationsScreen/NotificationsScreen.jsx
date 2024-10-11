@@ -6,7 +6,7 @@ import { scale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
 import CustomNotification from '../../components/CustomNotification/CustomNotification.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCount, clearNotifications, deleteNotification } from '../../../android/app/Redux/notifications.js';
+import { clearCount, clearNotifications, deleteNotification, readAllNotifications } from '../../../android/app/Redux/notifications.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import NotFound from '../../components/NotFound/NotFound.jsx';
@@ -18,11 +18,11 @@ const NotificationsScreen = ({
     let notificationsData = useSelector(state=>state.notifications)
     let notifications = notificationsData?.notifications
     let count = notificationsData.count
-    useEffect(()=>{
-            if(route?.name=="Notifications"){
-            dispatch(clearCount())
-            }
-    },[count, notificationsData?.length])
+    // useEffect(()=>{
+    //         if(route?.name=="Notifications"){
+    //         dispatch(clearCount())
+    //         }
+    // },[count, notificationsData?.length])
    
 
    
@@ -70,9 +70,9 @@ const NotificationsScreen = ({
                                     Notifications
                                 </Text>
 
-                               {notifications?.length>0 && <TouchableOpacity
+                               {count>0 && <TouchableOpacity
                                     onPress={() => { 
-                                        dispatch(clearNotifications())
+                                        dispatch(readAllNotifications())
                                         console.log("notifications", notifications)
                                      }}
 
@@ -88,7 +88,7 @@ const NotificationsScreen = ({
                                         fontSize: scale(13),
                                         color: "white"
                                     }}>
-                                        Clear All 
+                                        Read All 
                                     </Text></TouchableOpacity>}
 
                             </View>
@@ -106,14 +106,16 @@ const NotificationsScreen = ({
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item, index }) =>
         
-                                            <Swipeable
-                                            renderRightActions={() => renderRightActions(index)}
-                                          >
+                                        //     <Swipeable
+                                        //     renderRightActions={() => renderRightActions(index)}
+                                        //   >
                                             <CustomNotification
                                               title={item.title}
                                               body={item.body}
+                                              date={item.date}
+                                              isRead =  {item.isRead}
                                             />
-                                          </Swipeable>
+                                        //   {/* </Swipeable> */}
                                             // <CustomNotification title={item.title} body={item.body} />
         
                                         }

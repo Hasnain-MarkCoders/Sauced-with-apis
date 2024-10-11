@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions, Image } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
@@ -64,8 +64,6 @@ const ProductSearchList = ({
     }, [])
 
     const handleLike = useCallback((id, setproductStatus) => {
-        console.log("id=========================>", id)
-       
         setData(prev => {
             return prev.map(item => {
                 if (item._id == id) {
@@ -115,7 +113,7 @@ const ProductSearchList = ({
                 <FlatList
                     data={data}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: scale(100), gap: scale(10) , display:"flex", flexDirection:"row", flexWrap:"wrap"}}
+                    contentContainerStyle={{ paddingBottom: scale(100), gap: scale(10) , display:"flex", flexDirection:"row",justifyContent:"flex-start",  flexWrap:"wrap"}}
                     showsHorizontalScrollIndicator={false}
                     // numColumns={3}
                     onEndReachedThreshold={2}
@@ -126,7 +124,8 @@ const ProductSearchList = ({
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => <SingleSauce
-                    
+                    _id={item?._id}
+
                         handleLike={handleLike}
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         mycb={setData}
@@ -142,9 +141,9 @@ const ProductSearchList = ({
                         customStyles={
     
                             {
-                                width: (windowWidth) / 3.8,
+                                width: (windowWidth) / 3.63,
                                 marginBottom: scale(-30),
-                                marginHorizontal: "auto",
+                                // marginHorizontal: "auto",
                             }
                         }
                         index={index}
@@ -153,6 +152,23 @@ const ProductSearchList = ({
                         title={item?.name}
     
                     />}
+                    // renderItem={({item, index})=>{
+    
+                    //         return<View style={{
+                    //             width:windowWidth/3.7,
+                    //             height:scale(150),
+                    //             borderRadius:scale(10)
+                    //         }}> 
+                    //        {item.image? <Image
+                    //         style={{
+                    //             width:"100%",
+                    //             height:"100%",
+                    //         }}
+                            
+                    //         source={{uri:item.image}}
+                    //         />:<View><Text>{item.image+"hello"}</Text></View>}
+                    //         </View>
+                    // }}
                 />
                 :!loading
                 ?

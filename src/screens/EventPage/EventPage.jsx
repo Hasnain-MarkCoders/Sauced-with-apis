@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  Linking,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header.jsx';
@@ -38,6 +39,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
 import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
+import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 
 const EventPage = () => {
   const route = useRoute();
@@ -56,6 +58,13 @@ const EventPage = () => {
  const isInterestedEvent = !!interestedEvents?.find(item=>item?._id==event?._id)
  const [isLocationAvailable, setIsLocationAvailable] = useState(false)
  const [tempIsInterested, setTempIsInterested] = useState(isInterestedEvent)
+ const [yesNoModal, setYesNoModal] = useState({
+  open: false,
+  message: "",
+  severity: "success",
+  cb: () => { },
+  isQuestion:false
+})
  const [alertModal, setAlertModal] = useState({
   open: false,
   message: "",
@@ -186,53 +195,130 @@ const handleInterestedEvent = async () => {
       latitude: parseFloat(event.venueLocation.latitude),
       longitude: parseFloat(event.venueLocation.longitude),
     });
-
     const checkLocationServiceAndNavigate = () => {
-      setLoading(true); // Start loading indicator
+      // setIsLoading(prev => ({ ...prev, loadMap: true }))
+      setLoading(true);
+      // Start loading indicator
       const permission = Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
       check(permission).then(result => {
-        if (result === RESULTS.GRANTED) {
-          fetchCurrentLocation();
-          setIsLocationAvailable(true)
-
-        } else if (result === RESULTS.DENIED) {
-          request(permission).then(result => {
-            if (result === RESULTS.GRANTED) {
+          if (result === RESULTS.GRANTED) {
               fetchCurrentLocation();
-              setIsLocationAvailable(true)
-            } else {
-              // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
-              setAlertModal({
-                open: true,
-                message:  "Location Permission RequiredPlease grant location permission to use this feature.",
-                success: false
-            })
-              setLoading(false); // Stop loading indicator
-            }
-          });
-        } else {
-          setLoading(false); // Stop loading indicator
-          setAlertModal({
-            open: true,
-            message:  "Location Permission, Location permission is not available or blocked. Please enable it in settings.",
-            success: false
-        })
-          // Alert.alert("Location Permission, Location permission is not available or blocked. Please enable it in settings.");
-        }
+          } else if (result === RESULTS.DENIED) {
+              setYesNoModal({
+                  open: true,
+                  message: "Location Permission Required. Would you like to grant permission?",
+                  success: true,
+                  isQuestion:true,
+                  cb: () => {
+                      request(permission).then(result => {
+                          if (result === RESULTS.GRANTED) {
+                              fetchCurrentLocation();
+                          } else {
+                              // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+                              Alert.alert(
+                                  "Location Permission Blocked",
+                                  "Please enable location permission in your device settings to use this feature.",
+                                  [
+                                      { text: "Cancel", style: "cancel" },
+                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                  ]
+                              );
+                              setLoading(false)  // Stop loading indicator
+                          }
+                      });
+                  }
+              });
+          } else {
+              setYesNoModal({
+                  open: true,
+                  message: "Location Permission Required. Would you like to grant permission?",
+                  success: true,
+                  isQuestion:true,
+
+                  cb: () => {
+                      request(permission).then(result => {
+                          if (result === RESULTS.GRANTED) {
+                              fetchCurrentLocation();
+                          } else {
+                              Alert.alert(
+                                  "Location Permission Blocked",
+                                  "Please enable location permission in your device settings to use this feature.",
+                                  [
+                                      { text: "Cancel", style: "cancel" },
+                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                  ]
+                              );
+                              setLoading(false) // Stop loading indicator
+                          }
+                      });
+                  }
+              });
+          }
       }).catch(error => {
-        console.warn("Error checking location permission:", error);
-        setAlertModal({
-          open: true,
-          message:  "Error An error occurred while checking location permission. Please try again.",
-          success: false
-      })
-        // Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
-        setLoading(false); // Stop loading indicator
+          console.warn("Error checking location permission:", error);
+          setAlertModal({
+              open: true,
+              message: "An error occurred while checking location permission. Please try again.",
+              success: false
+          })
+         setLoading(false) // Stop loading indicator
       });
-    };
+  };
+
+
+
+    // const checkLocationServiceAndNavigate = () => {
+    //   setLoading(true); // Start loading indicator
+    //   const permission = Platform.OS === 'ios'
+    //     ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+    //     : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+    //   check(permission).then(result => {
+    //     if (result === RESULTS.GRANTED) {
+    //       fetchCurrentLocation();
+    //       setIsLocationAvailable(true)
+
+    //     } else if (result === RESULTS.DENIED) {
+    //       request(permission).then(result => {
+    //         if (result === RESULTS.GRANTED) {
+    //           fetchCurrentLocation();
+    //           setIsLocationAvailable(true)
+    //         } else {
+    //           // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+    //           setYesNoModal({
+    //             open: true,
+    //             message:  "Location Permission Required Please grant location permission to use this feature.",
+    //             success: false,
+    //             isQuestion:true,
+
+    //         })
+    //           setLoading(false); // Stop loading indicator
+    //         }
+    //       });
+    //     } else {
+    //       setLoading(false); // Stop loading indicator
+    //       setYesNoModal({
+    //         open: true,
+    //         message:  "Location Permission, Location permission is not available or blocked. Please enable it in settings.",
+    //         success: false,
+    //         isQuestion:true
+    //     })
+    //       // Alert.alert("Location Permission, Location permission is not available or blocked. Please enable it in settings.");
+    //     }
+    //   }).catch(error => {
+    //     console.warn("Error checking location permission:", error);
+    //     setAlertModal({
+    //       open: true,
+    //       message:  "Error An error occurred while checking location permission. Please try again.",
+    //       success: false
+    //   })
+    //     // Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+    //     setLoading(false); // Stop loading indicator
+    //   });
+    // };
 
     const fetchCurrentLocation = async () => {
       Geolocation.getCurrentPosition(
@@ -252,6 +338,7 @@ const handleInterestedEvent = async () => {
             latitude: parseFloat(event.venueLocation.latitude),
             longitude: parseFloat(event.venueLocation.longitude),
           });
+          setIsLocationAvailable(true)
 
           const response = await axiosInstance.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
             params: {
@@ -810,6 +897,26 @@ const handleInterestedEvent = async () => {
           }}
         />
       </SafeAreaView>
+      <YesNoModal
+                      isQuestion= {yesNoModal.isQuestion}
+                        modalVisible={yesNoModal.open}
+                        setModalVisible={() => {
+                            setYesNoModal({
+                                open: false,
+                                message: "",
+                                severity: true,
+                            })
+                            // setIsLoading(prev => ({
+                            //     ...prev,
+                            //     loadMap: false
+                            // }))
+                            setLoading(false)
+                        }}
+                        success={yesNoModal.severity}
+                        title={yesNoModal.message}
+                        cb={yesNoModal.cb}
+
+                    />
       <CustomAlertModal
                     title={alertModal?.message}
                     modalVisible={alertModal?.open}

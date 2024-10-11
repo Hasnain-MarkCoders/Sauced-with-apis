@@ -18,6 +18,8 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
         type: 'success',
         title: remoteMessage.notification.title,
         body: remoteMessage.notification.body,
+        isRead:remoteMessage.data.isRead=="1"?true:false,
+        data: remoteMessage.data
       })
     );
     store.dispatch(increaseCount());

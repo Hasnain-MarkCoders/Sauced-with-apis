@@ -14,6 +14,7 @@ import CustomEditModal from '../../components/EditModal.jsx/EditModal';
 import CustomChangePasswordModal from '../../components/CustomChangePasswordModal/CustomChangePasswordModal';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
+import { handleStats } from '../../../android/app/Redux/userStats';
 
 const EditProfileScreen = () => {
     const Auth = useSelector(state => state.auth)
@@ -35,10 +36,21 @@ const EditProfileScreen = () => {
             setIsEnabled(false)
             // await new Promise(resolve => setTimeout(resolve, 2000));
             await axiosInstance.patch("/change-name", { newName: value?.Name })
+            dispatch(handleStats({
+                name:value?.Name,
+               
+            }))
             dispatch(handleAuth({
                 "name": value?.Name,
             }))
             setShowModal(false)
+            setTimeout(()=>{
+                Snackbar.show({
+                   text: "Name updated successfully.",
+                   duration: Snackbar.LENGTH_SHORT,
+               });
+
+            },1000)
         } catch {
             console.log(error)
             Alert.alert(error.message || error.toString())

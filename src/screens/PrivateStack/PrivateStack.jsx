@@ -23,7 +23,8 @@ const PrivateStack = () => {
         open:false,
         message:"",
         severity:"success",
-        cb:()=>{}
+        cb:()=>{},
+        isQuestion:false
     })
     const navigation = useNavigation()
 
@@ -44,6 +45,8 @@ const PrivateStack = () => {
                     open: true,
                     message: "Camera Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
+                    
                     cb: () => {
                         request(cameraPermission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -156,6 +159,7 @@ const PrivateStack = () => {
            
         </Tab.Navigator>
         <YesNoModal
+        isQuestion={yesNoModal.isQuestion}
                     modalVisible={yesNoModal.open}
                     setModalVisible={()=>{
                         setYesNoModal({

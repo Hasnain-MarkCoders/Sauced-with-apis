@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
 
 
-const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () => { } , refresh=false}) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -22,7 +22,7 @@ const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () 
     },[])
 
     const fetchSauces = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if ( loading) return;
         setLoading(true);
         try {
             const res = await axiosInstance.get("/bookmarks", {
@@ -39,7 +39,7 @@ const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () 
         } finally {
             setLoading(false);
         }
-    },[page,hasMore , saucesListThree]);
+    },[page,hasMore , saucesListThree, refresh]);
     
     useEffect(() => {
         fetchSauces();
@@ -83,6 +83,7 @@ saucesListThree?.length>0&&<View style={styles.container}>
 
                     }}
                     data={saucesListThree}
+                    extraData={saucesListThree}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -93,6 +94,8 @@ saucesListThree?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    _id={item?._id}
+
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType={3}
                     item={item}

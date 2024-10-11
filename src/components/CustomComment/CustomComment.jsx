@@ -10,6 +10,7 @@ import Lightbox from 'react-native-lightbox-v2';
 import NestedComment from '../NestedComment/NestedComment'
 import UserDetailsModal from '../UserDetailsModal/UserDetailsModal'
 import useAxios from '../../../Axios/useAxios'
+import ImageView from "react-native-image-viewing";
 
 const CustomComment = ({
     getId=()=>{},
@@ -35,6 +36,9 @@ const CustomComment = ({
     useEffect(()=>{
     },[profileUri])
     const [commentStatus, setCommentStatus] = useState(hasLikedUser)
+    const [visible, setIsVisible] = useState(false)
+    const [imageIndex, setImageIndex] = useState(0)
+
     const [LightBox, setLightBox] = useState(false)
     const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
     const [showReplies, setShowReplies]  = useState(false)
@@ -174,23 +178,34 @@ console.log(profileUri)
             }}>
 
                 {
-                    assets.map(uri =>uri&&
-                        <Lightbox
-                        // springConfig={{ tension: 30, friction: 7 }}
-                        activeProps={{
-                            resizeMode: 'contain',
-                            style: {
-                                width: '100%',
-                                height: '100%',
-                                minWidth: scale(120),
-                                minHeight: scale(100),
-                                borderRadius: 0,
-                                borderColor: 'transparent',
-                                borderWidth: 0,
-                            },
-                        }}
-                    >
-                        {uri && (
+                    assets.map((uri , index)=>uri&&
+                    //     <Lightbox
+                    //     // springConfig={{ tension: 30, friction: 7 }}
+                    //     activeProps={{
+                    //         resizeMode: 'contain',
+                    //         style: {
+                    //             width: '100%',
+                    //             height: '100%',
+                    //             minWidth: scale(120),
+                    //             minHeight: scale(100),
+                    //             borderRadius: 0,
+                    //             borderColor: 'transparent',
+                    //             borderWidth: 0,
+                    //         },
+                    //     }}
+                    // >
+                        // {uri && (
+                        <TouchableOpacity onPress={()=>{
+                            setIsVisible(true)
+                            setImageIndex(index)
+                        }}>
+                                        {/* <ImageView
+  images={[{ uri: uri}]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/> */}
+
                             <Image
                                 style={{
                                     width: scale(120),
@@ -204,8 +219,9 @@ console.log(profileUri)
                                 source={{ uri }}
                                 resizeMode="cover"
                             />
-                        )}
-                    </Lightbox>
+                        </TouchableOpacity>
+                        // )}
+                    // {/* </Lightbox> */}
                     )
                 }
 
@@ -274,7 +290,12 @@ console.log(profileUri)
                     color:"#000"
                 }}>{showReplies ? "Hide replies":"Show replies"}</Text>}
             </TouchableOpacity>}
-           
+            <ImageView
+          imageIndex={imageIndex}
+          images={assets.map(uri => ({ uri: uri }))}
+          visible={visible}
+          onRequestClose={()=>{setIsVisible(false)}}
+        />
         </View>
 
     )

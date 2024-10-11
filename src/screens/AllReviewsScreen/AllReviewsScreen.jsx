@@ -84,19 +84,26 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   }, [fetchReviews]);
 
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        // Optionally, you can show an alert or simply prevent going back
-        return true; // Prevent default behavior
-      };
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const onBackPress = () => {
+  //       // Optionally, you can show an alert or simply prevent going back
+  //       return true; // Prevent default behavior
+  //     };
 
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+  //     BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, [])
-  );
+  //     return () =>
+  //       BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+  //   }, [])
+  // );
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      e.preventDefault(); // Prevent default action
+      unsubscribe() // Unsubscribe the event on first call to prevent infinite loop
+      navigation.navigate('ProductScreen', {_id}) // Navigate to your desired screen
+    });
+ }, [])
 
   return (
     <ImageBackground
@@ -113,21 +120,27 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
             cb={() => 
               // navigation.goBack()
               {
-                navigation.navigate("ProductDetail", {
-                  _id,
-                  url,
-                  title,
-                  item,
-                  reviewCount,
-                  setReviewCount,
-                  handleIncreaseReviewCount,
-                  sauceType,
-                  mycb,
-                  handleLike
+              //   navigation.navigate("ProductDetail", {
+              //     _id,
+              //     url,
+              //     title,
+              //     item,
+              //     reviewCount,
+              //     setReviewCount,
+              //     handleIncreaseReviewCount,
+              //     sauceType,
+              //     mycb,
+              //     handleLike
+              //    })
+              // }
+
+                  navigation.navigate("ProductScreen", {
+                  _id
+                
                  })
-              }
+              // }
             
-            }
+            }}
             showProfilePic={false}
             showDescription={false}
           />
@@ -204,10 +217,21 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                
                   <SingleReview
                   isNavigate={true}
+                  sauceId = {item?.sauceId?._id}
                   url={item?.owner.image}
                   name={item?.owner.name}
                   _id={item?.owner?._id}
-                  item={item} />
+                 item={item}
+                  userName={item?.owner?.name}
+                 sauceName={item?.sauceId?.name}
+                 stars={item?.star}
+                 text={item?.text}
+                 textLength={item?.text?.length}
+                 date={item?.createdAt}
+                 images={item?.images}
+                  
+                  
+                  />
                 )}
               />
             :

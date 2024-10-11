@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import { handleText, validateEmail } from '../../../utils';
+import { handleText, strongPasswordRegex, validateEmail } from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from "./../../../assets/images/google-icon.png";
 import apple from "./../../../assets/images/apple-icon.png";
@@ -33,6 +33,7 @@ const SignUp = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   const [loading, setLoading] = useState(false)
   const [authLoading , setAuthLoading]= useState(false)
+  const [isStrongPassword, setIsStrongPassword] = useState(true)
   const navigation = useNavigation()
 
 
@@ -110,16 +111,6 @@ const SignUp = () => {
     });
       return;
     }
-    if (data.password.length<6) {
-
-      setAlertModal({
-        open: true,
-        message: "Password at least 6 characters",
-        success:false
-
-    });
-      return;
-    }
     if (!data.password) {
       setIsEnabled(true); // Re-enable the button
       setAlertModal({
@@ -130,6 +121,29 @@ const SignUp = () => {
     })
       return 
     }
+
+    if (data.password.length<6) {
+
+      setAlertModal({
+        open: true,
+        message: "Password at least 6 characters",
+        success:false
+
+    });
+      return;
+    }
+
+  
+ 
+    if (data.password && !strongPasswordRegex.test(data.password)) {
+      setAlertModal({
+          open: true,
+          message: "Please create a strong password!",
+          success: false,
+      });
+      setIsStrongPassword(false);
+      return;
+  }
     setIsEnabled(false); // Disable the button at the start
     setLoading(true)
     setAuthLoading(true)
@@ -183,7 +197,7 @@ const SignUp = () => {
      
       }
     } catch (error) {
- setAuthLoading(false)
+      setAuthLoading(false)
 
       console.error(error);
       setAuthLoading(false)
@@ -459,7 +473,7 @@ if(authLoading){
                 color:"#C1C1C1",
                 fontSize:scale(12),
                 lineHeight:scale(25),
-              }}>Please create a strong password</Text>
+              }}>{isStrongPassword?"":"Please create a strong password"}</Text>
               {/* </TouchableOpacity> */}
               </View>
             </View>

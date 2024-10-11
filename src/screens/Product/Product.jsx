@@ -49,6 +49,9 @@ const Product = () => {
   const title = route?.params?.title;
   const url= route?.params?.url;
   const product = route?.params?.item;
+  const setCount = route?.params?.setCount||function(){};
+  
+
   const mycb = route?.params?.mycb|| function(){}
   const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
   const handleLike = route?.params?.handleLike|| function(){}
@@ -172,7 +175,6 @@ useEffect(()=>{
             console.error('Failed to fetch photos:', error);
         } finally {
             // setLoading(false);
-            console.log("product_id", product?._id)
             setInitialLoading(false);
         }
     };
@@ -371,7 +373,7 @@ useEffect(()=>{
                         fontWeight: '600',
                         marginTop: scale(20),
                       }}>
-                      Chili Peppers Used in Sauce
+                      Chili Peppers
                     </Text>
 
                     <ProductsBulletsList

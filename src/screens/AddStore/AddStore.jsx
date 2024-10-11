@@ -21,7 +21,8 @@ const AddStore = () => {
         open:false,
         message:"",
         severity:"success",
-        cb:()=>{}
+        cb:()=>{},
+        isQuestion:false
     })
     const [isloading, setIsLoading] = useState({
         submitForm: false,
@@ -126,6 +127,7 @@ const AddStore = () => {
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -151,6 +153,7 @@ const AddStore = () => {
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -306,6 +309,7 @@ const AddStore = () => {
 
 
                 <YesNoModal
+                  isQuestion= {yesNoModal.isQuestion}
                     modalVisible={yesNoModal.open}
                     setModalVisible={()=>{
                         setYesNoModal({

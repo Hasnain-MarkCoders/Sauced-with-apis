@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { Alert, Modal,  Text,  View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import ErrorLogo from "./../../../assets/images/ErrorLogo.png"
+import questionMark from "./../../../assets/images/question-mark.png"
+
 import SuccessLogo from "./../../../assets/images/SuccessLogo.png"
 import LinearGradient from 'react-native-linear-gradient';
 const YesNoModal = ({
@@ -9,6 +11,7 @@ const YesNoModal = ({
   setModalVisible = () => { },
   success=true,
   title="",
+  isQuestion=false,
   cb=()=>{},
 }) => {
   useEffect(()=>{
@@ -84,7 +87,7 @@ const YesNoModal = ({
             <Image style={{
               width:scale(90),
               height:scale(90)
-            }} source={success?SuccessLogo:ErrorLogo}/>
+            }} source={isQuestion?questionMark:success?SuccessLogo:ErrorLogo}/>
          
                 <Text style={{
                     color:"white",
@@ -96,17 +99,14 @@ const YesNoModal = ({
                   {title}  
                 </Text>
                   <View style={{
-                    flexDirection:"row",
+                    flexDirection:"row-reverse",
                     gap:scale(20),
-                    alignItems:"center"
+                    alignItems:"center",
                   }}>
 
                 <TouchableOpacity
-                
                 onPress={()=>{
                   setModalVisible(false)
-                 
-                
                 }}
                 style={{
                   backgroundColor:"white",
@@ -133,7 +133,7 @@ const YesNoModal = ({
                 }}
                 style={{
                   backgroundColor:"white",
-                  paddingHorizontal:scale(30),
+                  paddingHorizontal:scale(37),
                   paddingVertical:scale(15),
                   borderRadius:scale(8),
                   

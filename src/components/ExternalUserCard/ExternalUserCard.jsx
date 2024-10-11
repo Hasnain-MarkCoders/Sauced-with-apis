@@ -8,6 +8,7 @@ import flames from "./../../../assets/images/flames.png"
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 // import Lightbox from 'react-native-lightbox';
 import Lightbox from 'react-native-lightbox-v2';
+import ImageView from "react-native-image-viewing";
 
 const ExternalUserCard = ({
     totalCheckIns=0,
@@ -23,6 +24,7 @@ const ExternalUserCard = ({
     const circles = [1, 1, 1, 1, 1]
     const [isLoading, setIsLoading] = useState(true);
     const [LightBox, setLightBox] = useState(false)
+    const [visible, setIsVisible] = useState(false)
 
 
     return (
@@ -40,7 +42,8 @@ const ExternalUserCard = ({
                 justifyContent: "flex-start",
                 gap: scale(12),
                 alignItems: "center",
-                position:"relative"
+                position:"relative",
+                // backgroundColor:"red"
             }}>
                 
 
@@ -54,7 +57,7 @@ const ExternalUserCard = ({
         </SkeletonPlaceholder>
       )}
 
-
+{/* 
 <Lightbox
     // springConfig={{ tension: 30, friction: 7 }}
     activeProps={{
@@ -67,7 +70,17 @@ const ExternalUserCard = ({
         },
         resizeMode: 'contain',
     }}
->
+> */}
+<ImageView
+  images={[{ uri: url }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
+<TouchableOpacity onPress={()=>{
+    setIsVisible(true)
+
+}}>
     <Image
         style={{
             display: isLoading ? 'none' : 'flex',
@@ -81,7 +94,9 @@ const ExternalUserCard = ({
         resizeMode="cover"
         onLoad={() => setIsLoading(false)}
     />
-</Lightbox>
+    </TouchableOpacity>
+
+{/* </Lightbox> */}
 
                 <View style={{
                     // gap:scale(14)

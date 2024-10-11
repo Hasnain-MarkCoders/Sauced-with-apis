@@ -6,13 +6,14 @@ import {  formatEventDate } from '../../../utils'
 
 const CustomNotification = ({
     title="",
-    body=""
+    body="",
+    isRead=false
 }) => {
     const[ readMore,setReadMore]=useState(body?.length>130)
     
   return (
     <View style={{
-        backgroundColor:"#2e210a",
+        backgroundColor:isRead?"#482905":"#2e210a",
         borderColor:"#FFA100",
         borderWidth:1,
         paddingVertical:scale(10),

@@ -51,7 +51,7 @@ const Banner = ({
         <ImageBackground
             borderRadius={10}
             style={{
-                minHeight: scale(130),
+                minHeight: scale(115),
                 position: "relative",
             }}
             source={{ uri: url }}

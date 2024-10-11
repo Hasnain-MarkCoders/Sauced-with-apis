@@ -72,7 +72,7 @@ const FollowersList = ({
   }, []);
 
   return (
-    <View style={{ gap: scale(20), flex: 1 }}>
+    <View style={{ gap: scale(20), flex: 1 ,  width:"100%"}}>
       
         
         {
@@ -94,7 +94,7 @@ const FollowersList = ({
           renderItem={({ item }) =>
             <UserCard
               cb={handleUser}
-              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
+              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow Back":"Follow"}
               _id={item?._id}
               item={item}
               url={item.image}

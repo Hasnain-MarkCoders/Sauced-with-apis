@@ -21,7 +21,8 @@ import { handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
-import SwipeableRating from 'react-native-swipeable-rating';
+// SwipeableRating
+// import SwipeableRating from 'react-native-swipeable-rating';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import useAxios, { host } from '../../../Axios/useAxios.js';
 import { Slider } from 'react-native-awesome-slider';
@@ -40,6 +41,12 @@ import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 import { X } from 'lucide-react-native';
 import Lightbox from 'react-native-lightbox-v2';
+import { handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces.js';
+import ImageView from "react-native-image-viewing";
+import SwipeableRating from '../../components/SwipeableRating/SwipeableRating.jsx';
+import SimpleLevelSlider from '../../components/SimpleLevelSlider/SimpleLevelSlider.jsx';
+
+
 const AddReview = () => {
     const route = useRoute();
     const [imageUris, setImageUris] = useState([]);
@@ -57,18 +64,22 @@ const AddReview = () => {
     const [isKeyBoard, setIsKeyBoard] = useState(false);
     const axiosInstance = useAxios();
     const [loading, setLoading] = useState(false);
-    const progress = useSharedValue(0);
+    const progress = useSharedValue(1);
     const min = useSharedValue(0);
     const max = useSharedValue(10);
     const dispatch = useDispatch()
     const auth = useSelector(state => state?.auth);
     const featuredSauces = useSelector(state => state?.featuredSauces)
+    const [visible, setIsVisible] = useState(false)
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
     console.log(auth?.token);
     const [yesNoModal, setYesNoModal] = useState({
         open: false,
         message: "",
         severity: "success",
-        cb: () => { }
+        cb: () => { },
+        isQuestion:false
     })
     const [alertModal, setAlertModal] = useState({
         open: false,
@@ -78,8 +89,8 @@ const AddReview = () => {
     });
     const [data, setData] = useState({
         review: '',
-        rating: '',
-        heatLevel: 0.5,
+        rating: '1',
+        heatLevel: 1,
     });
     const navigation = useNavigation();
 
@@ -94,10 +105,14 @@ const AddReview = () => {
 
         const galleryPermission = Platform.OS === 'ios'
             ? PERMISSIONS.IOS.PHOTO_LIBRARY
-            : (Platform.Version >= 33
-                ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES // Use new media permissions for Android 13+
-                : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE); // Fallback for older Android versions
-
+            // : (Platform.Version >= 33
+            //     ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES // Use new media permissions for Android 13+
+            //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE); // Fallback for older Android versions
+            : Platform.Version >= 34
+                ? PERMISSIONS.ANDROID.CAMERA
+                : PERMISSIONS.ANDROID.READ_MEDIA_VISUAL_USER_SELECTED
+                ? PERMISSIONS.ANDROID.CAMERA
+                : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
         const permissionToCheck = isSelected ? cameraPermission : galleryPermission;
 
         check(permissionToCheck).then(result => {
@@ -111,6 +126,8 @@ const AddReview = () => {
                         ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
+
                     cb: () => {
                         request(permissionToCheck).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -137,6 +154,8 @@ const AddReview = () => {
                         ? "Camera Permission Required. Would you like to grant permission?"
                         : "Gallery Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
+
                     cb: () => {
                         request(permissionToCheck).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -219,7 +238,19 @@ const AddReview = () => {
             dispatch(handleIncreaseReviewCountOfListThreeSauce(sauceId))
         }
     }
+const handleReviewState = (data)=>{
+    if(!!data){
 
+        dispatch(handleReviewedSauces([data]))
+    }
+}
+
+const handleRating = (rating)=>{
+    setData(prev=>({...prev,rating}))
+}
+const handleSlider = (heatLevel)=>{
+    setData(prev=>({...prev,heatLevel}))
+}
 
 
     const handleSubmit = async () => {
@@ -274,6 +305,9 @@ const AddReview = () => {
             formData.append('text', data?.review);
             formData.append('star', data?.rating);
             formData.append('sauceId', sauceId);
+            console.log("heatlevel =================>",  data?.rating)
+            console.log("data?.heatLevel =================>", data?.heatLevel)
+
             const res = await axios.post(host + '/create-review', formData, {
                 headers: {
                     Authorization: `Bearer ${auth?.token}`,
@@ -293,6 +327,14 @@ const AddReview = () => {
                 //       }
                 //     });
                 //   });
+                const reviewedSauce = await axios.post(host + '/view-sauce', {sauceId}, {
+                    headers: {
+                        Authorization: `Bearer ${auth?.token}`,
+                       
+                    },
+                });
+                handleReviewState(reviewedSauce.data.sauce)
+              
                 handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount)
                 setAlertModal({
                     open: true,
@@ -314,8 +356,8 @@ const AddReview = () => {
 
                 setData({
                     review: '',
-                    rating: '',
-                    heatLevel: 0,
+                    rating: '1',
+                    heatLevel: 1,
                 });
                 progress.value = 0
                 setImageUris([]);
@@ -432,11 +474,16 @@ const AddReview = () => {
                                             }}>
 
                                                 <View style={{
-                                                    gap: scale(50)
+                                                    gap: scale(50),
+                                                    // backgroundColor:"red"
                                                 }}>
 
-
-                                                    <SwipeableRating
+                                                        <SwipeableRating
+                                                        cb={handleRating}
+                                                        />
+                                                      
+                                                    {/* <SwipeableRating
+                                                    swipeable={true}
                                                         rating={data.rating}
                                                         allowHalves={true}
                                                         style={{
@@ -445,12 +492,15 @@ const AddReview = () => {
                                                         size={50}
                                                         color="#FFA100"
                                                         emptyColor="#FFA100"
-                                                        gap={4}
+                                                        gap={10}
+                                                        onSwipe={(e)=>{
+                                                            console.log(e)
+                                                        }}
                                                         onPress={e => {
                                                             setData(prev => ({ ...prev, rating: e }));
                                                         }}
                                                         xOffset={30}
-                                                    />
+                                                    /> */}
                                                     <View style={{
                                                         gap: scale(20)
                                                     }}>
@@ -477,9 +527,10 @@ const AddReview = () => {
                                                                         backgroundColor: '#2e210a',
                                                                         borderColor: '#FFA100',
                                                                         borderWidth: 1,
-                                                                        paddingVertical: scale(10),
-                                                                        paddingHorizontal: scale(20),
-
+                                                                        alignItems:"center",
+                                                                        justifyContent:"center",
+                                                                        width:scale(50),
+                                                                        height:scale(50),
                                                                         borderRadius: scale(10),
                                                                     }}>
                                                                     <Text
@@ -493,7 +544,9 @@ const AddReview = () => {
                                                                 </View>
                                                             </View>
                                                         </View>
-                                                        <Slider
+                                                        {/* <Slider
+                                                        step={10}
+                                                        snapToStep={true}
                                                             heartbeat={false}
                                                             onSlidingComplete={e => {
                                                                 setData(prev => ({
@@ -514,7 +567,42 @@ const AddReview = () => {
                                                             maximumValue={max}
 
 
+                                                        /> */}
+
+{/* <Slider
+      step={10}
+      snapToStep={true}
+      onSlidingComplete={(e)=>{
+        setData(prev => ({
+            ...prev,
+            heatLevel: Math.round(e),
+        }));
+      }} // Use onValueChange instead of onSlidingComplete for smoother interaction
+      theme={{
+        disableMinTrackTintColor: '#FFA100',
+        maximumTrackTintColor: '#FFA100',
+        minimumTrackTintColor: '#FFA100',
+        cacheTrackTintColor: '#FFA100',
+        bubbleBackgroundColor: '#FFA100',
+        heartbeatColor: '#FFA100',
+        thumbTintColor: '#FFA100', // Change thumb color to match track
+        trackWidth: 5, // Adjust track width if needed
+        thumbWidth: 20, // Adjust thumb size for better visibility
+        trackTintColor: 'transparent', // Make the track background transparent to hide dots
+        disableTrackTintColor: 'transparent', // Hide the inactive part of the track
+      }}
+      minimumValue={min} // Define your min and max values
+      maximumValue={max}
+      progress={progress}
+      value={data.heatLevel||1} // Use 'value' prop to control the slider's value
+    /> */}
+
+<SimpleLevelSlider
+                                                        cb={handleSlider}
                                                         />
+
+
+    
                                                     </View>
                                                 </View>
                                                 <View style={{
@@ -595,6 +683,17 @@ const AddReview = () => {
                                                     }}>
                                                     {imageUris.map((uri, index) => (
 
+<TouchableOpacity onPress={()=>{
+    setIsVisible(true)
+    setCurrentImageIndex(index)
+
+}}>
+    {/* <ImageView
+  images={[{ uri:  uri?.uri  }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/> */}
 
                                                         <View  style={{
                                                             position: "relative"
@@ -614,7 +713,7 @@ const AddReview = () => {
                                                                     <X color="#fff" size={scale(15)} />
                                                             </TouchableOpacity>
                                                             </View>
-
+{/* 
                                                             <Lightbox
                                                             disabled={loading}
                                                                 // springConfig={{ tension: 30, friction: 7 }}
@@ -628,7 +727,7 @@ const AddReview = () => {
                                                                         opacity: loading ? 0 : 1,
                                                                     },
                                                                 }}
-                                                            >
+                                                            > */}
 
                                                                 <Image
                                                                     key={index}
@@ -642,9 +741,10 @@ const AddReview = () => {
                                                                     }}
                                                                 />
 
-                                                            </Lightbox>
+                                                            {/* </Lightbox> */}
 
                                                         </View>
+                                                        </TouchableOpacity>
 
                                                     ))}
                                                     <TouchableOpacity
@@ -751,6 +851,7 @@ const AddReview = () => {
                     />
                 </View> */}
                 <YesNoModal
+                  isQuestion= {yesNoModal.isQuestion}
                     modalVisible={yesNoModal.open}
                     setModalVisible={() => {
                         setYesNoModal({
@@ -764,6 +865,12 @@ const AddReview = () => {
                     cb={yesNoModal.cb}
 
                 />
+                    <ImageView
+                            imageIndex={currentImageIndex}
+                        images={imageUris.map(uri => ({ uri: uri.uri }))}
+                        visible={visible}
+                        onRequestClose={() => setIsVisible(false)}
+                    />
             </SafeAreaView>
             <CustomAlertModal
                 title={alertModal?.message}

@@ -111,7 +111,7 @@ const ExternalUserFollowingList = ({
   }, [dispatch, axiosInstance]);
 
   return (
-    <View style={{ gap: scale(20), flex: 1 }}>
+    <View style={{ gap: scale(20), flex: 1,  width:"100%" }}>
       {loading && data.length<1
               ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
               :data.length<1
@@ -137,7 +137,7 @@ const ExternalUserFollowingList = ({
           <UserCard
             showButton={auth?._id !== item?._id} // Show button only if it's not the current user
             cb={handleUser}
-            title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow back":"Follow"}
+            title={item?.isFollowing ? "Unfollow" :(!item?.isFollowing&& item?.isFollower)?"Follow Back":"Follow"}
             _id={item?._id}
             item={item}
             url={item.image}

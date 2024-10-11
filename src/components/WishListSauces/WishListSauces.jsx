@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfWishListSauce, handleWishList } from '../../../android/app/Redux/wishlist';
 import NotFound from '../NotFound/NotFound';
 
-const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -22,7 +22,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
     },[])
 
     const fetchSauces = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if ( loading) return;
         setLoading(true);
         try {
             const res = await axiosInstance.get("/wishlist", {
@@ -38,7 +38,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
         } finally {
             setLoading(false);
         }
-    },[page,hasMore , wishListSlices]);
+    },[page,hasMore , wishListSlices, refresh]);
     
     useEffect(() => {
         fetchSauces();
@@ -97,6 +97,8 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
 
                         keyExtractor={(item, index) => `${item?._id} ${index.toString()}`}
                         renderItem={({ item }) => <SingleSauce
+                        _id={item?._id}
+
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         sauceType={"wishlist"}
                         item={item}

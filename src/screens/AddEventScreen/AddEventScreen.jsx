@@ -24,7 +24,8 @@ const AddEventScreen = () => {
         open: false,
         message: "",
         severity: "success",
-        cb: () => { }
+        cb: () => { },
+        isQuestion: false
     })
     const [alertModal, setAlertModal] = useState({
         open: false,
@@ -73,6 +74,7 @@ console.log("auth.token", auth.token)
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -97,6 +99,7 @@ console.log("auth.token", auth.token)
                     open: true,
                     message: "Location Permission Required. Would you like to grant permission?",
                     success: true,
+                    isQuestion:true,
                     cb: () => {
                         request(permission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -637,7 +640,26 @@ console.log("selectedDate======================>", selectedDate)
                 </View>
             </TouchableWithoutFeedback>
         </Modal> */}
+       <YesNoModal
+                      isQuestion= {yesNoModal.isQuestion}
+                        modalVisible={yesNoModal.open}
+                        setModalVisible={() => {
+                            setYesNoModal({
+                                open: false,
+                                message: "",
+                                severity: true,
+                            })
+                            setLoading(false)
+                            // setIsLoading(prev => ({
+                            //     ...prev,
+                            //     loadMap: false
+                            // }))
+                        }}
+                        success={yesNoModal.severity}
+                        title={yesNoModal.message}
+                        cb={yesNoModal.cb}
 
+                    />
 
 <Modal
           transparent={true}

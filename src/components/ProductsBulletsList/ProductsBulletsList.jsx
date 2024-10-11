@@ -1,4 +1,4 @@
-import {  FlatList, StyleSheet, View } from "react-native";
+import {  FlatList, StyleSheet, Text, View } from "react-native";
 import { welcomeLists } from "../../../utils";
 import { scale } from "react-native-size-matters";
 import ProductBulletPoint from "../ProductBulletPoint/ProductBulletPoint";
@@ -31,9 +31,18 @@ const ProductsBulletsList = ({
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={() => <View style={[styles.separator, {...bulletGap}]} />}
       />
-      :<NotFound
-      title="No Chili papers available"
-      />
+      :
+      // <NotFound
+      // title="No Chili papers available"
+      // />
+      <Text style={
+        {color: 'white',
+        fontSize: scale(13),
+        fontWeight: 400,
+        lineHeight: 20,}
+      }>
+        N/A
+      </Text>
       }
     
       </View>

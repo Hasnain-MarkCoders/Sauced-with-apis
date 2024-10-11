@@ -7,7 +7,7 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleCheckedInSauces, handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
 import NotFound from '../NotFound/NotFound';
-const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -21,7 +21,7 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
     },[])
 
     const fetchSauces = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if (loading) return;
         setLoading(true);
         try {
             const res = await axiosInstance.get("/get-sauces", {
@@ -37,7 +37,7 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
         } finally {
             setLoading(false);
         }
-    },[page,hasMore]);
+    },[page,hasMore, refresh]);
     
     useEffect(() => {
         fetchSauces();
@@ -80,6 +80,7 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
 
                     }}
                     data={checkedInSauces}
+                    extraData={checkedInSauces}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
 
@@ -90,6 +91,8 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    _id={item?._id}
+
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="checkedin"
                     item={item}

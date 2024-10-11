@@ -10,11 +10,13 @@
     <!-- Only required for broader storage access on Android 11 and higher -->
 <!-- optionally, if you want to record audio: -->
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-
     <!-- New Media Permissions for Android 13+ -->
     <uses-permission
         android:name="android.permission.READ_MEDIA_IMAGES"
+        android:required="false"
+        android:maxSdkVersion="33" />
+        <uses-permission
+        android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
         android:required="false"
         android:maxSdkVersion="33" />
     <uses-permission
@@ -30,11 +32,11 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:required="false"
-        android:maxSdkVersion="32" />
+        android:maxSdkVersion="33" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="false"
-        android:maxSdkVersion="32" />
+        android:maxSdkVersion="33" />
 
   <application
     android:name=".MainApplication"
@@ -42,7 +44,9 @@
     android:icon="@drawable/icon_rounded"
     android:roundIcon="@drawable/icon"
     android:allowBackup="false"
-    android:theme="@style/BootTheme">
+    android:theme="@style/BootTheme"
+    android:requestLegacyExternalStorage="true"
+    >
 
   <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
     	<meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
@@ -55,7 +59,9 @@
     <activity android:name="com.facebook.FacebookActivity"
         android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-        android:label="@string/app_name" />
+        android:label="@string/app_name"
+        android:screenOrientation="portrait"
+         />
     <activity
         android:name="com.facebook.CustomTabActivity"
         android:exported="true">

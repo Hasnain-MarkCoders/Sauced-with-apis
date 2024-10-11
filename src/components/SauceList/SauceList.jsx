@@ -128,6 +128,8 @@ data?.length>0&&<View style={styles.container}>
                     }}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
+                    _id={item?._id}
+
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     handleLike={handleLike}
                     item={item}

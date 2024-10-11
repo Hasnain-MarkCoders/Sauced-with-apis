@@ -3,8 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomProgress from '../CustomProgress/CustomProgress'
 import useAxios from '../../../Axios/useAxios'
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 const Award = ({url="", percentage, name}) => {
+  const [isLoading, setIsLoading] = useState(true);
 
 
   return (
@@ -23,24 +25,26 @@ const Award = ({url="", percentage, name}) => {
         color:"white",
         fontSize:scale(16)
       }}> {name}</Text>
-     { url ? <Image style={{
+      <Image style={{
         width:scale(80),
         height:scale(80),
         borderRadius:scale(50),
+        display:isLoading?"none":"flex",
 
       }}
+      onLoad={() => setIsLoading(false)}
       source={{uri:url}}
       
-      ></Image> :<View style={{
-        width:scale(80),
-        height:scale(80),
-        borderRadius:scale(80),
-        backgroundColor:"#FFA100"
-
-      }}>
-        {name}
-
-      </View>}
+      ></Image> 
+      {isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(80)}
+            height={scale(80)}
+            borderRadius={scale(58)}
+            
+            />
+        </SkeletonPlaceholder>
+      )}
       <CustomProgress  percentage={percentage} name={name}/>
   
     </View>

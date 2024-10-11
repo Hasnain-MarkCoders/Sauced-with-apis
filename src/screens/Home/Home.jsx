@@ -34,6 +34,7 @@ const Home = () => {
         open:false,
         message:"",
         severity:"success",
+        isQuestion:false,
         cb:()=>{}
     })
     const axiosInstance = useAxios()
@@ -91,6 +92,7 @@ const Home = () => {
                                 open: true,
                                 message: "Location Permission Required. Would you like to grant permission?",
                                 success: true,
+                                isQuestion:true,
                                 cb: () => {
                                     request(permission).then(result => {
                                         if (result === RESULTS.GRANTED) {
@@ -123,6 +125,7 @@ const Home = () => {
                 open: true,
                 message: "Location Permission Required. Would you like to grant permission?",
                 success: true,
+                isQuestion:true,
                 cb: () => {
                     request(permission).then(result => {
                         if (result === RESULTS.GRANTED) {
@@ -548,24 +551,24 @@ const Home = () => {
       
     },[])
 
-    useEffect(() => {
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            Toast.show({
-                type: 'success',
-                text1: remoteMessage.notification.title,
-                text2: remoteMessage.notification.body})
-                dispatch(addNotification({
-                    type: 'success',
-                    title: remoteMessage.notification.title,
-                    body: remoteMessage.notification.body}
-            ));
-            dispatch(increaseCount());
-            console.log("remoteMessage===============>", remoteMessage)
+    // useEffect(() => {
+    //     const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //         Toast.show({
+    //             type: 'success',
+    //             text1: remoteMessage.notification.title,
+    //             text2: remoteMessage.notification.body})
+    //             dispatch(addNotification({
+    //                 type: 'success',
+    //                 title: remoteMessage.notification.title,
+    //                 body: remoteMessage.notification.body}
+    //         ));
+    //         dispatch(increaseCount());
+    //         console.log("remoteMessage===============>", remoteMessage)
 
-        });
+    //     });
       
-        return unsubscribe;
-      }, []);
+    //     return unsubscribe;
+    //   }, []);
 
      
 
@@ -739,6 +742,7 @@ const Home = () => {
                     />
 
                     <YesNoModal
+                     isQuestion= {yesNoModal.isQuestion}
                     modalVisible={yesNoModal.open}
                     setModalVisible={()=>{
                         setYesNoModal({

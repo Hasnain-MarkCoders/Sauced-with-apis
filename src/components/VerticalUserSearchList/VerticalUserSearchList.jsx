@@ -105,7 +105,7 @@ const VerticalUserSearchList = ({
             showButton={auth._id==item._id?false:true}
               cb={handleUser}
               _id={item?._id}
-              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow back":"Follow"}
+              title={item?.isFollowing ? "Unfollow" : item?.isFollower?"Follow Back":"Follow"}
               item={item}
               url={item.image}
               name={item?.name}

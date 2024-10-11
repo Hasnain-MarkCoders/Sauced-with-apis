@@ -18,7 +18,7 @@ const reviewedSaucesSlice = createSlice({
         }
       });
       // Replace the state with the updated map values
-      return Array.from(stateMap.values());
+      return Array.from(stateMap?.values())||[];
     },
 
     handleToggleReviewedSauce:(state, action)=>{
@@ -49,9 +49,12 @@ const reviewedSaucesSlice = createSlice({
       }
       
       return state;
-    }
+    },
+    clearReviewedSauces: (state, action) => {
+      return [];
+    },
   },
 });
 
-export const { handleReviewedSauces, handleToggleReviewedSauce,handleIncreaseReviewCountOfReviewedSauce } = reviewedSaucesSlice.actions;
+export const { handleReviewedSauces, handleToggleReviewedSauce,handleIncreaseReviewCountOfReviewedSauce, clearReviewedSauces } = reviewedSaucesSlice.actions;
 export default reviewedSaucesSlice.reducer;

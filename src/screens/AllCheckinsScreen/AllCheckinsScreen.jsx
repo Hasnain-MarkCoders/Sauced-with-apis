@@ -21,19 +21,20 @@ const AllCheckinsScreen = ({
  
     const fn = route?.params?.fn||function(){}
     const numberOfRoutesBack = route?.params?.routerNumber||1
+
     
     const isBack = route?.params?.isBack||false 
     const auth = useSelector(state => state.auth)
-    const url  = route?.params.url||""
-    const title = route?.params.title||""
-    const item = route?.params.item||{}
+    const url  = route?.params?.url||""
+    const title = route?.params?.title||""
+    const item = route?.params?.item||{}
     const  reviewCount = route?.params?.reviewCount||""
     const  setReviewCount = route?.params?.setReviewCount||function(){}
     const  handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount||function(){}
     const  mycb = route?.params?.mycb||function(){}
     const handleLike = route?.params?.handleLike|| function(){}
     const  sauceType  = route?.params?.sauceType||"" 
-    const uri = auth.url
+    const uri = auth?.url
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const _id = route?.params?._id
@@ -53,8 +54,8 @@ const AllCheckinsScreen = ({
         return setId(id)
     }
     const handleUserProfileView = (data) => {
-        console.log(data.item.owner._id)
-        navigation.navigate("ExternalProfileScreen", { url: data.profileUri, name: data.name, _id:data.item.owner._id })
+        console.log(data?.item?.owner?._id)
+        navigation.navigate("ExternalProfileScreen", { url: data?.profileUri, name: data?.name, _id:data?.item?.owner?._id })
     }
     const handleAddMessage = async () => {
         const existingMessage = data.find(item => item?._id == id)
@@ -91,6 +92,7 @@ const AllCheckinsScreen = ({
         const fetchCheckings = async () => {
             if (!hasMore || loading) return;
             setLoading(true);
+            console.log(_id)
             try {
                 const res = await axiosInstance.get(`/get-checkins`, {
                     params: {
@@ -110,19 +112,66 @@ const AllCheckinsScreen = ({
         fetchCheckings();
     }, [page]);
 
-    useFocusEffect(
-        React.useCallback(() => {
-          const onBackPress = () => {
-            // Optionally, you can show an alert or simply prevent going back
-            return true; // Prevent default behavior
-          };
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //       const onBackPress = () => {
+    //         // Optionally, you can show an alert or simply prevent going back
+    //         return true; // Prevent default behavior
+    //       };
     
-          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    //       BackHandler.addEventListener('hardwareBackPress', onBackPress);
     
-          return () =>
-            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-        }, [])
-      );
+    //       return () =>
+    //         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    //     }, [])
+    //   );
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         const onBeforeRemove = (e) => {
+    //             // Prevent default behavior
+    //             e.preventDefault();
+
+    //             // Navigate to the desired screen using replace to avoid stacking
+    //             navigation.replace("ProductScreen", { _id });
+
+    //             // Alternatively, reset the navigation stack:
+    //             /*
+    //             navigation.dispatch(
+    //                 CommonActions.reset({
+    //                     index: 0,
+    //                     routes: [{ name: 'ProductScreen', params: { _id } }],
+    //                 })
+    //             );
+    //             */
+    //         };
+
+    //         // Add the beforeRemove listener
+    //         navigation.addListener('beforeRemove', onBeforeRemove);
+
+    //         // Cleanup the listener on unmount
+    //         return () => {
+    //             navigation.removeListener('beforeRemove', onBeforeRemove);
+    //         };
+    //     }, [navigation, _id])
+    // );
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+          e.preventDefault(); // Prevent default action
+          unsubscribe() // Unsubscribe the event on first call to prevent infinite loop
+          navigation.navigate('ProductScreen', {_id}) // Navigate to your desired screen
+          if(isBack){
+             navigation.goBack()
+           }else{
+               navigation.navigate("ProductScreen", {
+                   _id
+                   })
+           }
+                      
+        });
+     }, [])
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -132,20 +181,27 @@ const AllCheckinsScreen = ({
                     showMenu={false}
                     // cb={() => (navigation.pop(numberOfRoutesBack), fn())} 
                     cb={() => {
-                        if(!isBack){
-                          return  navigation.navigate("ProductDetail", {
-                                 url,
-                                 title,
-                                 item,
-                                 reviewCount,
-                                 setReviewCount,
-                                 handleIncreaseReviewCount,
-                                 sauceType,
-                                 mycb,
-                                 handleLike
+                        // if(!isBack){
+                        //   return  navigation.navigate("ProductDetail", {
+                        //          url,
+                        //          title,
+                        //          item,
+                        //          reviewCount,
+                        //          setReviewCount,
+                        //          handleIncreaseReviewCount,
+                        //          sauceType,
+                        //          mycb,
+                        //          handleLike
+                        //         })
+                        // }
+                       if(isBack){
+                        return navigation.goBack()
+                       }
+                                  
+                          return  navigation.navigate("ProductScreen", {
+                                _id
                                 })
-                        }
-                        navigation.goBack()
+                        // }
 
 
                     }} 

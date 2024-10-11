@@ -17,6 +17,7 @@ const effectiveWidth = screenWidth - 2 * horizontalPadding;
 
 const InterestedEventsCarousel = ({
     showText=false,
+    refresh=false
 }) => {
 const [selected, setSelected] = React.useState(0)
 const [initialLoading, setInitialLoading] = React.useState(true)
@@ -59,7 +60,7 @@ const [initialLoading, setInitialLoading] = React.useState(true)
      };
     
      fetchEvents();
-    }, [page]);
+    }, [page, refresh]);
     const handleSnapToItem = (index) => {
         setSelected(index);
         if (index === interestedEvents.length - 1) {

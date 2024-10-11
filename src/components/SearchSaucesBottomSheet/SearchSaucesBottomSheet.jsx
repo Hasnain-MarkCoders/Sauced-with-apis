@@ -67,6 +67,10 @@ console.log("photo ha ", photo)
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
+        if(selectedSauce?._id === item._id){
+          setSelectedSauce(null)
+          return
+        }
         setSelectedSauce(item); // Set selected sauce
         console.log(item); // Log selected sauce
       }}
@@ -104,7 +108,7 @@ console.log("photo ha ", photo)
             if (selectedSauce) {
               console.log("Quick Checkin for:", selectedSauce); // Log selected sauce on quick checkin
               setCapturedImage(null)
-                navigation.navigate("Checkin", { product:selectedSauce,routerNumber:4, photo, fn})
+                navigation.navigate("Checkin", {_id:selectedSauce?._id, item:selectedSauce,routerNumber:4, photo, fn})
             }
             
           }}
@@ -114,15 +118,35 @@ console.log("photo ha ", photo)
             Quick Check-ins
           </Text>
         </TouchableOpacity>
-        
+
+        <View style={{
+    marginBottom: scale(10),
+
+        }}>
+
         <TextInput
         placeholderTextColor ={"#000"}
           style={styles.input}
-          placeholder="Search sauces..."
+          placeholder="Search Sauces"
           value={searchTerm}
           onChangeText={setSearchTerm}
           onSubmitEditing={handleSearch}
         />
+        <Text
+        
+        style={{
+          color:!!selectedSauce?"#FFA100":"gray",
+          fontSize:scale(10),
+          paddingHorizontal:scale(10),
+          textAlign:"left",
+          marginTop:scale(10),
+          marginBottom:scale(10),
+          fontWeight:"bold"
+        }}>
+          {!!selectedSauce? `${selectedSauce.name} is selected for quick check-in`:"Select a sauce for quick check-in"}
+        </Text>
+        </View>
+        
         
         <BottomSheetFlatList
           data={sauces}
@@ -186,7 +210,6 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: scale(8),
     paddingHorizontal: scale(10),
-    marginBottom: scale(10),
     marginHorizontal: scale(10),
     color:"black",
 

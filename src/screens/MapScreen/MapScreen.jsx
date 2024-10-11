@@ -34,7 +34,16 @@ const MapScreen = () => {
     longitudeDelta: 0.00001,
   });
 
-  const [selectedRegion, setSelectedRegion] = useState(null);
+  // const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState({
+    latitude: lat,
+    longitude: lng,
+    latitudeDelta: 0.00001,
+    longitudeDelta: 0.00001,
+  });
+
+  const [selectedId, setSelectedId] = useState(null);
+  const [selectedMarkers, setSelectedMarkers] = useState({}); 
   const [markerSize, setMarkerSize] = useState(90);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
@@ -118,17 +127,20 @@ const MapScreen = () => {
       mapRef.current.animateToRegion({
         latitude: selectedRegion.latitude,
         longitude: selectedRegion.longitude,
-        latitudeDelta: 0.00001,
-        longitudeDelta: 0.00001,
-      }, 1000); // 1000ms animation duration
+        // latitudeDelta: 0.00001,
+        // longitudeDelta: 0.00001,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+
+      }, 500); // 1000ms animation duration
     }
     fetchNearbyPlaces(selectedRegion)
   }, [selectedRegion]);
 
 
-  const getRadiusFromDelta = (latitudeDelta) => {
+  const getRadiusFromDelta = useCallback((latitudeDelta) => {
     return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
-  };
+  },[]);
 
   const handleMarkerPress = (store) => {
     Alert.alert(
@@ -138,33 +150,50 @@ const MapScreen = () => {
     );
   };
 
-const handleAddHotSauce = async(data)=>{
+const handleAddHotSauce = useCallback(async(data)=>{
   const res = await axiosInstance.post("/add-hotsauce",data)
-}
-  const handleNearByMarkerPressCB = async(place) => {
+  return res
+  console.log("res.data=============>", res.data)
+},[])
+  const handleNearByMarkerPressCB = async() => {
       // Get the lat and lng
       const latitude = selectedPlace.latitude;
       const longitude = selectedPlace.longitude;
+      const place_id = selectedPlace.placeId;
+      const address = selectedPlace.address;
+      const zip = selectedPlace.postalCode
+      console.log("latitude=========>",latitude)
+      console.log("longitude=========>",longitude)
+      console.log("place_id=========>",place_id)
+      console.log("address=========>",address)
+      console.log("zip=========>",zip)
 
-      // Use Geocoder to get the address and zip code
-      try {
-        const geocodeResponse = await Geocoder.from(latitude, longitude);
-        const address = geocodeResponse.results[0].formatted_address;
-        const postalCode = geocodeResponse.results[0].address_components.find(component =>
-          component.types.includes('postal_code')
-        )?.long_name;
-        setHotSauceMarkers(prev => [...prev, {place_id:selectedPlace.place_id,latitude , longitude, zip:postalCode}]);
-       await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:postalCode?.toString(), place_id:selectedPlace?.place_id.toString()})
-       setSelectedPlace(null)
 
-      } catch (error) {
-        console.error("Error fetching location description:", error);
-      }
+    
+
+      // // Use Geocoder to get the address and zip code
+      // try {
+      //   // const geocodeResponse = await Geocoder.from(latitude, longitude);
+      //   // const address = geocodeResponse.results[0].formatted_address;
+      //   // const postalCode = geocodeResponse.results[0].address_components.find(component =>
+      //   //   component.types.includes('postal_code')
+      //   // )?.long_name;
+        setHotSauceMarkers(prev => [...prev, {place_id,latitude , longitude, zip, address}]);
+     const res=   await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:zip?.toString(), place_id:place_id.toString()})
+   console.log("res.data.data==========================>", res)
+   
+     //  setSelectedPlace(null)
+
+      // } catch (error) {
+      //   console.error("Error fetching location description:", error);
+      // }
+
+      console.log("hellos")
     
   };
 
 
-  const handleNearByMarkerPress = async (place) => {
+  const handleNearByMarkerPress = useCallback(async (place) => {
     // Check if this place is already a hot sauce
     const isHotSauce = hotSauceMarkers.some((item) => item.place_id === place.place_id);
   
@@ -180,7 +209,16 @@ const handleAddHotSauce = async(data)=>{
       setShowModal(true);
       setSelectedPlace(place);
     }
-  };
+
+
+    // Toggle selection state for this marker
+    setSelectedMarkers(prev => ({
+      ...prev,
+      [place.place_id]: !prev[place.place_id] // Toggle selection state
+    }));
+
+  },[])
+  ;
 
 
   const fetchNearbyPlaces = useCallback(async (region) => {
@@ -240,9 +278,38 @@ const handleAddHotSauce = async(data)=>{
   const handleRegionChangeComplete = debounce((newRegion) => {
     // Fetch nearby places without updating the displayed region
     fetchNearbyPlaces(newRegion);
-  },2000);
+  },1000,  {trailing: true, leading: false});
 
-  const CustomMarker = ({ imageSource, size,}) => (
+
+  const fetchPlaceOnTap = async (latitude, longitude) => {
+    try {
+      const geocodeResponse = await Geocoder.from(latitude, longitude);
+      const placeId = geocodeResponse.results[0].place_id;
+      const address = geocodeResponse.results[0].formatted_address;
+      const postalCode = geocodeResponse.results[0].address_components.find(
+        (component) => component.types.includes('postal_code')
+      )?.long_name;
+
+      return { placeId, address, postalCode };
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      throw error; // Re-throw the error to be caught in the calling function
+    }
+  };
+
+  const handleLongPress = async (e) => {
+    try {
+      const { latitude, longitude } = e.nativeEvent.coordinate;
+      const { placeId, address, postalCode } = await fetchPlaceOnTap(latitude, longitude);
+      setSelectedPlace({ latitude, longitude, placeId, address, postalCode });
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error fetching place ID:', error);
+      Alert.alert('Error', 'Unable to fetch place ID.');
+    }
+  };
+
+  const CustomMarker = React.memo(({ imageSource, size,}) => (
     <View style={{
       alignItems: "center",
       shadowColor: "#000000",
@@ -261,7 +328,14 @@ const handleAddHotSauce = async(data)=>{
         style={[{ width: scale(size), height: scale(size) }]}
       />
     </View>
-  );
+  ),[]);
+useEffect(()=>{
+console.log("stores=============================================>", stores)
+console.log("hotSauceMarkers=============================================>", hotSauceMarkers)
+
+},[stores, hotSauceMarkers])
+
+  
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -362,10 +436,30 @@ const handleAddHotSauce = async(data)=>{
 
 
       <MapView
-        onRegionChangeComplete={handleRegionChangeComplete}
+      onLongPress={(e)=>{
+        handleLongPress(e)
+      }}
+      // showsTraffic={true}
+      showsScale={true}
+      cacheEnabled={false}
+      //  showsUserLocation={true}
+       showsCompass={false}
+      //  showsMyLocationButton
+      //  toolbarEnabled={false}
+      //  tracksViewChanges={false}
+      //  optimizeWaypoints={true}
+       showsIndoors={false}
+       loadingEnabled
+        // onRegionChangeComplete={handleRegionChangeComplete}
         ref={mapRef}
         onPress={async (e) => {
           const { latitude, longitude } = e?.nativeEvent?.coordinate;
+          const newSelectedRegion = {
+            latitude,
+            longitude,
+          };
+          setSelectedRegion(newSelectedRegion);
+
           try {
             const geocodeResponse = await Geocoder.from(latitude, longitude);
             const placeId = geocodeResponse.results[0].place_id
@@ -373,10 +467,7 @@ const handleAddHotSauce = async(data)=>{
             const postalCode = geocodeResponse.results[0].address_components.find(component =>
               component.types.includes('postal_code')
             )?.long_name;
-            const newSelectedRegion = {
-              latitude,
-              longitude,
-            };
+           
             handleEventCoords({
               latitude,
               longitude,
@@ -384,7 +475,6 @@ const handleAddHotSauce = async(data)=>{
               zip: postalCode?.toString(),
               place_id:placeId?.toString()
             });
-            setSelectedRegion(newSelectedRegion);
 
             Toast.show({
               type: 'success',
@@ -401,8 +491,19 @@ const handleAddHotSauce = async(data)=>{
         initialRegion ={region}
         followsUserLocation={true}
       >
-        {!!region && (
+        {/* {!!region && (
           <Marker
+          // zIndex={111}
+
+          // stopPropagation={true}
+          // tracksViewChanges={false}
+          // optimizeWaypoints={true}
+          // showsUserLocation={true}
+          // showsCompass={false}
+          // showsMyLocationButton
+          // toolbarEnabled={false}
+          showsIndoors={false}
+          loadingEnabled
           anchor={{ x: 0.5, y: 0.5 }} 
             onPress={(e) => { console.log(e) }}
             coordinate={region}>
@@ -413,10 +514,22 @@ const handleAddHotSauce = async(data)=>{
               />
             </View>
           </Marker>
-        )}
+        )} */}
    
         {!!selectedRegion && (
           <Marker
+          // zIndex={111}
+
+          // stopPropagation={true}
+
+          // showsUserLocation={true}
+          // showsCompass={false}
+          // // showsMyLocationButton
+          // toolbarEnabled={false}
+          // tracksViewChanges={false}
+          // optimizeWaypoints={true}
+          // showsIndoors={false}
+          // loadingEnabled
           anchor={{ x: 0.5, y: 0.5 }} 
             coordinate={{
               latitude: selectedRegion.latitude,
@@ -425,7 +538,7 @@ const handleAddHotSauce = async(data)=>{
           >
             <View style={styles.marker}>
               <Image
-                source={redChilli}
+                source={yellowChilli}
                 style={[styles.markerImage, { width: scale(markerSize), height: scale(markerSize) }]}
               />
             </View>
@@ -441,9 +554,21 @@ const handleAddHotSauce = async(data)=>{
           if (!isNaN(latitude) && !isNaN(longitude)) {
             return (
               <Marker
+          // zIndex={111}
+
+          // stopPropagation={true}
+
+              // showsUserLocation={true}
+              // showsCompass={false}
+              // showsMyLocationButton
+              // toolbarEnabled={false}
+              // tracksViewChanges={false}
+              // // optimizeWaypoints={true}
+              // showsIndoors={false}
+              // loadingEnabled
           anchor={{ x: 0.5, y: 0.5 }} 
 
-                key={store._id}
+                key={store.place_id}
                 coordinate={{
                   latitude: latitude,
                   longitude: longitude,
@@ -463,8 +588,62 @@ const handleAddHotSauce = async(data)=>{
 
           return null;
         })}
-        {nearbyPlaces.map((place) => (
+
+{hotSauceMarkers.map((store) => {
+          const latitude = parseFloat(store.latitude);
+          const longitude = parseFloat(store.longitude);
+
+          // Validate latitude and longitude before rendering the marker
+          if (!isNaN(latitude) && !isNaN(longitude)) {
+            return (
+              <Marker
+          // zIndex={111}
+
+          // stopPropagation={true}
+
+              // showsUserLocation={true}
+              // showsCompass={false}
+              // showsMyLocationButton
+              // toolbarEnabled={false}
+              // tracksViewChanges={false}
+              // // optimizeWaypoints={true}
+              // showsIndoors={false}
+              // loadingEnabled
+          anchor={{ x: 0.5, y: 0.5 }} 
+
+                key={store.place_id}
+                coordinate={{
+                  latitude: latitude,
+                  longitude: longitude,
+                }}
+                pinColor="orange"
+                onPress={() => handleMarkerPress(store)}
+              >
+                <View style={styles.marker}>
+                  <Image
+                    source={redChilli}
+                    style={[styles.markerImage, { width: markerSize, height: markerSize }]}
+                  />
+                </View>
+              </Marker>
+            );
+          }
+
+          return null;
+        })}
+        {/* {nearbyPlaces.map((place) => (
           <Marker
+          // zIndex={111}
+          // stopPropagation={true}
+
+          // showsUserLocation={true}
+          // showsCompass={false}
+          // showsMyLocationButton
+          // toolbarEnabled={false}
+          tracksViewChanges={false}
+          // optimizeWaypoints={true}
+          showsIndoors={false}
+          loadingEnabled
             key={place.id}
             anchor={{ x: 0.5, y: 0.5 }} 
          
@@ -472,12 +651,24 @@ const handleAddHotSauce = async(data)=>{
               latitude: place.latitude,
               longitude: place.longitude,
             }}
-            onPress={() => handleNearByMarkerPress(place)}
+            onPress={() =>{ 
+              handleNearByMarkerPress(place)
+              setSelectedId(place?.place_id)
+            }}
           >
             <CustomMarker
-            onPress={() =>  handleNearByMarkerPress(place)}
+            onPress={() =>  {
+              
+              handleNearByMarkerPress(place)
+              setSelectedId(place?.place_id)
+            
+            }
+
+
+
+            }
               imageSource={
-                hotSauceMarkers.some(item=>item.place_id == place.place_id)
+                selectedMarkers[place.place_id] || hotSauceMarkers.some(item=>item.place_id == place.place_id)
                 ?
                 redChilli
                 :
@@ -486,7 +677,7 @@ const handleAddHotSauce = async(data)=>{
               size={scale(70)}
             />
           </Marker>
-        ))}
+        ))} */}
 
       </MapView>
 

@@ -5,10 +5,10 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
+import { clearReviewedSauces, handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
 import NotFound from '../NotFound/NotFound';
 
-const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } , refresh=false}) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -21,8 +21,11 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
         dispatch(handleIncreaseReviewCountOfReviewedSauce({_id, setReviewCount}))
     },[])
 
+
+
+
     const fetchSauces = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if ( loading) return;
 
         setLoading(true);
     
@@ -33,6 +36,7 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                     page
                 }
             });
+            console.log("res?.data?.sauces===========================>", res?.data?.sauces)
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleReviewedSauces(res?.data?.sauces))
         } catch (error) {
@@ -40,13 +44,16 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
         } finally {
             setLoading(false);
         }
-    },[page,hasMore , reviewedSauces]);
+    },[page,hasMore , reviewedSauces, refresh]);
     
     useEffect(() => {
         fetchSauces();
+       
     }, [fetchSauces]);
   
-
+// useEffect(()=>{
+   
+// },[refresh])
 
 
 
@@ -87,6 +94,7 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
 
                         }}
                         data={reviewedSauces}
+                        extraData={reviewedSauces}
                         scrollEventThrottle={16}
                         onEndReachedThreshold={0.5}
 
@@ -97,6 +105,8 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                         }}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => <SingleSauce
+                        _id={item?._id}
+
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         sauceType="reviewed"
                         item={item}

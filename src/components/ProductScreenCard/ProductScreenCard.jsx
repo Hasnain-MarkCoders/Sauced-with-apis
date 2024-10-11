@@ -23,7 +23,8 @@ import { handleToggleLikeWishlistSauce, handleToggleWishList } from '../../../an
 import { Camera } from 'lucide-react-native';
 import {Camera as VisionCamera, useCameraDevices} from 'react-native-vision-camera';
 import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces'
-const ProductCard = ({
+import ImageView from "react-native-image-viewing";
+const ProductScreenCard = ({
     url = "",
     title = "",
     setshowListModal = () => { },
@@ -32,10 +33,21 @@ const ProductCard = ({
     mycb=()=>{},
     handleIncreaseReviewCount=()=>{},
     handleLike=()=>{},
-    setSelected=()=>{}
+    setSelected=()=>{},
+    name="",
+    amazonLink="",
+    websiteLink="",
+    productLink="",
+    averageRating="",
+    totalcheckIn="",
+    totalReviews="",
+    _id="",
+    hasUserLiked=false,
+    sauce={}
 }) => {
+    const [visible, setIsVisible] = useState(false)
     const wishListSlices = useSelector(state => state?.wishlist)
-    const isInWishList=(id=product?._id)=>{
+    const isInWishList=(id=_id)=>{
         return !!wishListSlices.find(item=>item?._id==id)
 
     }
@@ -50,9 +62,9 @@ const ProductCard = ({
     const [LightBox, setLightBox] = useState(false)
     const [reviewCount, setReviewCount] = useState(product?.reviewCount)
     const [loading, setLoading] = useState(false)
-
+      
     const [productStatus, setproductStatus] = useState({
-        isChecked: product["hasLiked"],
+        isChecked: hasUserLiked,
         isAddedToWishList: isInWishList(),
         isAddedToList: false
     })
@@ -62,114 +74,119 @@ const ProductCard = ({
   const device = devices.back;
 
     const handleToggleLike = async () => {
-        handleLike(product?._id, setproductStatus)
-        setSelected((prev)=>({
-            ...prev,
-            isChecked: !prev?.isChecked
-          }))
+        console.log("productStatus.isChecked===============================================>", productStatus.isChecked)
+        // handleLike(_id, setproductStatus)
+        // setSelected((prev)=>({
+        //     ...prev,
+        //     isChecked: !prev?.isChecked
+        //   }))
+
+        //   setproductStatus((prev)=>({
+        //     ...prev,
+        //     isChecked: !prev?.isChecked
+        //   }))
         setLoading(true);
         try {
-            const res = await axiosInstance.post(`/like-sauce`, { sauceId: product?._id });
+            const res = await axiosInstance.post(`/like-sauce`, { sauceId: _id });
             console.log(res.data)
-            if (sauceType == "toprated") {
-                dispatch(handleToggleTopRatedSauce(product?._id))
-                  if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            }
-            if (sauceType == "featured") {
-                console.log("sauceType============================>", sauceType)
-                dispatch(handleToggleFeaturedSauce(product?._id))
-                   if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
+        //     if (sauceType == "toprated") {
+        //         dispatch(handleToggleTopRatedSauce(product?._id))
+        //           if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     }
+        //     if (sauceType == "featured") {
+        //         console.log("sauceType============================>", sauceType)
+        //         dispatch(handleToggleFeaturedSauce(product?._id))
+        //            if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
                
              
-            }
-            if (sauceType == "favourite") {
-                dispatch(handleToggleFavoriteSauce(product?._id))
-               if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            // dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        //     }
+        //     if (sauceType == "favourite") {
+        //         dispatch(handleToggleFavoriteSauce(product?._id))
+        //        if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     // dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
 
-            }
-            if (sauceType == "checkedin") {
-                dispatch(handleToggleCheckedInSauce(product?._id))
-                if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            }
+        //     }
+        //     if (sauceType == "checkedin") {
+        //         dispatch(handleToggleCheckedInSauce(product?._id))
+        //         if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     }
 
-            if (sauceType=="reviewed"){
-                dispatch(handleToggleReviewedSauce(item?._id))
-                if(selected){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                    }else{
-                        dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                    }
-            }
+        //     if (sauceType=="reviewed"){
+        //         dispatch(handleToggleReviewedSauce(item?._id))
+        //         if(selected){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        //             }else{
+        //                 dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+        //             }
+        //     }
   
-            if (sauceType=="wishlist"){
-              dispatch(handleToggleLikeWishlistSauce(item?._id))
-              if(selected){
-                  dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-                  }else{
-                      dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-                  }
-          }
-            if (sauceType == 1) {
-                dispatch(handleToggleSauceListOne(product?._id))
-                if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            }
-            if (sauceType == 2) {
-                dispatch(handleToggleSauceListTwo(product?._id))
-                if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            }
-            if (sauceType == 3) {
-                dispatch(handleToggleSauceListThree(product?._id))
-                if(productStatus?.isChecked){
-                    dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-                }else{
-                    dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-                }
-            }
+        //     if (sauceType=="wishlist"){
+        //       dispatch(handleToggleLikeWishlistSauce(item?._id))
+        //       if(selected){
+        //           dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
+        //           }else{
+        //               dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
+        //           }
+        //   }
+        //     if (sauceType == 1) {
+        //         dispatch(handleToggleSauceListOne(product?._id))
+        //         if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     }
+        //     if (sauceType == 2) {
+        //         dispatch(handleToggleSauceListTwo(product?._id))
+        //         if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     }
+        //     if (sauceType == 3) {
+        //         dispatch(handleToggleSauceListThree(product?._id))
+        //         if(productStatus?.isChecked){
+        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
+        //         }else{
+        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
+        //         }
+        //     }
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {
             setLoading(false);
         }
     }
-    const handleWishlist = useCallback(async()=>{
+    const handleWishlist = async()=>{
         try{
+            console.log("_id=======================>", _id)
           setLoadings(prev=>({
             ...prev,
             isWishListLoading:true
           }))
           const res = await axiosInstance.post(`/wishlist`, {
-            params: {
-                sauceId:product?._id
-            }
+                sauceId:_id
+           
         });
-      
         }catch(error){
-      
+            console.log("error=======================>", error)
         }finally{
           setLoadings(prev=>({
             ...prev,
@@ -178,11 +195,9 @@ const ProductCard = ({
       
         }
       
-      },[])
+      }
 
-      useEffect(()=>{
-        console.log(product?.reviewCount)
-      },[product?.reviewCount])
+ 
    
 
     return (
@@ -196,10 +211,20 @@ const ProductCard = ({
                 justifyContent: "flex-start",
                 gap: scale(20),
             }}>
+
+                
                 <View style={{
                 }}>
 
-                    <Lightbox
+<ImageView
+  images={[{ uri: url }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
+                    {/* <Lightbox
+                    // origin={{}}
+                    // dragDismissThreshold={10}
                         // activeProps={{ resizeMode: LightBox ? 'contain' : "cover" }}
                         activeProps={{
                             resizeMode: 'contain',
@@ -214,7 +239,13 @@ const ProductCard = ({
                         // springConfig={{ tension: 0, friction: 0 }}
                         // onOpen={() => setLightBox(true)}
                         // willClose={() => setLightBox(false)}
+                    > */}
+                    <TouchableOpacity
+                    onPress={()=>{
+                        setIsVisible(true)
+                    }}
                     >
+
                         <Image
                             style={{
                                 width: scale(120),
@@ -227,7 +258,8 @@ const ProductCard = ({
                             }}
                             source={{ uri: url }}
                         />
-                    </Lightbox>
+                    </TouchableOpacity>
+                    {/* </Lightbox> */}
                 </View>
                 <View style={{
                     gap: scale(14),
@@ -251,7 +283,7 @@ const ProductCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(17),
                                     lineHeight: scale(24),
-                                }}>{product?.name?product?.name:"N/A"}</Text>
+                                }}>{name?name:"N/A"}</Text>
                         </View>
 
                         <View style={{
@@ -259,7 +291,7 @@ const ProductCard = ({
                             justifyContent: "space-between"
                         }}>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("AllReviews", { _id: product?._id,
+                                navigation.navigate("AllReviews", { _id,
                                     //  setReviewCount, handleIncreaseReviewCount , reviewCount
                                     item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount,handleLike
                                     })
@@ -271,9 +303,9 @@ const ProductCard = ({
                                     lineHeight: scale(14),
                                     textDecorationStyle:"solid",
                                     textDecorationLine:"underline"
-                                }}>{ !isNaN(reviewCount) && reviewCount>-1 ?`${reviewCount} Reviews`:"N/A"}</Text>
+                                }}>{ !isNaN(totalReviews) && totalReviews>-1 ?`${totalReviews} Reviews`:"N/A"}</Text>
                                 <CustomRating
-                                    initialRating={product?.averageRating}
+                                    initialRating={averageRating}
                                     ratingContainerStyle={{
                                         pointerEvents: "none",
                                     }
@@ -289,12 +321,12 @@ const ProductCard = ({
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if(sauceType){
+                                        // if(sauceType){
                                             setproductStatus(prev => ({
                                                 ...prev,
                                                 isChecked: !prev.isChecked
                                             }));
-                                        }
+                                        // }
                                         Snackbar.show({
                                             text: !productStatus.isChecked ? 'Liked' : "Unliked",
                                             duration: Snackbar.LENGTH_SHORT,
@@ -335,7 +367,7 @@ const ProductCard = ({
                                             isAddedToWishList: !prev.isAddedToWishList
 
                                         }));
-                                        dispatch(handleToggleWishList(product))
+                                        dispatch(handleToggleWishList(sauce))
                                         handleWishlist()
                                         Snackbar.show({
                                             text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product from Wishlist.",
@@ -380,7 +412,10 @@ const ProductCard = ({
                     gap: scale(20),
                 }}>
 
-                    <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start", }}>
+                    <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start",
+                        flexWrap:"wrap"
+                    
+                     }}>
 
                         <View>
                             <Text style={{
@@ -389,7 +424,7 @@ const ProductCard = ({
                                Find on Company Site
                             </Text>
                             <TouchableOpacity onPress={() => {
-                                product?.websiteLink && Linking.openURL(product?.websiteLink)
+                                websiteLink && Linking.openURL(websiteLink)
                             }}>
                                 <Text
                                     // numberOfLines={1}
@@ -401,13 +436,13 @@ const ProductCard = ({
                                         fontSize: scale(12),
                                         lineHeight: scale(25),
                                         textDecorationStyle:"solid",
-                                        textDecorationLine:product?.websiteLink ?"underline":"none"
-                                    }}>{product?.websiteLink?"Visit Website":"Not Available."}</Text>
+                                        textDecorationLine:websiteLink ?"underline":"none"
+                                    }}>{websiteLink?"Visit Website":"Not Available."}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{
                             width: scale(1),
-                            height: "80%",
+                            // height: "80%",
                             backgroundColor: "#FFA100",
                         }}>
 
@@ -416,10 +451,10 @@ const ProductCard = ({
                             <Text style={{
                                 color: "white"
                             }}>
-                                Find On Amazon
+                                View Product
                             </Text>
                             <TouchableOpacity onPress={() => {
-                                product?.productLink &&Linking.openURL(product?.productLink)
+                                productLink &&Linking.openURL(productLink)
                             }}>
                                 <Text
                                     // numberOfLines={1}
@@ -431,8 +466,32 @@ const ProductCard = ({
                                         fontSize: scale(12),
                                         lineHeight: scale(25),
                                          textDecorationStyle:"solid",
-                                        textDecorationLine:product?.productLink ?"underline":"none"
-                                    }}>{product?.productLink?"Visit Amazon":"Not Available"}</Text>
+                                        textDecorationLine:productLink ?"underline":"none"
+                                    }}>{productLink?"Visit Product":"Not Available"}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View>
+                            <Text style={{
+                                color: "white"
+                            }}>
+                                Find On Amazon
+                            </Text>
+                            <TouchableOpacity onPress={() => {
+                                amazonLink &&Linking.openURL(amazonLink)
+                            }}>
+                                <Text
+                                    // numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    style={{
+                                        maxWidth: scale(110),
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(12),
+                                        lineHeight: scale(25),
+                                         textDecorationStyle:"solid",
+                                        textDecorationLine:amazonLink ?"underline":"none"
+                                    }}>{amazonLink?"Visit Amazon":"Not Available"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -475,7 +534,7 @@ const ProductCard = ({
 
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("AddReview", { sauceId: product?._id ,item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
+                        navigation.navigate("AddReview", { sauceId: _id ,item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{
@@ -498,7 +557,7 @@ const ProductCard = ({
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Checkin", { routerNumber:3, photo:{}, fn:()=>{},item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
+                        navigation.navigate("Checkin", { _id,routerNumber:3, photo:{}, fn:()=>{},item:product,title:product?.name, url:product?.image, sauceType, mycb, handleIncreaseReviewCount, setReviewCount, reviewCount, handleLike})
 
                     }}
                     style={{
@@ -540,7 +599,7 @@ const ProductCard = ({
                                     fontWeight: 600,
                                     fontSize: scale(30),
                                     lineHeight: scale(36),
-                                }}>{!isNaN(product?.checkIn) && product?.checkIn>-1 ?product?.checkIn:"N/A"}</Text>
+                                }}>{!isNaN(totalcheckIn) && totalcheckIn>-1 ?totalcheckIn:"N/A"}</Text>
                                 <Text style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -585,4 +644,4 @@ const ProductCard = ({
     )
 }
 
-export default ProductCard
+export default ProductScreenCard
