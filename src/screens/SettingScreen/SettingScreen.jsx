@@ -7,10 +7,11 @@ import arrow from "./../../../assets/images/arrow.png";
 import { useNavigation } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import CustomConfirmModal from '../../components/CustomConfirmModal/CustomConfirmModal';
 import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
+import { handleAuth } from '../../Redux/userReducer';
 
 const SettingScreen = () => {
     const navigation = useNavigation()

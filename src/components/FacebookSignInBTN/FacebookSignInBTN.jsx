@@ -7,10 +7,11 @@ import { Alert, Image, TouchableOpacity } from 'react-native';
 //   } from "@react-native-google-signin/google-signin";
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import google from "./../../../assets/images/google-icon.png"
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import { useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
+import { handleAuth } from '../../Redux/userReducer';
 
 const FacebookSignInBTN = ({
     onPress = () => {},

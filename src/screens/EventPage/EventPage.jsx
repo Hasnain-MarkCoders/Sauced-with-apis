@@ -36,10 +36,15 @@ import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
 import darkArrow from "./../../../assets/images/darkArrow.png";
 import { useDispatch, useSelector } from 'react-redux';
-import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
-import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
+// import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
+// import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
+
+
+
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
+import { handleAllEventsExceptInterested } from '../../Redux/allEventsExceptInterested.js';
+import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents.js';
 
 const EventPage = () => {
   const route = useRoute();

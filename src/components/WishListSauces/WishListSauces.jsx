@@ -5,8 +5,10 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleIncreaseReviewCountOfWishListSauce, handleWishList } from '../../../android/app/Redux/wishlist';
+// import { handleIncreaseReviewCountOfWishListSauce, handleWishList } from '../../../android/app/Redux/wishlist';
+
 import NotFound from '../NotFound/NotFound';
+import { handleIncreaseReviewCountOfWishListSauce, handleWishList  } from '../../Redux/wishlist';
 
 const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)

@@ -20,9 +20,10 @@ import Geolocation from '@react-native-community/geolocation';
 import messaging from '@react-native-firebase/messaging';
 import useAxios from '../../../Axios/useAxios';
 import Toast from 'react-native-toast-message';
-import { addNotification } from '../../../android/app/Redux/notifications';
+// import { addNotification } from '../../../android/app/Redux/notifications';
 import { useDispatch } from 'react-redux';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
+import { addNotification } from '../../Redux/notifications';
 const Home = () => {
     const navigation = useNavigation()
     const [alertModal, setAlertModal] = useState({

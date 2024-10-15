@@ -30,7 +30,7 @@ import AllUserReviews from './src/screens/AllUserReviews/AllUserReviews';
 import ExternalUserFollowingScreen from './src/screens/ExternalUserFollowingScreen/ExternalUserFollowingScreen';
 import ExternalUserFollowersScreen from './src/screens/ExternalUserFollowersScreen/ExternalUserFollowersScreen';
 import AddStore from './src/screens/AddStore/AddStore';
-import { addNotification, increaseCount } from './android/app/Redux/notifications';
+// import { addNotification, increaseCount } from './android/app/Redux/notifications';
 import messaging from '@react-native-firebase/messaging';
 import CameraScreen from './src/screens/CameraScreen/CameraScreen';
 import SearchScreen from './src/screens/SearchScreen/SearchScreen';
@@ -39,6 +39,7 @@ import BlockedUsersScreen from './src/screens/BlockedUsersScreen/BlockedUsersScr
 import NetInfo from '@react-native-community/netinfo';
 import Toast from 'react-native-toast-message';
 import ProductScreen from './src/screens/ProductScreen/ProductScreen';
+import { increaseCount, addNotification } from './src/Redux/notifications';
 
 // Check network status before attempting upload
 

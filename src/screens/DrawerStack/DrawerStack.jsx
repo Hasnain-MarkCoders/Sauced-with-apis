@@ -7,15 +7,19 @@ import SettingScreen from '../SettingScreen/SettingScreen';
 import EditProfileScreen from '../EditProfileScreen/EditProfileScreen';
 import PrivateStack from '../PrivateStack/PrivateStack';
 import { useNavigation } from '@react-navigation/native';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { persistor, store } from '../../../android/app/Redux/store';
+
+
 import { useDispatch, useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 import home from './../../../assets/images/home.png';
-import { persistor, store } from '../../../android/app/Redux/store';
 import NotificationsScreen from '../NotificationsScreen/NotificationsScreen';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
 import { scale } from 'react-native-size-matters';
+import { handleAuth } from '../../Redux/userReducer';
+import { persistor, store } from '../../Redux/store';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();

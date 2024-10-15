@@ -19,8 +19,9 @@ import axios from 'axios';
 import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { X } from 'lucide-react-native';
-import { handleCheckedInSauces } from '../../../android/app/Redux/checkedInSauces.js';
+// import { handleCheckedInSauces } from '../../../android/app/Redux/checkedInSauces.js';
 import ImageView from "react-native-image-viewing";
+import { handleCheckedInSauces } from '../../Redux/checkedInSauces.js';
 
 const CheckinScreen = () => {
     const axiosInstance = useAxios()

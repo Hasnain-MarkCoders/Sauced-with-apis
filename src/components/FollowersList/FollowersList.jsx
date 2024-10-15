@@ -5,10 +5,12 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleFollowers, handleFollowersSearch, clearFollowersState } from '../../../android/app/Redux/followers';
+// import { handleFollowers, handleFollowersSearch, clearFollowersState } from '../../../android/app/Redux/followers';
+
 import { debounce } from 'lodash';
 import { useNavigation } from '@react-navigation/native';
 import NotFound from '../NotFound/NotFound';
+import { handleFollowers, handleFollowersSearch, clearFollowersState } from '../../Redux/followers';
 
 const FollowersList = ({
   numColumns = 2,

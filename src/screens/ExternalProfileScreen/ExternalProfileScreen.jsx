@@ -15,10 +15,13 @@ import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import arrow from "./../../../assets/images/arrow.png";
 import useAxios from '../../../Axios/useAxios.js';
 import Snackbar from 'react-native-snackbar';
-import { handleRemoveUserFromUsers } from '../../../android/app/Redux/users.js';
-import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings.js';
-import { handleStatsChange } from '../../../android/app/Redux/userStats.js';
+// import { handleRemoveUserFromUsers } from '../../../android/app/Redux/users.js';
+// import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings.js';
+// import { handleStatsChange } from '../../../android/app/Redux/userStats.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { handleRemoveUserFromUsers } from '../../Redux/users.js';
+import { handleRemoveUserFromFollowings } from '../../Redux/followings.js';
+import { handleStatsChange } from '../../Redux/userStats.js';
 
 const ExternalProfileScreen = ({
 }) => {

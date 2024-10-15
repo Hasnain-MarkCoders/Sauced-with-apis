@@ -5,8 +5,11 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearReviewedSauces, handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
+// import { clearReviewedSauces, handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces';
+
+
 import NotFound from '../NotFound/NotFound';
+import { clearReviewedSauces, handleIncreaseReviewCountOfReviewedSauce, handleReviewedSauces } from '../../Redux/reviewedSauces';
 
 const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } , refresh=false}) => {
     const [page, setPage] = useState(1)

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import logoutIcon from './../../../assets/images/logout.png';
+import { handleAuth } from '../../Redux/userReducer';
+
 
 const Logout = () => {
   const dispatch = useDispatch();

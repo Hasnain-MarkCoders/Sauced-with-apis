@@ -3,9 +3,10 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-na
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import useAxios from '../../../Axios/useAxios';
 import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
+import { handleAuth } from '../../Redux/userReducer';
 
 const UploadImage = () => {
     const auth = useSelector(state => state?.auth);

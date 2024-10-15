@@ -1,7 +1,8 @@
 import  axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
-import { handleAuth } from '../android/app/Redux/userReducer';
+// import { handleAuth } from '../android/app/Redux/userReducer';
 import { useNavigation } from "@react-navigation/native";
+import { handleAuth } from '../src/Redux/userReducer';
 //export const host =  "http://localhost:5000"
 // export const host =  "https://aws.markcoders.com/sauced-backend/api"
 // export const host =  "http://3.136.48.200/sauced-backend/api"

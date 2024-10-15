@@ -6,10 +6,12 @@ import { scale } from 'react-native-size-matters';
 import { FlatList } from 'react-native-gesture-handler';
 import CustomNotification from '../../components/CustomNotification/CustomNotification.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCount, clearNotifications, deleteNotification, readAllNotifications } from '../../../android/app/Redux/notifications.js';
+// import { clearCount, clearNotifications, deleteNotification, readAllNotifications } from '../../../android/app/Redux/notifications.js';
+
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import NotFound from '../../components/NotFound/NotFound.jsx';
+import { clearCount, clearNotifications, deleteNotification, readAllNotifications } from '../../Redux/notifications.js';
 const NotificationsScreen = ({
 }) => {
     const navigation = useNavigation()

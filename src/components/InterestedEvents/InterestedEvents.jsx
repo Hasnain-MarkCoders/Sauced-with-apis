@@ -4,7 +4,9 @@ import { scale } from 'react-native-size-matters';
 import Banner from '../Banner/Banner';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
+import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents';
+// import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
+
  const InterestedEvents = ({
     showText = false
 }) => {

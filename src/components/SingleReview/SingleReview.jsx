@@ -7,8 +7,10 @@ import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 import Lightbox from 'react-native-lightbox-v2';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces'
+// import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces'
+
 import ImageView from "react-native-image-viewing";
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces  } from '../../Redux/favoriteSauces'
 
 const SingleReview = ({
   item = null,

@@ -6,11 +6,15 @@ import Banner from '../Banner/Banner';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
-import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
+// import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
+
 import { useDispatch, useSelector } from 'react-redux';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
-import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
+// import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
+
 import NotFound from '../NotFound/NotFound';
+import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents';
+import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../Redux/allEventsExceptInterested';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;

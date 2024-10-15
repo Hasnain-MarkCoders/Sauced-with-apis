@@ -6,9 +6,12 @@ import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers, handleToggleSearchedUserIsFollowing } from '../../../android/app/Redux/searchedUsers';
-import { handleStats } from '../../../android/app/Redux/userStats';
+// import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers, handleToggleSearchedUserIsFollowing } from '../../../android/app/Redux/searchedUsers';
+// import { handleStats } from '../../../android/app/Redux/userStats';
+
 import NotFound from '../NotFound/NotFound';
+import { handleStats } from '../../Redux/userStats';
+import { handleRemoveSearchedUsers, handleSearchedUsers, appendSearchedUsers, handleToggleSearchedUserIsFollowing  } from '../../Redux/searchedUsers';
 
 const VerticalUserSearchList = ({
   numColumns = 1,

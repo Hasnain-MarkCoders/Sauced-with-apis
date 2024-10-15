@@ -9,21 +9,27 @@ import {
 import { scale } from 'react-native-size-matters';
 import Snackbar from 'react-native-snackbar';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  handleRemoveSauceFromListOne,
-  handleSaucesListOne,
-} from '../../../android/app/Redux/saucesListOne';
-import {
-  handleRemoveSauceFromListTwo,
-  handleSaucesListTwo,
-} from '../../../android/app/Redux/saucesListTwo';
-import {
-  handleRemoveSauceFromListThree,
-  handleSaucesListThree,
-} from '../../../android/app/Redux/saucesListThree';
+
+// import {
+//   handleRemoveSauceFromListOne,
+//   handleSaucesListOne,
+// } from '../../../android/app/Redux/saucesListOne';
+// import {
+//   handleRemoveSauceFromListTwo,
+//   handleSaucesListTwo,
+// } from '../../../android/app/Redux/saucesListTwo';
+// import {
+//   handleRemoveSauceFromListThree,
+//   handleSaucesListThree,
+// } from '../../../android/app/Redux/saucesListThree';
 import useAxios from '../../../Axios/useAxios';
 import CustomButton from '../../../src/components/CustomButtom/CustomButtom';
 import closeIcon from './../../../assets/images/close.png';
+import { handleSaucesListOne, handleRemoveSauceFromListOne } from '../../Redux/saucesListOne';
+import { handleSaucesListTwo, handleRemoveSauceFromListTwo } from '../../Redux/saucesListTwo';
+import { handleSaucesListThree , handleRemoveSauceFromListThree} from '../../Redux/saucesListThree';
+
+
 
 const CustomSelectListModal = ({
   modalVisible = false,

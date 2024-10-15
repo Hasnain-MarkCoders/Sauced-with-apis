@@ -7,9 +7,10 @@ import {
   } from "@react-native-google-signin/google-signin";
 import google from "./../../../assets/images/google-icon.png"
 import { useDispatch } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
+import { handleAuth } from '../../Redux/userReducer';
 
 const GoogleSignInBTN = ({
     onPress = () => {},

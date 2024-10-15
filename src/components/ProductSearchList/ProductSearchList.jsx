@@ -3,9 +3,11 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions, Image 
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
+// import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
+
 import { useDispatch } from 'react-redux';
 import NotFound from '../NotFound/NotFound';
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../Redux/favoriteSauces';
 const windowWidth = Dimensions.get('window').width;
 const ProductSearchList = ({
     setProductDetails = () => { },

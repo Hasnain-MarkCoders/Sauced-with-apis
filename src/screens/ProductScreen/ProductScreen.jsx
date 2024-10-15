@@ -26,19 +26,23 @@ import {
   import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
   import useAxios from '../../../Axios/useAxios.js';
   import {useDispatch, useSelector} from 'react-redux';
-  import {
-    handleRemoveSauceFromListOne,
-    handleSaucesListOne,
-  } from '../../../android/app/Redux/saucesListOne.js';
-  import {
-    handleRemoveSauceFromListThree,
-    handleSaucesListThree,
-  } from '../../../android/app/Redux/saucesListThree.js';
-  import {
-    handleRemoveSauceFromListTwo,
-    handleSaucesListTwo,
-  } from '../../../android/app/Redux/saucesListTwo.js';
+  
+  // import {
+  //   handleRemoveSauceFromListOne,
+  //   handleSaucesListOne,
+  // } from '../../../android/app/Redux/saucesListOne.js';
+  // import {
+  //   handleRemoveSauceFromListThree,
+  //   handleSaucesListThree,
+  // } from '../../../android/app/Redux/saucesListThree.js';
+  // import {
+  //   handleRemoveSauceFromListTwo,
+  //   handleSaucesListTwo,
+  // } from '../../../android/app/Redux/saucesListTwo.js';
 import ProductScreenCard from '../../components/ProductScreenCard/ProductScreenCard.jsx';
+import { handleRemoveSauceFromListOne, handleSaucesListOne } from '../../Redux/saucesListOne.js';
+import { handleRemoveSauceFromListThree , handleSaucesListThree} from '../../Redux/saucesListThree.js';
+import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/saucesListTwo.js';
   
   const ProductScreen = ({
 

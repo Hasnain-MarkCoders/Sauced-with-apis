@@ -12,7 +12,8 @@ import IconButton from '../../components/IconButton/IconButton';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
+
 import useAxios from '../../../Axios/useAxios';
 import GoogleSignInBTN from '../../components/GoogleSignInBTN/GoogleSignInBTN';
 import FacebookSignInBTN from '../../components/FacebookSignInBTN/FacebookSignInBTN';
@@ -24,6 +25,7 @@ import scaledOpenEye from "./../../../assets/images/scaledOpenEye.png"
 import messaging from '@react-native-firebase/messaging';
 
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
+import { handleAuth } from '../../Redux/userReducer';
 // Get screen dimensions
 
 const SignUp = () => {

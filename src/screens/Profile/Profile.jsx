@@ -17,10 +17,11 @@ import CheckedInSaucesList from '../../components/CheckedInSaucesList/CheckedInS
 import SaucesListOne from '../../components/SaucesListOne/SaucesListOne.jsx';
 import SaucesListTwo from '../../components/SaucesListTwo/SaucesListTwo.jsx';
 import SaucesListThree from '../../components/SaucesListThree/SaucesListThree.jsx';
-import { handleStats } from '../../../android/app/Redux/userStats.js';
+// import { handleStats } from '../../../android/app/Redux/userStats.js';
 import InterestedEventsCarousel from '../../components/InterestedEventsCarousel/InterestedEventsCarousel.jsx';
 import WishListSauces from '../../components/WishListSauces/WishListSauces.jsx';
 import ReviewedSaucesList from '../../components/ReviewedSaucesList/ReviewedSaucesList.jsx';
+import { handleStats } from '../../Redux/userStats.js';
 const ProfileScreen = () => {
     const auth = useSelector(state => state.auth)
     const [initialLoading, setInitialLoading] = useState(false)

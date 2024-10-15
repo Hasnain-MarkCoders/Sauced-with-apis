@@ -5,7 +5,8 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
+import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../Redux/saucesListThree';
+// import { handleIncreaseReviewCountOfListThreeSauce, handleSaucesListThree } from '../../../android/app/Redux/saucesListThree';
 
 
 const SaucesListThree = ({ title = "", name = "", showMoreIcon = false, cb = () => { } , refresh=false}) => {

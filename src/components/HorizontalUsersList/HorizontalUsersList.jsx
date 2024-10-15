@@ -5,10 +5,14 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleRemoveUserFromUsers, handleUsers } from '../../../android/app/Redux/users';
-import { handleFollowings } from '../../../android/app/Redux/followings';
-import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
+// import { handleRemoveUserFromUsers, handleUsers } from '../../../android/app/Redux/users';
+// import { handleFollowings } from '../../../android/app/Redux/followings';
+// import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
 import NotFound from '../NotFound/NotFound';
+import { handleRemoveUserFromUsers, handleUsers } from '../../Redux/users';
+import { handleFollowings } from '../../Redux/followings';
+import { handleStats, handleStatsChange } from '../../Redux/userStats';
+
 const HorizontalUsersList = ({
  numColumns=1,
  horizontal=true,

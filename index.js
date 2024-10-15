@@ -7,7 +7,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 import { addNotification, increaseCount } from './android/app/Redux/notifications';
-import { store } from './android/app/Redux/store';
+import { store } from './src/Redux/store'; 
 
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {

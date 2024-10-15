@@ -7,18 +7,32 @@ import emptyheart from "./../../../assets/images/heart.png"
 import Snackbar from 'react-native-snackbar';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch } from 'react-redux';
-import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSauces';
-import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
-import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
-import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne';
-import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
-import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree';
+
+
+// import { handleToggleTopRatedSauce } from '../../../android/app/Redux/topRatedSauces';
+// import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
+// import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+// import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
+// import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne';
+// import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo';
+// import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree';
+// import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces';
+// import { handleToggleLikeWishlistSauce } from '../../../android/app/Redux/wishlist';
+
+
+
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import TextTicker from 'react-native-text-ticker'
 import LinearGradient from 'react-native-linear-gradient';
-import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces';
-import { handleToggleLikeWishlistSauce } from '../../../android/app/Redux/wishlist';
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../Redux/favoriteSauces';
+import { handleToggleFeaturedSauce } from '../../Redux/featuredSauces';
+import { handleToggleTopRatedSauce } from '../../Redux/topRatedSauces';
+import { handleToggleCheckedInSauce } from '../../Redux/checkedInSauces';
+import { handleToggleSauceListOne } from '../../Redux/saucesListOne';
+import { handleToggleSauceListTwo } from '../../Redux/saucesListTwo';
+import { handleToggleSauceListThree } from '../../Redux/saucesListThree';
+import { handleToggleReviewedSauce } from '../../Redux/reviewedSauces';
+import { handleToggleLikeWishlistSauce } from '../../Redux/wishlist';
 const SingleSauce = ({
   url = "",
   title = "",

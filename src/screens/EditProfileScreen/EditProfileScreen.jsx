@@ -7,14 +7,17 @@ import arrow from "./../../../assets/images/arrow.png";
 import { useNavigation } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
 import UploadImage from '../../components/UploadImage/UploadImage';
 import useAxios from '../../../Axios/useAxios';
 import CustomEditModal from '../../components/EditModal.jsx/EditModal';
 import CustomChangePasswordModal from '../../components/CustomChangePasswordModal/CustomChangePasswordModal';
 import auth from '@react-native-firebase/auth';
 import Snackbar from 'react-native-snackbar';
-import { handleStats } from '../../../android/app/Redux/userStats';
+import { handleAuth } from '../../Redux/userReducer';
+import { handleStats } from '../../Redux/userStats';
+// import { handleStats } from '../../../android/app/Redux/userStats';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
+
 
 const EditProfileScreen = () => {
     const Auth = useSelector(state => state.auth)

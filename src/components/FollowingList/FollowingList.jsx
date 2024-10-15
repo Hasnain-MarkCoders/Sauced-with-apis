@@ -5,11 +5,15 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleUsers } from '../../../android/app/Redux/users';
-import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings, handleToggleIsFollowing } from '../../../android/app/Redux/followings';
-import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
+// import { handleUsers } from '../../../android/app/Redux/users';
+// import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings, handleToggleIsFollowing } from '../../../android/app/Redux/followings';
+// import { handleStats, handleStatsChange } from '../../../android/app/Redux/userStats';
 import { debounce } from 'lodash';
 import NotFound from '../NotFound/NotFound';
+import { handleUsers } from '../../Redux/users';
+import { handleFollowingSearch, handleFollowings, clearFollowingsState, handleRemoveUserFromFollowings, handleToggleIsFollowing } from '../../Redux/followings';
+import { handleStats, handleStatsChange  } from '../../Redux/userStats';
+
 
 const FollowingList = ({
   numColumns = 2,

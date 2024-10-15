@@ -5,8 +5,9 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleFeaturedSauces, handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
+// import { handleFeaturedSauces, handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
 import { useNavigation } from '@react-navigation/native';
+import { handleFeaturedSauces , handleIncreaseReviewCountOfFeaturedSauce} from '../../Redux/featuredSauces';
 const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()

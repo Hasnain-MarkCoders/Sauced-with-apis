@@ -5,7 +5,8 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
+import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces  } from '../../Redux/topRatedSauces';
+// import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
 const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
     const [page, setPage] = useState(1)

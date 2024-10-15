@@ -5,13 +5,18 @@ import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleUsers } from '../../../android/app/Redux/users';
-import { handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
+// import { handleUsers } from '../../../android/app/Redux/users';
+// import { handleRemoveUserFromFollowers } from '../../../android/app/Redux/followers';
 import { debounce } from 'lodash';
 import { useNavigation } from '@react-navigation/native';
-import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
-import { handleStatsChange } from '../../../android/app/Redux/userStats';
+// import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings';
+// import { handleStatsChange } from '../../../android/app/Redux/userStats';
 import NotFound from '../NotFound/NotFound';
+import { handleUsers } from '../../Redux/users';
+import { handleRemoveUserFromFollowers } from '../../Redux/followers';
+import { handleRemoveUserFromFollowings } from '../../Redux/followings';
+import { handleStatsChange } from '../../Redux/userStats';
+
 
 const ExternalUserFollowersList = ({
   numColumns = 2,

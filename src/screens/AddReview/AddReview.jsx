@@ -30,21 +30,33 @@ import { useSharedValue } from 'react-native-reanimated';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces.js';
-import { handleIncreaseReviewCountOfListOneSauce } from '../../../android/app/Redux/saucesListOne.js';
-import { handleIncreaseReviewCountOfListTwoSauce } from '../../../android/app/Redux/saucesListTwo.js';
-import { handleIncreaseReviewCountOfListThreeSauce } from '../../../android/app/Redux/saucesListThree.js';
-import { handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces.js';
-import { handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces.js';
-import { handleIncreaseReviewCountOfTopRatedSauce } from '../../../android/app/Redux/topRatedSauces.js';
+// import { handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces.js';
+// import { handleIncreaseReviewCountOfListOneSauce } from '../../../android/app/Redux/saucesListOne.js';
+// import { handleIncreaseReviewCountOfListTwoSauce } from '../../../android/app/Redux/saucesListTwo.js';
+// import { handleIncreaseReviewCountOfListThreeSauce } from '../../../android/app/Redux/saucesListThree.js';
+// import { handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces.js';
+// import { handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces.js';
+// import { handleIncreaseReviewCountOfTopRatedSauce } from '../../../android/app/Redux/topRatedSauces.js';
+// import { handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces.js';
+
+
+
+
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 import { X } from 'lucide-react-native';
 import Lightbox from 'react-native-lightbox-v2';
-import { handleReviewedSauces } from '../../../android/app/Redux/reviewedSauces.js';
 import ImageView from "react-native-image-viewing";
 import SwipeableRating from '../../components/SwipeableRating/SwipeableRating.jsx';
 import SimpleLevelSlider from '../../components/SimpleLevelSlider/SimpleLevelSlider.jsx';
+import { handleIncreaseReviewCountOfFeaturedSauce } from '../../Redux/featuredSauces.js';
+import { handleIncreaseReviewCountOfListOneSauce } from '../../Redux/saucesListOne.js';
+import { handleIncreaseReviewCountOfListTwoSauce } from '../../Redux/saucesListTwo.js';
+import { handleIncreaseReviewCountOfListThreeSauce } from '../../Redux/saucesListThree.js';
+import { handleIncreaseReviewCountOfFavoriteSauce } from '../../Redux/favoriteSauces.js';
+import { handleIncreaseReviewCountOfCheckedInSauce } from '../../Redux/checkedInSauces.js';
+import { handleIncreaseReviewCountOfTopRatedSauce } from '../../Redux/topRatedSauces.js';
+import { handleReviewedSauces } from '../../Redux/reviewedSauces.js';
 
 
 const AddReview = () => {

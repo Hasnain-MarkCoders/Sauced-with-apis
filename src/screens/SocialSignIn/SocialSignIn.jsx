@@ -7,7 +7,7 @@ import google from "./../../../assets/images/google-icon.png";
 import fb from "./../../../assets/images/facebook-icon.png";
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { handleAuth } from '../../../android/app/Redux/userReducer';
+// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import { scale } from 'react-native-size-matters';
 import envelope from "./../../../assets/images/envelope.png";
 import {
@@ -18,6 +18,7 @@ import useAxios from '../../../Axios/useAxios';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import messaging from '@react-native-firebase/messaging';
+import { handleAuth } from '../../Redux/userReducer';
 
 
 

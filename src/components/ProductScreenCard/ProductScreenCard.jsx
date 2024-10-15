@@ -12,18 +12,31 @@ import CustomRating from '../CustomRating/CustomRating'
 import Snackbar from 'react-native-snackbar'
 import { useNavigation } from '@react-navigation/native'
 import useAxios from '../../../Axios/useAxios'
-import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
-import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
-import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
-import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
-import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
-import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
-import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree'
-import { handleToggleLikeWishlistSauce, handleToggleWishList } from '../../../android/app/Redux/wishlist'
+
+
+// import { handleToggleTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces'
+// import { handleToggleFeaturedSauce } from '../../../android/app/Redux/featuredSauces'
+// import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../../android/app/Redux/favoriteSauces'
+// import { handleToggleCheckedInSauce } from '../../../android/app/Redux/checkedInSauces'
+// import { handleToggleSauceListOne } from '../../../android/app/Redux/saucesListOne'
+// import { handleToggleSauceListTwo } from '../../../android/app/Redux/saucesListTwo'
+// import { handleToggleSauceListThree } from '../../../android/app/Redux/saucesListThree'
+// import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces'
+// import { handleToggleLikeWishlistSauce, handleToggleWishList } from '../../../android/app/Redux/wishlist'
+
 import { Camera } from 'lucide-react-native';
 import {Camera as VisionCamera, useCameraDevices} from 'react-native-vision-camera';
-import { handleToggleReviewedSauce } from '../../../android/app/Redux/reviewedSauces'
 import ImageView from "react-native-image-viewing";
+import { handleToggleLikeWishlistSauce, handleToggleWishList  } from '../../Redux/wishlist'
+import { handleToggleReviewedSauce } from '../../Redux/reviewedSauces'
+import { handleToggleSauceListThree } from '../../Redux/saucesListThree'
+import { handleToggleSauceListTwo } from '../../Redux/saucesListTwo'
+import { handleToggleSauceListOne } from '../../Redux/saucesListOne'
+import { handleToggleCheckedInSauce } from '../../Redux/checkedInSauces'
+import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../Redux/favoriteSauces'
+import { handleToggleFeaturedSauce } from '../../Redux/featuredSauces'
+import { handleToggleTopRatedSauce } from '../../Redux/topRatedSauces'
+
 const ProductScreenCard = ({
     url = "",
     title = "",

@@ -5,7 +5,12 @@ import { scale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
+import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../Redux/favoriteSauces';
+// import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
+
+
+
+
 const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/get-sauces",searchTerm = "", showMoreIcon = false, cb = () => { }, type="" }) => {
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)

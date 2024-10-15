@@ -5,8 +5,10 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+// import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+
 import NotFound from '../NotFound/NotFound';
+import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../Redux/favoriteSauces';
 const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
