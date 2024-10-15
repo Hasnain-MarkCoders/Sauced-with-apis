@@ -11,6 +11,7 @@ import NestedComment from '../NestedComment/NestedComment'
 import UserDetailsModal from '../UserDetailsModal/UserDetailsModal'
 import useAxios from '../../../Axios/useAxios'
 import ImageView from "react-native-image-viewing";
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 const CustomComment = ({
     getId=()=>{},
@@ -37,6 +38,7 @@ const CustomComment = ({
     },[profileUri])
     const [commentStatus, setCommentStatus] = useState(hasLikedUser)
     const [visible, setIsVisible] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [imageIndex, setImageIndex] = useState(0)
 
     const [LightBox, setLightBox] = useState(false)
@@ -93,13 +95,25 @@ console.log(profileUri)
                 }}>
 
                     <View >
+
+                    {isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(58)}
+            height={scale(58)}
+            borderRadius={scale(58)}
+            
+            />
+        </SkeletonPlaceholder>
+      )}
                         <Image
+                          onLoad={() => setIsLoading(false)}
                             style={{
                                 width: isReply ? scale(30) : scale(60),
                                 height: isReply ? scale(30) : scale(60),
                                 borderRadius: scale(50),
                                 borderColor: "#FFA100",
-                                borderWidth: scale(1)
+                                borderWidth: scale(1),
+                                display:isLoading?"none":"flex",
                             }}
                             source={{ uri: profileUri }}
 
