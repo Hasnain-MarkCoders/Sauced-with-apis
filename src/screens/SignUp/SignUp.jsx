@@ -222,7 +222,7 @@ const SignUp = () => {
         console.error(error);
         setAlertModal({
           open: true,
-          message: "An error occurred during login",
+          message: error?.message,
           success:false
 
       });
@@ -327,7 +327,7 @@ const SignUp = () => {
      console.error(error);
      setAlertModal({
        open: true,
-       message: "An error occurred during login",
+       message: error?.message,
        success:false
 
    });
@@ -347,7 +347,9 @@ const SignUp = () => {
 
     try{
      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
-     const { idToken } = await GoogleSignin.signIn();
+     const { idToken } = await GoogleSignin.signIn({
+      prompt: 'select_account',
+     });
      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const res =   await auth().signInWithCredential(googleCredential)
       const firebaseToken = await res.user.getIdToken();
@@ -394,7 +396,7 @@ const SignUp = () => {
         console.error(error);
         setAlertModal({
           open: true,
-          message: "An error occurred during login",
+          message: error?.message,
           success:false
 
       });

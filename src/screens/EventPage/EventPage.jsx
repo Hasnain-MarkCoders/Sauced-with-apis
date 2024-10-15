@@ -708,9 +708,6 @@ const handleInterestedEvent = async () => {
                                 color: 'white',
                                 fontSize: scale(11),
                                 lineHeight: scale(14),
-                                
-                                // flexShrink: 1
-
                               }}>
                               {event?.venueDescription}
                             </Text>
@@ -760,7 +757,7 @@ const handleInterestedEvent = async () => {
                     </Text>
                       </View>
 
-                    <ProductsBulletsList
+                    {/* <ProductsBulletsList
                         bulletGap={{
                           height:scale(10)
                         }}
@@ -769,7 +766,16 @@ const handleInterestedEvent = async () => {
                         fontWeight: 700,
                         color: 'white',
                       }}
-                    />
+                    /> */}
+
+<Text
+                              style={{
+                                color: 'white',
+                                fontSize: scale(11),
+                                lineHeight: scale(14),
+                              }}>
+                              {event?.venueDescription}
+                            </Text>
                     <View
                       style={{
                         marginTop: scale(30),

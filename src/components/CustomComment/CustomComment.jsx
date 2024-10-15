@@ -90,7 +90,7 @@ console.log(profileUri)
                     flexDirection: "row",
                     gap: scale(20),
                     flexShrink: 1,
-                    flexGrow:1
+                    flexGrow:1,
 
                 }}>
 
@@ -98,8 +98,8 @@ console.log(profileUri)
 
                     {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
-          <SkeletonPlaceholder.Item              width={scale(58)}
-            height={scale(58)}
+          <SkeletonPlaceholder.Item              width={isReply? scale(30):  scale(58)}
+            height={isReply? scale(30): scale(58)}
             borderRadius={scale(58)}
             
             />
@@ -179,9 +179,6 @@ console.log(profileUri)
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View>
-
-                </View>
             </View>
 
 
@@ -189,6 +186,7 @@ console.log(profileUri)
                 flexDirection: "row",
                 gap: scale(20),
                 flexWrap: "wrap",
+                width:"100%",
             }}>
 
                 {
@@ -243,10 +241,16 @@ console.log(profileUri)
 
 
             </View>}
+            <View style={{
+                flexDirection: "row",
+                gap: scale(10),
+                width:"100%",
+            }}>
+
             <TouchableOpacity
                 style={{
                     alignSelf: "flex-start",
-                    paddingLeft: isReply ? scale(55) : scale(60)
+                    // paddingLeft: isReply ? scale(55) : scale(60)
 
                 }}
                 onPress={() => {
@@ -266,9 +270,34 @@ console.log(profileUri)
                 }}>Reply</Text>
             </TouchableOpacity>
 
+            { replies?.length>0 && <TouchableOpacity
+            onPress={()=>{
+                setShowReplies(prev=>!prev)
+            }}
+            style={{
+                alignSelf: "flex-start",
+                // paddingLeft:scale(60),
+            }}
+            >
+
+               { <Text 
+    
+                 style={{
+                    borderRadius:scale(20),
+                    backgroundColor:"#FFA500",
+                    paddingHorizontal:scale(10),
+                    paddingVertical:scale(5),
+                    fontSize:scale(12),
+
+                    
+                    color:"#000"
+                }}>{showReplies ? "Hide replies":"Show replies"}</Text>}
+            </TouchableOpacity>}
+            </View>
+
        {  showReplies?  <View style={{
                 alignSelf: "flex-start",
-                paddingLeft:scale(50)
+                // paddingLeft:scale(50)
             }}>
               
                 {replies?.map(item => <CustomComment
@@ -284,13 +313,13 @@ console.log(profileUri)
 
             </View>:null
             }
-               { replies?.length>0 && <TouchableOpacity
+               {/* { replies?.length>0 && <TouchableOpacity
             onPress={()=>{
                 setShowReplies(prev=>!prev)
             }}
             style={{
                 alignSelf: "flex-start",
-                paddingLeft:scale(60),
+                // paddingLeft:scale(60),
             }}
             >
 
@@ -303,7 +332,7 @@ console.log(profileUri)
                     paddingVertical:scale(5),
                     color:"#000"
                 }}>{showReplies ? "Hide replies":"Show replies"}</Text>}
-            </TouchableOpacity>}
+            </TouchableOpacity>} */}
             <ImageView
           imageIndex={imageIndex}
           images={assets.map(uri => ({ uri: uri }))}

@@ -211,7 +211,7 @@ const SingleSauce = ({
             >
               {/* Gradient Overlay */}
               <LinearGradient
-                colors={['transparent', 'rgba(0, 0, 0, 0.8)']}
+                colors={['transparent', 'rgba(0, 0, 0, 1)']}
                 locations={[0, 1]}
                 style={[styles.gradient, { borderRadius: scale(10) }]}
               />
@@ -229,7 +229,7 @@ const SingleSauce = ({
                   animationType="scroll"
                   style={styles.text}
                 >
-                  {title}
+                  {title+". "}
                 </TextTicker>
               </View>
 

@@ -9,7 +9,7 @@ import PrivateStack from '../PrivateStack/PrivateStack';
 import { useNavigation } from '@react-navigation/native';
 // import { handleAuth } from '../../../android/app/Redux/userReducer';
 // import { persistor, store } from '../../../android/app/Redux/store';
-
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,6 +20,7 @@ import YesNoModal from '../../components/YesNoModal/YesNoModal';
 import { scale } from 'react-native-size-matters';
 import { handleAuth } from '../../Redux/userReducer';
 import { persistor, store } from '../../Redux/store';
+import { handleStats } from '../../Redux/userStats';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -60,11 +61,13 @@ const DrawerStack = () => {
     });
     const handleLogout = async () => {
       setShowModal(false)
-        navigation.navigate("Public")
+        
         store.dispatch({ type: 'LOGOUT' });
         // Clear persisted state
         await persistor.purge();
         persistor.purge()
+        await GoogleSignin.revokeAccess(); // Revoke access
+        await GoogleSignin.signOut(); 
         await auth().signOut()
         dispatch(handleAuth({
             "token": null,
@@ -79,6 +82,16 @@ const DrawerStack = () => {
             "authenticated": false,
             "welcome": false,
         }))
+        dispatch(handleStats({
+          followers:null,
+          followings:null,
+          checkins:null,
+          uri:null,
+          name:null,
+          date:null,
+          reviewsCount:null
+      }))
+      navigation.navigate("Public")
       
     }
 

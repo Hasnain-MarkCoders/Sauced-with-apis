@@ -4,7 +4,7 @@ import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
-import { handleText } from '../../../utils.js';
+import { handleText, isURL } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import CustomListItem from '../../components/CustomListItem/CustomListItem.jsx';
@@ -38,7 +38,12 @@ const AddEventScreen = () => {
         date: new Date(),
         address: "",
         destinationDetails: "",
-        coordinates: {}
+        coordinates: {},
+        facebookLink:"",
+        websiteLink:"",
+        eventEndDate:new Date(),
+        isEndDate:false
+
     });
     const [isSubmitLoading, setIsSubmitLoading] = useState(false)
     const axiosInstance = useAxios()
@@ -188,6 +193,25 @@ console.log("selectedDate======================>", selectedDate)
 
         }
 
+        if(query?.websiteLink?.trim() &&!isURL(query.websiteLink)){
+            return setAlertModal({
+               open: true,
+               message: "Website link must be a valid URL!",
+               success:false
+
+           });
+           
+        }
+
+        if(query?.facebookLink?.trim() && !isURL(query.facebookLink)){
+            return setAlertModal({
+               open: true,
+               message: "Facebook link must be a valid URL!",
+               success:false
+
+           });
+           
+        }
         // else if (!query?.eventOrganizer) {
         //     return setAlertModal({
         //         open: true,
@@ -240,7 +264,8 @@ console.log("selectedDate======================>", selectedDate)
                 "eventName": query?.title,
                 // "eventDetails": query?.destinationDetails,
                 "eventDate": query?.date,
-                // "venueName": query?.address,
+                "eventEndDate": query?.eventEndDate,
+                "venueAddress": query?.address,
                 "venueDescription": query?.destinationDetails,
                 "venueLocation.longitude": query.coordinates?.longitude,
                 "venueLocation.latitude": query.coordinates?.latitude
@@ -288,7 +313,7 @@ console.log("selectedDate======================>", selectedDate)
       };
       const handleConfirmDateTime = () => {
         // Update the query state with the combined date and time
-        setQuery((prev) => ({ ...prev, date: selectedDate }));
+        setQuery((prev) => ({ ...prev, [query.isEndDate?"eventEndDate":"date"]: selectedDate }));
     
         // Close the modal and reset the picker
         setOpenDate(false);
@@ -398,6 +423,67 @@ console.log("selectedDate======================>", selectedDate)
                                         fontSize: scale(17),
                                         color: "white"
                                     }}>
+                                        Website Link
+                                    </Text>
+                                    <CustomInput
+                                        // cb={() => setPage(1)}
+                                        name="websiteLink"
+                                        onChange={handleText}
+                                        updaterFn={setQuery}
+                                        value={query.websiteLink}
+                                        showTitle={false}
+                                        placeholder="e.g. https://example.com"
+                                        containterStyle={{
+                                            flexGrow: 1,
+                                        }}
+                                        inputStyle={{
+                                            borderColor: "#FFA100",
+                                            backgroundColor: "#2e210a",
+                                            color: "white",
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            padding: 15,
+
+                                        }} />
+                                </View>
+
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        Facebook Link
+                                    </Text>
+                                    <CustomInput
+                                        // cb={() => setPage(1)}
+                                        name="facebookLink"
+                                        onChange={handleText}
+                                        updaterFn={setQuery}
+                                        value={query.facebookLink}
+                                        showTitle={false}
+                                        placeholder="e.g. https://facebook.com"
+                                        containterStyle={{
+                                            flexGrow: 1,
+                                        }}
+                                        inputStyle={{
+                                            borderColor: "#FFA100",
+                                            backgroundColor: "#2e210a",
+                                            color: "white",
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            padding: 15,
+
+                                        }} />
+                                </View>
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
                                         Date
                                     </Text>
                                     <CustomButtom
@@ -408,11 +494,39 @@ console.log("selectedDate======================>", selectedDate)
                                         onPress={() => {
                                             Vibration.vibrate(10);
                                             // navigation.navigate("SauceDetails")
+                                            setQuery((prev) => ({ ...prev, isEndDate:false }));
+                                            
                                             setOpenDate(true)
                                         }}
-                                        title={query.date.toDateString()}
+                                        title={query?.date?.toDateString()}
                                     />
                                 </View>
+
+
+                                <View style={{
+                                    gap: scale(10)
+                                }}>
+                                    <Text style={{
+                                        fontSize: scale(17),
+                                        color: "white"
+                                    }}>
+                                        End Date
+                                    </Text>
+                                    <CustomButtom
+                                        Icon={() => <Image source={arrow} />}
+                                        showIcon={false}
+                                        buttonTextStyle={{ fontSize: scale(14) }}
+                                        buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
+                                        onPress={() => {
+                                            Vibration.vibrate(10);
+                                            // navigation.navigate("SauceDetails")
+                                            setQuery((prev) => ({ ...prev, isEndDate:true }));
+                                            setOpenDate(true)
+                                        }}
+                                        title={query?.eventEndDate?.toDateString()}
+                                    />
+                                </View>
+
 
 
                                 {/* <View style={{

@@ -173,13 +173,13 @@ const Home = () => {
           },
           (error) => {
             console.log("Error fetching current location:", error);
-            // Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
-            setAlertModal({
-                open: true,
-                message: 'Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.',
-                severity:false
-            })
-            setLoading(false); // Stop loading indicator
+            // // Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+            // setAlertModal({
+            //     open: true,
+            //     message: 'Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.',
+            //     severity:false
+            // })
+            // setLoading(false); // Stop loading indicator
           },
           { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
         );

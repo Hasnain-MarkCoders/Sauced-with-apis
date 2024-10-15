@@ -12,7 +12,10 @@ import CustomConfirmModal from '../../components/CustomConfirmModal/CustomConfir
 import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
 import { handleAuth } from '../../Redux/userReducer';
-
+import YesNoModal from '../../components/YesNoModal/YesNoModal';
+import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
+import { handleStats } from '../../Redux/userStats';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 const SettingScreen = () => {
     const navigation = useNavigation()
     const [showBlockModal, setShowBlockmodal] = useState(false)
@@ -20,12 +23,27 @@ const SettingScreen = () => {
     const [loading, setLoading] = useState(false)
     const [isEnabled, setIsEnabled] = useState(true)
     const axiosInstance = useAxios()
+    const [showAlertModal, setShowAlertModal] = useState({
+        open:false,
+        message:"",
+        severity:true
+    })
 
  const dispatch = useDispatch()
 
     const handleLogout= async()=>{
-        navigation.replace("SignIn")
         await auth().signOut()
+        await GoogleSignin.revokeAccess(); // Revoke access
+        await GoogleSignin.signOut(); 
+        dispatch(handleStats({
+            followers:null,
+            followings:null,
+            checkins:null,
+            uri:null,
+            name:null,
+            date:null,
+            reviewsCount:null
+        }))
         dispatch(  handleAuth({
             "token": null,
             "uid": null,
@@ -39,6 +57,8 @@ const SettingScreen = () => {
             "authenticated": false,
             "welcome":false,
           }))
+        navigation.replace("SignIn")
+
     }
 
 
@@ -69,6 +89,28 @@ const SettingScreen = () => {
 
         }
       };
+
+
+
+
+      const handleDeleteAccount=async()=>{
+        const res =await axiosInstance.delete("/delete-user")
+        if(res.data.success){
+            
+            handleLogout()
+        }
+        else{
+            setShowAlertModal({
+                open:true,
+                message:"heleo",
+                severity:false
+            })
+        }
+        console.log("hello from hasnain")
+
+
+      }
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -117,15 +159,17 @@ const SettingScreen = () => {
                                 onPress={() => Linking.openURL("https://www.saucedapp.com/privacy-policy")}
                                 title={"Privacy Policy"}
                             />
-{/* 
+
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                // onPress={() => setShowDeleteModal(true)}
+                                onPress={()=>{
+                                    setShowDeleteModal(true)
+                                }}
                                 title={"Delete Account"}
-                            /> */}
+                            />
 
                             <CustomButtom
                                 Icon={() => <Image source={arrow} />}
@@ -138,7 +182,14 @@ const SettingScreen = () => {
 
                         </View>
                     </View>
-            
+            <YesNoModal
+                 modalVisible={showDeleteModal}
+                 setModalVisible={()=>{setShowDeleteModal(false)}}
+                 success={false}
+                 title={"Are you sure you want to delete your account?"}
+                 isQuestion={true}
+                 cb={handleDeleteAccount}
+            />
                  <CustomConfirmModal
                 isEnabled={isEnabled}
                 loading={loading}
@@ -146,13 +197,29 @@ const SettingScreen = () => {
                 modalVisible={showBlockModal} setModalVisible={setShowBlockmodal}
                 cb={handleBlock}
                 />
-                  <CustomConfirmModal
+
+                <CustomAlertModal
+                
+                modalVisible={showAlertModal.open}
+                setModalVisible={()=>{  setShowAlertModal({
+                    open:false,
+                    message:"",
+                    severity:true
+                })}}
+                success={false}
+                title={"Failed to Delete Acount"}
+                cb={()=>{}}
+                buttonText={""}
+
+
+                />
+                  {/* <CustomConfirmModal
                 isEnabled={isEnabled}
                 loading={loading}
                 title={"Delete Account?"}
                 modalVisible={showDeleteModal} setModalVisible={setShowDeleteModal}
                 cb={handleDelete}
-                />
+                /> */}
                 </ScrollView>
             </SafeAreaView>
         </ImageBackground>

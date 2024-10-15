@@ -86,7 +86,12 @@ const SocialSignIn = () => {
       setLoading(true)
          try{
           await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
-          const { idToken } = await GoogleSignin.signIn();
+          const { idToken } = await GoogleSignin.signIn(
+            {
+              prompt: 'select_account',
+              loginHint: '',
+            }
+          );
           const googleCredential = auth.GoogleAuthProvider.credential(idToken);
            const res =   await auth().signInWithCredential(googleCredential)
            const firebaseToken = await res.user.getIdToken();
@@ -133,7 +138,7 @@ const SocialSignIn = () => {
         console.error(error);
         setAlertModal({
           open: true,
-          message: "An error occurred during login",
+          message: error?.message,
           success:false
 
       });
@@ -224,7 +229,7 @@ const SocialSignIn = () => {
      console.error(error);
      setAlertModal({
        open: true,
-       message: "An error occurred during login",
+       message: error?.message,
        success:false
 
    });
