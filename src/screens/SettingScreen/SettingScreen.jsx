@@ -94,20 +94,27 @@ const SettingScreen = () => {
 
 
       const handleDeleteAccount=async()=>{
-        const res =await axiosInstance.delete("/delete-user")
-        if(res.data.success){
-            
-            handleLogout()
+        try{
+
+            const res =await axiosInstance.delete("/delete-user")
+            if(res.data.success){
+                handleLogout()
+            }
+            else{
+                setShowAlertModal({
+                    open:true,
+                    message:"Failed to delete account.",
+                    severity:false
+                })
+            }
         }
-        else{
+        catch(error){
             setShowAlertModal({
                 open:true,
-                message:"heleo",
+                message:error.message,
                 severity:false
             })
         }
-        console.log("hello from hasnain")
-
 
       }
 
