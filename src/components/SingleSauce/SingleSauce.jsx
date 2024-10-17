@@ -212,13 +212,13 @@ const SingleSauce = ({
               {/* Gradient Overlay */}
               <LinearGradient
                 colors={['transparent', 'rgba(0, 0, 0, 1)']}
-                locations={[0, 1]}
+                locations={[0, .8]}
                 style={[styles.gradient, { borderRadius: scale(10) }]}
               />
 
               {/* Marquee Text */}
               <View style={styles.textContainer}>
-                <TextTicker
+                {/* <TextTicker
                   duration={7000}
                   loop
                   bounce={false}
@@ -228,9 +228,13 @@ const SingleSauce = ({
                   isInteraction={false}
                   animationType="scroll"
                   style={styles.text}
-                >
-                  {title+". "}
-                </TextTicker>
+                > */}
+                <Text style={{
+                  color:"white"
+                }}>
+                  {title}
+                </Text>
+                {/* </TextTicker> */}
               </View>
 
               {showHeart && (

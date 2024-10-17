@@ -15,28 +15,29 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const SLIDER_WIDTH = SCREEN_WIDTH * 0.8; // 80% of screen width
 const SLIDER_HEIGHT = 4; // Thickness of the slider line
-const THUMB_SIZE = scale(20); // Diameter of the thumb
-const LEVEL_MIN = 1;
+const THUMB_SIZE = scale(25); // Diameter of the thumb
+const LEVEL_MIN = 5; // Updated minimum level
 const LEVEL_MAX = 10;
-const TOTAL_LEVELS = LEVEL_MAX - LEVEL_MIN;
+const TOTAL_LEVELS = LEVEL_MAX - LEVEL_MIN; // Updated total levels
 
-const SimpleLevelSlider = ({cb=()=>{}}) => {
-  const [currentLevel, setCurrentLevel] = useState(1);
+const SimpleLevelSlider = ({ cb = () => {} }) => {
+  const [currentLevel, setCurrentLevel] = useState(LEVEL_MIN); // Start at level 5
   const [sliderWidth, setSliderWidth] = useState(SLIDER_WIDTH); // Actual slider width after layout
   const thumbPosition = useRef(new Animated.Value(0)).current;
 
-  // Calculate the distance between each level
-  const levelDistance = sliderWidth / TOTAL_LEVELS;
-
-  // Update thumb position when currentLevel changes
   useEffect(() => {
+    // Calculate the maximum thumb position
+    const maxThumbPosition = sliderWidth - THUMB_SIZE;
+    const levelDistance = maxThumbPosition / TOTAL_LEVELS;
+
+    // Update thumb position when currentLevel changes
     Animated.spring(thumbPosition, {
-      toValue: (currentLevel - 1) * levelDistance,
+      toValue: (currentLevel - LEVEL_MIN) * levelDistance,
       useNativeDriver: false,
       friction: 7,
     }).start();
     console.log(`Current Level: ${currentLevel}`);
-  }, [currentLevel, levelDistance, thumbPosition]);
+  }, [currentLevel, sliderWidth, thumbPosition]);
 
   // PanResponder to handle drag gestures
   const panResponder = useRef(
@@ -50,23 +51,33 @@ const SimpleLevelSlider = ({cb=()=>{}}) => {
         [null, { dx: thumbPosition }],
         { useNativeDriver: false }
       ),
-      onPanResponderRelease: (e, gestureState) => {
+      onPanResponderRelease: () => {
         thumbPosition.flattenOffset();
         let newPos = thumbPosition.__getValue();
 
+        const maxThumbPosition = sliderWidth - THUMB_SIZE;
+
         // Clamp the new position within slider bounds
         if (newPos < 0) newPos = 0;
-        if (newPos > sliderWidth) newPos = sliderWidth;
+        if (newPos > maxThumbPosition) newPos = maxThumbPosition;
+
+        const levelDistance = maxThumbPosition / TOTAL_LEVELS;
 
         // Determine the nearest level
-        const newLevel = Math.round(newPos / levelDistance) + 1;
+        const newLevel = Math.round(newPos / levelDistance) + LEVEL_MIN;
 
         // Clamp the level within [LEVEL_MIN, LEVEL_MAX]
         const clampedLevel = Math.min(Math.max(newLevel, LEVEL_MIN), LEVEL_MAX);
 
         setCurrentLevel(clampedLevel);
-    cb(clampedLevel)
+        cb(clampedLevel);
 
+        // Animate thumb to the exact position of the level
+        Animated.spring(thumbPosition, {
+          toValue: (clampedLevel - LEVEL_MIN) * levelDistance,
+          useNativeDriver: false,
+          friction: 7,
+        }).start();
       },
     })
   ).current;
@@ -87,12 +98,12 @@ const SimpleLevelSlider = ({cb=()=>{}}) => {
           style={[
             styles.thumb,
             {
-              transform: [{ translateX: thumbPosition }],
+              left: thumbPosition,
             },
           ]}
           {...panResponder.panHandlers}
         >
-          <Circle size={THUMB_SIZE} color="#FFA500" fill={"#FFA500"}/>
+          <Circle size={THUMB_SIZE} color="#FFA500" fill={"#FFA500"} />
         </Animated.View>
       </View>
     </View>
@@ -103,26 +114,28 @@ const styles = StyleSheet.create({
   container: {
     // Fill the parent container
     width: '100%',
-    position:"relative"
   },
   sliderLineContainer: {
     width: "100%",
     height: THUMB_SIZE,
     justifyContent: 'center',
-    position:"relative"
+    position: "relative", // Make parent position relative
   },
   sliderLine: {
     position: 'absolute',
     height: SLIDER_HEIGHT,
     width: '100%',
     borderRadius: SLIDER_HEIGHT / 2,
-    backgroundColor:"#FFA500",
+    backgroundColor: "#FFA500",
   },
   thumb: {
-    position: 'absolute',
-    // Center the thumb vertically relative to the slider line
-    // top: (SLIDER_HEIGHT - THUMB_SIZE) ,
-    // Initially positioned at level 1 (0)
+    position: 'absolute', // Position thumb absolutely within parent
+    // top: (THUMB_SIZE - SLIDER_HEIGHT) / 2 * -1, // Center the thumb vertically over the slider line
+    top:"0%",
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

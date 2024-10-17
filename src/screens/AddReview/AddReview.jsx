@@ -102,7 +102,7 @@ const AddReview = () => {
     const [data, setData] = useState({
         review: '',
         rating: '1',
-        heatLevel: 1,
+        heatLevel: 5,
     });
     const navigation = useNavigation();
 
@@ -369,7 +369,7 @@ const handleSlider = (heatLevel)=>{
                 setData({
                     review: '',
                     rating: '1',
-                    heatLevel: 1,
+                    heatLevel: 5,
                 });
                 progress.value = 0
                 setImageUris([]);

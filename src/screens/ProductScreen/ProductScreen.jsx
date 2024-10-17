@@ -9,7 +9,7 @@ import {
   } from 'react-native';
   import React, {useCallback, useEffect, useState} from 'react';
   import Header from '../../components/Header/Header.jsx';
-  import getStartedbackground from './../../../assets/images/ProductDescription.jpg';
+  import getStartedbackground from './../../../assets/images/product_screen.png';
   import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
   import {useFocusEffect, useNavigation} from '@react-navigation/native';
   import {FlatList} from 'react-native-gesture-handler';

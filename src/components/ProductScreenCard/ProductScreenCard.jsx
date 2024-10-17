@@ -261,8 +261,8 @@ const ProductScreenCard = ({
 
                         <Image
                             style={{
-                                width: scale(120),
-                                height: scale(150),
+                                width: scale(110),
+                                height: scale(160),
                                 minWidth: scale(120),
                                 minHeight: scale(150),
                                 borderRadius: scale(10),

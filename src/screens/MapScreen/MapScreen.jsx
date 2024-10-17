@@ -84,7 +84,7 @@ const MapScreen = () => {
       }
     };
     Geocoder.init('AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E'); // replace with your actual API key
-    // fetchHotSauces();
+    fetchHotSauces();
   }, []);
 
 
@@ -118,7 +118,7 @@ const MapScreen = () => {
       }
     };
     Geocoder.init('AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E'); // replace with your actual API key
-    // fetchStores();
+    fetchStores();
   }, []);
 
 
