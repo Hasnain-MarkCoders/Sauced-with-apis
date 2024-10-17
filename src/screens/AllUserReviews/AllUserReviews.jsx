@@ -8,6 +8,7 @@ import useAxios from '../../../Axios/useAxios'
 import SingleReview from '../../components/SingleReview/SingleReview'
 import { useSelector } from 'react-redux'
 import NotFound from '../../components/NotFound/NotFound'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 const AllUserReviews = () => {
@@ -24,6 +25,7 @@ const AllUserReviews = () => {
     const auth = useSelector(state => state.auth)
     // useEffect(() => {
         const fetchReviews = async () => {
+            console.log("_id===================>", _id)
             if (!hasMore || loading) return;
 
             setLoading(true);
@@ -35,7 +37,7 @@ const AllUserReviews = () => {
                     }
                 });
                 setHasMore(res?.data?.pagination?.hasNextPage);
-                setData(prev => [...prev, ...res?.data?.reviews]);
+                res?.data?.reviews && setData(prev => [...prev, ...res?.data?.reviews]);
                 console.log("res?.data?.reviews=================================>", res?.data?.reviews)
             } catch (error) {
                 console.error('Failed to fetch photos:', error);
@@ -63,26 +65,37 @@ const AllUserReviews = () => {
             style={{
                 flex: 1,
             }}>
+                <SafeAreaView style={{
+                    flex:1
+                }}>
+
             <View style={{
                 paddingHorizontal: scale(20),
                 paddingTop: scale(30)
             }}>
 
-                <Header showText={false} showMenu={false} showProfilePic={false} cb={() => { navigation.goBack(); Vibration.vibrate(10) }} headerContainerStyle={{ paddingTop: scale(0), paddingHorizontal: 0 }} title="Reviewed Sauces" showDescription={false} description="" />
+                <Header
+                showText={false}
+                showMenu={false}
+                showProfilePic={false}
+                cb={() => { navigation.goBack(); Vibration.vibrate(10) }}
+                headerContainerStyle={{ paddingTop: scale(0), paddingHorizontal: 0 }}
+                title="Reviewed Sauces" showDescription={false}
+                description="" />
             </View>
-            <View style={{ paddingHorizontal: scale(20), flex: 1, paddingBottom: scale(6), gap: scale(10) }}>
+            <View style={{ paddingHorizontal: scale(20), flex: 1, paddingBottom: scale(6), gap: scale(10) , marginTop:scale(30)}}>
                 <Text style={{
                     color: "white",
                     fontWeight: 600,
                     fontSize: scale(35),
                     lineHeight: scale(50),
                 }}>
-                    Reviews 
+                    Reviews
                 </Text>
 
 
-               
-               
+
+
               {loading && data?.length<1
               ?<ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
               :!loading && data?.length<1
@@ -109,7 +122,7 @@ const AllUserReviews = () => {
                         loading && <ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
                     }
                     renderItem={({ item }) =>
-                        <SingleReview 
+                        <SingleReview
                     sauceId = {item?.sauceId?._id}
                     isNavigate={true}
                     url={item?.owner.image}
@@ -123,12 +136,13 @@ const AllUserReviews = () => {
                    textLength={item?.text?.length}
                    date={item?.createdAt}
                    images={item?.images}
-                   
+
                    />
 
                     }
                 />}
             </View>
+                </SafeAreaView>
         </ImageBackground>
 
 

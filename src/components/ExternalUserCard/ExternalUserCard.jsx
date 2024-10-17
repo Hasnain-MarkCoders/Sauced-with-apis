@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { useSelector } from 'react-redux'
@@ -31,7 +31,7 @@ const ExternalUserCard = ({
         <View style={{
             width: "100%",
             paddingVertical: scale(20),
-            paddingHorizontal: scale(20),
+            paddingHorizontal: Platform.OS=="ios"?scale(10):scale(20),
             borderRadius: scale(12),
             borderColor: "#FFA100",
             borderWidth: scale(1),
@@ -40,24 +40,24 @@ const ExternalUserCard = ({
             <View style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
-                gap: scale(12),
+                gap: scale(8),
                 alignItems: "center",
                 position:"relative",
                 // backgroundColor:"red"
             }}>
-                
+
 
                 {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
-          <SkeletonPlaceholder.Item              width={scale(100)}
-            height={scale(100)}
+          <SkeletonPlaceholder.Item              width={scale(90)}
+            height={scale(90)}
             borderRadius={scale(50)}
-            
+
             />
         </SkeletonPlaceholder>
       )}
 
-{/* 
+{/*
 <Lightbox
     // springConfig={{ tension: 30, friction: 7 }}
     activeProps={{
@@ -84,8 +84,8 @@ const ExternalUserCard = ({
     <Image
         style={{
             display: isLoading ? 'none' : 'flex',
-            width: scale(100),
-            height: scale(100),
+            width: scale(90),
+            height: scale(90),
             borderRadius: scale(50),
             borderColor: '#FFA100',
             borderWidth: scale(1),
@@ -100,7 +100,8 @@ const ExternalUserCard = ({
 
                 <View style={{
                     // gap:scale(14)
-                    flexGrow: 1
+                    // flexGrow: 1,
+                    // backgroundColor:"red"
                 }}>
 
                     <Text
@@ -143,7 +144,7 @@ const ExternalUserCard = ({
                                 }}>Followers</Text>
                             </View>
                             </TouchableOpacity>
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                 onPress={()=>{
                                     navigation.navigate("ExternalUserFollowing", {_id})
                                 }}>

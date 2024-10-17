@@ -88,9 +88,9 @@ const SignUp = () => {
         open: true,
         message: "Full Name is required!",
         success:false
-    
+
     })
-      return 
+      return
     }
     if (!data.email) {
       setIsEnabled(true); // Re-enable the button
@@ -98,11 +98,11 @@ const SignUp = () => {
         open: true,
         message: "Email is required!",
         success:false
-    
+
     })
       return
     }
-    
+
     if (!validateEmail(data.email)) {
 
       setAlertModal({
@@ -119,9 +119,9 @@ const SignUp = () => {
         open: true,
         message: "Password is required!",
         success:false
-    
+
     })
-      return 
+      return
     }
 
     if (data.password.length<6) {
@@ -135,8 +135,8 @@ const SignUp = () => {
       return;
     }
 
-  
- 
+
+
     if (data.password && !strongPasswordRegex.test(data.password)) {
       setAlertModal({
           open: true,
@@ -186,7 +186,7 @@ const SignUp = () => {
             }))
         }
         setAuthLoading(false)
-     
+
       } else {
         console.log('No user found');
 
@@ -194,9 +194,9 @@ const SignUp = () => {
           open: true,
           message: "No user found",
           success:false
-      
+
       })
-     
+
       }
     } catch (error) {
       setAuthLoading(false)
@@ -250,35 +250,35 @@ const SignUp = () => {
      setAuthLoading(true)
 
     try{
-  
+
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-  
+
         if (result.isCancelled) {
           setAlertModal({
             open: true,
             message: "User cancelled the login process",
             success:false
-  
+
         });
           throw 'User cancelled the login process';
         }
-      
+
         // Once signed in, get the users AccessToken
         const data = await AccessToken.getCurrentAccessToken();
-      
+
         if (!data) {
           setAlertModal({
             open: true,
             message: "Something went wrong obtaining access token",
             success:false
-  
+
         });
           throw 'Something went wrong obtaining access token';
         }
-      
+
         // Create a Firebase credential with the AccessToken
         const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-      
+
         // Sign-in the user with the credential
         const userCredential = await auth().signInWithCredential(facebookCredential);
         const firebaseIdToken = await userCredential.user.getIdToken();
@@ -338,7 +338,7 @@ const SignUp = () => {
    setAuthLoading(false)
 
  }
-   
+
   }
 
 
@@ -417,7 +417,7 @@ const SignUp = () => {
    loginHint: '', // specifies an email address or subdomain that will be pre-filled in the login hint field
    forceCodeForRefreshToken: true, // [Android] if you want to force code for refresh token
    accountName: '', // [Android] specifies an account name on the device that should be used,
-   
+
  });
 }, []);
 
@@ -438,6 +438,7 @@ if(authLoading){
           <View style={{ paddingHorizontal: scale(20), flex: 1, justifyContent: "space-between", paddingVertical:scale(30), gap: 40 }}>
             <View style={{ gap: scale(20), marginBottom:scale(40) }}>
               <CustomInput
+              isWhiteInput={true}
                 onChange={handleText}
                 updaterFn={setData}
                 value={data.fullName}
@@ -445,6 +446,7 @@ if(authLoading){
                 name="fullName"
               />
               <CustomInput
+              isWhiteInput={true}
                 onChange={handleText}
                 updaterFn={setData}
                 value={data.email}
@@ -455,6 +457,7 @@ if(authLoading){
                 gap:scale(10)
               }}>
               <CustomInput
+              isWhiteInput={true}
                 imageStyles={{top:"50%", left:"90%", transform: [{ translateY: -0.5 * scale(20) }], width:scale(25), height:scale(16)}}
                 isURL={false}
                 showImage={true}
@@ -467,7 +470,7 @@ if(authLoading){
                 secureTextEntry={true}
               />
 
-              {/* <TouchableOpacity 
+              {/* <TouchableOpacity
               onPress={()=>{
                 setAlertModal(true)
                 setMessage("Feature Coming Soon.")}
@@ -534,8 +537,8 @@ if(authLoading){
             </View>
               <View style={{ flexDirection: "row", marginTop:scale(20), alignItems:"center" }}>
                 <Text style={{ color: "white", fontSize: scale(14), lineHeight: 18 }}>Already Have an account? </Text>
-                <TouchableOpacity 
-                
+                <TouchableOpacity
+
                 onPress={() => {navigation.navigate("SignIn"), Vibration.vibrate(10)}} >
                   <Text style={{ color: "#FFA100", fontSize: scale(14), marginTop:scale(0),lineHeight: 18 , paddingHorizontal:scale(4)}}>Login</Text>
                 </TouchableOpacity>

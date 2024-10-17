@@ -33,14 +33,14 @@ reviewsCount=0
         <View style={{
             width: "100%",
             paddingVertical: scale(20),
-            paddingHorizontal: scale(20),
+            paddingHorizontal: scale(10),
             borderRadius: scale(12),
             borderColor: "#FFA100",
             borderWidth: scale(1),
             gap: scale(10),
             position:"relative"
         }}>
-            <View 
+            <View
                 style={{
             position:"absolute",
             top:scale(20),
@@ -48,12 +48,12 @@ reviewsCount=0
             zIndex:1
 
                 }}
-                
+
 >
 
 
     <TouchableOpacity
-    
+
     onPress={
         ()=>{
             navigation.navigate("Edit Profile")
@@ -90,7 +90,7 @@ reviewsCount=0
           <SkeletonPlaceholder.Item              width={scale(90)}
             height={scale(90)}
             borderRadius={scale(45)}
-            
+
             />
         </SkeletonPlaceholder>
       )}
@@ -160,13 +160,13 @@ reviewsCount=0
 </TouchableOpacity>
 
                 <View style={{
-                    flexGrow: 1,
+                    // flexGrow: 1,
                     display:"flex",
                     gap:scale(10)
                 }}>
 
                     <Text
-                    
+
                         ellipsizeMode='tail'
                         numberOfLines={1}
                     style={{

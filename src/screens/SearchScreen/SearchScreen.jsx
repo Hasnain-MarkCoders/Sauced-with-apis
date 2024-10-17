@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import search from "./../../../assets/images/search_icon.png";
 import ProductSearchList from '../../components/ProductSearchList/ProductSearchList';
 import { X } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { height } = Dimensions.get('window'); // Get screen height dynamically
 
@@ -25,10 +26,10 @@ const SearchScreen = () => {
             setInitialLoading(false);
         }, 1000);
     }, []);
-    
+
     useEffect(() => {
        navigation.addListener("focus",()=>{
-     
+
        })
     }, [data]);
 
@@ -102,7 +103,7 @@ const SearchScreen = () => {
         );
     }
 
-   
+
 
     return (
         <ImageBackground
@@ -112,13 +113,14 @@ const SearchScreen = () => {
                 paddingHorizontal: scale(20),
                 paddingTop: scale(32),
             }}>
+                <SafeAreaView style={{flex:1}}>
             <KeyboardAvoidingView
                 style={{
                     flex: 1,
                 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                <TouchableWithoutFeedback 
+                <TouchableWithoutFeedback
                  accessible={false}
                 onPress={()=>{setData([]);setShowResults(false)}}
                 >
@@ -133,7 +135,7 @@ const SearchScreen = () => {
                             gap: 10,
                         }}>
                             <CustomInput
-                             onSubmitEditing={() => {setData([]); setShowResults(false)}} 
+                             onSubmitEditing={() => {setData([]); setShowResults(false)}}
                                 autoFocus={true}
                                 imageStyles={{
                                     top: '50%',
@@ -235,6 +237,7 @@ const SearchScreen = () => {
                 </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
+        </SafeAreaView>
         </ImageBackground>
     );
 };

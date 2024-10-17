@@ -101,7 +101,7 @@ console.log(profileUri)
           <SkeletonPlaceholder.Item              width={isReply? scale(30):  scale(58)}
             height={isReply? scale(30): scale(58)}
             borderRadius={scale(58)}
-            
+
             />
         </SkeletonPlaceholder>
       )}
@@ -172,7 +172,7 @@ console.log(profileUri)
                             }}>
                                  {
                                     likeCount
-                                    
+
                                  }
                             </Text>
 
@@ -258,16 +258,21 @@ console.log(profileUri)
                     getId(_id)
                 }}>
 
-                <Text style={{
-                    color: "#000",
-                    display:isReply?"none":"flex",
-                    fontSize:scale(12),
-                    borderRadius:scale(20),
-                    backgroundColor:"#FFA500",
-                    paddingHorizontal:scale(10),
-                    paddingVertical:scale(5)
+<View style={{
+        backgroundColor: "#FFA500",   // Set the background color in the View
+        borderRadius: scale(20),      // Apply the borderRadius here
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(5)
+    }}>
+        <Text style={{
+            color: "#000",
+            display: isReply ? "none" : "flex",
+            fontSize: scale(12),
+        }}>
+            Reply
+        </Text>
+    </View>
 
-                }}>Reply</Text>
             </TouchableOpacity>
 
             { replies?.length>0 && <TouchableOpacity
@@ -280,18 +285,29 @@ console.log(profileUri)
             }}
             >
 
-               { <Text 
-    
-                 style={{
-                    borderRadius:scale(20),
-                    backgroundColor:"#FFA500",
-                    paddingHorizontal:scale(10),
-                    paddingVertical:scale(5),
-                    fontSize:scale(12),
+               {
 
-                    
-                    color:"#000"
-                }}>{showReplies ? "Hide replies":"Show replies"}</Text>}
+<View style={{
+    borderRadius:scale(20),
+    backgroundColor:"#FFA500",
+    paddingHorizontal:scale(10),
+    paddingVertical:scale(5),
+}}>
+
+    <Text
+
+     style={{
+
+        fontSize:scale(12),
+
+
+        color:"#000"
+    }}>{showReplies ? "Hide replies":"Show replies"}</Text>
+</View>
+
+
+
+                }
             </TouchableOpacity>}
             </View>
 
@@ -299,10 +315,10 @@ console.log(profileUri)
                 alignSelf: "flex-start",
                 // paddingLeft:scale(50)
             }}>
-              
+
                 {replies?.map(item => <CustomComment
                 cb={cb}
-                
+
                     isReply={true}
                     showBorder={false}
                     handleSubmitMessage={handleSubmitMessage}
@@ -323,8 +339,8 @@ console.log(profileUri)
             }}
             >
 
-               { <Text 
-    
+               { <Text
+
                  style={{
                     borderRadius:scale(20),
                     backgroundColor:"#FFA500",

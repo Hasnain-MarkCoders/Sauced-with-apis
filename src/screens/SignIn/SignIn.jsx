@@ -6,6 +6,8 @@ import CustomInput from '../../components/CustomInput/CustomInput';
 import { handleText, validateEmail } from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from "./../../../assets/images/google-icon.png";
+import apple from "./../../../assets/images/apple-icon.png";
+
 import fb from "./../../../assets/images/facebook-icon.png";
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -20,6 +22,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import messaging from '@react-native-firebase/messaging';
 import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
 import { handleAuth } from '../../Redux/userReducer';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 
 
@@ -172,7 +175,7 @@ const handleForgetPassword = async (email,setEmail) => {
   };
 
 
-  
+
   const getInitialFcmToken = async (authToken) => {
     const fcmToken = await messaging().getToken();
     console.log('Initial FCM Token:', fcmToken);
@@ -182,7 +185,7 @@ const handleForgetPassword = async (email,setEmail) => {
 
   const handleLogin = async () => {
     try {
-   
+
       // Input validation
       if (!data.email) {
 
@@ -255,18 +258,18 @@ const handleForgetPassword = async (email,setEmail) => {
               "authenticated": true,
               "welcome": myuser?.data?.user?.welcome
             }))
-         
+
         }else {
           console.log('No user found');
-     
+
           setAlertModal({
             open: true,
             message: "No user found on Firebase",
             success:false
-  
+
         });
         setAuthLoading(false)
-  
+
         }
       setAuthLoading(false)
 
@@ -324,33 +327,33 @@ const handleForgetPassword = async (email,setEmail) => {
       setAuthLoading(true)
 
         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-  
+
         if (result.isCancelled) {
           setAlertModal({
             open: true,
             message: "User cancelled the login process",
             success:false
-  
+
         });
           throw 'User cancelled the login process';
         }
-      
+
         // Once signed in, get the users AccessToken
         const data = await AccessToken.getCurrentAccessToken();
-      
+
         if (!data) {
           setAlertModal({
             open: true,
             message: "Something went wrong obtaining access token",
             success:false
-  
+
         });
           throw 'Something went wrong obtaining access token';
         }
-      
+
         // Create a Firebase credential with the AccessToken
         const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-      
+
         // Sign-in the user with the credential
         const userCredential = await auth().signInWithCredential(facebookCredential);
         const firebaseIdToken = await userCredential.user.getIdToken();
@@ -409,7 +412,7 @@ const handleForgetPassword = async (email,setEmail) => {
    setAuthLoading(false)
 
  }
-   
+
   }
 
 
@@ -506,9 +509,43 @@ const handleForgetPassword = async (email,setEmail) => {
      loginHint: '', // specifies an email address or subdomain that will be pre-filled in the login hint field
      forceCodeForRefreshToken: true, // [Android] if you want to force code for refresh token
      accountName: '', // [Android] specifies an account name on the device that should be used,
-     
+
    });
 }, []);
+
+
+async function onAppleButtonPress() {
+
+  try{
+// Start the sign-in request
+const appleAuthRequestResponse = await appleAuth.performRequest({
+  requestedOperation: appleAuth.Operation.LOGIN,
+  // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
+  // See: https://github.com/invertase/react-native-apple-authentication#faqs
+  requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+});
+console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
+
+// Ensure Apple returned a user identityToken
+if (!appleAuthRequestResponse.identityToken) {
+  throw new Error('Apple Sign-In failed - no identify token returned');
+}
+
+// Create a Firebase credential from the response
+const { identityToken, nonce } = appleAuthRequestResponse;
+const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+console.log("identityToken============>", identityToken)
+
+// Sign the user in with the credential
+return auth().signInWithCredential(appleCredential);
+  }catch(err){
+console.log(err)
+  }finally{
+
+  }
+
+
+}
 
 if(authLoading){
   return  <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>
@@ -524,8 +561,8 @@ if(authLoading){
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ flexGrow: 1, gap:scale(14) }}
       >
-     <Header showMenu={false} showProfilePic={false} cb={()=>{navigateToSignUp();  Vibration.vibrate(10)}} title="Sign in" description="Sign in with your data that you entered during registration." /> 
-   
+     <Header showMenu={false} showProfilePic={false} cb={()=>{navigateToSignUp();  Vibration.vibrate(10)}} title="Sign in" description="Sign in with your data that you entered during registration." />
+
     <View style={{  gap:scale(40),paddingHorizontal:scale(20),  paddingVertical:scale(10)}}>
 
       <View style={{
@@ -533,6 +570,7 @@ if(authLoading){
          flex:1,
       }}>
         <CustomInput
+          isWhiteInput={true}
           onChange={handleText}
           updaterFn={setData}
           value={data.email}
@@ -544,6 +582,7 @@ if(authLoading){
               }}>
 
         <CustomInput
+              isWhiteInput={true}
 
           imageStyles={{top:"50%", left:"90%", transform: [{ translateY: -0.5 * scale(20) }], width:scale(25), height:scale(16)}}
           isURL={false}
@@ -556,7 +595,7 @@ if(authLoading){
           name="password"
           secureTextEntry={true}
         />
-           <TouchableOpacity 
+           <TouchableOpacity
            style={{
             marginLeft:"auto"
            }}
@@ -573,7 +612,7 @@ if(authLoading){
                 //   setAlertModal(true)
                 // Alert.alert("hello")
                 // setMessage('Feature Coming Soon.')
-              
+
               }
               }>
               <Text style={{
@@ -596,7 +635,7 @@ if(authLoading){
 
           title={"Sign In"}
         />
-       
+
 
 <Text style={{
               color:"#FFA100",
@@ -611,8 +650,17 @@ if(authLoading){
              width:"100%",
              gap:scale(20)
             }}>
+            <CustomButtom
+                showIcon={true}
+                Icon={()=><Image style={{width:24, height:24, objectFit:"contain"}}  source={apple} />}
+                buttonTextStyle={{ fontSize: scale(14) }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A",justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center" }}
+                onPress={()=>{onAppleButtonPress();  Vibration.vibrate(10)}}
+                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
-<CustomButtom
+                title={"Sign In With Apple"}
+              />
+            <CustomButtom
                 showIcon={true}
                 Icon={()=><Image style={{width:24, height:24}}  source={google} />}
                 buttonTextStyle={{ fontSize: scale(14) }}
@@ -630,18 +678,18 @@ if(authLoading){
                 onPress={()=>{onFacebookButtonPress();  Vibration.vibrate(10)}}
                   //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
 
-                
+
                 title={"Sign In With Facebook"}
               />
             </View>
         <View style={{ flexDirection: "row"  ,marginTop:scale(20)}}>
           <Text style={{ color: "white", fontSize: scale(14), lineHeight: 18 }}>Don't have an account? </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
           //  onPress={() => {navigateToSignUp(),  Vibration.vibrate(10)}}
            onPress={() => {navigation.navigate("SignUp"),  Vibration.vibrate(10)}}
 
-          
-           
+
+
            style={{ verticalAlign: "middle" }}>
             <Text style={{ color: "#FFA100", fontSize: scale(14), lineHeight: 18,  marginTop:scale(0),paddingHorizontal:scale(3)}}>Register</Text>
           </TouchableOpacity>

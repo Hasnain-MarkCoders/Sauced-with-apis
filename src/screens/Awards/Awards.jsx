@@ -1,4 +1,4 @@
-import { ActivityIndicator, ImageBackground, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native'
+import { ActivityIndicator, ImageBackground, Platform, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
 import home from './../../../assets/images/home.png';
@@ -34,17 +34,17 @@ const Awards = ({navigation}) => {
       } finally {
           setLoading(false);
       }
-  }, [hasMore, page]); 
-  
+  }, [hasMore, page]);
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             fetchAwards();
 
           });
-      
+
           return unsubscribe;
   }, [fetchAwards]);
-  
+
   if (loading) {
     return (
       <ImageBackground
@@ -58,15 +58,15 @@ const Awards = ({navigation}) => {
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
             <SafeAreaView
-            
-            style={{ flex: 1, paddingBottom: verticalScale(80) }}>
+
+            style={{ flex: 1, paddingBottom:  verticalScale(80) }}>
                 <Header
                 showMenu={false}
                 showProfilePic={true}
-                
+
                 cb={() => navigation.goBack()}
-                
-                
+
+
                 headerContainerStyle={{
                     paddingBottom: verticalScale(30)
                 }} showText={false} />
@@ -79,8 +79,7 @@ const Awards = ({navigation}) => {
                     renderItem={({ item, index }) => {
                         return (<View style={{
                             paddingHorizontal: scale(20),
-                            flex:1
-
+                            flex:1,
                         }}>
                             {
 
@@ -114,7 +113,7 @@ const Awards = ({navigation}) => {
                                         }}>
                                         {points} Points
                                         </Text>
-                                        
+
                                     <View style={{
                                         flexDirection:"row",
                                         gap:scale(10),
@@ -180,7 +179,7 @@ const Awards = ({navigation}) => {
                                         lineHeight: 50
                                     }}>Badges</Text>
 
-                                    
+
                                     </View>
                             }
                             {

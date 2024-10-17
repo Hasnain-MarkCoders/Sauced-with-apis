@@ -83,7 +83,7 @@ const EventPage = () => {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
-  
+
 
 
 
@@ -169,7 +169,7 @@ const EventPage = () => {
 //       const res = await axiosInstance.post(`/interest-event`, {
 //           eventId:event?._id
 //       });
-  
+
 
 // }
 const handleInterestedEvent = async () => {
@@ -435,82 +435,94 @@ const handleInterestedEvent = async () => {
       flex: 1,
       position:"relative"
     }}>
-      { isFullScreenMap &&<TouchableOpacity style={{
-        position: 'absolute',
-        top:10,
-        left:10,
-        zIndex:1000
-      }} onPress={toggleFullScreenMap}
-      
-      >
-       <Image style={{ width: scale(30), height: scale(20), objectFit:"contain" }} source={darkArrow}/>
-      </TouchableOpacity>}
-      { isFullScreenMap&& <View
-                      style={{
-                       flex:1,
-                       width:"100%"
-                      }}>
-                      <MapView
-                        style={{ width: "100%", height: "100%"}}
-                        zoomTapEnabled={true}
-                        initialRegion={{
-                          ...region,
-                          latitudeDelta: 5,
-                          longitudeDelta:5,
-                        }}
+{
+  isFullScreenMap&&<SafeAreaView
 
-                      >
+  style={{
+    flex:1,
+    position:"relative"
+  }}>
 
-                        {!!eventCoords && (
-                          <Marker
-                            anchor={{ x: 0.5, y: 0.5 }}
-                            onPress={(e) => { console.log(e) }}
-                            coordinate={{
-                              latitude: eventCoords.latitude,
-                              longitude: eventCoords.longitude,
-                            }}>
-                            <View >
-                              <Image
-                                source={redChilli}
-                                style={[{ width: scale(50), height: scale(50) }]}
-                              />
-                            </View>
-                          </Marker>
-                        )}
+    <TouchableOpacity style={{
+      position: 'absolute',
+      top:scale(80),
+      left:scale(10),
+      zIndex:1000
+    }} onPress={toggleFullScreenMap}
+
+    >
+     <Image style={{ width: scale(30), height: scale(20), objectFit:"contain" }} source={darkArrow}/>
+    </TouchableOpacity>
+     <View
+                    style={{
+                     flex:1,
+                     width:"100%"
+                    }}>
+                    <MapView
+                      style={{ width: "100%", height: "100%"}}
+                      zoomTapEnabled={true}
+                      initialRegion={{
+                        ...region,
+                        latitudeDelta: 5,
+                        longitudeDelta:5,
+                      }}
+
+                    >
+
+                      {!!eventCoords && (
+                        <Marker
+                          anchor={{ x: 0.5, y: 0.5 }}
+                          onPress={(e) => { console.log(e) }}
+                          coordinate={{
+                            latitude: eventCoords.latitude,
+                            longitude: eventCoords.longitude,
+                          }}>
+                          <View >
+                            <Image
+                              source={redChilli}
+                              style={[{ width: scale(50), height: scale(50) }]}
+                            />
+                          </View>
+                        </Marker>
+                      )}
 
 
-                        {!!currentCoords && (
-                          <Marker
-                            anchor={{ x: 0.5, y: 0.5 }}
-                            onPress={(e) => { console.log(e) }}
-                            coordinate={{
-                              latitude: currentCoords.latitude,
-                              longitude: currentCoords.longitude,
-                            }}>
-                            <View >
-                              <Image
-                                source={yellowChilli}
-                                style={[{ width: scale(50), height: scale(50) }]}
-                              />
-                            </View>
-                          </Marker>
-                        )}
+                      {!!currentCoords && (
+                        <Marker
+                          anchor={{ x: 0.5, y: 0.5 }}
+                          onPress={(e) => { console.log(e) }}
+                          coordinate={{
+                            latitude: currentCoords.latitude,
+                            longitude: currentCoords.longitude,
+                          }}>
+                          <View >
+                            <Image
+                              source={yellowChilli}
+                              style={[{ width: scale(50), height: scale(50) }]}
+                            />
+                          </View>
+                        </Marker>
+                      )}
 
 
 {routeCoordinates.length > 0 && (
-          <Polyline
-          coordinates={routeCoordinates}
-          strokeWidth={4}
-          strokeColor="#4285F4" // Google Maps-like blue color
-          lineCap="round" // Smooth line ends
-        />
-          )}
-                      </MapView>
+        <Polyline
+        coordinates={routeCoordinates}
+        strokeWidth={4}
+        strokeColor="#4285F4" // Google Maps-like blue color
+        lineCap="round" // Smooth line ends
+      />
+        )}
+                    </MapView>
 
-                    </View>}
+                  </View>
+  </SafeAreaView>
+}
    {! isFullScreenMap &&<ImageBackground
+      source={getStartedbackground}
       style={{ flex: 1, width: '100%', height: '100%' }}
-      source={getStartedbackground}>
+      // source={getStartedbackground}
+      >
       <SafeAreaView
         style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
 
@@ -610,7 +622,7 @@ const handleInterestedEvent = async () => {
                             Organized by
                           </Text>
                           {
-                            event?.owner?.name &&
+                            event?.owner?.name ?
                             <TouchableOpacity onPress={() => {
                               setOpenUserDetailsModal(true)
                             }}>
@@ -620,9 +632,13 @@ const handleInterestedEvent = async () => {
                                   color: '#FFA100',
                                   textDecorationLine:"underline"
                                 }}>
-                                {event?.owner?.name}
+
+                                {event?.owner?.name ?event?.owner?.name :"N/A"}
                               </Text>
                             </TouchableOpacity>
+                            :<Text style={{
+                              color:"white"
+                            }}>N / A</Text>
                           }
                         </View>
                       </View>
@@ -675,13 +691,15 @@ const handleInterestedEvent = async () => {
                             <View style={{
                               flexDirection:"row",
                               gap:scale(5),
-                              alignItems:"center",
+                              alignItems:"start",
                               flexWrap:"wrap"
                             }}>
+
                             <Image
                             style={{
                               width: scale(18),
                               height: scale(23),
+
                             }}
                             source={Location}
                           />
@@ -696,13 +714,13 @@ const handleInterestedEvent = async () => {
                               {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()}
                             </Text>
                             </View>
-                      
+
                           <View
                             style={{
                               gap: scale(6),
 
                             }}>
-                          
+
                             <Text
                               style={{
                                 color: 'white',
@@ -947,8 +965,6 @@ const handleInterestedEvent = async () => {
       />
     </ImageBackground>}
     </View>
-
-
   );
 };
 

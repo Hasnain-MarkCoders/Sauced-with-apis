@@ -26,8 +26,8 @@ const CustomEditModal = ({
       justifyContent: 'center',
       alignItems: 'center',
       position: 'absolute',
-      width: '100%', 
-      height: '100%', 
+      width: '100%',
+      height: '100%',
     }}>
       <Modal
         animationType="fade"
@@ -37,13 +37,13 @@ const CustomEditModal = ({
           setModalVisible(!modalVisible);
         }}>
           <TouchableOpacity
-          
+
           style={{
             flex: 1,
             width:"100%",
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(33, 22, 10, .85)', 
+            backgroundColor: 'rgba(33, 22, 10, .85)',
 
           }}
           activeOpacity={1}

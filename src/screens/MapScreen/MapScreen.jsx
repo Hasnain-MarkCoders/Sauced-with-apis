@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Image, TouchableOpacity, Dimensions, Text, StyleSheet, Alert } from 'react-native';
+import { View, Image, TouchableOpacity, Dimensions, Text, StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -43,7 +43,7 @@ const MapScreen = () => {
   });
 
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedMarkers, setSelectedMarkers] = useState({}); 
+  const [selectedMarkers, setSelectedMarkers] = useState({});
   const [markerSize, setMarkerSize] = useState(90);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
@@ -97,21 +97,21 @@ const MapScreen = () => {
             type: "store"
           }
         });
-        
+
         const validStores = res.data.items.filter((store) => {
           const latitude = parseFloat(store.storeLocation.latitude);
           const longitude = parseFloat(store.storeLocation.longitude);
           // Check if both latitude and longitude are valid numbers
           return !isNaN(latitude) && !isNaN(longitude);
         });
-  
+
         const stores = validStores.map(item => ({
           latitude: parseFloat(item.storeLocation.latitude), // Ensure it's a number
           longitude: parseFloat(item.storeLocation.longitude), // Ensure it's a number
           place_id: item.place_id,
           zip: item.zip
         }));
-  
+
         setStores(stores);
       } catch (error) {
         console.error('Error fetching stores:', error);
@@ -169,7 +169,7 @@ const handleAddHotSauce = useCallback(async(data)=>{
       console.log("zip=========>",zip)
 
 
-    
+
 
       // // Use Geocoder to get the address and zip code
       // try {
@@ -181,7 +181,7 @@ const handleAddHotSauce = useCallback(async(data)=>{
         setHotSauceMarkers(prev => [...prev, {place_id,latitude , longitude, zip, address}]);
      const res=   await  handleAddHotSauce({latitude:latitude?.toString(), longitude:longitude?.toString(), zip:zip?.toString(), place_id:place_id.toString()})
    console.log("res.data.data==========================>", res)
-   
+
      //  setSelectedPlace(null)
 
       // } catch (error) {
@@ -189,14 +189,14 @@ const handleAddHotSauce = useCallback(async(data)=>{
       // }
 
       console.log("hellos")
-    
+
   };
 
 
   const handleNearByMarkerPress = useCallback(async (place) => {
     // Check if this place is already a hot sauce
     const isHotSauce = hotSauceMarkers.some((item) => item.place_id === place.place_id);
-  
+
     if (isHotSauce) {
       // Show details if it's a hot sauce
       Alert.alert(
@@ -231,7 +231,7 @@ const handleAddHotSauce = useCallback(async(data)=>{
           key: 'AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E', // Replace with your API key
         },
       });
-  
+
       // Map over the results to get place details for each
       const placeDetailsPromises = nearbyResponse.data.results.map(async (place) => {
         try {
@@ -242,9 +242,9 @@ const handleAddHotSauce = useCallback(async(data)=>{
               fields: 'place_id,geometry,name,address_components,types', // Specify the fields you need
             },
           });
-  
+
           const details = detailsResponse.data.result;
-  
+
           // Extract zip code from address_components
           const postalCodeComponent = details.address_components.find(component =>
             component.types.includes('postal_code')
@@ -263,9 +263,9 @@ const handleAddHotSauce = useCallback(async(data)=>{
           return null; // Handle individual errors and continue
         }
       });
-  
+
       const places = await Promise.all(placeDetailsPromises);
-  
+
       // Filter out any null responses due to errors
       const validPlaces = places.filter(place => place !== null);
       setNearbyPlaces(validPlaces);
@@ -273,7 +273,7 @@ const handleAddHotSauce = useCallback(async(data)=>{
       console.error('Error fetching nearby places:', error);
     }
   },[]);
-  
+
 
   const handleRegionChangeComplete = debounce((newRegion) => {
     // Fetch nearby places without updating the displayed region
@@ -335,8 +335,12 @@ console.log("hotSauceMarkers=============================================>", hot
 
 },[stores, hotSauceMarkers])
 
-  
+
   return (
+    <SafeAreaView style={{
+      flex:1
+    }}>
+
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
@@ -362,7 +366,7 @@ console.log("hotSauceMarkers=============================================>", hot
           top: scale(28),
           left: scale(45),
           zIndex: isAutocompleteActive ? -1 : 3, // Conditionally set zIndex to hide/show the search icon
-          opacity: isAutocompleteActive ? 0 : 1, 
+          opacity: isAutocompleteActive ? 0 : 1,
         }}>
 
           <Search color={"gray"} size={23} />
@@ -467,7 +471,7 @@ console.log("hotSauceMarkers=============================================>", hot
             const postalCode = geocodeResponse.results[0].address_components.find(component =>
               component.types.includes('postal_code')
             )?.long_name;
-           
+
             handleEventCoords({
               latitude,
               longitude,
@@ -504,7 +508,7 @@ console.log("hotSauceMarkers=============================================>", hot
           // toolbarEnabled={false}
           showsIndoors={false}
           loadingEnabled
-          anchor={{ x: 0.5, y: 0.5 }} 
+          anchor={{ x: 0.5, y: 0.5 }}
             onPress={(e) => { console.log(e) }}
             coordinate={region}>
             <View style={styles.marker}>
@@ -515,7 +519,7 @@ console.log("hotSauceMarkers=============================================>", hot
             </View>
           </Marker>
         )} */}
-   
+
         {!!selectedRegion && (
           <Marker
           // zIndex={111}
@@ -530,7 +534,7 @@ console.log("hotSauceMarkers=============================================>", hot
           // optimizeWaypoints={true}
           // showsIndoors={false}
           // loadingEnabled
-          anchor={{ x: 0.5, y: 0.5 }} 
+          anchor={{ x: 0.5, y: 0.5 }}
             coordinate={{
               latitude: selectedRegion.latitude,
               longitude: selectedRegion.longitude,
@@ -566,7 +570,7 @@ console.log("hotSauceMarkers=============================================>", hot
               // // optimizeWaypoints={true}
               // showsIndoors={false}
               // loadingEnabled
-          anchor={{ x: 0.5, y: 0.5 }} 
+          anchor={{ x: 0.5, y: 0.5 }}
 
                 key={store.place_id}
                 coordinate={{
@@ -609,7 +613,7 @@ console.log("hotSauceMarkers=============================================>", hot
               // // optimizeWaypoints={true}
               // showsIndoors={false}
               // loadingEnabled
-          anchor={{ x: 0.5, y: 0.5 }} 
+          anchor={{ x: 0.5, y: 0.5 }}
 
                 key={store.place_id}
                 coordinate={{
@@ -645,23 +649,23 @@ console.log("hotSauceMarkers=============================================>", hot
           showsIndoors={false}
           loadingEnabled
             key={place.id}
-            anchor={{ x: 0.5, y: 0.5 }} 
-         
+            anchor={{ x: 0.5, y: 0.5 }}
+
             coordinate={{
               latitude: place.latitude,
               longitude: place.longitude,
             }}
-            onPress={() =>{ 
+            onPress={() =>{
               handleNearByMarkerPress(place)
               setSelectedId(place?.place_id)
             }}
           >
             <CustomMarker
             onPress={() =>  {
-              
+
               handleNearByMarkerPress(place)
               setSelectedId(place?.place_id)
-            
+
             }
 
 
@@ -697,6 +701,7 @@ console.log("hotSauceMarkers=============================================>", hot
       title="Is That a Hot Sauce?"
       />
     </View>
+    </SafeAreaView>
   );
 };
 

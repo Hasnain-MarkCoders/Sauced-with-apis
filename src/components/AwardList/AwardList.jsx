@@ -12,13 +12,16 @@ const AwardList = ({
 }) => {
   console.log(data[5]?.progress)
   return (
-    
+
    <View style={{
     gap:scale(20)
 }}>
     <FlatList
-    showsHorizontalScrollIndicator={false} 
+    showsHorizontalScrollIndicator={false}
     showsVerticalScrollIndicator={false}
+    contentContainerStyle={{
+      paddingBottom:scale(100)
+    }}
     numColumns={2}
        data={data}
        extraData={data}
@@ -29,13 +32,13 @@ const AwardList = ({
         }
       }}
       keyExtractor={(item, index) => index.toString()}
-       renderItem={({ item }) => <Award 
-       
-       url={item?.badge?.icon} 
+       renderItem={({ item }) => <Award
+
+       url={item?.badge?.icon}
        name={item?.badge?.name}
        percentage={item?.progress}
        infoText={""}
-       
+
        showText={false} />}
    />
 

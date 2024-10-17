@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import closeEye from "./../../../assets/images/scaledCloseEye.png"
-const CustomInput = ({ readOnly=false,title = "",autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {},  onSubmitEditing=()=>{}}) => {
+const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {},  onSubmitEditing=()=>{}}) => {
   const [showPassord, setShowPassword] = useState(secureTextEntry)
   return (
-    
+
     <View style={{
       ...containterStyle,
 
@@ -47,6 +47,7 @@ const CustomInput = ({ readOnly=false,title = "",autoFocus =false, uri = "",loca
             zIndex: 1,
             transform: [{ translateY: -0.5 * scale(30) }],
             ...imageStyles
+
           }} source={isURL ? { uri } :uri} />
 
 
@@ -62,9 +63,12 @@ const CustomInput = ({ readOnly=false,title = "",autoFocus =false, uri = "",loca
           secureTextEntry={showPassord}
           style={{
             color: "white",
-            borderBottomColor: "white",
+            borderBottomColor:isWhiteInput? "white":"#FFA100",
             borderBottomWidth: 1,
+              paddingVertical:isWhiteInput&&scale(10),
             ...inputStyle,
+
+
 
           }}
           onChangeText={(text) => { onChange(text, name, updaterFn), cb(text) }}

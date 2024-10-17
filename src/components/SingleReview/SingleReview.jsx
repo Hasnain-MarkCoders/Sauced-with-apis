@@ -84,7 +84,7 @@ const SingleReview = ({
             lineHeight: scale(17),
             textDecorationLine: "underline"
             , textDecorationStyle: "solid"
-            , textDecorationColor: "black",
+            , textDecorationColor: "white",
             marginBottom: scale(10)
           }}>
             {userName}
@@ -112,7 +112,7 @@ const SingleReview = ({
               lineHeight: scale(17),
               textDecorationLine: "underline"
               , textDecorationStyle: "solid"
-              , textDecorationColor: "black"
+              , textDecorationColor: "white"
             }}>
               {sauceName}
             </Text>

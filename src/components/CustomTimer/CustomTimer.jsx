@@ -11,7 +11,7 @@ const CustomTimer = ({ eventTime }) => {
 
     useEffect(() => {
         const targetTime = new Date(eventTime).getTime(); // Milliseconds since epoch (UTC)
-        
+
         const interval = setInterval(() => {
             const nowTime = new Date().getTime(); // Milliseconds since epoch (local time)
             const difference = targetTime - nowTime;
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: scale(10),
         flexDirection: 'row',
+        flexWrap:"wrap"
     },
     colon: {
         color: 'white',

@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions } from 'react-native'
+import { Image, ImageBackground, Text, TouchableOpacity, Vibration, View,   Platform,KeyboardAvoidingView, Dimensions, SafeAreaView } from 'react-native'
 import React, {  useEffect, useState } from 'react'
 import home from "./../../../assets/images/home.png"
 import {  handleText } from '../../../utils'
@@ -8,6 +8,7 @@ import CustomInput from '../../components/CustomInput/CustomInput'
 import { useNavigation } from '@react-navigation/native'
 import search from "./../../../assets/images/search_icon.png";
 import VerticalUserSearchList from '../../components/VerticalUserSearchList/VerticalUserSearchList'
+import Header from '../../components/Header/Header'
 
 const UserSearchScreen = () => {
     const [query, setQuery] = useState({
@@ -22,15 +23,25 @@ const UserSearchScreen = () => {
             source={home}
             style={{
                 flex: 1,
-                paddingHorizontal:scale(20),
+                // paddingHorizontal:scale(20),
                 paddingTop:scale(32),
             }}>
+ <Header showMenu={false} cb={() => navigation.goBack()} showProfilePic={false} headerContainerStyle={{
+                    paddingBottom: scale(20)
+                }} showText={false} />
                 <KeyboardAvoidingView
                 style={{
-                    flex:1
+                    flex:1,
+                paddingHorizontal:scale(20),
+
                 }}
                       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                       >
+                        <SafeAreaView style={{
+                            flex:1,
+
+                        }}>
+
             <View style={{
                 marginBottom: scale(10),
             }}>
@@ -88,12 +99,13 @@ const UserSearchScreen = () => {
             horizontal={false}
             numColumns={2}
             searchTerm={query?.search}
-            
+
             />
-                
-                
+
+
 
             </View>
+                        </SafeAreaView>
 </KeyboardAvoidingView>
         </ImageBackground>
 

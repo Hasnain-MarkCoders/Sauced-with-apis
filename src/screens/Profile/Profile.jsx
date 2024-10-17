@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -73,13 +73,13 @@ const ProfileScreen = () => {
                 setLoading(false);
             }
         };
-    
+
         // Initial fetch
         fetchUser();
-    
+
         // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
         const interval = setInterval(fetchUser, 10000); // 10000 milliseconds = 10 seconds
-    
+
         // Cleanup function to clear interval when component unmounts
         return () => clearInterval(interval);
     }, []);
@@ -105,7 +105,7 @@ return ()=>{
 
 //     }, []) // Ensure _id is included if it can change
 //   );
-  
+
 if (initialLoading) {
     return (
         <ImageBackground source={home} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -126,7 +126,7 @@ if (initialLoading) {
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        paddingBottom:scale(60)
+                        paddingBottom:scale(150)
                     }}
                     data={[1, 1, 1, 1,1, 1]}
                     renderItem={({ item, index }) => {
@@ -174,11 +174,33 @@ if (initialLoading) {
                                             marginVertical: scale(30)
                                         }}>
                                             <TouchableOpacity style={{
-                                                width:"100%"
+                                                width:"100%",
                                             }} onPress={()=>{
                                                 navigation.navigate("UserSearchScreen")
                                             }}>
-                                            <CustomInput
+                                                <View style={{
+                                                    width:"100%",
+                                                    height:scale(45),
+                                                    borderRadius:scale(8),
+                                                    borderWidth:1,
+                                                    borderColor:"#FFA100",
+                                                    flexDirection:"row",
+                                                    alignItems:"center",
+                                                    gap:scale(10),
+                                                    paddingLeft:scale(10)
+                                                }}>
+                                                    <Image style={{
+                                                        width:scale(27),
+                                                        height:scale(27)
+                                                    }} source={search}/>
+                                                    <Text style={{
+                                                        color:"white",
+                                                        fontSize:scale(13)
+                                                    }}>
+                                                        Search Friends
+                                                    </Text>
+
+                                            {/* <CustomInput
                                             readOnly={true}
                                                 imageStyles={{ top: "50%", resizeMode: 'contain', transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
                                                 isURL={false}
@@ -200,7 +222,8 @@ if (initialLoading) {
                                                     padding: 15,
                                                     paddingLeft: scale(45)
 
-                                                }} />
+                                                }} /> */}
+                                                </View>
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{
@@ -216,12 +239,12 @@ if (initialLoading) {
                                                     fontWeight: 600,
                                                     fontSize: scale(24),
                                                     lineHeight: scale(28),
-    
+
                                                 }}>
                                                     Add Friends
                                                 </Text>
                                             }
-                                           
+
                                             <TouchableOpacity
                                                 onPress={() => {
                                                     navigation.navigate("AllUserReviews", {_id:auth?._id})
@@ -248,7 +271,7 @@ if (initialLoading) {
                                                 marginBottom: (users?.length>0 ||  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) && scale(30)
                                         }}>
 
-                                        <HorizontalUsersList 
+                                        <HorizontalUsersList
                                         refresh={refresh}
                                         />
                                         </View>
@@ -283,7 +306,7 @@ if (initialLoading) {
                                 {
                                     index == 3 && <View style={{
                                         marginTop: (  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) &&scale(50),
-                                    
+
                                         marginBottom: (users?.length>0 ||  saucesListThree.length>0 || saucesListTwo?.length>0 || saucesListOne.length>0 ) && scale(30),
 
                                         gap:scale(50)
@@ -311,7 +334,7 @@ if (initialLoading) {
 
                              }
                                 {
-                                    index==5&& 
+                                    index==5&&
                                     <View style={{
                                         gap:scale(20)
                                     }}>
@@ -320,16 +343,16 @@ if (initialLoading) {
                                                     fontWeight: 600,
                                                     fontSize: scale(24),
                                                     lineHeight: scale(28),
-    
+
                                                 }}>Events I'm Interested In</Text>
                                                 <View>
-                                               
+
                                                 <InterestedEventsCarousel
                                                 refresh={refresh}
                                                 showText={true}
                                                 />
-                                               
-                                                        
+
+
                                                 </View>
                                     </View>
                                 }

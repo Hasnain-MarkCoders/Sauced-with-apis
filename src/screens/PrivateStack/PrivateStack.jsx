@@ -33,10 +33,10 @@ const PrivateStack = () => {
     }
 
     const handleCameraPermission = () => {
-        const cameraPermission = Platform.OS === 'ios' 
-            ? PERMISSIONS.IOS.CAMERA 
+        const cameraPermission = Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.CAMERA
             : PERMISSIONS.ANDROID.CAMERA;
-    
+
         check(cameraPermission).then(result => {
             if (result === RESULTS.GRANTED) {
                 handleNavigateToCameraScreen(); // Proceed to camera screen
@@ -46,7 +46,7 @@ const PrivateStack = () => {
                     message: "Camera Permission Required. Would you like to grant permission?",
                     success: true,
                     isQuestion:true,
-                    
+
                     cb: () => {
                         request(cameraPermission).then(result => {
                             if (result === RESULTS.GRANTED) {
@@ -83,7 +83,7 @@ const PrivateStack = () => {
             });
         });
     };
-    
+
 
     return (
         <>
@@ -95,7 +95,8 @@ const PrivateStack = () => {
                 tabBarStyle: {
                     backgroundColor: "#FFA100",
                     position: "absolute",
-                    height: 95,
+                    paddingVertical:scale(10),
+                    minHeight: scale(100),
                     elevation: 5,
                     left: 0,
                     right: 0,
@@ -120,7 +121,7 @@ const PrivateStack = () => {
                     return (
                         <>
                      { route.name==="QRScan"?
-                     
+
                      <>
                      <TouchableOpacity onPress={handleCameraPermission} style={{ gap: 4, alignItems: "center", backgroundColor:'white', padding:scale(25), borderRadius:scale(50) }}>
                             <Image style={{
@@ -132,9 +133,9 @@ const PrivateStack = () => {
                         </TouchableOpacity>
                             {/* <Text style={{ fontSize: 12, lineHeight: 18, color: focused ?  'white':'black'  }}> {route.name} </Text> */}
                         </>
-                        
+
                         :
-                        <View style={{ gap: 4, alignItems: "center" }}>
+                        <View style={{ gap: scale(4), alignItems: "center" }}>
                             <Image style={{
                                 maxWidth: scale(20),
                                 resizeMode: 'contain',
@@ -156,7 +157,7 @@ const PrivateStack = () => {
   }}  name="QRScan" component={CameraScreen} />
             <Tab.Screen name="Awards" component={Awards} />
             <Tab.Screen name="Main" component={ProfileScreen} />
-           
+
         </Tab.Navigator>
         <YesNoModal
         isQuestion={yesNoModal.isQuestion}
@@ -171,9 +172,9 @@ const PrivateStack = () => {
                     success={yesNoModal.severity}
                     title={yesNoModal.message}
                     cb={yesNoModal.cb}
-                                    
+
                     />
-        
+
         </>
     );
 };

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import { scale } from "react-native-size-matters";
 import {
@@ -50,11 +51,11 @@ const CameraScreen = () => {
       if (camera.current) {
         const options = { quality: 0.5, base64: true, exif: true };
         const photo = await camera.current.takePhoto(options);
-        
+
         // Extract filename and extension
         const filename = photo.path.split("/").pop() || `photo_${Date.now()}.jpg`;
         const extension = filename.split(".").pop().toLowerCase();
-        
+
         // Determine MIME type with fallback
         const mimeTypes = {
           jpg: "image/jpeg",
@@ -63,10 +64,10 @@ const CameraScreen = () => {
           // Add more types if needed
         };
         const type = mimeTypes[extension] || "image/jpeg";
-        
+
         // Format URI correctly
         const uri = Platform.OS === "ios" ? photo.path : `file://${photo.path}`;
-        
+
         setCapturedImage({ ...photo, uri, name: filename, type });
       }
     } catch (error) {
@@ -76,14 +77,29 @@ const CameraScreen = () => {
 
   if (!device || !hasPermission) {
     return (
+      <SafeAreaView style={{
+        flex:1
+      }}>
+
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "black",
+          position:"relative"
         }}
       >
+              <TouchableOpacity
+        onPress={async() => {
+           navigation.goBack();
+        }}
+        style={styles.closeButton}
+      >
+        <View style={styles.closeButtonInner}>
+          <X color="#fff" />
+        </View>
+      </TouchableOpacity>
         <Text style={{ color: "white" }}>
           {!device
             ? "Camera not found..."
@@ -92,6 +108,7 @@ const CameraScreen = () => {
             : ""}
         </Text>
       </View>
+      </SafeAreaView>
     );
   }
 

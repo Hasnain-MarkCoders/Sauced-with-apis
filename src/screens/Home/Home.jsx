@@ -57,7 +57,7 @@ const Home = () => {
         }
       };
 
-      
+
       React.useEffect(() => {
         // Get the initial token
         const getInitialFcmToken = async () => {
@@ -70,19 +70,19 @@ const Home = () => {
           console.log('FCM Token refreshed:', newFcmToken);
           await updateTokenOnServer(newFcmToken); // Update new token to your backend
         });
-      
+
         // Clean up the listener when component unmounts
         return () => unsubscribe();
       }, []);
-      
+
 
 
     const checkLocationServiceAndNavigate = () => {
         setLoading(true); // Start loading indicator
-        const permission = Platform.OS === 'ios' 
-          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+        const permission = Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
           : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+
         check(permission).then(result => {
           if (result === RESULTS.GRANTED) {
             fetchCurrentLocation();
@@ -113,7 +113,7 @@ const Home = () => {
                                       });
                                 }
                             });
-           
+
             // setYesNoModal({
             //     open: true,
             //     message: "Location Permission Required. Would you like to grant permission?",
@@ -158,7 +158,7 @@ const Home = () => {
           setLoading(false); // Stop loading indicator
         });
       };
-    
+
       const fetchCurrentLocation = () => {
         Geolocation.getCurrentPosition(
           (position) => {
@@ -169,6 +169,9 @@ const Home = () => {
               fn:()=>{},
               showContinue:true
             });
+            console.log("hello from location latitude================================>", position.coords.latitude)
+            console.log("hello from location longitude===============================>", position.coords.longitude)
+
             setLoading(false); // Stop loading indicator
           },
           (error) => {
@@ -181,7 +184,7 @@ const Home = () => {
             // })
             // setLoading(false); // Stop loading indicator
           },
-          { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
+          { enableHighAccuracy: false, timeout: 50000, maximumAge: 0 }
         );
       };
 
@@ -190,10 +193,10 @@ const Home = () => {
 
     // const checkLocationServiceAndNavigate = () => {
     //     setLoading(true); // Start loading indicator
-    //     const permission = Platform.OS === 'ios' 
-    //       ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+    //     const permission = Platform.OS === 'ios'
+    //       ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
     //       : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+
     //     // Check permission status
     //     check(permission).then(result => {
     //         if (result === RESULTS.GRANTED) {
@@ -247,7 +250,7 @@ const Home = () => {
     //         setLoading(false); // Stop loading indicator
     //     });
     // };
-    
+
     // const fetchCurrentLocation = () => {
     //     Geolocation.getCurrentPosition(
     //         (position) => {
@@ -278,10 +281,10 @@ const Home = () => {
 
     // const checkLocationServiceAndNavigate = () => {
     //     setLoading(true); // Start loading indicator
-    //     const permission = Platform.OS === 'ios' 
+    //     const permission = Platform.OS === 'ios'
     //       ? PERMISSIONS.IOS.LOCATION_ALWAYS // Changed to LOCATION_ALWAYS for better handling
     //       : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+
     //     // Check permission status
     //     check(permission).then(result => {
     //         if (result === RESULTS.GRANTED) {
@@ -325,7 +328,7 @@ const Home = () => {
     //         setLoading(false); // Stop loading indicator in all cases
     //     });
     // };
-    
+
     // const fetchCurrentLocation = () => {
     //     Geolocation.getCurrentPosition(
     //         (position) => {
@@ -355,10 +358,10 @@ const Home = () => {
 
     // const checkLocationServiceAndNavigate = () => {
     //     setLoading(true); // Start loading indicator
-    //     const permission = Platform.OS === 'ios' 
+    //     const permission = Platform.OS === 'ios'
     //       ? PERMISSIONS.IOS.LOCATION_ALWAYS // Changed to LOCATION_ALWAYS for better handling
     //       : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+
     //     // Check permission status
     //     check(permission).then(result => {
     //         if (result === RESULTS.GRANTED) {
@@ -407,7 +410,7 @@ const Home = () => {
     //         setLoading(false); // Stop loading indicator
     //     });
     // };
-    
+
     // const fetchCurrentLocation = () => {
     //     Geolocation.getCurrentPosition(
     //         (position) => {
@@ -437,10 +440,10 @@ const Home = () => {
 
     // const checkLocationServiceAndNavigate = () => {
     //     setLoading(true); // Start loading indicator
-    //     const permission = Platform.OS === 'ios' 
+    //     const permission = Platform.OS === 'ios'
     //       ? PERMISSIONS.IOS.LOCATION_ALWAYS // Ensure we're checking the correct permission type
     //       : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
+
     //     // Check permission status
     //     check(permission).then(result => {
     //         if (result === RESULTS.GRANTED) {
@@ -489,7 +492,7 @@ const Home = () => {
     //         setLoading(false); // Stop loading indicator
     //     });
     // };
-    
+
     // const fetchCurrentLocation = () => {
     //     setLoading(true); // Ensure loading is active while fetching location
     //     Geolocation.getCurrentPosition(
@@ -533,13 +536,13 @@ const Home = () => {
                 const enabled =
                   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
                   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-              
+
                 if (enabled) {
                   console.log('Authorization status:', authStatus);
                   getFcmToken();
                 }
               }
-              
+
               const getFcmToken = async () => {
                 const token = await messaging().getToken();
                 console.log('FCM Token:', token);
@@ -549,7 +552,7 @@ const Home = () => {
         }catch(err){
             console.log(err)
         }
-      
+
     },[])
 
     // useEffect(() => {
@@ -567,11 +570,11 @@ const Home = () => {
     //         console.log("remoteMessage===============>", remoteMessage)
 
     //     });
-      
+
     //     return unsubscribe;
     //   }, []);
 
-     
+
 
     if (initialLoading) {
         return (
@@ -591,13 +594,60 @@ const Home = () => {
                     <View style={styles.searchContainer}>
                         <View style={styles.searchBarContainer}>
                             <TouchableOpacity
-                            
+
                             style={{width:"100%"}}
                             onPress={()=>{
                                 navigation.navigate("Search")
                             }}>
 
-                            <CustomInput
+<View style={{
+                                                    width:"100%",
+                                                    height:scale(45),
+                                                    borderRadius:scale(8),
+                                                    borderWidth:1,
+                                                    borderColor:"#FFA100",
+                                                    flexDirection:"row",
+                                                    alignItems:"center",
+                                                    gap:scale(10),
+                                                    paddingLeft:scale(10)
+                                                }}>
+                                                    <Image style={{
+                                                        width:scale(23),
+                                                        height:scale(23)
+                                                    }} source={search}/>
+                                                    <Text style={{
+                                                        color:"white",
+                                                        fontSize:scale(13)
+                                                    }}>
+                                                        Search for a sauce...
+                                                    </Text>
+
+                                            {/* <CustomInput
+                                            readOnly={true}
+                                                imageStyles={{ top: "50%", resizeMode: 'contain', transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), height: scale(25), aspectRatio: "1/1" }}
+                                                isURL={false}
+                                                showImage={true}
+                                                uri={search}
+                                                name="search"
+                                                onChange={handleText}
+                                                updaterFn={setQuery}
+                                                value={query.search}
+                                                showTitle={false}
+                                                placeholder="Search Friends..."
+                                                containterStyle={{
+                                                    flexGrow: 1,
+                                                }}
+                                                inputStyle={{
+                                                    borderColor: "#FFA100",
+                                                    borderWidth: 1,
+                                                    borderRadius: 10,
+                                                    padding: 15,
+                                                    paddingLeft: scale(45)
+
+                                                }} /> */}
+                                                </View>
+
+                            {/* <CustomInput
                             readOnly={true}
                                 imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], resizeMode: 'contain', width: scale(25), height: scale(25), aspectRatio: "1/1" }}
                                 isURL={false}
@@ -619,7 +669,7 @@ const Home = () => {
                                     padding: 15,
                                     paddingLeft: scale(45)
 
-                                }} />
+                                }} /> */}
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity onPress={() => {
@@ -636,7 +686,7 @@ const Home = () => {
 
                     </View>
 
-                    
+
                     <View style={{
                         position: "relative",
                         gap:scale(10)
@@ -756,7 +806,7 @@ const Home = () => {
                     success={yesNoModal.severity}
                     title={"Location Request"}
                     cb={yesNoModal.cb}
-                                    
+
                     />
                 </SafeAreaView>
             </ScrollView>
