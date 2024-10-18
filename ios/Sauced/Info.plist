@@ -49,6 +49,17 @@
     </dict>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Location Permission</string>
+
+
+
+   <key>NSCalendarsUsageDescription</key>
+    <string>This app requires access to your calendar to manage event dates effectively. We use your calendar to schedule and display events you are interested in. Your privacy is important to us, and we only access this information to enhance your experience.</string>
+
+
+
+   <key>NSAppleMusicUsageDescription</key>
+    <string>This app needs access to your Apple Music account to send you notifications related to music events and updates. This enables us to provide a personalized experience based on your music preferences. We respect your privacy and will only use this information to improve our app's functionality.</string>
+
     <key>NSLocationUsageDescription</key>
     <string>GPS data is required to...</string>
     <key>NSLocationAlwaysUsageDescription</key>

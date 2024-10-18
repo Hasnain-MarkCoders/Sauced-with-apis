@@ -166,6 +166,7 @@ const SouceDetails = () => {
                                                     borderWidth: 1,
                                                     borderRadius: 10,
                                                     padding: 15,
+                                                    paddingVertical:scale(15)
 
                                                 }} />
                                         </View>
@@ -201,6 +202,7 @@ const SouceDetails = () => {
                                                     borderWidth: 1,
                                                     borderRadius: 10,
                                                     padding: 15,
+                                                    paddingVertical:scale(15)
 
                                                 }} />
                                         </View>
@@ -237,6 +239,7 @@ const SouceDetails = () => {
                                                     borderRadius: 10,
                                                     padding: 15,
                                                     textAlignVertical: 'top',
+                                                    paddingVertical:scale(15)
 
                                                 }} />
                                         </View>

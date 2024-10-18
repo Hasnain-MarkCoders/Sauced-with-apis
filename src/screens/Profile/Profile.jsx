@@ -180,7 +180,7 @@ if (initialLoading) {
                                             }}>
                                                 <View style={{
                                                     width:"100%",
-                                                    height:scale(45),
+                                                    height:scale(53),
                                                     borderRadius:scale(8),
                                                     borderWidth:1,
                                                     borderColor:"#FFA100",

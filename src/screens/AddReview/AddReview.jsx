@@ -216,11 +216,40 @@ const AddReview = () => {
                 console.log('ImagePicker Error: ', response?.error);
                 Alert.alert('Error', 'Something went wrong while picking the image.');
             } else {
-                const sources = response.assets.map(asset => ({
-                    uri: asset?.uri,
-                    type: asset?.type,
-                    name: asset?.fileName,
-                }));
+                // const sources = response.assets.map(asset => ({
+                //     uri: asset?.uri,
+                //     type: asset?.type,
+                //     name: asset?.fileName,
+                // }));
+
+                
+                const sources =
+                response?.assets?.map((asset) => {
+                  // Adjust the URI for platform differences
+                  let uri = asset?.uri;
+                  if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+                    uri = 'file://' + uri;
+                  }
+        
+                  // Extract filename and extension
+                  const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
+                  const extension = filename.split('.').pop().toLowerCase();
+        
+                  // Determine MIME type with fallback
+                  const mimeTypes = {
+                    jpg: 'image/jpeg',
+                    jpeg: 'image/jpeg',
+                    png: 'image/png',
+                    // Add more types if needed
+                  };
+                  const type = mimeTypes[extension] || asset?.type || 'image/jpeg';
+        
+                  return {
+                    uri: uri,
+                    type: type,
+                    name: filename,
+                  };
+                }) || [];
 
                 setImageUris(prevUris => [...prevUris, ...sources]);
             }
@@ -479,6 +508,7 @@ const handleSlider = (heatLevel)=>{
                                                     fontSize: scale(14),
                                                     padding: 15,
                                                     textAlignVertical: 'top',
+                                                    paddingVertical:scale(15)
                                                 }}
                                             />
                                             <View style={{

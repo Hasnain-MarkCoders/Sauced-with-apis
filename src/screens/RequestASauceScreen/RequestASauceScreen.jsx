@@ -171,6 +171,7 @@ const RequestASauceScreen = () => {
                                     borderWidth: 1,
                                     borderRadius: 10,
                                     padding: 15,
+                                    paddingVertical:scale(15)
 
                                 }} />
                             </View>
@@ -201,6 +202,7 @@ const RequestASauceScreen = () => {
                                     borderWidth: 1,
                                     borderRadius: 10,
                                     padding: 15,
+                                    paddingVertical:scale(15)
 
                                 }} />
                                 </View>
@@ -250,6 +252,7 @@ const RequestASauceScreen = () => {
                                         borderWidth: 1,
                                         borderRadius: 10,
                                         padding: 15,
+                                        paddingVertical:scale(15)
 
                                     }} />
                                 {/* <Text style={{

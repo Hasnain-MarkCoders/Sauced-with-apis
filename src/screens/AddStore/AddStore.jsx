@@ -112,95 +112,230 @@ const AddStore = () => {
 
     }
 
-    const checkLocationServiceAndNavigate = () => {
-        setIsLoading(prev => ({ ...prev, loadMap: true }))
-        // Start loading indicator
+
+    //current location code start 
+
+    // const checkLocationServiceAndNavigate = () => {
+    //     setIsLoading(prev => ({ ...prev, loadMap: true }))
+    //     // Start loading indicator
+    //     const permission = Platform.OS === 'ios'
+    //         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+    //         : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+    //     check(permission).then(result => {
+    //         if (result === RESULTS.GRANTED) {
+    //             fetchCurrentLocation();
+    //         } else if (result === RESULTS.DENIED) {
+    //             setYesNoModal({
+    //                 open: true,
+    //                 message: "Location Permission Required. Would you like to grant permission?",
+    //                 success: true,
+    //                 isQuestion:true,
+    //                 cb: () => {
+    //                     request(permission).then(result => {
+    //                         if (result === RESULTS.GRANTED) {
+    //                           fetchCurrentLocation();
+    //                         } else {
+    //                           // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
+    //                           Alert.alert(
+    //                               "Location Permission Blocked",
+    //                               "Please enable location permission in your device settings to use this feature.",
+    //                               [
+    //                                   { text: "Cancel", style: "cancel" },
+    //                                   { text: "Open Settings", onPress: () => Linking.openSettings() }
+    //                               ]
+    //                           );
+    //                           setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //                         }
+    //                       });
+    //                 }
+    //             });
+    //         } else {
+    //             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //             setYesNoModal({
+    //                 open: true,
+    //                 message: "Location Permission Required. Would you like to grant permission?",
+    //                 success: true,
+    //                 isQuestion:true,
+    //                 cb: () => {
+    //                     request(permission).then(result => {
+    //                         if (result === RESULTS.GRANTED) {
+    //                           fetchCurrentLocation();
+    //                         } else {
+    //                           Alert.alert(
+    //                               "Location Permission Blocked",
+    //                               "Please enable location permission in your device settings to use this feature.",
+    //                               [
+    //                                   { text: "Cancel", style: "cancel" },
+    //                                   { text: "Open Settings", onPress: () => Linking.openSettings() }
+    //                               ]
+    //                           );
+    //                           setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //                         }
+    //                       });
+    //                 }
+    //             });
+    //         }
+    //     }).catch(error => {
+    //         console.warn("Error checking location permission:", error);
+    //         Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
+    //         setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //     });
+    // };
+
+    // const fetchCurrentLocation = () => {
+    //     Geolocation.getCurrentPosition(
+    //         (position) => {
+    //             console.log("Current position:", position);
+    //             navigation.navigate("Map", {
+    //                 lat: position.coords.latitude,
+    //                 lng: position.coords.longitude,
+    //                 fn: handleEventCoords,
+    //                 showContinue:false
+
+    //             });
+    //             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //         },
+    //         (error) => {
+    //             console.log("Error fetching current location:", error);
+    //             Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+    //             setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
+    //         },
+    //         { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
+    //     );
+    // };
+
+    //current location code end
+
+
+    //test location code start
+    const checkLocationServiceAndNavigate = async () => {
+        setIsLoading(prev => ({ ...prev, loadMap: true })); // Start loading indicator
         const permission = Platform.OS === 'ios'
-            ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-            : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-        check(permission).then(result => {
-            if (result === RESULTS.GRANTED) {
-                fetchCurrentLocation();
-            } else if (result === RESULTS.DENIED) {
-                setYesNoModal({
-                    open: true,
-                    message: "Location Permission Required. Would you like to grant permission?",
-                    success: true,
-                    isQuestion:true,
-                    cb: () => {
-                        request(permission).then(result => {
-                            if (result === RESULTS.GRANTED) {
-                              fetchCurrentLocation();
-                            } else {
-                              // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
-                              Alert.alert(
-                                  "Location Permission Blocked",
-                                  "Please enable location permission in your device settings to use this feature.",
-                                  [
-                                      { text: "Cancel", style: "cancel" },
-                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
-                                  ]
-                              );
-                              setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                            }
-                          });
-                    }
-                });
-            } else {
-                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                setYesNoModal({
-                    open: true,
-                    message: "Location Permission Required. Would you like to grant permission?",
-                    success: true,
-                    isQuestion:true,
-                    cb: () => {
-                        request(permission).then(result => {
-                            if (result === RESULTS.GRANTED) {
-                              fetchCurrentLocation();
-                            } else {
-                              Alert.alert(
-                                  "Location Permission Blocked",
-                                  "Please enable location permission in your device settings to use this feature.",
-                                  [
-                                      { text: "Cancel", style: "cancel" },
-                                      { text: "Open Settings", onPress: () => Linking.openSettings() }
-                                  ]
-                              );
-                              setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-                            }
-                          });
-                    }
-                });
-            }
-        }).catch(error => {
-            console.warn("Error checking location permission:", error);
-            Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
-            setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-        });
-    };
-
-    const fetchCurrentLocation = () => {
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+      
+        try {
+          const result = await check(permission);
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              Alert.alert(
+                "Location Services Unavailable",
+                "Location services are not available on this device.",
+                [{ text: "OK", onPress: () => setIsLoading(prev => ({ ...prev, loadMap: false })) }]
+              );
+              break;
+            case RESULTS.DENIED:
+              showPermissionModal(
+                "Location Permission Required. Would you like to grant permission?",
+                async () => {
+                  const requestResult = await request(permission);
+                  if (requestResult === RESULTS.GRANTED) {
+                    fetchCurrentLocation();
+                  } else if (requestResult === RESULTS.BLOCKED) {
+                    handleBlockedPermission();
+                  } else {
+                    setIsLoading(prev => ({ ...prev, loadMap: false }));
+                  }
+                }
+              );
+              break;
+            case RESULTS.GRANTED:
+            case RESULTS.LIMITED:
+              // For iOS, proceed even if access is limited
+              fetchCurrentLocation();
+              break;
+            case RESULTS.BLOCKED:
+              handleBlockedPermission();
+              break;
+            default:
+              Alert.alert(
+                "Permission Error",
+                "An unexpected error occurred while checking location permission.",
+                [{ text: "OK", onPress: () => setIsLoading(prev => ({ ...prev, loadMap: false })) }]
+              );
+              break;
+          }
+        } catch (error) {
+          console.warn("Error checking location permission:", error);
+          Alert.alert(
+            "Error",
+            "An error occurred while checking location permission. Please try again.",
+            [{ text: "OK", onPress: () => setIsLoading(prev => ({ ...prev, loadMap: false })) }]
+          );
+        }
+      };
+      
+      const fetchCurrentLocation = () => {
         Geolocation.getCurrentPosition(
-            (position) => {
-                console.log("Current position:", position);
-                navigation.navigate("Map", {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                    fn: handleEventCoords,
-                    showContinue:false
-
-                });
-                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-            },
-            (error) => {
-                console.log("Error fetching current location:", error);
-                Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
-                setIsLoading(prev => ({ ...prev, loadMap: false })) // Stop loading indicator
-            },
-            { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
+          (position) => {
+            console.log("Current position:", position);
+            navigation.navigate("Map", {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              fn: handleEventCoords,
+              showContinue: false,
+            });
+            setIsLoading(prev => ({ ...prev, loadMap: false })); // Stop loading indicator
+          },
+          (error) => {
+            console.log("Error fetching current location:", error);
+            let errorMessage = '';
+            switch (error.code) {
+              case 1: // PERMISSION_DENIED
+                errorMessage = 'Permission to access location was denied.';
+                break;
+              case 2: // POSITION_UNAVAILABLE
+                errorMessage = 'Location information is unavailable.';
+                break;
+              case 3: // TIMEOUT
+                errorMessage = 'The request to get user location timed out.';
+                break;
+              default:
+                errorMessage = 'An unknown error occurred while fetching location.';
+                break;
+            }
+            Alert.alert(
+              "Location Service Error",
+              `Could not fetch current location. ${errorMessage}`,
+              [{ text: "OK", onPress: () => setIsLoading(prev => ({ ...prev, loadMap: false })) }]
+            );
+          },
+          { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
         );
-    };
+      };
+      
+      const showPermissionModal = (message, onConfirm) => {
+        setYesNoModal({
+          open: true,
+          message: message,
+          success: true,
+          isQuestion: true,
+          cb: onConfirm,
+        });
+      };
+      
+      const handleBlockedPermission = () => {
+        Alert.alert(
+          "Location Permission Blocked",
+          "Please enable location permission in your device settings to use this feature.",
+          [
+            { text: "Cancel", style: "cancel", onPress: () => setIsLoading(prev => ({ ...prev, loadMap: false })) },
+            {
+              text: "Open Settings",
+              onPress: () => {
+                Linking.openSettings();
+                setIsLoading(prev => ({ ...prev, loadMap: false }));
+              },
+            },
+          ]
+        );
+      };
+
+
+
+    //test location code end
+    
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -260,6 +395,7 @@ const AddStore = () => {
                                         borderWidth: 1,
                                         borderRadius: 10,
                                         padding: 15,
+                                        paddingVertical:scale(15)
 
                                     }} />
                             </View>

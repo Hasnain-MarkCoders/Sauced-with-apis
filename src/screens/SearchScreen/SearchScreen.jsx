@@ -144,6 +144,7 @@ const SearchScreen = () => {
                                     height: scale(25),
                                     aspectRatio: '1/1',
                                 }}
+                                
                                 isURL={false}
                                 showImage={true}
                                 uri={search}
@@ -162,6 +163,7 @@ const SearchScreen = () => {
                                     borderRadius: 10,
                                     padding: 15,
                                     paddingLeft: scale(45),
+                                    paddingVertical:scale(15)
                                 }}
                             />
                                 {query.search !== "" && (

@@ -445,7 +445,7 @@ if(authLoading){
                 title="Full Name"
                 name="fullName"
                 inputStyle={{
-                  paddingVertical:scale(10)
+                  paddingVertical:scale(15)
                 }}
               />
               <CustomInput
@@ -456,7 +456,7 @@ if(authLoading){
                 title="Email"
                 name="email"
                 inputStyle={{
-                  paddingVertical:scale(10)
+                  paddingVertical:scale(15)
                 }}
               />
               <View style={{
@@ -475,7 +475,7 @@ if(authLoading){
                 name="password"
                 secureTextEntry={true}
                 inputStyle={{
-                  paddingVertical:scale(10)
+                  paddingVertical:scale(15)
                 }}
               />
 

@@ -110,7 +110,8 @@ const CustomEditModal = ({
                 borderWidth: 1,
                 borderRadius: 10,
                 padding: 15,
-                marginTop: scale(10)
+                marginTop: scale(10),
+                paddingVertical:scale(15)
 
               }}
             />

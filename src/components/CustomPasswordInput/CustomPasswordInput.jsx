@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
+import { scale } from 'react-native-size-matters'
 
 const CustomPasswordInput = ({ title = "", uri = "", isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {} }) => {
   return (
@@ -13,6 +14,7 @@ const CustomPasswordInput = ({ title = "", uri = "", isURL = true, multiline = f
       color: "white",
       borderBottomColor: "white",
       borderBottomWidth: 1,
+      paddingVertical:scale(15),
       ...inputStyle,
 
     }}

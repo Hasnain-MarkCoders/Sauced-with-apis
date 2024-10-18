@@ -286,7 +286,8 @@ const AllCheckinsScreen = ({
                                 borderRadius: 10,
                                 padding: 15,
                                 paddingLeft: scale(10),
-                                textAlignVertical: "top"
+                                textAlignVertical: "top",
+                                paddingVertical:scale(15)
 
                             }} />
                         <TouchableOpacity

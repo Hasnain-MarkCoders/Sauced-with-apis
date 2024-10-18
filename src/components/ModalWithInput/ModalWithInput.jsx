@@ -128,7 +128,8 @@ const ModalWithInput = ({
                                                 borderColor: "white",
                                                 borderWidth: 1,
                                                 borderRadius: 10,
-                                                padding: 15,
+                                                padding: scale(15),
+                                                paddingVertical:scale(15)
                                                 // paddingLeft:scale(45),
                                                 // width:"100%"
 

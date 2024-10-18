@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -33,10 +33,10 @@ const UploadImage = () => {
             });
             dispatch(handleAuth({ url }));
             setImageUri(url);
-            console.log("response?.data?.message======================>", response?.data?.message)
+            console.log("response?.data?.message======================>", response?.data)
             setAlertModal({
                 open: true,
-                message: response?.data?.message,
+                message: response?.data?.message||"Image uploaded successfully.",
                 success: true,
                 openYesNoModal: false
             });
@@ -51,44 +51,117 @@ const UploadImage = () => {
         }
     };
 
-    const handleImagePicker = () => {
-        const options = {
-            mediaType: 'photo',
-            maxWidth: 300,
-            maxHeight: 300,
-            quality: 1,
-        };
+    // const handleImagePicker = () => {
+    //     const options = {
+    //         mediaType: 'photo',
+    //         maxWidth: 300,
+    //         maxHeight: 300,
+    //         quality: 1,
+    //     };
 
+    //     try {
+    //         launchImageLibrary(options, response => {
+    //             if (response.didCancel) {
+    //                 console.log("User cancelled image picker");
+    //             } else if (response.errorCode) {
+    //                 console.log('ImagePicker Error: ', response.errorMessage);
+    //             } else if (response.assets && response.assets.length > 0) {
+    //                 const asset = response.assets[0];
+    //                 const source = { uri: asset.uri };
+    //                 setImageUri(source.uri);
+    //                 const file = {
+    //                     uri: asset.uri,
+    //                     type: asset.type,
+    //                     name: asset.fileName,
+    //                 };
+    //                 handleImage(source.uri, file);
+    //             } else {
+    //                 console.log("Unexpected response from image picker");
+    //             }
+    //         });
+    //     } catch (error) {
+    //         console.error("Error during image selection: ", error);
+    //         setAlertModal({
+    //             open: true,
+    //             message: error.message,
+    //             success: false,
+    //             openYesNoModal: false
+    //         });
+    //     }
+    // };
+
+    const handleImagePicker = async () => {
+        const options = {
+          mediaType: 'photo',
+          maxWidth: 300,
+          maxHeight: 300,
+          quality: 1,
+        };
+      
         try {
-            launchImageLibrary(options, response => {
-                if (response.didCancel) {
-                    console.log("User cancelled image picker");
-                } else if (response.errorCode) {
-                    console.log('ImagePicker Error: ', response.errorMessage);
-                } else if (response.assets && response.assets.length > 0) {
-                    const asset = response.assets[0];
-                    const source = { uri: asset.uri };
-                    setImageUri(source.uri);
-                    const file = {
-                        uri: asset.uri,
-                        type: asset.type,
-                        name: asset.fileName,
-                    };
-                    handleImage(source.uri, file);
-                } else {
-                    console.log("Unexpected response from image picker");
-                }
-            });
-        } catch (error) {
-            console.error("Error during image selection: ", error);
+          const response = await launchImageLibrary(options);
+      
+          if (response.didCancel) {
+            console.log('User cancelled image picker');
+          } else if (response.errorCode) {
+            console.log('ImagePicker Error: ', response.errorMessage);
             setAlertModal({
-                open: true,
-                message: error.message,
-                success: false,
-                openYesNoModal: false
+              open: true,
+              message: response.errorMessage || 'Something went wrong while picking the image.',
+              success: false,
+              openYesNoModal: false,
             });
+          } else if (response.assets && response.assets.length > 0) {
+            const asset = response.assets[0];
+      
+            // Adjust URI for platform differences
+            let uri = asset.uri;
+            if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+              uri = 'file://' + uri;
+            }
+      
+            // Extract filename and extension
+            const filename = asset.fileName || `photo_${Date.now()}.jpg`;
+            const extension = filename.split('.').pop().toLowerCase();
+      
+            // Determine MIME type with fallback
+            const mimeTypes = {
+              jpg: 'image/jpeg',
+              jpeg: 'image/jpeg',
+              png: 'image/png',
+              // Add more types if needed
+            };
+            const type = mimeTypes[extension] || asset.type || 'image/jpeg';
+      
+            // Create the file object
+            const file = {
+              uri: uri,
+              type: type,
+              name: filename,
+            };
+      
+            // Update state or call the handler
+            setImageUri(uri);
+            handleImage(uri, file);
+          } else {
+            console.log('Unexpected response from image picker');
+            setAlertModal({
+              open: true,
+              message: 'No image was selected. Please try again.',
+              success: false,
+              openYesNoModal: false,
+            });
+          }
+        } catch (error) {
+          console.error('Error during image selection: ', error);
+          setAlertModal({
+            open: true,
+            message: error.message || 'An unexpected error occurred during image selection.',
+            success: false,
+            openYesNoModal: false,
+          });
         }
-    };
+      };
 
     return (
         <View style={styles.container}>

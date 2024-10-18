@@ -100,7 +100,7 @@ const PrivateStack = () => {
                     elevation: 5,
                     left: 0,
                     right: 0,
-                    bottom: 0
+                    bottom: 0,
                 },
                 tabBarActiveTintColor: 'black',
                 tabBarInactiveTintColor: 'white',
@@ -135,7 +135,7 @@ const PrivateStack = () => {
                         </>
 
                         :
-                        <View style={{ gap: scale(4), alignItems: "center" }}>
+                        <View style={{ gap: scale(4),minWidth:scale(50), alignItems: "center"}}>
                             <Image style={{
                                 maxWidth: scale(20),
                                 resizeMode: 'contain',

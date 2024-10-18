@@ -513,6 +513,7 @@ useEffect(()=>{
               padding: 15,
               paddingLeft: scale(10),
               textAlignVertical: 'top',
+              paddingVertical:scale(15)
             }}
           />
           <TouchableOpacity

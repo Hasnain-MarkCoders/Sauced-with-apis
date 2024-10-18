@@ -92,7 +92,8 @@ const FollowingScreen = ({
                                                 borderWidth: 1,
                                                 borderRadius: 10,
                                                 padding: 15,
-                                                paddingLeft:scale(45)
+                                                paddingLeft:scale(45),
+                                                paddingVertical:scale(15)
 
                                             }} />
                                     </View>}
