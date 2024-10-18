@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions, ScrollView, Alert, Image, Vibration, ActivityIndicator } from 'react-native';
+import { Text, View, SafeAreaView, ImageBackground, TouchableOpacity, Dimensions, ScrollView, Alert, Image, Vibration, ActivityIndicator, Platform } from 'react-native';
 import home from './../../../assets/images/home.png';
 import Header from '../../components/Header/Header';
 import CustomInput from '../../components/CustomInput/CustomInput';
@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
 // import { handleAuth } from '../../../android/app/Redux/userReducer';
+import apple from "./../../../assets/images/apple-icon.png";
 
 import useAxios from '../../../Axios/useAxios';
 import GoogleSignInBTN from '../../components/GoogleSignInBTN/GoogleSignInBTN';
@@ -26,6 +27,7 @@ import messaging from '@react-native-firebase/messaging';
 
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import { handleAuth } from '../../Redux/userReducer';
+import appleAuth from '@invertase/react-native-apple-authentication';
 // Get screen dimensions
 
 const SignUp = () => {
@@ -340,7 +342,38 @@ const SignUp = () => {
  }
 
   }
+  async function onAppleButtonPress() {
 
+  //   try{
+  // // Start the sign-in request
+  // const appleAuthRequestResponse = await appleAuth.performRequest({
+  //   requestedOperation: appleAuth.Operation.LOGIN,
+  //   // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
+  //   // See: https://github.com/invertase/react-native-apple-authentication#faqs
+  //   requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+  // });
+  // console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
+  
+  // // Ensure Apple returned a user identityToken
+  // if (!appleAuthRequestResponse.identityToken) {
+  //   throw new Error('Apple Sign-In failed - no identify token returned');
+  // }
+  
+  // // Create a Firebase credential from the response
+  // const { identityToken, nonce } = appleAuthRequestResponse;
+  // const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+  // console.log("identityToken============>", identityToken)
+  
+  // // Sign the user in with the credential
+  // return auth().signInWithCredential(appleCredential);
+  //   }catch(err){
+  // console.log(err)
+  //   }finally{
+  
+  //   }
+  
+  
+  }
 
   const signInWithGoogle = async () => {
  setAuthLoading(true)
@@ -518,6 +551,19 @@ if(authLoading){
              width:"100%",
              gap:scale(20)
             }}>
+
+{
+                Platform.OS=="ios"&& <CustomButtom
+                showIcon={true}
+                Icon={()=><Image style={{width:24, height:24, objectFit:"contain"}}  source={apple} />}
+                buttonTextStyle={{ fontSize: scale(14) }}
+                buttonstyle={{ width: "100%", borderColor: "#FFA100", padding: 15, backgroundColor: "#2E210A",justifyContent:"start",  display:"flex", gap:10, flexDirection:"row", alignItems:"center", justifyContent:"center" }}
+                onPress={()=>{onAppleButtonPress();  Vibration.vibrate(10)}}
+                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
+
+                title={"Sign Up With Apple"}
+              />
+              }
 
 <CustomButtom
                 showIcon={true}
