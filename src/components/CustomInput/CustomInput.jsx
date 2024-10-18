@@ -54,7 +54,7 @@ const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =f
         }
         <TextInput
         onSubmitEditing={onSubmitEditing}
-          readOnly={readOnly}
+        readOnly={readOnly}
         autoFocus={autoFocus}
           multiline={multiline}
           numberOfLines={numberOfLines}
@@ -65,7 +65,7 @@ const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =f
             color: "white",
             borderBottomColor:isWhiteInput? "white":"#FFA100",
             borderBottomWidth: 1,
-              paddingVertical:isWhiteInput&&scale(10),
+              // paddingVertical:isWhiteInput&&scale(10),
             ...inputStyle,
 
 

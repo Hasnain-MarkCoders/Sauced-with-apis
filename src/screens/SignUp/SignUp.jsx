@@ -444,6 +444,9 @@ if(authLoading){
                 value={data.fullName}
                 title="Full Name"
                 name="fullName"
+                inputStyle={{
+                  paddingVertical:scale(10)
+                }}
               />
               <CustomInput
               isWhiteInput={true}
@@ -452,6 +455,9 @@ if(authLoading){
                 value={data.email}
                 title="Email"
                 name="email"
+                inputStyle={{
+                  paddingVertical:scale(10)
+                }}
               />
               <View style={{
                 gap:scale(10)
@@ -468,6 +474,9 @@ if(authLoading){
                 title="Password"
                 name="password"
                 secureTextEntry={true}
+                inputStyle={{
+                  paddingVertical:scale(10)
+                }}
               />
 
               {/* <TouchableOpacity

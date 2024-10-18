@@ -477,9 +477,10 @@ const CheckinScreen = () => {
                                     borderWidth: 1,
                                     borderRadius: 10,
                                     fontSize: scale(14),
-                                    padding: 15,
+                                    padding: scale(15),
                                     textAlignVertical: 'top',
                                     paddingLeft: scale(50)
+                                    
 
                                 }} />
                             <CustomButtom
