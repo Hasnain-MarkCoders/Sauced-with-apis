@@ -13,7 +13,6 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
 // import { handleAuth } from '../../../android/app/Redux/userReducer';
-import apple from "./../../../assets/images/apple-icon.png";
 
 import useAxios from '../../../Axios/useAxios';
 import GoogleSignInBTN from '../../components/GoogleSignInBTN/GoogleSignInBTN';
