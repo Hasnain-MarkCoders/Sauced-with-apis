@@ -6,6 +6,8 @@ import {
     Keyboard,
     ActivityIndicator,
     TouchableOpacity,
+    KeyboardAvoidingView,
+    Platform
   } from 'react-native';
   import React, {useCallback, useEffect, useState} from 'react';
   import Header from '../../components/Header/Header.jsx';
@@ -26,7 +28,7 @@ import {
   import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
   import useAxios from '../../../Axios/useAxios.js';
   import {useDispatch, useSelector} from 'react-redux';
-  
+
   // import {
   //   handleRemoveSauceFromListOne,
   //   handleSaucesListOne,
@@ -43,22 +45,22 @@ import ProductScreenCard from '../../components/ProductScreenCard/ProductScreenC
 import { handleRemoveSauceFromListOne, handleSaucesListOne } from '../../Redux/saucesListOne.js';
 import { handleRemoveSauceFromListThree , handleSaucesListThree} from '../../Redux/saucesListThree.js';
 import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/saucesListTwo.js';
-  
+
   const ProductScreen = ({
 
   }) => {
-  
-  
-  
-  
+
+
+
+
     const route = useRoute();
     const auth = useSelector(state=>state?.auth)
     const title = route?.params?.title;
     const url= route?.params?.url;
     const product = route?.params?.item;
     const setCount = route?.params?.setCount||function(){};
-    
-  
+
+
     const mycb = route?.params?.mycb|| function(){}
     const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
     const handleLike = route?.params?.handleLike|| function(){}
@@ -88,7 +90,7 @@ import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/s
     const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
     const [isEnabled, setisEnabled] = useState(true);
     const navigation = useNavigation();
-    
+
     const [isAlreadyInList, setAlreadyInList] = useState({
       list1: false,
       list2: false,
@@ -106,23 +108,23 @@ import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/s
       const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
         setIsKeyBoard(false);
       });
-  
+
       return () => {
         showSubscription.remove();
         hideSubscription.remove();
       };
     }, []);
-  
-  
+
+
     const handleSubmitMessage = data => {
       setIsKeyBoard(true);
     };
-  
+
     const getId = (id = 0) => {
       return setId(id);
     };
- 
-  
+
+
     const handleAddMessage = async () => {
       const existingMessage = data.find(item => item?._id == id)
       console.log(existingMessage)
@@ -136,16 +138,16 @@ import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/s
               "text": query.search
           });
       }
-  
-  
-  
+
+
+
   }
-  
-  
+
+
   useEffect(()=>{
 console.log("_id================================================>",_id)
   },[_id])
-  
+
     useEffect(() => {
       if (list1.find(item => item?._id == sauce?._id)) {
         setAlreadyInList(prev => ({...prev, list1: true}));
@@ -156,12 +158,12 @@ console.log("_id================================================>",_id)
       if (list3.find(item => item?._id == sauce?._id)) {
         setAlreadyInList(prev => ({...prev, list3: true}));
       }
-  
+
       return () => {
         setAlreadyInList(prev => ({list1: false, list2: false, list3: false}));
       };
     }, [route?.params?.item]);
-  
+
     // useEffect(() => {
       const fetchCheckings = useCallback(async () => {
           if (!hasMore || loading) return;
@@ -176,7 +178,7 @@ console.log("_id================================================>",_id)
               setHasMore(res?.data?.pagination?.hasNextPage);
               console.log("res.data?.checkins====================================================================>", res?.data?.checkins)
               if (res?.data?.checkins?.length){
-  
+
                 setData(prev => [...prev, ...res?.data?.checkins]);
               }
           } catch (error) {
@@ -186,8 +188,8 @@ console.log("_id================================================>",_id)
             //   setInitialLoading(false);
           }
       },[page]);
-  
-  
+
+
 
   const fetchProduct =useCallback( async () => {
     // if (!hasMore || loading) return;
@@ -201,7 +203,7 @@ console.log("_id================================================>",_id)
         });
 
         setSauce(res.data.sauce)
-      
+
     } catch (error) {
         console.error('Failed to fetch photos:', error);
     } finally {
@@ -211,13 +213,13 @@ console.log("_id================================================>",_id)
 },[_id]);
 
 //   useEffect(() => {
-  
+
 //     navigation.addListener("focus", ()=>{
 
 //         fetchProduct();
 //     })
-  
-      
+
+
 //     // return()=>{
 //     //     setInitialLoading(true)
 //     // }
@@ -235,7 +237,7 @@ useFocusEffect(
 
     }, [_id, page]) // Ensure _id is included if it can change
   );
-  
+
     const handleLoading = (listNumber, action) => {
       if (listNumber == 1) {
         return setLoading1(action);
@@ -256,7 +258,7 @@ useFocusEffect(
           // action: {
           //   text: 'UNDO',
           //   textColor: '#FFA100',
-  
+
           //   onPress: () => {
           //     Snackbar.show({
           //       text: `sauce remove from List ${listNumber}`,
@@ -265,7 +267,7 @@ useFocusEffect(
           //   },
           // },
         });
-  
+
         const type =
           listNumber == 1
             ? 'triedSauces'
@@ -276,36 +278,36 @@ useFocusEffect(
         if (listNumber == 1 && !isAlreadyInList?.list1) {
           dispatch(handleSaucesListOne([sauce]));
         }
-  
+
         if (listNumber == 2 && !isAlreadyInList?.list2) {
           dispatch(handleSaucesListTwo([sauce]));
         }
-  
+
         if (listNumber == 3 && !isAlreadyInList?.list3) {
           dispatch(handleSaucesListThree([sauce]));
         }
-  
+
         // removeing sauces
         if (listNumber == 1 && isAlreadyInList?.list1) {
           dispatch(handleRemoveSauceFromListOne(_id));
         }
-  
+
         if (listNumber == 2 && isAlreadyInList?.list2) {
           dispatch(handleRemoveSauceFromListTwo(_id));
         }
-  
+
         if (listNumber == 3 && isAlreadyInList?.list3) {
           dispatch(handleRemoveSauceFromListThree(_id));
         }
-  
+
         const res = await axiosInstance.post(`/bookmark`, {
           sauceId: product?._id,
           listType: type,
         });
     //     // setAlreadyInList(prev=>({...prev, [`list${listNumber}`]:!isAlreadyInList[`list${listNumber}`]}))
-  
-  
-      
+
+
+
       } catch (error) {
         console.error('Failed to like / dislike:', error);
       } finally {
@@ -329,8 +331,8 @@ useFocusEffect(
       //    _id:data.item._id
       // });
     };
-  
-  
+
+
     if (initialLoading) {
       return (
         <ImageBackground
@@ -340,19 +342,26 @@ useFocusEffect(
         </ImageBackground>
       );
     }
-  
+
     return (
       <ImageBackground
         style={{flex: 1, width: '100%', height: '100%'}}
         source={getStartedbackground}>
+           <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null} // Added KeyboardAvoidingView
+        style={{ flex: 1 }}
+      >
+
+
+      {/* </KeyboardAvoidingView> */}
         <SafeAreaView
           style={{flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0)}}>
           <Header
             showMenu={false}
             cb={() =>{
-                
+
                 navigation.navigate("Main")
-                
+
                 // navigation.goBack()
 
 
@@ -364,7 +373,7 @@ useFocusEffect(
             title={''}
             showText={false}
           />
-  
+
           <FlatList
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
@@ -382,7 +391,7 @@ useFocusEffect(
                       style={{
                         marginBottom: scale(20),
                       }}>
-                        
+
                       <ProductScreenCard
                       hasUserLiked = {sauce?.hasLiked}
                       _id={sauce?._id}
@@ -404,10 +413,10 @@ useFocusEffect(
                         setshowListModal={setModalVisible}
                         title={title}
                       />
-                         
+
                     </View>
                   )}
-  
+
                   {index == 1 && (
                     <View
                       style={{
@@ -423,7 +432,7 @@ useFocusEffect(
                         }}>
                         { sauce?.name?"About "+ sauce?.name:"N/A"}
                       </Text>
-  
+
                       <Text
                         style={{
                           color: 'white',
@@ -434,7 +443,7 @@ useFocusEffect(
                         }}>
                         {sauce?.description? sauce?.description:"N/A"}
                       </Text>
-  
+
                       <Text
                         style={{
                           color: 'white',
@@ -445,7 +454,7 @@ useFocusEffect(
                         }}>
                         Chili Peppers
                       </Text>
-  
+
                       <ProductsBulletsList
                         data={sauce?.chilli}
                         bulletStyle={{
@@ -455,7 +464,7 @@ useFocusEffect(
                           fontWeight: 700,
                         }}
                       />
-  
+
                       <Text
                         style={{
                           color: 'white',
@@ -466,7 +475,7 @@ useFocusEffect(
                         }}>
                         Ingredients
                       </Text>
-  
+
                       <Text
                         style={{
                           color: 'white',
@@ -502,7 +511,7 @@ useFocusEffect(
                             Check-ins
                           </Text>
                         </View>
-  
+
                               <CommentsList
                               commentsData={data}
                               cb={handleUserProfileView}  getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
@@ -616,9 +625,10 @@ useFocusEffect(
           modalVisible={openUserDetailsModal}
           setModalVisible={setOpenUserDetailsModal}
         />
+      </KeyboardAvoidingView>
+
       </ImageBackground>
     );
   };
-  
+
   export default ProductScreen;
-  

@@ -1,4 +1,10 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Image, ScrollView, Text, View, Keyboard, Alert, Vibration, TouchableOpacity, Linking, Modal, TouchableWithoutFeedback } from 'react-native'
+import { ImageBackground, SafeAreaView,
+    StyleSheet, Image, ScrollView, Text, View,
+    Keyboard, Alert, Vibration, TouchableOpacity,
+    Linking, Modal, TouchableWithoutFeedback,
+    Platform
+
+} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -200,7 +206,7 @@ console.log("selectedDate======================>", selectedDate)
                success:false
 
            });
-           
+
         }
 
         if(query?.facebookLink?.trim() && !isURL(query.facebookLink)){
@@ -210,7 +216,7 @@ console.log("selectedDate======================>", selectedDate)
                success:false
 
            });
-           
+
         }
         // else if (!query?.eventOrganizer) {
         //     return setAlertModal({
@@ -314,7 +320,7 @@ console.log("selectedDate======================>", selectedDate)
       const handleConfirmDateTime = () => {
         // Update the query state with the combined date and time
         setQuery((prev) => ({ ...prev, [query.isEndDate?"eventEndDate":"date"]: selectedDate }));
-    
+
         // Close the modal and reset the picker
         setOpenDate(false);
         setCurrentStep('date');
@@ -499,7 +505,7 @@ console.log("selectedDate======================>", selectedDate)
                                             Vibration.vibrate(10);
                                             // navigation.navigate("SauceDetails")
                                             setQuery((prev) => ({ ...prev, isEndDate:false }));
-                                            
+
                                             setOpenDate(true)
                                         }}
                                         title={query?.date?.toDateString()}
@@ -696,7 +702,7 @@ console.log("selectedDate======================>", selectedDate)
                     cb={yesNoModal.cb}
 
                 /> */}
-{/* 
+{/*
 <Modal
           transparent={true}
           animationType="slide"
@@ -814,7 +820,7 @@ console.log("selectedDate======================>", selectedDate)
                       onDateChange={(date) => {
                         setIsNext(true)
                         if (currentStep === 'date') {
-                          
+
                           const updatedDate = new Date(
                             date.getFullYear(),
                             date.getMonth(),
@@ -824,7 +830,7 @@ console.log("selectedDate======================>", selectedDate)
                           );
                           setSelectedDate(updatedDate);
                         } else {
-                        
+
                           const updatedDate = new Date(selectedDate);
                           updatedDate.setHours(date.getHours());
                           updatedDate.setMinutes(date.getMinutes());
@@ -847,7 +853,7 @@ console.log("selectedDate======================>", selectedDate)
                         }}
                           disabled={!isNext}
                         >
-                              
+
                           <Text style={{color: isNext ? 'white' : 'gray', alignSelf:"center", fontSize:scale(14)}}>Next</Text>
                         </TouchableOpacity>
                       ) : (
@@ -858,7 +864,7 @@ console.log("selectedDate======================>", selectedDate)
                           onPress={()=>{
                             handleConfirmDateTime()
                           }}
-                       
+
                           disabled={!isNext}
                         >
                           <Text style={{color: isNext ? 'white' : 'gray', alignSelf:"center", fontSize:scale(14), }}>Confirm</Text>

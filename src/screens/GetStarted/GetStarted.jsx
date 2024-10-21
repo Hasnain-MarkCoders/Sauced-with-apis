@@ -23,7 +23,7 @@ const GetStarted = () => {
             Discover your perfect flavor with our extensive sauce collection.
           </Text>
 
-         
+
 
 <View style={{
   gap:scale(15)
@@ -47,7 +47,7 @@ const GetStarted = () => {
 </View>
         </View>
       </SafeAreaView>
-    </ImageBackground>  
+    </ImageBackground>
   );
 };
 
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    resizeMode:"contain"
+    resizeMode:"contain",
   },
   container: {
     flex: 1,
@@ -66,13 +66,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     gap: scale(20),
+    // paddingHorizontal:scale(20)
+
   },
   logo: {
     width: scale(130),
     height: scale(130),
     resizeMode:"contain",
     alignSelf:"center"
-    
+
   },
   contentContainer: {
     width: "100%",
@@ -81,6 +83,9 @@ const styles = StyleSheet.create({
     // maxHeight:scale((screenHeight * .6) - 130),
     justifyContent:"flex-end",
     paddingBottom: scale(40),
+    // backgroundColor:"red",
+    paddingHorizontal:scale(20)
+
 
   },
   titleText: {

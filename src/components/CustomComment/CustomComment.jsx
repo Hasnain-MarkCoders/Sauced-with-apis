@@ -262,11 +262,13 @@ console.log(profileUri)
         backgroundColor: "#FFA500",   // Set the background color in the View
         borderRadius: scale(20),      // Apply the borderRadius here
         paddingHorizontal: scale(10),
-        paddingVertical: scale(5)
+        paddingVertical: scale(5),
+            display: isReply ? "none" : "flex",
+
     }}>
         <Text style={{
             color: "#000",
-            display: isReply ? "none" : "flex",
+            // display: isReply ? "none" : "flex",
             fontSize: scale(12),
         }}>
             Reply

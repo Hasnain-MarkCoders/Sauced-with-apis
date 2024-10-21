@@ -88,7 +88,7 @@ const AddStore = () => {
                 place_id:query?.place_id,
             });
 
-          
+
 
             if (response && response?.data && response?.data?.message) {
                 setAlertModal({
@@ -113,7 +113,7 @@ const AddStore = () => {
     }
 
 
-    //current location code start 
+    //current location code start
 
     // const checkLocationServiceAndNavigate = () => {
     //     setIsLoading(prev => ({ ...prev, loadMap: true }))
@@ -214,7 +214,7 @@ const AddStore = () => {
         const permission = Platform.OS === 'ios'
           ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
           : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-      
+
         try {
           const result = await check(permission);
           switch (result) {
@@ -265,7 +265,7 @@ const AddStore = () => {
           );
         }
       };
-      
+
       const fetchCurrentLocation = () => {
         Geolocation.getCurrentPosition(
           (position) => {
@@ -304,7 +304,7 @@ const AddStore = () => {
           { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
         );
       };
-      
+
       const showPermissionModal = (message, onConfirm) => {
         setYesNoModal({
           open: true,
@@ -314,7 +314,7 @@ const AddStore = () => {
           cb: onConfirm,
         });
       };
-      
+
       const handleBlockedPermission = () => {
         Alert.alert(
           "Location Permission Blocked",
@@ -335,7 +335,7 @@ const AddStore = () => {
 
 
     //test location code end
-    
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -458,7 +458,7 @@ const AddStore = () => {
                     success={yesNoModal.severity}
                     title={"Location Request"}
                     cb={yesNoModal.cb}
-                                    
+
                     />
 
                 <CustomAlertModal

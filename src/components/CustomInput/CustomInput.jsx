@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import closeEye from "./../../../assets/images/scaledCloseEye.png"
 const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {
-  
+
 },  onSubmitEditing=()=>{}}) => {
   const [showPassord, setShowPassword] = useState(secureTextEntry)
   return (
@@ -68,6 +68,7 @@ const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =f
             borderBottomColor:isWhiteInput? "white":"#FFA100",
             borderBottomWidth: 1,
               // paddingVertical:isWhiteInput&&scale(10),
+              // minHeight:scale(50),
             ...inputStyle,
 
 

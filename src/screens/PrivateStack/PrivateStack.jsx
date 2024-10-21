@@ -135,7 +135,7 @@ const PrivateStack = () => {
                         </>
 
                         :
-                        <View style={{ gap: scale(4),minWidth:scale(50), alignItems: "center"}}>
+                        <View style={{ gap: scale(4),minWidth:scale(30), alignItems: "center"}}>
                             <Image style={{
                                 maxWidth: scale(20),
                                 resizeMode: 'contain',

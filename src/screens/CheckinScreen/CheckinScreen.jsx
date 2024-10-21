@@ -192,10 +192,10 @@ const checkLocationServiceAndNavigate = async () => {
     const permission = Platform.OS === 'ios'
       ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
       : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-  
+
     try {
       const result = await check(permission);
-  
+
       if (result === RESULTS.GRANTED) {
         fetchCurrentLocation();
       } else if (result === RESULTS.DENIED) {
@@ -240,7 +240,7 @@ const checkLocationServiceAndNavigate = async () => {
       setIsLoading(prev => ({ ...prev, loadMap: false })); // Stop loading indicator
     }
   };
-  
+
   const fetchCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -278,7 +278,7 @@ const checkLocationServiceAndNavigate = async () => {
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
     );
   };
-  
+
   const showPermissionModal = (message, onConfirm) => {
     setYesNoModal({
       open: true,
@@ -288,7 +288,7 @@ const checkLocationServiceAndNavigate = async () => {
       cb: onConfirm,
     });
   };
-  
+
   const handleBlockedPermission = () => {
     Alert.alert(
       "Location Permission Blocked",
@@ -432,7 +432,7 @@ const checkLocationServiceAndNavigate = async () => {
                 });
             } else {
                 // const sources = response?.assets?.map(asset => ({
-                    
+
                 //     uri: asset?.uri,
                 //     type: asset?.type,
                 //     name: asset?.fileName,
@@ -445,11 +445,11 @@ const checkLocationServiceAndNavigate = async () => {
                   if (Platform.OS === 'android' && !uri.startsWith('file://')) {
                     uri = 'file://' + uri;
                   }
-        
+
                   // Extract filename and extension
                   const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
                   const extension = filename.split('.').pop().toLowerCase();
-        
+
                   // Determine MIME type with fallback
                   const mimeTypes = {
                     jpg: 'image/jpeg',
@@ -458,7 +458,7 @@ const checkLocationServiceAndNavigate = async () => {
                     // Add more types if needed
                   };
                   const type = mimeTypes[extension] || asset?.type || 'image/jpeg';
-        
+
                   return {
                     uri: uri,
                     type: type,
@@ -601,7 +601,7 @@ const checkLocationServiceAndNavigate = async () => {
         setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
     };
 
-    
+
 
     return (
         <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }} source={home}>
@@ -644,8 +644,8 @@ const checkLocationServiceAndNavigate = async () => {
                                     padding: scale(15),
                                     textAlignVertical: 'top',
                                     paddingLeft: scale(50),
-                                    paddingVertical:scale(15)
-                                    
+                                    paddingVertical:scale(15),
+                                    // minHeight:scale(50)
 
                                 }} />
                             <CustomButtom

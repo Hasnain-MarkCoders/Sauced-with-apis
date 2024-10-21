@@ -4,7 +4,14 @@ import { FlatList } from 'react-native-gesture-handler';
 import CustomComment from '../CustomComment/CustomComment';
 import { scale } from 'react-native-size-matters';
 import NotFound from '../NotFound/NotFound';
-const CommentsList = ({ commentsData=[],title,  cb=()=>{},getId=()=>{}, loading =false, hasMore, setPage = () => { }, handleSubmitMessage = () => { } }) => {
+const CommentsList = ({ commentsData=[],
+  title,
+    cb=()=>{},
+    getId=()=>{},
+    loading =false,
+     hasMore,
+      setPage = () => { },
+     handleSubmitMessage = () => { } }) => {
   return (
     <>
      {
@@ -40,7 +47,7 @@ const CommentsList = ({ commentsData=[],title,  cb=()=>{},getId=()=>{}, loading 
           count = {commentsData?.length}
 
           />
-          
+
         }
       />
       :
@@ -49,7 +56,7 @@ const CommentsList = ({ commentsData=[],title,  cb=()=>{},getId=()=>{}, loading 
       <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
       :
       <NotFound
-      
+
       title='No check-ins available'
       />
      }

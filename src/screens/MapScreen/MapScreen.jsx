@@ -542,7 +542,7 @@ console.log("hotSauceMarkers=============================================>", hot
           >
             <View style={styles.marker}>
               <Image
-                source={yellowChilli}
+                source={showContinue?yellowChilli:redChilli}
                 style={[styles.markerImage, { width: scale(markerSize), height: scale(markerSize) }]}
               />
             </View>
