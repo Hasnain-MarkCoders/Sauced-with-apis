@@ -45,15 +45,16 @@ const auth = useSelector(state=>state.auth)
           maxWidth: scale(140),
           minHeight:scale(170),
           alignItems:"center",
-          justifyContent:"center"
+          justifyContent:"center",
+          position:"relative"
         }}>
-       
+
 {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
           <SkeletonPlaceholder.Item              width={scale(58)}
             height={scale(58)}
             borderRadius={scale(58)}
-            
+
             />
         </SkeletonPlaceholder>
       )}
@@ -72,10 +73,12 @@ const auth = useSelector(state=>state.auth)
             style={{
               width:scale(58),
               height:scale(58),
-              display:isLoading?"none":"flex",
-  
+              // display:isLoading?"none":"flex",
+                opacity:isLoading?0:1,
+        position:isLoading?"absolute":"relative",
+
               borderRadius: scale(50),
-  
+
             }}
             onLoad={() => setIsLoading(false)}
               source={{ uri: url }}

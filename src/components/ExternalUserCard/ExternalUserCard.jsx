@@ -83,7 +83,9 @@ const ExternalUserCard = ({
 }}>
     <Image
         style={{
-            display: isLoading ? 'none' : 'flex',
+            // display: isLoading ? 'none' : 'flex',
+              opacity:isLoading?0:1,
+                position:isLoading?"absolute":"relative",
             width: scale(90),
             height: scale(90),
             borderRadius: scale(50),

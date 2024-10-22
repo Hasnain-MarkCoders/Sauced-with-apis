@@ -73,6 +73,7 @@ const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =f
 
 
 
+
           }}
           onChangeText={(text) => { onChange(text, name, updaterFn), cb(text) }}
           value={value}

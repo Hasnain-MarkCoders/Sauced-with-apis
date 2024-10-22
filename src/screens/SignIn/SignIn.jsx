@@ -318,118 +318,101 @@ const SignIn = () => {
 
   async function onFacebookButtonPress() {
     // Attempt login with permissions
-    // try {
-    //   setAuthLoading(true);
+    try {
+      setAuthLoading(true);
 
-    //   const result = await LoginManager.logInWithPermissions([
-    //     'public_profile',
-    //     'email',
-    //   ]);
+      const result = await LoginManager.logInWithPermissions([
+        'public_profile',
+        'email',
+      ]);
 
-    //   if (result.isCancelled) {
-    //     setAlertModal({
-    //       open: true,
-    //       message: 'User cancelled the login process',
-    //       success: false,
-    //     });
-    //     throw 'User cancelled the login process';
-    //   }
+      if (result.isCancelled) {
+        setAlertModal({
+          open: true,
+          message: 'User cancelled the login process',
+          success: false,
+        });
+        throw 'User cancelled the login process';
+      }
 
-    //   // Once signed in, get the users AccessToken
-    //   const data = await AccessToken.getCurrentAccessToken();
+      // Once signed in, get the users AccessToken
+      const data = await AccessToken.getCurrentAccessToken();
 
-    //   if (!data) {
-    //     setAlertModal({
-    //       open: true,
-    //       message: 'Something went wrong obtaining access token',
-    //       success: false,
-    //     });
-    //     throw 'Something went wrong obtaining access token';
-    //   }
+      if (!data) {
+        setAlertModal({
+          open: true,
+          message: 'Something went wrong obtaining access token',
+          success: false,
+        });
+        throw 'Something went wrong obtaining access token';
+      }
 
-    //   // Create a Firebase credential with the AccessToken
-    //   const facebookCredential = auth.FacebookAuthProvider.credential(
-    //     data.accessToken,
-    //   );
+      // Create a Firebase credential with the AccessToken
+      const facebookCredential = auth.FacebookAuthProvider.credential(
+        data.accessToken,
+      );
 
-    //   // Sign-in the user with the credential
-    //   const userCredential = await auth().signInWithCredential(
-    //     facebookCredential,
-    //   );
-    //   const firebaseIdToken = await userCredential.user.getIdToken();
-    //   console.log('firebaseIdToken=================>', firebaseIdToken);
-    //   const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-    //     accessToken: firebaseIdToken,
-    //   });
-    //   if (myuser) {
-    //     await getInitialFcmToken(myuser?.data?.user?.token);
+      // Sign-in the user with the credential
+      const userCredential = await auth().signInWithCredential(
+        facebookCredential,
+      );
+      const firebaseIdToken = await userCredential.user.getIdToken();
+      console.log('firebaseIdToken=================>', firebaseIdToken);
+      const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+        accessToken: firebaseIdToken,
+      });
+      if (myuser) {
+        await getInitialFcmToken(myuser?.data?.user?.token);
 
-    //     dispatch(
-    //       handleAuth({
-    //         token: myuser?.data?.user?.token,
-    //         uid: myuser?.data?.user?.token,
-    //         name: myuser?.data?.user?.name,
-    //         email: myuser?.data?.user?.email,
-    //         provider: myuser?.data?.user?.provider,
-    //         type: myuser?.data?.user?.type,
-    //         status: myuser?.data?.user?.status,
-    //         _id: myuser?.data?.user?._id,
-    //         url: myuser?.data?.user?.image,
-    //         authenticated: true,
-    //         welcome: myuser?.data?.user?.welcome,
-    //       }),
-    //     );
-    //   }
-    //   setAuthLoading(true);
-    // } catch (error) {
-    //   // Handle specific errors
-    //   setAuthLoading(false);
+        dispatch(
+          handleAuth({
+            token: myuser?.data?.user?.token,
+            uid: myuser?.data?.user?.token,
+            name: myuser?.data?.user?.name,
+            email: myuser?.data?.user?.email,
+            provider: myuser?.data?.user?.provider,
+            type: myuser?.data?.user?.type,
+            status: myuser?.data?.user?.status,
+            _id: myuser?.data?.user?._id,
+            url: myuser?.data?.user?.image,
+            authenticated: true,
+            welcome: myuser?.data?.user?.welcome,
+          }),
+        );
+      }
+      setAuthLoading(true);
+    } catch (error) {
+      // Handle specific errors
+      setAuthLoading(false);
 
-    //   if (error.code === 'auth/email-already-in-use') {
-    //     setAlertModal({
-    //       open: true,
-    //       message: 'That email address is already in use!',
-    //       success: false,
-    //     });
-    //   } else if (error.code === 'auth/invalid-email') {
-    //     setAlertModal({
-    //       open: true,
-    //       message: 'That email address is invalid!',
-    //       success: false,
-    //     });
-    //   } else {
-    //     console.error(error);
-    //     setAlertModal({
-    //       open: true,
-    //       message: error?.message,
-    //       success: false,
-    //     });
-    //   }
-    // } finally {
-    //   setIsEnabled(true); // Re-enable button or other elements
-    //   setLoading(false);
-    //   setAuthLoading(false);
-    // }
+      if (error.code === 'auth/email-already-in-use') {
+        setAlertModal({
+          open: true,
+          message: 'That email address is already in use!',
+          success: false,
+        });
+      } else if (error.code === 'auth/invalid-email') {
+        setAlertModal({
+          open: true,
+          message: 'That email address is invalid!',
+          success: false,
+        });
+      } else {
+        console.error(error);
+        setAlertModal({
+          open: true,
+          message: error?.message,
+          success: false,
+        });
+      }
+    } finally {
+      setIsEnabled(true); // Re-enable button or other elements
+      setLoading(false);
+      setAuthLoading(false);
+    }
 
 
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-    });
-     if (!appleAuthRequestResponse.identityToken) {
-      throw 'Apple Sign-In failed - no identify token returned';
-  }
-   // get current authentication state for user
-  // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-  const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
-  //const { email } = await jwt_decode(appleAuthRequestResponse.identityToken);
- // console.log("email",email)
 
-  // use credentialState response to ensure the user is authenticated
-  if (credentialState === appleAuth.State.AUTHORIZED) {
-
-  }
-return appleAuthRequestResponse
   }
 
   const signInWithGoogle = async () => {
@@ -526,29 +509,30 @@ return appleAuthRequestResponse
   }, []);
 
   async function onAppleButtonPress() {
-      try{
-    // Start the sign-in request
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
-      // See: https://github.com/invertase/react-native-apple-authentication#faqs
-      requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-    });
-    console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
-    // Ensure Apple returned a user identityToken
-    if (!appleAuthRequestResponse.identityToken) {
-      throw new Error('Apple Sign-In failed - no identify token returned');
-    }
-    // Create a Firebase credential from the response
-    const { identityToken, nonce } = appleAuthRequestResponse;
-    const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
-    console.log("identityToken============>", identityToken)
-    // Sign the user in with the credential
-    return auth().signInWithCredential(appleCredential);
-      }catch(err){
-    console.log(err)
-      }finally{
-      }
+    // console.log("hello g")
+    //   try{
+    // // Start the sign-in request
+    // const appleAuthRequestResponse = await appleAuth.performRequest({
+    //   requestedOperation: appleAuth.Operation.LOGIN,
+    //   // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
+    //   // See: https://github.com/invertase/react-native-apple-authentication#faqs
+    //   requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+    // });
+    // console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
+    // // Ensure Apple returned a user identityToken
+    // if (!appleAuthRequestResponse.identityToken) {
+    //   throw new Error('Apple Sign-In failed - no identify token returned');
+    // }
+    // // Create a Firebase credential from the response
+    // const { identityToken, nonce } = appleAuthRequestResponse;
+    // const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+    // console.log("identityToken============>", identityToken)
+    // // Sign the user in with the credential
+    // return auth().signInWithCredential(appleCredential);
+    //   }catch(err){
+    // console.log(err)
+    //   }finally{
+    //   }
   }
 
   if (authLoading) {

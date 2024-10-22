@@ -8,7 +8,6 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 const Award = ({url="", percentage, name}) => {
   const [isLoading, setIsLoading] = useState(true);
 
-
   return (
     <View style={{
         flexBasis:"48%",
@@ -20,6 +19,7 @@ const Award = ({url="", percentage, name}) => {
         justifyContent:"space-between",
         paddingVertical:scale(20),
         margin:scale(4),
+        position:"relative"
     }}>
       <Text style={{
         color:"white",
@@ -29,24 +29,27 @@ const Award = ({url="", percentage, name}) => {
         width:scale(80),
         height:scale(80),
         borderRadius:scale(50),
-        display:isLoading?"none":"flex",
+        // display:isLoading?"none":"flex",
+        opacity:isLoading?0:1,
+        position:isLoading?"absolute":"relative"
+
 
       }}
       onLoad={() => setIsLoading(false)}
       source={{uri:url}}
-      
-      ></Image> 
+
+      ></Image>
       {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
           <SkeletonPlaceholder.Item              width={scale(80)}
             height={scale(80)}
             borderRadius={scale(58)}
-            
+
             />
         </SkeletonPlaceholder>
       )}
       <CustomProgress  percentage={percentage} name={name}/>
-  
+
     </View>
   )
 }

@@ -5,11 +5,15 @@
 #import <SafariServices/SafariServices.h>
 #import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 #import <React/RCTBundleURLProvider.h>
-
+// Add this import for SDWebImageWebPCoder
+#import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Register the WebP coder
+  SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+  [[SDImageCodersManager sharedManager] addCoder:webPCoder];
   [FIRApp configure];
   [[FBSDKApplicationDelegate sharedInstance] application:application
                       didFinishLaunchingWithOptions:launchOptions];

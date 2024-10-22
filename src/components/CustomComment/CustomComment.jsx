@@ -94,7 +94,9 @@ console.log(profileUri)
 
                 }}>
 
-                    <View >
+                    <View style={{
+                        position:"relative"
+                    }} >
 
                     {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
@@ -113,7 +115,9 @@ console.log(profileUri)
                                 borderRadius: scale(50),
                                 borderColor: "#FFA100",
                                 borderWidth: scale(1),
-                                display:isLoading?"none":"flex",
+                                // display:isLoading?"none":"flex",
+                                  opacity:isLoading?0:1,
+                                  position:isLoading?"absolute":"relative"
                             }}
                             source={{ uri: profileUri }}
 

@@ -55,7 +55,11 @@ const AllUserReviews = () => {
             fetchReviews();
         }, [_id, page]) // Ensure _id is included if it can change
       );
-
+// useEffect(()=>{
+// return()=>{
+//     setData([])
+// }
+// },[])
     return (
 
 

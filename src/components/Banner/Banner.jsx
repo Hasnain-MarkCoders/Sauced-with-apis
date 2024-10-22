@@ -29,7 +29,7 @@ const Banner = ({
             loading
             ?
              <SkeletonPlaceholder speed={1600} backgroundColor='#2E210A' style={{height:"100%"}} highlightColor={"#fff"} borderRadius={4}>
-                
+
                 <View style={{
                     gap:scale(10)
                 }}>
@@ -42,7 +42,7 @@ const Banner = ({
                 <View style={{width:"50%", height: scale(20) }}>
                 </View>
                 </View>
-      </SkeletonPlaceholder> 
+      </SkeletonPlaceholder>
       :<TouchableOpacity style={{
         width: "100%",
         borderRadius:scale(10),
@@ -93,7 +93,7 @@ const Banner = ({
                                 {event?.venueDescription}
 
                             </Text> */}
-                        
+
                         </View>
                     </View>
                     <View style={{
@@ -146,7 +146,7 @@ const Banner = ({
                                     color: "black",
                                     fontWeight: "700",
                                     textAlign:"center",
-                                    
+
 
 
 
@@ -154,7 +154,7 @@ const Banner = ({
                                     {/* {isInterested || tempIsInterested?"Not-Interested":"Interested"}
                                      */}
                                     { isInterestedEvent?"Not-Interested":"Interested"}
-                                    
+
                                     </Text>
 
 
@@ -185,8 +185,8 @@ const Banner = ({
                             top:scale(15),
                             left:scale(20),
                             position:"absolute"
-                        }} 
-                        
+                        }}
+
                         >{item?.videoTitle}</Text>
                         <View style={{
                             width:scale(80),
@@ -194,10 +194,10 @@ const Banner = ({
                             position: 'absolute',
                             top: '50%',
                             left: '50%',
-                            transform: [{ translateX: -45 }, { translateY: -45 }], 
+                            transform: [{ translateX: -45 }, { translateY: -45 }],
                         }}>
 
-                        <Image 
+                        <Image
                         style={{
                             width:"100%",
                             height:"100%",
@@ -210,7 +210,7 @@ const Banner = ({
         </ImageBackground>
     </TouchableOpacity>
         }
-        
+
         </>
 
     )

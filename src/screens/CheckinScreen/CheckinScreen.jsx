@@ -646,6 +646,8 @@ const checkLocationServiceAndNavigate = async () => {
                                     paddingLeft: scale(50),
                                     paddingVertical:scale(15),
                                     // minHeight:scale(50)
+                                    minHeight:scale(130),
+
 
                                 }} />
                             <CustomButtom

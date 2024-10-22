@@ -58,6 +58,10 @@ target 'Sauced' do
 
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
+    # Add WebP support
+    pod 'SDWebImage', '~> 5.0'
+    pod 'SDWebImageWebPCoder'
+
   config = use_native_modules!
   use_frameworks! :linkage => :static
   $RNFirebaseAsStaticFramework = true

@@ -222,7 +222,7 @@ const AddReview = () => {
                 //     name: asset?.fileName,
                 // }));
 
-                
+
                 const sources =
                 response?.assets?.map((asset) => {
                   // Adjust the URI for platform differences
@@ -230,11 +230,11 @@ const AddReview = () => {
                   if (Platform.OS === 'android' && !uri.startsWith('file://')) {
                     uri = 'file://' + uri;
                   }
-        
+
                   // Extract filename and extension
                   const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
                   const extension = filename.split('.').pop().toLowerCase();
-        
+
                   // Determine MIME type with fallback
                   const mimeTypes = {
                     jpg: 'image/jpeg',
@@ -243,7 +243,7 @@ const AddReview = () => {
                     // Add more types if needed
                   };
                   const type = mimeTypes[extension] || asset?.type || 'image/jpeg';
-        
+
                   return {
                     uri: uri,
                     type: type,
@@ -371,11 +371,11 @@ const handleSlider = (heatLevel)=>{
                 const reviewedSauce = await axios.post(host + '/view-sauce', {sauceId}, {
                     headers: {
                         Authorization: `Bearer ${auth?.token}`,
-                       
+
                     },
                 });
                 handleReviewState(reviewedSauce.data.sauce)
-              
+
                 handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount)
                 setAlertModal({
                     open: true,
@@ -508,7 +508,9 @@ const handleSlider = (heatLevel)=>{
                                                     fontSize: scale(14),
                                                     padding: 15,
                                                     textAlignVertical: 'top',
-                                                    paddingVertical:scale(15)
+                                                    paddingVertical:scale(15),
+                                                       minHeight:scale(130),
+
                                                 }}
                                             />
                                             <View style={{
@@ -523,7 +525,7 @@ const handleSlider = (heatLevel)=>{
                                                         <SwipeableRating
                                                         cb={handleRating}
                                                         />
-                                                      
+
                                                     {/* <SwipeableRating
                                                     swipeable={true}
                                                         rating={data.rating}
@@ -644,7 +646,7 @@ const handleSlider = (heatLevel)=>{
                                                         />
 
 
-    
+
                                                     </View>
                                                 </View>
                                                 <View style={{
@@ -751,11 +753,11 @@ const handleSlider = (heatLevel)=>{
                                                                     deleteImage(index)
                                                                 }}
                                                             >
-                                                                
+
                                                                     <X color="#fff" size={scale(15)} />
                                                             </TouchableOpacity>
                                                             </View>
-{/* 
+{/*
                                                             <Lightbox
                                                             disabled={loading}
                                                                 // springConfig={{ tension: 30, friction: 7 }}

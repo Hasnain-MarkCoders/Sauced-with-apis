@@ -60,7 +60,7 @@ const SingleSauce = ({
     isChecked: item["hasLiked"]
   })
   useEffect(() => {
-    console.log("selected================================================================>", selected)
+    // console.log("selected================================================================>", selected)
   }, [selected.isChecked])
 
   const handleOnPress = () => {
@@ -183,7 +183,7 @@ const SingleSauce = ({
             { width: scale(110), ...customStyles },
           ]}
         >
-          
+
           {isLoading && (
             <View style={[styles.skeletonContainer, styles.imageContainer]}>
               <SkeletonPlaceholder
@@ -202,10 +202,14 @@ const SingleSauce = ({
           )}
 
           <View style={styles.imageContainer}>
-        
+
             <ImageBackground
               source={{ uri: url }}
-              style={[styles.image, searchPageSauceStyles]}
+              style={[styles.image,
+                {
+              opacity:isLoading?0:1,
+               position:isLoading?"absolute":"relative"},
+                searchPageSauceStyles]}
               imageStyle={{ borderRadius: scale(10) }}
               onLoad={() => setIsLoading(false)}
             >
