@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 // import { handleAuth } from '../../../android/app/Redux/userReducer';
 // import { persistor, store } from '../../../android/app/Redux/store';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
+import { LoginManager } from 'react-native-fbsdk-next';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
@@ -36,7 +36,7 @@ const DrawerStack = () => {
 
     const CustomDrawerContent = ({ setShowModal, ...props }) => {
       // const count = useSelector(state => state.notifications.count);
-  
+
       return (
           <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
               <DrawerItemList {...props} />
@@ -60,39 +60,79 @@ const DrawerStack = () => {
         },
     });
     const handleLogout = async () => {
-      setShowModal(false)
-        
-        store.dispatch({ type: 'LOGOUT' });
-        // Clear persisted state
-        await persistor.purge();
-        persistor.purge()
-        await GoogleSignin.revokeAccess(); // Revoke access
-        await GoogleSignin.signOut(); 
-        await auth().signOut()
-        dispatch(handleAuth({
-            "token": null,
-            "uid": null,
-            "name": null,
-            "email": null,
-            "provider": null,
-            "type": null,
-            "status": null,
-            "_id": null,
-            "url": null,
-            "authenticated": false,
-            "welcome": false,
-        }))
-        dispatch(handleStats({
-          followers:null,
-          followings:null,
-          checkins:null,
-          uri:null,
-          name:null,
-          date:null,
-          reviewsCount:null
-      }))
-      navigation.navigate("Public")
-      
+try {
+
+
+
+  setShowModal(false)
+
+  store.dispatch({ type: 'LOGOUT' });
+  // Clear persisted state
+  await persistor.purge();
+  persistor.purge()
+    // Google Sign-Out
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      console.log('Successfully signed out from Google');
+    } catch (error) {
+      console.error('Error signing out from Google: ', error);
+    }
+
+    // Facebook Sign-Out
+    try {
+      LoginManager.logOut();
+      console.log('Successfully logged out from Facebook');
+    } catch (error) {
+      console.error('Error logging out from Facebook: ', error);
+    }
+
+    // Apple Sign-Out
+    // Apple Sign-In does not have a specific sign-out method
+    // Since we are signing out from Firebase, this will suffice
+    console.log('Signing out from Apple (handled by Firebase sign-out)');
+
+    // Firebase Sign-Out
+    try {
+      await auth().signOut();
+      console.log('Successfully signed out from Firebase');
+    } catch (error) {
+      console.error('Error signing out from Firebase: ', error);
+    }
+
+
+  dispatch(handleAuth({
+      "token": null,
+      "uid": null,
+      "name": null,
+      "email": null,
+      "provider": null,
+      "type": null,
+      "status": null,
+      "_id": null,
+      "url": null,
+      "authenticated": false,
+      "welcome": false,
+  }))
+  dispatch(handleStats({
+    followers:null,
+    followings:null,
+    checkins:null,
+    uri:null,
+    name:null,
+    date:null,
+    reviewsCount:null
+}))
+navigation.navigate("Public")
+
+
+} catch (error) {
+
+}
+
+
+
+
     }
 
 
@@ -121,8 +161,8 @@ const DrawerStack = () => {
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Followers" component={FollowerScreen} />
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Settings" component={SettingScreen} />
             <Drawer.Screen listeners={logScreenNameOnFocus} name="Edit Profile" component={EditProfileScreen} />
-            <Drawer.Screen 
-            listeners={logScreenNameOnFocus} 
+            <Drawer.Screen
+            listeners={logScreenNameOnFocus}
             name="Notifications"
             component={NotificationsScreen}
             options={{
@@ -187,7 +227,7 @@ const styles = StyleSheet.create({
 logoutText: {
   fontFamily: 'Montserrat', // Replace with your desired font family
   fontSize: scale(12),                 // Replace with your desired font size
-  fontWeight: '700',    
+  fontWeight: '700',
   color:"white"
 },
 })

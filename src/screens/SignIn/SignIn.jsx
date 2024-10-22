@@ -36,7 +36,11 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import messaging from '@react-native-firebase/messaging';
 import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
 import {handleAuth} from '../../Redux/userReducer';
-import {appleAuth} from '@invertase/react-native-apple-authentication';
+// import {appleAuth} from '@invertase/react-native-apple-authentication';
+import appleAuth, {
+  AppleAuthRequestScope,
+  AppleAuthRequestOperation,
+} from '@invertase/react-native-apple-authentication'
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -508,32 +512,311 @@ const SignIn = () => {
     });
   }, []);
 
-  async function onAppleButtonPress() {
-    // console.log("hello g")
-    //   try{
-    // // Start the sign-in request
-    // const appleAuthRequestResponse = await appleAuth.performRequest({
-    //   requestedOperation: appleAuth.Operation.LOGIN,
-    //   // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
-    //   // See: https://github.com/invertase/react-native-apple-authentication#faqs
-    //   requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-    // });
-    // console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
-    // // Ensure Apple returned a user identityToken
-    // if (!appleAuthRequestResponse.identityToken) {
-    //   throw new Error('Apple Sign-In failed - no identify token returned');
-    // }
-    // // Create a Firebase credential from the response
-    // const { identityToken, nonce } = appleAuthRequestResponse;
-    // const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
-    // console.log("identityToken============>", identityToken)
-    // // Sign the user in with the credential
-    // return auth().signInWithCredential(appleCredential);
-    //   }catch(err){
-    // console.log(err)
-    //   }finally{
-    //   }
+//   async function onAppleButtonPress() {
+//     return new Promise(async (resolve, _reject) => {
+//       try {
+//         const appleAuthRequestResponse = await appleAuth.performRequest({
+//           requestedOperation: AppleAuthRequestOperation.LOGIN,
+//           requestedScopes: [
+//             AppleAuthRequestScope.EMAIL,
+//             AppleAuthRequestScope.FULL_NAME,
+//           ],
+//         })
+//         const { identityToken, nonce } = appleAuthRequestResponse
+
+//         loginWithApple(identityToken, nonce)
+//           .then(async response => {
+//             if (response?.user) {
+//               //handle successful login
+//               resolve({success: true})
+//             } else {
+//               //handle unsuccessful login
+//               resolve({success: false})
+//             }
+//           })
+//       } catch (error) {
+//         console.log(error)
+//         resolve({success: false})
+//       }
+//     })
+//   }
+
+
+//   const loginWithApple = (identityToken, nonce) => {
+//     const appleCredential = auth.AppleAuthProvider.credential(
+//       identityToken,
+//       nonce,
+//     )
+//     return new Promise((resolve, _reject) => {
+
+//         auth()
+//         .signInWithCredential(credential)
+//         .then(response => {
+//           const isNewUser = response.additionalUserInfo.isNewUser
+//           const {
+//             first_name,
+//             last_name,
+//             family_name,
+//             given_name,
+//           } = response.additionalUserInfo.profile
+//           const { uid, email, phoneNumber, photoURL } = response.user
+//           const defaultProfilePhotoURL =
+//             'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
+//           if (isNewUser) {
+//             // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
+//             const userData = {
+//               id: uid,
+//               email: email || '',
+//               firstName: first_name || given_name || '',
+//               lastName: last_name || family_name || '',
+//               phone: phoneNumber || '',
+//               profilePictureURL: photoURL || defaultProfilePhotoURL,
+//               userID: uid,
+//               // createdAt: timestamp,
+//             }
+//             console.log("new user ha", userData)
+//             // PERSIST NEW USER DATA TO YOU PREFFERRED DB AND SAVE ON REDUX
+//           }
+
+// console.log("purana user ha",response.additionalUserInfo.profile)
+//           // UPDATE USER LAST LOGIN
+//           resolve({success: true})
+
+//         })
+//         .catch(_error => {
+//           console.log(_error)
+//           resolve({ success: false })
+//         })
+//     })
+//   }
+
+// async function onAppleButtonPress() {
+//   try {
+//     setAuthLoading(true);
+
+//     // Perform Apple authentication request
+//     const appleAuthRequestResponse = await appleAuth.performRequest({
+//       requestedOperation: AppleAuthRequestOperation.LOGIN,
+//       requestedScopes: [
+//         AppleAuthRequestScope.EMAIL,
+//         AppleAuthRequestScope.FULL_NAME,
+//       ],
+//     });
+
+//     // Extract identityToken and nonce
+//     const { identityToken, nonce } = appleAuthRequestResponse;
+
+//     // Check if identityToken is present
+//     if (!identityToken) {
+//       setAlertModal({
+//         open: true,
+//         message: 'Apple Sign-In failed - no identity token returned',
+//         success: false,
+//       });
+//       throw new Error('Apple Sign-In failed - no identity token returned');
+//     }
+
+//     // Create a Firebase credential from the response
+//     const appleCredential = auth.AppleAuthProvider.credential(
+//       identityToken,
+//       nonce,
+//     );
+
+//     // Sign in with Firebase
+//     const userCredential = await auth().signInWithCredential(appleCredential);
+
+//     // Get the Firebase ID token
+//     const firebaseIdToken = await userCredential.user.getIdToken();
+//     console.log('firebaseIdToken=================>', firebaseIdToken);
+
+//     // Send the Firebase ID token to your backend for authentication
+//     const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+//       accessToken: firebaseIdToken,
+//     });
+
+//     if (myuser) {
+//       await getInitialFcmToken(myuser?.data?.user?.token);
+
+//       dispatch(
+//         handleAuth({
+//           token: myuser?.data?.user?.token,
+//           uid: myuser?.data?.user?.token,
+//           name: myuser?.data?.user?.name,
+//           email: myuser?.data?.user?.email,
+//           provider: myuser?.data?.user?.provider,
+//           type: myuser?.data?.user?.type,
+//           status: myuser?.data?.user?.status,
+//           _id: myuser?.data?.user?._id,
+//           url: myuser?.data?.user?.image,
+//           authenticated: true,
+//           welcome: myuser?.data?.user?.welcome,
+//         }),
+//       );
+//     }
+
+//     setAuthLoading(false);
+//   } catch (error) {
+//     setAuthLoading(false);
+
+//     // Handle specific errors
+//     if (error.code === AppleAuthError.CANCELED) {
+//       setAlertModal({
+//         open: true,
+//         message: 'User cancelled the login process',
+//         success: false,
+//       });
+//     } else if (error.code === 'auth/email-already-in-use') {
+//       setAlertModal({
+//         open: true,
+//         message: 'That email address is already in use!',
+//         success: false,
+//       });
+//     } else if (error.code === 'auth/invalid-email') {
+//       setAlertModal({
+//         open: true,
+//         message: 'That email address is invalid!',
+//         success: false,
+//       });
+//     } else {
+//       console.error(error);
+//       setAlertModal({
+//         open: true,
+//         message: error?.message || 'An error occurred during Apple Sign-In',
+//         success: false,
+//       });
+//     }
+//   } finally {
+//     setIsEnabled(true); // Re-enable button or other elements
+//     setLoading(false);
+//     setAuthLoading(false);
+//   }
+// }
+
+
+async function onAppleButtonPress() {
+  try {
+    setAuthLoading(true);
+
+    // Perform Apple authentication request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: AppleAuthRequestOperation.LOGIN,
+      requestedScopes: [
+        AppleAuthRequestScope.EMAIL,
+        AppleAuthRequestScope.FULL_NAME,
+      ],
+    });
+
+    // Extract identityToken, nonce, and fullName
+    const { identityToken, nonce, fullName } = appleAuthRequestResponse;
+
+    // Check if identityToken is present
+    if (!identityToken) {
+      setAlertModal({
+        open: true,
+        message: 'Apple Sign-In failed - no identity token returned',
+        success: false,
+      });
+      throw new Error('Apple Sign-In failed - no identity token returned');
+    }
+
+    // Create a Firebase credential from the response
+    const appleCredential = auth.AppleAuthProvider.credential(
+      identityToken,
+      nonce,
+    );
+
+    // Sign in with Firebase
+    const userCredential = await auth().signInWithCredential(appleCredential);
+
+    // Check if the user is new
+    const isNewUser = userCredential.additionalUserInfo.isNewUser;
+
+    // Initialize userName
+    let userName = '';
+
+    // If the user is new and fullName is available, extract the name
+    if (isNewUser && fullName) {
+      const { givenName, familyName } = fullName;
+      userName = `${givenName || ''} ${familyName || ''}`.trim();
+
+
+      // Update the user's display name in Firebase
+      await userCredential.user.updateProfile({
+        displayName: userName,
+      });
+    } else {
+      // Use the displayName from Firebase if available
+      userName = userCredential.user.displayName || '';
+    }
+
+    // Get the Firebase ID token
+    const firebaseIdToken = await userCredential.user.getIdToken();
+
+    // Send the Firebase ID token and userName to your backend
+    const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+      accessToken: firebaseIdToken,
+      name: userName, // Include the user's name
+    });
+
+    if (myuser) {
+      await getInitialFcmToken(myuser?.data?.user?.token);
+
+      dispatch(
+        handleAuth({
+          token: myuser?.data?.user?.token,
+          uid: myuser?.data?.user?.token,
+          name: myuser?.data?.user?.name || userName, // Use the name from response or the one we have
+          email: myuser?.data?.user?.email,
+          provider: myuser?.data?.user?.provider,
+          type: myuser?.data?.user?.type,
+          status: myuser?.data?.user?.status,
+          _id: myuser?.data?.user?._id,
+          url: myuser?.data?.user?.image,
+          authenticated: true,
+          welcome: myuser?.data?.user?.welcome,
+        }),
+      );
+    }
+
+    setAuthLoading(false);
+  } catch (error) {
+    setAuthLoading(false);
+
+    // Handle specific errors
+    if (error.code === AppleAuthError.CANCELED) {
+      setAlertModal({
+        open: true,
+        message: 'User cancelled the login process',
+        success: false,
+      });
+    } else if (error.code === 'auth/email-already-in-use') {
+      setAlertModal({
+        open: true,
+        message: 'That email address is already in use!',
+        success: false,
+      });
+    } else if (error.code === 'auth/invalid-email') {
+      setAlertModal({
+        open: true,
+        message: 'That email address is invalid!',
+        success: false,
+      });
+    } else {
+      console.error(error);
+      setAlertModal({
+        open: true,
+        message: error?.message || 'An error occurred during Apple Sign-In',
+        success: false,
+      });
+    }
+  } finally {
+    setIsEnabled(true); // Re-enable button or other elements
+    setLoading(false);
+    setAuthLoading(false);
   }
+}
+
+
 
   if (authLoading) {
     return (
