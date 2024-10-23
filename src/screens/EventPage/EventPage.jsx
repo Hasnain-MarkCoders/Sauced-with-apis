@@ -347,32 +347,32 @@ const handleInterestedEvent = async () => {
           });
           setIsLocationAvailable(true)
 
-          const response = await axiosInstance.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
-            params: {
-              origins: `${position.coords.latitude},${position.coords.longitude}`,
-              destinations: `${event.venueLocation.latitude},${event.venueLocation.longitude}`,
-              key: GOOGLE_MAP_API_KEY
+          // const response = await axiosInstance.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
+          //   params: {
+          //     origins: `${position.coords.latitude},${position.coords.longitude}`,
+          //     destinations: `${event.venueLocation.latitude},${event.venueLocation.longitude}`,
+          //     key: GOOGLE_MAP_API_KEY
 
-            }
-          })
-          // const result = response.data.rows[0].elements[0].distance.value
-          if (response.data.status === "OK") {
-            const elements = response.data.rows[0].elements;
+          //   }
+          // })
+          // // const result = response.data.rows[0].elements[0].distance.value
+          // if (response.data.status === "OK") {
+          //   const elements = response.data.rows[0].elements;
 
-            // Check if elements exist and status is not "NOT_FOUND"
-            if (elements.length > 0 && elements[0]?.status !== "NOT_FOUND") {
-              const distanceInMeters = elements[0]?.distance?.value;
-              const distanceInMiles = distanceInMeters / 1609.34;
-              if(distanceInMiles){
-                // setEventDistance(distanceInMiles?.toFixed(2))
-              }
-              console.log(`Distance from origin to destination: ${distanceInMeters} meters`);
-            } else {
-              console.log("Distance could not be calculated. Check origin and destination addresses.");
-            }
-          } else {
-            console.error("Error in fetching distance:", response.data.status);
-          }
+          //   // Check if elements exist and status is not "NOT_FOUND"
+          //   if (elements.length > 0 && elements[0]?.status !== "NOT_FOUND") {
+          //     const distanceInMeters = elements[0]?.distance?.value;
+          //     const distanceInMiles = distanceInMeters / 1609.34;
+          //     if(distanceInMiles){
+          //       // setEventDistance(distanceInMiles?.toFixed(2))
+          //     }
+          //     console.log(`Distance from origin to destination: ${distanceInMeters} meters`);
+          //   } else {
+          //     console.log("Distance could not be calculated. Check origin and destination addresses.");
+          //   }
+          // } else {
+          //   console.error("Error in fetching distance:", response.data.status);
+          // }
 
 
 
@@ -447,7 +447,7 @@ const handleInterestedEvent = async () => {
 
     <TouchableOpacity style={{
       position: 'absolute',
-      top:scale(80),
+      top:Platform.OS=="ios"?scale(80):scale(40),
       left:scale(10),
       zIndex:1000
     }} onPress={toggleFullScreenMap}
