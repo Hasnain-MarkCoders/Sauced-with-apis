@@ -115,7 +115,7 @@ const AllUserReviews = () => {
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     data={data}
-                    onEndReachedThreshold={1}
+                    onEndReachedThreshold={.5}
                     onEndReached={() => {
                         if (!loading && hasMore) {
                             setPage(currentPage => currentPage + 1);

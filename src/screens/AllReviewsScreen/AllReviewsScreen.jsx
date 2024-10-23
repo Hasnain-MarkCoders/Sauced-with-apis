@@ -49,7 +49,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 
-  const fetchReviews = useCallback(async () => {
+  const fetchReviews = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
     try {
@@ -66,23 +66,54 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
     } finally {
       setLoading(false);
     }
-  }, [page, _id]);
+  };
 
   const navigation = useNavigation();
-  React.useEffect(() => {
-    navigation.addListener("focus", ()=>{
+//   React.useEffect(() => {
+//     navigation.addListener("focus", ()=>{
+//       fetchReviews();
+
+//     })
+
+//     navigation.addListener("blur", ()=>{
+//       setPage(1);
+//       setData([]);
+//     })
+//     return () => {
+//       navigation.removeListener("focus", ()=>{
+//         setPage(1);
+//         setData([]);
+//         fetchReviews();
+//       })
+//     }
+//   }, [fetchReviews]);
+
+//   useEffect(()=>{
+// if(page>1){
+//   fetchReviews();
+// }
+//   },[fetchReviews])
+
+useFocusEffect(
+  useCallback(() => {
+    if(page>1){
       fetchReviews();
-
-    })
-    return () => {
-      navigation.removeListener("focus", ()=>{
-        setPage(1);
-        setData([]);
-        fetchReviews();
-      })
     }
-  }, [fetchReviews]);
+  }, [_id, page]) // Ensure _id is included if it can change
+);
+useEffect(()=>{
+  navigation.addListener("focus", ()=>{
+    setData([])
+    setPage(1)
+    fetchReviews();
+  })
 
+  navigation.addListener("blur",()=>{
+    setData([])
+    setPage(1)
+  })
+  
+},[])
 
   // useFocusEffect(
   //   React.useCallback(() => {
@@ -170,7 +201,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                     fontSize: scale(35),
                     lineHeight: scale(50),
                   }}>
-                  Reviews
+                  Reviews 
                 </Text>
                 {showAddReviewButton && (
                   <TouchableOpacity
@@ -206,7 +237,7 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 data={data}
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={.5}
                 onEndReached={() => {
                   if (!loading && hasMore) {
                     setPage(currentPage => currentPage + 1);
@@ -233,6 +264,16 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
                   
                   />
                 )}
+
+                ListFooterComponent={
+                  loading && (
+                    <ActivityIndicator
+                      size="small"
+                      style={{ marginBottom: scale(20) }}
+                      color="#FFA100"
+                    />
+                  )
+                }
               />
             :
             loading?

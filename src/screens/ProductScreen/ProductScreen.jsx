@@ -167,7 +167,7 @@ console.log("_id================================================>",_id)
     // useEffect(() => {
       const fetchCheckings = useCallback(async () => {
           if (!hasMore || loading) return;
-          // setLoading(true);
+          setLoading(true);
           try {
               const res = await axiosInstance.get(`/get-checkins`, {
                   params: {
@@ -184,10 +184,10 @@ console.log("_id================================================>",_id)
           } catch (error) {
               console.error('Failed to fetch photos:', error);
           } finally {
-              // setLoading(false);
+              setLoading(false);
             //   setInitialLoading(false);
           }
-      },[page]);
+      },[page,_id, loading, hasMore ]);
 
 
 

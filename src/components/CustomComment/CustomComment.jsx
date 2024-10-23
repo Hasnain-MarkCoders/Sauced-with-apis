@@ -99,7 +99,10 @@ console.log(profileUri)
                     }} >
 
                     {isLoading && (
-        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+        <SkeletonPlaceholder speed={1600} 
+        borderColor={'#FFA100'}
+        borderWidth={1}
+        backgroundColor='#2E210A'  highlightColor='#fff' >
           <SkeletonPlaceholder.Item              width={isReply? scale(30):  scale(58)}
             height={isReply? scale(30): scale(58)}
             borderRadius={scale(58)}

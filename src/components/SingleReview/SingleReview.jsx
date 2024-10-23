@@ -59,6 +59,9 @@ const SingleReview = ({
           gap: scale(5)
         }}>
         <TouchableOpacity
+            style={{
+              marginBottom: scale(10)
+            }}
           onPress={() => {
             if (isNavigate) {
               // navigate
@@ -85,10 +88,10 @@ const SingleReview = ({
             textDecorationLine: "underline"
             , textDecorationStyle: "solid"
             , textDecorationColor: "white",
-            marginBottom: scale(10)
           }}>
             {userName}
           </Text>
+        </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               if (isNavigate) {
@@ -112,12 +115,11 @@ const SingleReview = ({
               lineHeight: scale(17),
               textDecorationLine: "underline"
               , textDecorationStyle: "solid"
-              , textDecorationColor: "white"
+              , textDecorationColor: "#FFA100"
             }}>
               {sauceName}
             </Text>
           </TouchableOpacity>
-        </TouchableOpacity>
         <CustomRating
           initialRating={item?.star}
 
@@ -169,6 +171,8 @@ const SingleReview = ({
             <>
               {loading && <View>
                 <SkeletonPlaceholder
+                borderColor={'#FFA100'}
+                borderWidth={1}
                   width={scale(100)}
                   height={scale(100)}
                   speed={1600}

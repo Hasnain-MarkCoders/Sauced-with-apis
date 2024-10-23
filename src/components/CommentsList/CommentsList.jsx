@@ -22,13 +22,14 @@ const CommentsList = ({ commentsData=[],
         showsHorizontalScrollIndicator={false}
         data={commentsData}
         extraData={commentsData}
-        onEndReachedThreshold={0.8}
+        onEndReachedThreshold={0.5}
         onEndReached={() => {
           if (!loading && hasMore) {
             setPage(currentPage => currentPage + 1);
           }
         }}
         keyExtractor={(item, index) => index.toString()}
+
         renderItem={({ item, index }) =>
         <CustomComment
         getId={getId}
@@ -48,6 +49,16 @@ const CommentsList = ({ commentsData=[],
 
           />
 
+        }
+
+        ListFooterComponent={
+          loading && (
+            <ActivityIndicator
+              size="small"
+              style={{ marginBottom: scale(20) }}
+              color="#FFA100"
+            />
+          )
         }
       />
       :

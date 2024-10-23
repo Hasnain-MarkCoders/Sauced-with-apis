@@ -71,21 +71,21 @@ try {
   await persistor.purge();
   persistor.purge()
     // Google Sign-Out
-    try {
+    // try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      console.log('Successfully signed out from Google');
-    } catch (error) {
-      console.error('Error signing out from Google: ', error);
-    }
+    //   console.log('Successfully signed out from Google');
+    // } catch (error) {
+    //   console.error('Error signing out from Google: ', error);
+    // }
 
-    // Facebook Sign-Out
-    try {
-      LoginManager.logOut();
-      console.log('Successfully logged out from Facebook');
-    } catch (error) {
-      console.error('Error logging out from Facebook: ', error);
-    }
+    // // Facebook Sign-Out
+    // try {
+    await LoginManager.logOut();
+    //   console.log('Successfully logged out from Facebook');
+    // } catch (error) {
+    //   console.error('Error logging out from Facebook: ', error);
+    // }
 
     // Apple Sign-Out
     // Apple Sign-In does not have a specific sign-out method
