@@ -340,7 +340,7 @@ console.log("selectedDate======================>", selectedDate)
 
                     <View style={{
                         paddingHorizontal: scale(20),
-                        paddingBottom: scale(20),
+                        paddingBottom: scale(200),
                         flex: 1
                     }}>
                         <Text style={{
