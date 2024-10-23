@@ -6,6 +6,8 @@ import DetailKeyValue from '../DetailKeyValue/DetailKeyValue';
 import Lightbox from 'react-native-lightbox-v2';
 import closeIcon from './../../../assets/images/close.png';
 import { getFormattedName } from '../../../utils';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import ImageView from "react-native-image-viewing";
 
 const UserDetailsModal = ({
   modalVisible = false,
@@ -17,6 +19,8 @@ const UserDetailsModal = ({
   
 }) => {
   const [lightBox, setLightBox] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [visible, setIsVisible] = useState(false)
 
   // Handler to close the modal if the background is touched
   const handleBackgroundTouch = () => {
@@ -112,15 +116,32 @@ const UserDetailsModal = ({
     }}
     // springConfig={{ tension: 30, friction: 7 }}
 > */}
+{isLoading && (
+        <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
+          <SkeletonPlaceholder.Item              width={scale(50)}
+            height={scale(50)}
+            borderRadius={scale(50)}
+
+            />
+        </SkeletonPlaceholder>
+      )}
+      <TouchableOpacity onPress={()=>{setIsVisible(true)}}>
+
     <Image
         style={{
             resizeMode: 'cover',
             width: scale(50),
             height: scale(50),
             borderRadius: scale(100),
+            opacity:isLoading?0:1,
+            position:isLoading?"absolute":"relative",
         }}
         source={{ uri: profilePicture }}
+        onLoad={() => setIsLoading(false)}
+
     />
+      </TouchableOpacity>
+
 {/* </Lightbox> */}
                   <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={getFormattedName(name)} />
                     </View>
@@ -131,6 +152,12 @@ const UserDetailsModal = ({
               </TouchableOpacity>
             </TouchableOpacity>
           </Modal>
+          <ImageView
+  images={[{ uri: profilePicture }]}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
         </View>
       )}
     </>
