@@ -24,7 +24,7 @@ const UserSearchScreen = () => {
             style={{
                 flex: 1,
                 // paddingHorizontal:scale(20),
-                paddingTop:scale(32),
+                paddingTop:Platform.OS=="ios"?scale(32):scale(0),
             }}>
  <Header showMenu={false} cb={() => navigation.goBack()} showProfilePic={false} headerContainerStyle={{
                     paddingBottom: scale(20)
