@@ -11,7 +11,7 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from '../../components/Header/Header.jsx';
 import getStartedbackground from './../../../assets/images/EventDetailBG.png';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
@@ -39,7 +39,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
 // import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
 
-
+import MapViewDirections from 'react-native-maps-directions';
 
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
@@ -50,11 +50,13 @@ const EventPage = () => {
   const route = useRoute();
   const event = route?.params?.event
   const [loading, setLoading] = useState(false);
+  const mapViewRef = useRef(null)
   const [initialLoading, setInitialLoading] = useState(true);
   const [isKeyBoard, setIsKeyBoard] = useState(false);
   const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
   const navigation = useNavigation();
-  const [eventDistance, setEventDistance] = useState(null)
+  const [eventDistance, setEventDistance] = useState(null);
+  const [eventDuration, setEventDuration] = useState(null); // Added
   const [eventCoords, setEventsCoords] = useState(null)
   const [currentCoords, setCurrentCoords] = useState(null)
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -362,7 +364,7 @@ const handleInterestedEvent = async () => {
               const distanceInMeters = elements[0]?.distance?.value;
               const distanceInMiles = distanceInMeters / 1609.34;
               if(distanceInMiles){
-                setEventDistance(distanceInMiles?.toFixed(2))
+                // setEventDistance(distanceInMiles?.toFixed(2))
               }
               console.log(`Distance from origin to destination: ${distanceInMeters} meters`);
             } else {
@@ -459,6 +461,7 @@ const handleInterestedEvent = async () => {
                      width:"100%"
                     }}>
                     <MapView
+                    ref={mapViewRef}
                       style={{ width: "100%", height: "100%"}}
                       zoomTapEnabled={true}
                       initialRegion={{
@@ -505,14 +508,48 @@ const handleInterestedEvent = async () => {
                       )}
 
 
-{routeCoordinates.length > 0 && (
+{/* {routeCoordinates.length > 0 && (
         <Polyline
         coordinates={routeCoordinates}
         strokeWidth={4}
         strokeColor="#4285F4" // Google Maps-like blue color
         lineCap="round" // Smooth line ends
       />
-        )}
+        )} */}
+
+                    {  !!currentCoords && !!eventCoords&& <MapViewDirections
+                          origin={{
+                            latitude: currentCoords.latitude,
+                            longitude: currentCoords.longitude,
+                          }}
+                          destination={{
+                            latitude: eventCoords.latitude,
+                            longitude: eventCoords.longitude,
+                          }}
+                          apikey={GOOGLE_MAP_API_KEY}
+                             strokeWidth={6}
+            strokeColor="#FFA100"
+
+            onReady={result => {
+              // Fit map to route
+              mapViewRef.current?.fitToCoordinates(result.coordinates, {
+                edgePadding: {
+                  top: 50,
+                  right: 50,
+                  bottom: 50,
+                  left: 50,
+                },
+                animated: true,
+              });
+          
+              // Set distance and duration
+              setEventDistance((result.distance * 0.621371).toFixed(2)); // Convert km to miles
+              setEventDuration(Math.ceil(result.duration)); // Duration in minutes
+              console.log("result.duration===============>", result.duration)
+            }}
+
+                        />}
+        
                     </MapView>
 
                   </View>
@@ -563,12 +600,14 @@ const handleInterestedEvent = async () => {
                       <View
                         style={{
                           marginBottom: scale(30),
+
                         }}>
                         <CustomTimer eventTime={event?.eventDate} />
                       </View>
                       <View
                         style={{
                           gap: scale(5),
+
                         }}>
                         <View
                           style={{
@@ -647,6 +686,8 @@ const handleInterestedEvent = async () => {
                     <View
                       style={{
                         gap: scale(25),
+                        // backgroundColor:"yellow"
+
                       }}>
                       {
                         event?.eventDate &&
@@ -654,6 +695,7 @@ const handleInterestedEvent = async () => {
                           style={{
                             flexDirection: 'row',
                             gap: scale(10),
+
                           }}>
                           <Image
                             style={{
@@ -674,9 +716,7 @@ const handleInterestedEvent = async () => {
                             {
                               formatEventDate(event?.eventDate)
                             }
-                            {
-                              console.log(event?.eventDate)
-                            }
+                          
                           </Text>
                         </View>
                       }
@@ -685,24 +725,34 @@ const handleInterestedEvent = async () => {
                         <View
                           style={{
                             flexDirection: 'row',
-                            gap: scale(10),
-                            flexWrap:"wrap"
+                            // gap: scale(20),
+                            // flexWrap:"wrap"
+                            paddingRight:scale(20),
+                            // backgroundColor:"green"
                           }}>
                             <View style={{
                               flexDirection:"row",
-                              gap:scale(5),
+                              gap:scale(10),
                               alignItems:"start",
-                              flexWrap:"wrap"
+                              // flexWrap:"wrap",
+                              // backgroundColor:"red",
+                              // paddingRight:scale(40)
                             }}>
 
                             <Image
                             style={{
                               width: scale(18),
                               height: scale(23),
+                              marginTop:scale(5)
 
                             }}
                             source={Location}
                           />
+                          <View style={{
+                            // backgroundColor:"blue",
+                            flexShrink:1
+                          }}>
+
                             <Text
                               // ellipsizeMode='tail'
                               style={{
@@ -712,10 +762,12 @@ const handleInterestedEvent = async () => {
                                 color: '#FFA100',
                               }}>
                               {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()}
+                              
                             </Text>
+                          </View>
                             </View>
 
-                          <View
+                          {/* <View
                             style={{
                               gap: scale(6),
 
@@ -729,7 +781,7 @@ const handleInterestedEvent = async () => {
                               }}>
                               {event?.venueDescription}
                             </Text>
-                          </View>
+                          </View> */}
                         </View>
                       }
 
@@ -906,7 +958,10 @@ const handleInterestedEvent = async () => {
                         }}>
                           {
                             // isLocationAvailable?eventDistance?" m":"" "distance from you":"Distance from you not available"
-                            isLocationAvailable?eventDistance?`${eventDistance} M from you.`:"":"Please enable location to use this feature"
+                            isLocationAvailable && eventDistance==null?"Press get directions for event details": isLocationAvailable?eventDistance?`${eventDistance} Miles from you`:"":"Please enable location to use this feature"
+                          }
+                          {
+                            eventDuration?` and estimated time is ${eventDuration} mins`:""
                           }
                         {/* {eventDistance+ `${eventDistance?" m":""}`}  distance from you */}
                       </Text>
