@@ -34,6 +34,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
 	<string>1428704924451324</string>
+	<key>FacebookClientToken</key>
+	<string>b542682ef208eb21a52da71993a8eb30</string>
+	<key>FacebookDisplayName</key>
+	<string>Sauced</string>
+	<key>FacebookLoginTracking</key>
+<string>enabled</string>
 	<key>GIDClientID</key>
 	<string>406307069293-idnt0ealfht0n4m89rv8i9tr3174c31l.apps.googleusercontent.com</string>
 	<key>LSApplicationCategoryType</key>

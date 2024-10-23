@@ -36,6 +36,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import messaging from '@react-native-firebase/messaging';
 import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
 import {handleAuth} from '../../Redux/userReducer';
+import {getFriendlyErrorMessage} from "./../../../utils"
 // import {appleAuth} from '@invertase/react-native-apple-authentication';
 import appleAuth, {
   AppleAuthRequestScope,
@@ -292,27 +293,35 @@ const SignIn = () => {
     } catch (error) {
       // Handle specific errors
       setAuthLoading(false);
-
-      if (error.code === 'auth/email-already-in-use') {
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      if (friendlyMessage) { // Only show if it's not null
         setAlertModal({
           open: true,
-          message: 'That email address is already in use!',
-          success: false,
-        });
-      } else if (error.code === 'auth/invalid-email') {
-        setAlertModal({
-          open: true,
-          message: 'That email address is invalid!',
-          success: false,
-        });
-      } else {
-        console.error(error);
-        setAlertModal({
-          open: true,
-          message: 'Invalid credentials',
-          success: false,
+          message: friendlyMessage,
+          success: false
         });
       }
+
+      // if (error.code === 'auth/email-already-in-use') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is already in use!',
+      //     success: false,
+      //   });
+      // } else if (error.code === 'auth/invalid-email') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is invalid!',
+      //     success: false,
+      //   });
+      // } else {
+      //   console.error(error);
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'Invalid credentials',
+      //     success: false,
+      //   });
+      // }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
@@ -331,11 +340,12 @@ const SignIn = () => {
       ]);
 
       if (result.isCancelled) {
-        setAlertModal({
-          open: true,
-          message: 'User cancelled the login process',
-          success: false,
-        });
+        // setAlertModal({
+        //   open: true,
+        //   message: 'User cancelled the login process',
+        //   success: false,
+        // });
+        return
         throw 'User cancelled the login process';
       }
 
@@ -388,27 +398,36 @@ const SignIn = () => {
     } catch (error) {
       // Handle specific errors
       setAuthLoading(false);
-
-      if (error.code === 'auth/email-already-in-use') {
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      console.log("mes==================>", friendlyMessage)
+      if (friendlyMessage) { // Only show if it's not null
         setAlertModal({
           open: true,
-          message: 'That email address is already in use!',
-          success: false,
-        });
-      } else if (error.code === 'auth/invalid-email') {
-        setAlertModal({
-          open: true,
-          message: 'That email address is invalid!',
-          success: false,
-        });
-      } else {
-        console.error(error);
-        setAlertModal({
-          open: true,
-          message: error?.message,
-          success: false,
+          message: friendlyMessage,
+          success: false
         });
       }
+
+      // if (error.code === 'auth/email-already-in-use') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is already in use!',
+      //     success: false,
+      //   });
+      // } else if (error.code === 'auth/invalid-email') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is invalid!',
+      //     success: false,
+      //   });
+      // } else {
+      //   console.error(error);
+      //   setAlertModal({
+      //     open: true,
+      //     message: error?.message,
+      //     success: false,
+      //   });
+      // }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
@@ -459,31 +478,38 @@ const SignIn = () => {
       setAuthLoading(false);
     } catch (error) {
       setAuthLoading(false);
-
-      // Handle specific errors
-      if (error.code === 'auth/email-already-in-use') {
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      if (friendlyMessage) { // Only show if it's not null
         setAlertModal({
           open: true,
-          message: 'That email address is already in use!',
-          success: false,
+          message: friendlyMessage,
+          success: false
         });
-        setAuthLoading(false);
-      } else if (error.code === 'auth/invalid-email') {
-        setAlertModal({
-          open: true,
-          message: 'That email address is invalid!',
-          success: false,
-        });
-        setAuthLoading(false);
-      } else {
-        console.error(error);
-        setAlertModal({
-          open: true,
-          message: error?.message,
-          success: false,
-        });
-        setAuthLoading(false);
       }
+      // Handle specific errors
+      // if (error.code === 'auth/email-already-in-use') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is already in use!',
+      //     success: false,
+      //   });
+      //   setAuthLoading(false);
+      // } else if (error.code === 'auth/invalid-email') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is invalid!',
+      //     success: false,
+      //   });
+      //   setAuthLoading(false);
+      // } else {
+      //   console.error(error);
+      //   setAlertModal({
+      //     open: true,
+      //     message: error?.message,
+      //     success: false,
+      //   });
+      //   setAuthLoading(false);
+      // }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
@@ -781,34 +807,41 @@ async function onAppleButtonPress() {
     setAuthLoading(false);
   } catch (error) {
     setAuthLoading(false);
-
-    // Handle specific errors
-    if (error.code === AppleAuthError.CANCELED) {
+    const friendlyMessage = getFriendlyErrorMessage(error);
+    if (friendlyMessage) { // Only show if it's not null
       setAlertModal({
         open: true,
-        message: 'User cancelled the login process',
-        success: false,
-      });
-    } else if (error.code === 'auth/email-already-in-use') {
-      setAlertModal({
-        open: true,
-        message: 'That email address is already in use!',
-        success: false,
-      });
-    } else if (error.code === 'auth/invalid-email') {
-      setAlertModal({
-        open: true,
-        message: 'That email address is invalid!',
-        success: false,
-      });
-    } else {
-      console.error(error);
-      setAlertModal({
-        open: true,
-        message: error?.message || 'An error occurred during Apple Sign-In',
-        success: false,
+        message: friendlyMessage,
+        success: false
       });
     }
+    // Handle specific errors
+    // if (error.code === AppleAuthError.CANCELED) {
+    //   setAlertModal({
+    //     open: true,
+    //     message: 'User cancelled the login process',
+    //     success: false,
+    //   });
+    // } else if (error.code === 'auth/email-already-in-use') {
+    //   setAlertModal({
+    //     open: true,
+    //     message: 'That email address is already in use!',
+    //     success: false,
+    //   });
+    // } else if (error.code === 'auth/invalid-email') {
+    //   setAlertModal({
+    //     open: true,
+    //     message: 'That email address is invalid!',
+    //     success: false,
+    //   });
+    // } else {
+    //   console.error(error);
+    //   setAlertModal({
+    //     open: true,
+    //     message: error?.message || 'An error occurred during Apple Sign-In',
+    //     success: false,
+    //   });
+    // }
   } finally {
     setIsEnabled(true); // Re-enable button or other elements
     setLoading(false);

@@ -40,7 +40,7 @@ export const welcomeLists = [
 export const handleText = (value,name, updaterFn) => {
     updaterFn(prev => ({ ...prev, [name]: value }));
   };
-  
+
 
   export const featuredSauces = [
     {
@@ -60,7 +60,7 @@ export const handleText = (value,name, updaterFn) => {
       title: "Garlic Sauce"
     }
   ];
-  
+
   export const topRatedSauces = [
     {
       url: sauce5,
@@ -137,7 +137,7 @@ export const handleText = (value,name, updaterFn) => {
 
   ];
 
-  
+
   export const messagesData = [
     {
       url: user1,
@@ -201,7 +201,7 @@ export const handleText = (value,name, updaterFn) => {
         }
       ]
     },
-   
+
   ];
 
   export const bannerImages = [
@@ -243,7 +243,7 @@ export const handleText = (value,name, updaterFn) => {
       url: homeBanner,
       title: "Mike Smith"
     }
-    
+
   ];
   export const reviewImages = [
     {
@@ -287,8 +287,8 @@ export const handleText = (value,name, updaterFn) => {
 
 
 
-  
-  
+
+
   const christianNames = ["James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles", "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald", "Steven", "Paul", "Andrew", "Edward"];
 
 export const awardListImages = Array.from({ length: 6 }, (_, index) => ({
@@ -296,7 +296,7 @@ export const awardListImages = Array.from({ length: 6 }, (_, index) => ({
   title: index === 0 ? "Mike Smith" : christianNames[index % christianNames.length],
   percentage: Math.floor(Math.random() * 91) + 10 // Random percentage between 10 to 100
 }));
-  
+
 
 export const FriendListImages = [
     {
@@ -345,14 +345,14 @@ export const FriendListImages = [
   export function getRandomDate() {
     // Generate a random year between 2020 and 2025
     const year = Math.floor(Math.random() * (2025 - 2020 + 1)) + 2020;
-  
+
     // Month names array
-    const monthNames = ["January", "February", "March", "April", "May", "June", 
+    const monthNames = ["January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"];
-  
+
     // Generate a random month index between 0 and 11
     const monthIndex = Math.floor(Math.random() * 12);
-  
+
     // Generate a random day based on the selected month (considering leap years for February)
     let maxDays = 31; // Default to maximum days in a month (for most months)
     if (monthIndex === 3 || monthIndex === 5 || monthIndex === 8 || monthIndex === 10) {
@@ -361,14 +361,14 @@ export const FriendListImages = [
       // February, consider leap year (not included in this basic example)
       maxDays = 28; // Assume non-leap year for simplicity
     }
-  
+
     const day = Math.floor(Math.random() * maxDays) + 1;
-  
+
     // Format day, month, and year into "MM/DD/YYYY" format with month name
     const formattedMonth = monthNames[monthIndex]; // Month name
     const formattedDay = day.toString().padStart(2, '0'); // Ensure two digits with leading zero if necessary
     const formattedYear = year.toString();
-  
+
     return `${formattedMonth} ${formattedDay} ${formattedYear}`;
 }
 
@@ -378,7 +378,7 @@ export function formatDate(date) {
   if (!(date instanceof Date)) {
       return 'Invalid input: Please provide a valid Date object.';
   }
-  const monthNames = ["January", "February", "March", "April", "May", "June", 
+  const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
   // Get the year, month, day, hours, minutes, seconds, and milliseconds
   const year = date.getUTCFullYear();
@@ -474,12 +474,12 @@ export const GetPLatformSpecificURL = (platform, uri)=>{
   export const getFormattedName=(name)=>{
     name = name?.split(" ")
     if (name?.length>1){
-    name = name[0]?.slice(0,1)?.toUpperCase() + name[0]?.slice(1) + " " + name[1]?.slice(0,1)?.toUpperCase() + "."    
+    name = name[0]?.slice(0,1)?.toUpperCase() + name[0]?.slice(1) + " " + name[1]?.slice(0,1)?.toUpperCase() + "."
     }
     else{
-      name=name?.join("") 
+      name=name?.join("")
     }
-    
+
     return name
 }
 
@@ -510,3 +510,32 @@ export const validateEmail = (email) => {
 
 
 export const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+
+
+export const firebaseAuthErrorMessages = {
+  'auth/invalid-email': 'The email address you entered is invalid. Please check and try again.',
+  'auth/user-disabled': 'Your account has been disabled. Please contact support for assistance.',
+  'auth/user-not-found': 'No account found with this email. Please sign up first.',
+  'auth/wrong-password': 'Incorrect password. Please try again.',
+  'auth/email-already-in-use': 'This email is already associated with another account.',
+  'auth/weak-password': 'Your password is too weak. Please use at least 6 characters.',
+  'auth/too-many-requests': 'Too many unsuccessful attempts. Please try again later.',
+  'auth/operation-not-allowed': 'This sign-in method is not enabled. Please contact support.',
+  // Exclude popup-related messages for cancellation
+  // 'auth/popup-closed-by-user': 'The sign-in popup was closed before completing the sign-in.',
+  // 'auth/cancelled-popup-request': 'Popup request was cancelled. Please try again.',
+  // Add more mappings as needed
+};
+
+export  const getFriendlyErrorMessage = (error) => {
+  if (error && error.code) {
+    // Skip showing any message for cancellation-related errors
+    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      return null; // Do not return any message
+    }
+    return firebaseAuthErrorMessages[error.code] ;
+  }
+  return '';
+};
+
