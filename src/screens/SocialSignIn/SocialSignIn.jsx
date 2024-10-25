@@ -306,6 +306,8 @@ const SocialSignIn = () => {
   async function onFacebookButtonPress() {
     // Attempt login with permissions
     try {
+      setIsEnabled(false); // Re-enable button or other elements
+      setLoading(true);
       setAuthLoading(true);
 
       let result;
@@ -388,7 +390,10 @@ console.log("myuser==============>", myuser)
         const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst 
         let firebaseIdToken = await firebaseUser.getIdToken();
         if(!firebaseIdToken){
+            // setAuthLoading(false);
             setAuthLoading(false);
+            setIsEnabled(true); // Re-enable button or other elements
+            setLoading(false);
             setAlertModal({
               open: true,
               message: "Facebook Sign in Failed.",
@@ -415,9 +420,13 @@ console.log("myuser?.data?.user?.token====================>",myuser?.data?.user?
         );
       }
       setAuthLoading(false);
+      setIsEnabled(true); // Re-enable button or other elements
+      setLoading(false);
     } catch (error) {
       // Handle specific errors
       setAuthLoading(false);
+      setIsEnabled(true); // Re-enable button or other elements
+      setLoading(false);
       const friendlyMessage = getFriendlyErrorMessage(error);
       console.log("mes==================>", friendlyMessage)
       if (friendlyMessage) { // Only show if it's not null
