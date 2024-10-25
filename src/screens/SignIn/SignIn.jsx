@@ -21,7 +21,7 @@ import {handleText, validateEmail} from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from './../../../assets/images/google-icon.png';
 import apple from './../../../assets/images/apple-icon.png';
-
+import { v4 as uuidv4 } from 'uuid';
 import fb from './../../../assets/images/facebook-icon.png';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
@@ -31,7 +31,7 @@ import useAxios from '../../../Axios/useAxios';
 import {scale} from 'react-native-size-matters';
 import scaledOpenEye from './../../../assets/images/scaledOpenEye.png';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+import {AccessToken, LoginManager, AuthenticationToken} from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import messaging from '@react-native-firebase/messaging';
 import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
@@ -334,10 +334,26 @@ const SignIn = () => {
     try {
       setAuthLoading(true);
 
-      const result = await LoginManager.logInWithPermissions([
-        'public_profile',
-        'email',
-      ]);
+      let result;
+      let token;
+      let data
+      let nonce
+      if (Platform.OS === 'ios') {
+        // Generate a unique nonce for this login request
+        nonce = uuidv4();
+  
+        // Use 'limited' for Limited Login and provide the generated nonce
+        result = await LoginManager.logInWithPermissions(
+          ['public_profile', 'email'],
+          'limited', // loginTrackingIOS
+          nonce // nonceIOS
+        );
+        token = await AuthenticationToken.getAuthenticationTokenIOS();
+      } else {
+        // For Android, use the standard login
+        result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+        token= await AccessToken.getCurrentAccessToken()
+      }
 
       if (result.isCancelled) {
         // setAlertModal({
@@ -349,33 +365,64 @@ const SignIn = () => {
         throw 'User cancelled the login process';
       }
 
-      // Once signed in, get the users AccessToken
-      const data = await AccessToken.getCurrentAccessToken();
+      // // Once signed in, get the users AccessToken
+      // const data = await AccessToken.getCurrentAccessToken();
 
-      if (!data) {
-        setAlertModal({
-          open: true,
-          message: 'Something went wrong obtaining access token',
-          success: false,
-        });
-        throw 'Something went wrong obtaining access token';
-      }
+      // if (!data) {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'Something went wrong obtaining access token',
+      //     success: false,
+      //   });
+      //   throw 'Something went wrong obtaining access token';
+      // }
 
-      // Create a Firebase credential with the AccessToken
-      const facebookCredential = auth.FacebookAuthProvider.credential(
-        data.accessToken,
-      );
+      // // Create a Firebase credential with the AccessToken
+      // const facebookCredential = auth.FacebookAuthProvider.credential(
+      //   data.accessToken,
+      // );
 
-      // Sign-in the user with the credential
-      const userCredential = await auth().signInWithCredential(
-        facebookCredential,
-      );
-      const firebaseIdToken = await userCredential.user.getIdToken();
-      console.log('firebaseIdToken=================>', firebaseIdToken);
-      const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-        accessToken: firebaseIdToken,
-      });
+      // // Sign-in the user with the credential
+      // const userCredential = await auth().signInWithCredential(
+      //   facebookCredential,
+      // );
+      // const firebaseIdToken = await userCredential.user.getIdToken();
+      // console.log('firebaseIdToken=================>', firebaseIdToken);
+          data = 
+            Platform.OS=="ios"
+            ?
+            {
+              
+              token,
+              "platform":"ios",
+              nonce
+            }
+            :
+            {
+              token,
+              "platform": "android",
+            }
+            console.log("data================>",data)
+            const myuser = await axiosInstance.post('/auth/fb-auth', data);
+
+      // const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+      //   accessToken: firebaseIdToken,
+      // });
+
+
       if (myuser) {
+        const firebaseUserCredential = await auth().signInWithCustomToken(myuser?.data?.user?.firebaseCustomToken);
+        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst 
+        let firebaseIdToken = await firebaseUser.getIdToken();
+        if(!firebaseIdToken){
+            setAuthLoading(false);
+            setAlertModal({
+              open: true,
+              message: "Facebook Login Failed.",
+              success: false
+            });
+                return
+        }
         await getInitialFcmToken(myuser?.data?.user?.token);
 
         dispatch(
@@ -394,7 +441,7 @@ const SignIn = () => {
           }),
         );
       }
-      setAuthLoading(true);
+      setAuthLoading(false);
     } catch (error) {
       // Handle specific errors
       setAuthLoading(false);

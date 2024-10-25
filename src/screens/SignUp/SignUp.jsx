@@ -14,12 +14,13 @@ import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
 // import { handleAuth } from '../../../android/app/Redux/userReducer';
 import {getFriendlyErrorMessage} from "./../../../utils"
+import { v4 as uuidv4 } from 'uuid';
 
 import useAxios from '../../../Axios/useAxios';
 import GoogleSignInBTN from '../../components/GoogleSignInBTN/GoogleSignInBTN';
 import FacebookSignInBTN from '../../components/FacebookSignInBTN/FacebookSignInBTN';
 import { scale } from 'react-native-size-matters';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { LoginManager, AccessToken, AuthenticationToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import openEye from "./../../../assets/images/openEye.png"
 import scaledOpenEye from "./../../../assets/images/scaledOpenEye.png"
@@ -260,110 +261,110 @@ const SignUp = () => {
 
 
 
-  async function onFacebookButtonPress() {
-    // Attempt login with permissions
-     setAuthLoading(true)
+//   async function onFacebookButtonPress() {
+//     // Attempt login with permissions
+//      setAuthLoading(true)
 
-    try{
+//     try{
 
-        const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+//         const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
-        if (result.isCancelled) {
-        //   setAlertModal({
-        //     open: true,
-        //     message: "User cancelled the login process",
-        //     success:false
+//         if (result.isCancelled) {
+//         //   setAlertModal({
+//         //     open: true,
+//         //     message: "User cancelled the login process",
+//         //     success:false
 
-        // });
-        return
-          throw 'User cancelled the login process';
-        }
+//         // });
+//         return
+//           throw 'User cancelled the login process';
+//         }
 
-        // Once signed in, get the users AccessToken
-        const data = await AccessToken.getCurrentAccessToken();
+//         // Once signed in, get the users AccessToken
+//         const data = await AccessToken.getCurrentAccessToken();
 
-        if (!data) {
-          setAlertModal({
-            open: true,
-            message: "Something went wrong obtaining access token",
-            success:false
+//         if (!data) {
+//           setAlertModal({
+//             open: true,
+//             message: "Something went wrong obtaining access token",
+//             success:false
 
-        });
-          throw 'Something went wrong obtaining access token';
-        }
+//         });
+//           throw 'Something went wrong obtaining access token';
+//         }
 
-        // Create a Firebase credential with the AccessToken
-        const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+//         // Create a Firebase credential with the AccessToken
+//         const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
-        // Sign-in the user with the credential
-        const userCredential = await auth().signInWithCredential(facebookCredential);
-        const firebaseIdToken = await userCredential.user.getIdToken();
-        const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseIdToken });
-        if (myuser) {
+//         // Sign-in the user with the credential
+//         const userCredential = await auth().signInWithCredential(facebookCredential);
+//         const firebaseIdToken = await userCredential.user.getIdToken();
+//         const myuser = await axiosInstance.post("/auth/firebase-authentication", { accessToken: firebaseIdToken });
+//         if (myuser) {
 
-          await getInitialFcmToken(myuser?.data?.user?.token)
+//           await getInitialFcmToken(myuser?.data?.user?.token)
 
-          dispatch(
-            handleAuth({
-              "token": myuser?.data?.user?.token,
-              "uid": myuser?.data?.user?.token,
-              "name": myuser?.data?.user?.name,
-              "email": myuser?.data?.user?.email,
-              "provider": myuser?.data?.user?.provider,
-              "type": myuser?.data?.user?.type,
-              "status": myuser?.data?.user?.status,
-              "_id": myuser?.data?.user?._id,
-              "url":myuser?.data?.user?.image,
-              "authenticated": true,
-              "welcome":myuser?.data?.user?.welcome
-            }))
-        }
-      setAuthLoading(false)
+//           dispatch(
+//             handleAuth({
+//               "token": myuser?.data?.user?.token,
+//               "uid": myuser?.data?.user?.token,
+//               "name": myuser?.data?.user?.name,
+//               "email": myuser?.data?.user?.email,
+//               "provider": myuser?.data?.user?.provider,
+//               "type": myuser?.data?.user?.type,
+//               "status": myuser?.data?.user?.status,
+//               "_id": myuser?.data?.user?._id,
+//               "url":myuser?.data?.user?.image,
+//               "authenticated": true,
+//               "welcome":myuser?.data?.user?.welcome
+//             }))
+//         }
+//       setAuthLoading(false)
 
-      } catch (error) {
+//       } catch (error) {
 
-   // Handle specific errors
-   setAuthLoading(false)
-   const friendlyMessage = getFriendlyErrorMessage(error);
-   if (friendlyMessage) { // Only show if it's not null
-     setAlertModal({
-       open: true,
-       message: friendlyMessage,
-       success: false
-     });
-   }
+//    // Handle specific errors
+//    setAuthLoading(false)
+//    const friendlyMessage = getFriendlyErrorMessage(error);
+//    if (friendlyMessage) { // Only show if it's not null
+//      setAlertModal({
+//        open: true,
+//        message: friendlyMessage,
+//        success: false
+//      });
+//    }
 
-  //  if (error.code === 'auth/email-already-in-use') {
-  //    setAlertModal({
-  //      open: true,
-  //      message: "That email address is already in use!",
-  //      success:false
+//   //  if (error.code === 'auth/email-already-in-use') {
+//   //    setAlertModal({
+//   //      open: true,
+//   //      message: "That email address is already in use!",
+//   //      success:false
 
-  //  });
-  //  } else if (error.code === 'auth/invalid-email') {
-  //    setAlertModal({
-  //      open: true,
-  //      message: "That email address is invalid!",
-  //      success:false
+//   //  });
+//   //  } else if (error.code === 'auth/invalid-email') {
+//   //    setAlertModal({
+//   //      open: true,
+//   //      message: "That email address is invalid!",
+//   //      success:false
 
-  //  });
-  //  } else {
-  //    console.error(error);
-  //    setAlertModal({
-  //      open: true,
-  //      message: error?.message,
-  //      success:false
+//   //  });
+//   //  } else {
+//   //    console.error(error);
+//   //    setAlertModal({
+//   //      open: true,
+//   //      message: error?.message,
+//   //      success:false
 
-  //  });
-  //  }
- } finally {
-   setIsEnabled(true); // Re-enable button or other elements
-   setLoading(false)
-   setAuthLoading(false)
+//   //  });
+//   //  }
+//  } finally {
+//    setIsEnabled(true); // Re-enable button or other elements
+//    setLoading(false)
+//    setAuthLoading(false)
 
- }
+//  }
 
-  }
+//   }
   // async function onAppleButtonPress() {
 
   // //   try{
@@ -396,6 +397,163 @@ const SignUp = () => {
 
 
   // }
+
+
+  async function onFacebookButtonPress() {
+    // Attempt login with permissions
+    try {
+      setAuthLoading(true);
+
+      let result;
+      let token;
+      let data
+      let nonce
+      if (Platform.OS === 'ios') {
+        // Generate a unique nonce for this login request
+        nonce = uuidv4();
+  
+        // Use 'limited' for Limited Login and provide the generated nonce
+        result = await LoginManager.logInWithPermissions(
+          ['public_profile', 'email'],
+          'limited', // loginTrackingIOS
+          nonce // nonceIOS
+        );
+        token = await AuthenticationToken.getAuthenticationTokenIOS();
+      } else {
+        // For Android, use the standard login
+        result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+        token= await AccessToken.getCurrentAccessToken()
+      }
+
+      if (result.isCancelled) {
+        // setAlertModal({
+        //   open: true,
+        //   message: 'User cancelled the login process',
+        //   success: false,
+        // });
+        return
+        throw 'User cancelled the login process';
+      }
+
+      // // Once signed in, get the users AccessToken
+      // const data = await AccessToken.getCurrentAccessToken();
+
+      // if (!data) {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'Something went wrong obtaining access token',
+      //     success: false,
+      //   });
+      //   throw 'Something went wrong obtaining access token';
+      // }
+
+      // // Create a Firebase credential with the AccessToken
+      // const facebookCredential = auth.FacebookAuthProvider.credential(
+      //   data.accessToken,
+      // );
+
+      // // Sign-in the user with the credential
+      // const userCredential = await auth().signInWithCredential(
+      //   facebookCredential,
+      // );
+      // const firebaseIdToken = await userCredential.user.getIdToken();
+      // console.log('firebaseIdToken=================>', firebaseIdToken);
+          data = 
+            Platform.OS=="ios"
+            ?
+            {
+              
+              token,
+              "platform":"ios",
+              nonce
+            }
+            :
+            {
+              token,
+              "platform": "android",
+            }
+            const myuser = await axiosInstance.post('/auth/fb-auth', data);
+console.log("myuser==============>", myuser)
+      // const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+      //   accessToken: firebaseIdToken,
+      // });
+
+
+      if (myuser) {
+        const firebaseUserCredential = await auth().signInWithCustomToken(myuser?.data?.user?.firebaseCustomToken);
+        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst 
+        let firebaseIdToken = await firebaseUser.getIdToken();
+        if(!firebaseIdToken){
+            setAuthLoading(false);
+            setAlertModal({
+              open: true,
+              message: "Facebook Sign up Failed.",
+              success: false
+            });
+                return
+        }
+        await getInitialFcmToken(myuser?.data?.user?.token);
+console.log("myuser?.data?.user?.token====================>",myuser?.data?.user?.token)
+        dispatch(
+          handleAuth({
+            token: myuser?.data?.user?.token,
+            uid: myuser?.data?.user?.token,
+            name: myuser?.data?.user?.name,
+            email: myuser?.data?.user?.email,
+            provider: myuser?.data?.user?.provider,
+            type: myuser?.data?.user?.type,
+            status: myuser?.data?.user?.status,
+            _id: myuser?.data?.user?._id,
+            url: myuser?.data?.user?.image,
+            authenticated: true,
+            welcome: myuser?.data?.user?.welcome,
+          }),
+        );
+      }
+      setAuthLoading(false);
+    } catch (error) {
+      // Handle specific errors
+      setAuthLoading(false);
+      const friendlyMessage = getFriendlyErrorMessage(error);
+      console.log("mes==================>", friendlyMessage)
+      if (friendlyMessage) { // Only show if it's not null
+        setAlertModal({
+          open: true,
+          message: friendlyMessage,
+          success: false
+        });
+      }
+
+      // if (error.code === 'auth/email-already-in-use') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is already in use!',
+      //     success: false,
+      //   });
+      // } else if (error.code === 'auth/invalid-email') {
+      //   setAlertModal({
+      //     open: true,
+      //     message: 'That email address is invalid!',
+      //     success: false,
+      //   });
+      // } else {
+      //   console.error(error);
+      //   setAlertModal({
+      //     open: true,
+      //     message: error?.message,
+      //     success: false,
+      //   });
+      // }
+    } finally {
+      setIsEnabled(true); // Re-enable button or other elements
+      setLoading(false);
+      setAuthLoading(false);
+    }
+
+
+
+  }
+
 
   const signInWithGoogle = async () => {
  setAuthLoading(true)
