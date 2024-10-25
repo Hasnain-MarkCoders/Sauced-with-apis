@@ -14,7 +14,7 @@ const ClockDigit = ({
     }}>
 
     <Text style={{
-        fontSize: scale(50),
+        fontSize: scale(40),
         fontWeight: '800',
         color: "white",
         ...digitStyles

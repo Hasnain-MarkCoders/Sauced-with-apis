@@ -86,6 +86,7 @@ android {
         missingDimensionStrategy 'react-native-camera', 'general'
 
     }
+
     signingConfigs {
         debug {
             storeFile file('sauced-d.keystore')
@@ -100,6 +101,9 @@ android {
             keyPassword SAUCED_RELEASE_KEY_PASSWORD
 
         }
+    }
+       packagingOptions {
+        exclude "lib/riscv64/**"
     }
      splits {
         // **hasnain init: Enable separate build per CPU architecture**
