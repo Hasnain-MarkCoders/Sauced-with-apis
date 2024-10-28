@@ -104,7 +104,7 @@ const YesNoModal = ({
                     alignItems:"center",
                   }}>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                 onPress={()=>{
                   setModalVisible(false)
                 }}
@@ -122,7 +122,7 @@ const YesNoModal = ({
                   }}>
                   Close
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                 
@@ -143,7 +143,7 @@ const YesNoModal = ({
                     fontWeight:800,
                     fontSize:scale(14)
                   }}>
-                  Yes
+                  Continue
                   </Text>
                 </TouchableOpacity>
                   </View>
