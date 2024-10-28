@@ -124,7 +124,7 @@ showCancel?
                   <Text style={{
                     color:"#FFA100",
                     fontWeight:800,
-                    fontSize:scale(14),
+                    fontSize:scale(12),
                     textAlign:"center"
                   }}>
                   Close
@@ -153,7 +153,7 @@ showCancel?
                   <Text style={{
                     color:"#FFA100",
                     fontWeight:800,
-                    fontSize:scale(14),
+                    fontSize:scale(12),
                     textAlign:"center"
 
                   }}>
