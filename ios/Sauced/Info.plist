@@ -58,23 +58,33 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app requires access to your calendar to manage event dates effectively. We use your calendar to schedule and display events you are interested in. Your privacy is important to us, and we only access this information to enhance your experience.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Location Permission</string>
+    <string>Sauced needs access to your camera to allow you to take and upload profile pictures, enhancing your personalization experience.</string>
+    
+	   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We use your location to deliver timely notifications about nearby events and updates, even when the app is not actively in use, ensuring you stay informed about relevant happenings around you.</string>
+    
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We need access to your location to show where you are on the map</string>
-	<key>NSLocationUsageDescription</key>
-	<string>GPS data is required to...</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need access to your location to show nearby stores and hot sauce locations.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to your Microphone.</string>
+	<!-- <key>NSLocationUsageDescription</key>
+	<string>GPS data is required to...</string> -->
+	    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Access to your location allows us to display nearby stores and hot sauce locations, providing you with tailored recommendations based on your area.</string>
+	<!-- <key>NSMicrophoneUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to your Microphone.</string> -->
+
+	 <key>NSMicrophoneUsageDescription</key>
+    <string>Sauced needs access to your microphone to allow voice input features, enhancing your interaction with the app.</string>
+<!--     
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) needs access to your photo library to select images.</string>
+	<string>$(PRODUCT_NAME) needs access to your photo library to select images.</string> -->
+
+	    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Sauced needs access to your photo library to select and upload images for your profile and content sharing.</string>
+    
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
-		<string>location</string>
+		<!-- <string>location</string> -->
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
