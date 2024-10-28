@@ -13,6 +13,7 @@ const YesNoModal = ({
   title="",
   isQuestion=false,
   cb=()=>{},
+  showCancel = false
 }) => {
   useEffect(()=>{
     // setTimeout(()=>{
@@ -104,7 +105,11 @@ const YesNoModal = ({
                     alignItems:"center",
                   }}>
 
-                {/* <TouchableOpacity
+
+                    {
+
+showCancel?    
+<TouchableOpacity
                 onPress={()=>{
                   setModalVisible(false)
                 }}
@@ -113,16 +118,21 @@ const YesNoModal = ({
                   paddingHorizontal:scale(30),
                   paddingVertical:scale(15),
                   borderRadius:scale(8),
+                  flex:1
                   
 }}>
                   <Text style={{
                     color:"#FFA100",
                     fontWeight:800,
-                    fontSize:scale(14)
+                    fontSize:scale(14),
+                    textAlign:"center"
                   }}>
                   Close
                   </Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
+                :null
+                    }
+
 
                 <TouchableOpacity
                 
@@ -136,12 +146,16 @@ const YesNoModal = ({
                   paddingHorizontal:scale(37),
                   paddingVertical:scale(15),
                   borderRadius:scale(8),
+                  flex:1
+
                   
 }}>
                   <Text style={{
                     color:"#FFA100",
                     fontWeight:800,
-                    fontSize:scale(14)
+                    fontSize:scale(14),
+                    textAlign:"center"
+
                   }}>
                   Continue
                   </Text>

@@ -206,6 +206,8 @@ navigation.navigate("Public")
 
         </Drawer.Navigator>
        <YesNoModal
+            showCancel={true}
+
                 cb={handleLogout}
                 title="Are you sure you want to logout?"
                 success={false}

@@ -58,10 +58,11 @@ const ProfileScreen = () => {
             setLoading(true);
             try {
                 const res = await axiosInstance.get(`/get-user`);
+                console.log("res==========================================>",res?.data?.user)
                 dispatch(handleStats({
                     followers:res?.data?.user?.followers,
                     followings:res?.data?.user?.following,
-                    checkins:res?.data?.user?.checkins?.length,
+                    checkins:res?.data?.user?.checkinsCount,
                     uri:res?.data?.user?.image,
                     name:res?.data?.user?.name,
                     date:res?.data?.user?.date,

@@ -34,6 +34,7 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
+import { handleStats } from '../../Redux/userStats';
 
 const SocialSignIn = () => {
   const navigation = useNavigation();
@@ -146,6 +147,15 @@ const SocialSignIn = () => {
 
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
+        dispatch(handleStats({
+          followers:myuser?.data?.user?.followers,
+          followings:myuser?.data?.user?.following,
+          checkins:myuser?.data?.user?.checkinsCount,
+          uri:myuser?.data?.user?.image,
+          name:myuser?.data?.user?.name,
+          date:myuser?.data?.user?.createdAt,
+          reviewsCount:myuser?.data?.user?.reviewsCount
+        }))
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -403,6 +413,15 @@ console.log("myuser==============>", myuser)
         }
         await getInitialFcmToken(myuser?.data?.user?.token);
 console.log("myuser?.data?.user?.token====================>",myuser?.data?.user?.token)
+dispatch(handleStats({
+  followers:myuser?.data?.user?.followers,
+  followings:myuser?.data?.user?.following,
+  checkins:myuser?.data?.user?.checkinsCount,
+  uri:myuser?.data?.user?.image,
+  name:myuser?.data?.user?.name,
+  date:myuser?.data?.user?.createdAt,
+  reviewsCount:myuser?.data?.user?.reviewsCount
+}))
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -533,7 +552,15 @@ console.log("myuser?.data?.user?.token====================>",myuser?.data?.user?
 
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
-
+        dispatch(handleStats({
+          followers:myuser?.data?.user?.followers,
+          followings:myuser?.data?.user?.following,
+          checkins:myuser?.data?.user?.checkinsCount,
+          uri:myuser?.data?.user?.image,
+          name:myuser?.data?.user?.name,
+          date:myuser?.data?.user?.createdAt,
+          reviewsCount:myuser?.data?.user?.reviewsCount
+        }))
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,

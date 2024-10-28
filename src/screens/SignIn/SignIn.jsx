@@ -42,6 +42,7 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication'
+import { handleStats } from '../../Redux/userStats';
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -253,6 +254,24 @@ const SignIn = () => {
         );
         await getInitialFcmToken(myuser?.data?.user?.token);
         if (myuser) {
+          dispatch(handleStats({
+            followers:myuser?.data?.user?.followers,
+            followings:myuser?.data?.user?.following,
+            checkins:myuser?.data?.user?.checkinsCount,
+            uri:myuser?.data?.user?.image,
+            name:myuser?.data?.user?.name,
+            date:myuser?.data?.user?.createdAt,
+            reviewsCount:myuser?.data?.user?.reviewsCount
+          }))
+          dispatch(handleStats({
+            followers:myuser?.data?.user?.followers,
+            followings:myuser?.data?.user?.following,
+            checkins:myuser?.data?.user?.checkinsCount,
+            uri:myuser?.data?.user?.image,
+            name:myuser?.data?.user?.name,
+            date:myuser?.data?.user?.createdAt,
+            reviewsCount:myuser?.data?.user?.reviewsCount
+          }))
           dispatch(
             handleAuth({
               token: myuser?.data?.user?.token,
@@ -424,7 +443,15 @@ const SignIn = () => {
                 return
         }
         await getInitialFcmToken(myuser?.data?.user?.token);
-
+        dispatch(handleStats({
+          followers:myuser?.data?.user?.followers,
+          followings:myuser?.data?.user?.following,
+          checkins:myuser?.data?.user?.checkinsCount,
+          uri:myuser?.data?.user?.image,
+          name:myuser?.data?.user?.name,
+          date:myuser?.data?.user?.createdAt,
+          reviewsCount:myuser?.data?.user?.reviewsCount
+        }))
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -505,7 +532,18 @@ const SignIn = () => {
       );
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
+console.log("myuser?.data?.user========>", myuser?.data?.user)
 
+
+dispatch(handleStats({
+  followers:myuser?.data?.user?.followers,
+  followings:myuser?.data?.user?.following,
+  checkins:myuser?.data?.user?.checkinsCount,
+  uri:myuser?.data?.user?.image,
+  name:myuser?.data?.user?.name,
+  date:myuser?.data?.user?.createdAt,
+  reviewsCount:myuser?.data?.user?.reviewsCount
+}))
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -833,7 +871,15 @@ async function onAppleButtonPress() {
 
     if (myuser) {
       await getInitialFcmToken(myuser?.data?.user?.token);
-
+      dispatch(handleStats({
+        followers:myuser?.data?.user?.followers,
+        followings:myuser?.data?.user?.following,
+        checkins:myuser?.data?.user?.checkinsCount,
+        uri:myuser?.data?.user?.image,
+        name:myuser?.data?.user?.name,
+        date:myuser?.data?.user?.createdAt,
+        reviewsCount:myuser?.data?.user?.reviewsCount
+      }))
       dispatch(
         handleAuth({
           token: myuser?.data?.user?.token,
