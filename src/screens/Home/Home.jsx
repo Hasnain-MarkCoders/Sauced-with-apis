@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration, ActivityIndicator, Alert, Linking } from 'react-native';
+import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration, ActivityIndicator, Alert, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import home from './../../../assets/images/home.png';
@@ -302,6 +302,28 @@ const checkLocationServiceAndNavigate = async () => {
       cb: onConfirm,
     });
   };
+
+  const openLocationSettings = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        // Android: Open Location Settings
+        const url = 'android.settings.LOCATION_SOURCE_SETTINGS';
+        await Linking.sendIntent(url);
+      } else if (Platform.OS === 'ios') {
+        // iOS: Open App Settings
+        const url = 'app-settings:';
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+          await Linking.openURL(url);
+        } else {
+          Alert.alert('Error', 'Unable to open settings');
+        }
+      }
+    } catch (error) {
+      console.error('Error opening settings:', error);
+      Alert.alert('Error', 'Unable to open settings');
+    }
+  };
   
   const handleBlockedPermission = () => {
     Alert.alert(
@@ -312,7 +334,8 @@ const checkLocationServiceAndNavigate = async () => {
         {
           text: "Open Settings",
           onPress: () => {
-            Linking.openSettings();
+            // Linking.openSettings();
+            openLocationSettings()
             setLoading(false);
           },
         },

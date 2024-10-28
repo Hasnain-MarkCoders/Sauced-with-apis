@@ -71,6 +71,28 @@ console.log("auth.token", auth.token)
 
     const [isloading, setLoading] = useState(false)
 
+    const openLocationSettings = async () => {
+        try {
+          if (Platform.OS === 'android') {
+            // Android: Open Location Settings
+            const url = 'android.settings.LOCATION_SOURCE_SETTINGS';
+            await Linking.sendIntent(url);
+          } else if (Platform.OS === 'ios') {
+            // iOS: Open App Settings
+            const url = 'app-settings:';
+            const supported = await Linking.canOpenURL(url);
+            if (supported) {
+              await Linking.openURL(url);
+            } else {
+              Alert.alert('Error', 'Unable to open settings');
+            }
+          }
+        } catch (error) {
+          console.error('Error opening settings:', error);
+          Alert.alert('Error', 'Unable to open settings');
+        }
+      };
+
     const checkLocationServiceAndNavigate = () => {
         setLoading(true); // Start loading indicator
         const permission = Platform.OS === 'ios'
@@ -96,7 +118,7 @@ console.log("auth.token", auth.token)
                                     "Please enable location permission in your device settings to use this feature.",
                                     [
                                         { text: "Cancel", style: "cancel" },
-                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                        { text: "Open Settings", onPress: () => openLocationSettings() }
                                     ]
                                 );
                                 setLoading(false); // Stop loading indicator
@@ -121,7 +143,7 @@ console.log("auth.token", auth.token)
                                     "Please enable location permission in your device settings to use this feature.",
                                     [
                                         { text: "Cancel", style: "cancel" },
-                                        { text: "Open Settings", onPress: () => Linking.openSettings() }
+                                        { text: "Open Settings", onPress: () => openLocationSettings() }
                                     ]
                                 );
                                 setLoading(false); // Stop loading indicator

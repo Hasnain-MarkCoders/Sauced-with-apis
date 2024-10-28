@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration, Image, Linking } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, ScrollView, Text, View, Keyboard, Alert, Vibration, Image, Linking, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -315,6 +315,28 @@ const AddStore = () => {
         });
       };
 
+      const openLocationSettings = async () => {
+        try {
+          if (Platform.OS === 'android') {
+            // Android: Open Location Settings
+            const url = 'android.settings.LOCATION_SOURCE_SETTINGS';
+            await Linking.sendIntent(url);
+          } else if (Platform.OS === 'ios') {
+            // iOS: Open App Settings
+            const url = 'app-settings:';
+            const supported = await Linking.canOpenURL(url);
+            if (supported) {
+              await Linking.openURL(url);
+            } else {
+              Alert.alert('Error', 'Unable to open settings');
+            }
+          }
+        } catch (error) {
+          console.error('Error opening settings:', error);
+          Alert.alert('Error', 'Unable to open settings');
+        }
+      };
+
       const handleBlockedPermission = () => {
         Alert.alert(
           "Location Permission Blocked",
@@ -324,7 +346,8 @@ const AddStore = () => {
             {
               text: "Open Settings",
               onPress: () => {
-                Linking.openSettings();
+                // Linking.openSettings();
+                openLocationSettings()
                 setIsLoading(prev => ({ ...prev, loadMap: false }));
               },
             },
