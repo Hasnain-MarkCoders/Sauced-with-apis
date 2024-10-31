@@ -225,15 +225,27 @@ console.log("_id================================================>",_id)
 //     // }
 // }, [_id]);
 useEffect(()=>{
-return ()=>{
+  navigation.addListener("focus", ()=>{
+    if(page==1){
+      fetchProduct();
+      fetchCheckings();
+    }
+
+})
+navigation.addListener("blur", ()=>{
   setData([])
+})
+return ()=>{
 }
-},[])
+},[_id, page])
 
 useFocusEffect(
     useCallback(() => {
-      fetchProduct();
-      fetchCheckings();
+      if(page>1){
+        fetchProduct();
+        fetchCheckings();
+
+      }
 
     }, [_id, page]) // Ensure _id is included if it can change
   );
