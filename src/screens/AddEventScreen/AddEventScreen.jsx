@@ -287,7 +287,7 @@ console.log("selectedDate======================>", selectedDate)
 
         try {
             setIsSubmitLoading(true)
-            console.log("query?.date=========================>", query?.date)
+            console.log("query?.address=========================>", query?.address)
             const res = await axiosInstance.post("/request-event", {
                 "eventName": query?.title,
                 // "eventDetails": query?.destinationDetails,
@@ -295,6 +295,7 @@ console.log("selectedDate======================>", selectedDate)
                 "eventEndDate": query?.eventEndDate,
                 "venueAddress": query?.address,
                 "venueDescription": query?.destinationDetails,
+                "eventDetails": query?.destinationDetails,
                 "venueLocation.longitude": query.coordinates?.longitude,
                 "venueLocation.latitude": query.coordinates?.latitude
             }

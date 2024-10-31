@@ -637,8 +637,6 @@ const handleInterestedEvent = async () => {
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                           }}>
-                          {
-                            event?.eventName &&
                             <Text
                               // ellipsizeMode='tail'
                               // numberOfLines={1}
@@ -649,9 +647,8 @@ const handleInterestedEvent = async () => {
                                 lineHeight: scale(33),
                                 color: 'white',
                               }}>
-                              {event?.eventName}
+                              {event?.eventName?event?.eventName:"N/A"}
                             </Text>
-                          }
                           {/* <TouchableOpacity
                           onPress={handleInterestedEvent}
                             style={{
@@ -737,14 +734,21 @@ const handleInterestedEvent = async () => {
                               flexShrink: 1
                             }}>
                             {
-                              formatEventDate(event?.eventDate)
+                           event?.eventDate?   formatEventDate(event?.eventDate):"N/A"
+                              
+                            }
+                            {
+                              " - "
+                            }
+                                 {
+                            event?.eventEndDate?  formatEventDate(event?.eventEndDate):"N/A"
+                              
                             }
                           
                           </Text>
                         </View>
                       }
                       {
-                        event?.venueName &&
                         <View
                           style={{
                             flexDirection: 'row',
@@ -766,7 +770,7 @@ const handleInterestedEvent = async () => {
                             style={{
                               width: scale(18),
                               height: scale(23),
-                              marginTop:scale(5)
+                              // marginTop:scale(5)
 
                             }}
                             source={Location}
@@ -784,7 +788,8 @@ const handleInterestedEvent = async () => {
                                 lineHeight: scale(22),
                                 color: '#FFA100',
                               }}>
-                              {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()}
+                              {/* {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()} */}
+                              {event.venueName?event.venueName:"N/A"}
                               
                             </Text>
                           </View>
@@ -807,6 +812,8 @@ const handleInterestedEvent = async () => {
                           </View> */}
                         </View>
                       }
+
+
 
                     </View>
                   </View>
@@ -867,8 +874,75 @@ const handleInterestedEvent = async () => {
                                 fontSize: scale(11),
                                 lineHeight: scale(14),
                               }}>
-                              {event?.venueDescription}
+                              {event?.eventDetails?event?.eventDetails:"N/A"}
                             </Text>
+                            <View>
+                            <View style={{
+                    alignItems: "flex-start",
+                    gap: scale(20),
+                }}>
+
+                    <View style={{ flexDirection: "row", gap: scale(20), alignItems: "flex-start",
+                        flexWrap:"wrap"
+                    
+                     }}>
+
+                        <View>
+                            <Text style={{
+                                color: "white"
+                            }}>
+                               Event Website Link
+                            </Text>
+                            <TouchableOpacity onPress={() => {
+                                event.websiteLink && Linking.openURL(event.websiteLink)
+                            }}>
+                                <Text
+                                    // numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    style={{
+                                        maxWidth: scale(110),
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(12),
+                                        lineHeight: scale(25),
+                                        textDecorationStyle:"solid",
+                                        textDecorationLine:event.websiteLink ?"underline":"none"
+                                    }}>{event.websiteLink?"Visit Website":"Not Available."}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{
+                            width: scale(1),
+                            // height: "80%",
+                            backgroundColor: "#FFA100",
+                        }}>
+
+                        </View>
+                        <View>
+                            <Text style={{
+                                color: "white"
+                            }}>
+                                Event Facebook Link
+                            </Text>
+                            <TouchableOpacity onPress={() => {
+                                event?.facebookLink &&Linking.openURL(event?.facebookLink)
+                            }}>
+                                <Text
+                                    // numberOfLines={1}
+                                    ellipsizeMode='tail'
+                                    style={{
+                                        maxWidth: scale(110),
+                                        color: "#FFA100",
+                                        fontWeight: 600,
+                                        fontSize: scale(12),
+                                        lineHeight: scale(25),
+                                         textDecorationStyle:"solid",
+                                        textDecorationLine:event?.facebookLink ?"underline":"none"
+                                    }}>{event?.facebookLink?"Visit Facebook":"Not Available"}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+                            </View>
                     <View
                       style={{
                         marginTop: scale(30),
