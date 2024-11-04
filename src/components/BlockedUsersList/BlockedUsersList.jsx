@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import UserCard from '../UserCard/UserCard';
 import { scale } from 'react-native-size-matters';
 import useAxios from '../../../Axios/useAxios';
+import NotFound from '../NotFound/NotFound';
 const BlockedUsersList = ({ numColumns = 2 }) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -17,8 +18,9 @@ const BlockedUsersList = ({ numColumns = 2 }) => {
       const res = await axiosInstance.get('/get-all-blocks', {
         params: { page },
       });
+
+      console.log("res?.data?.blockList================================>", res?.data?.blockList)
       if(res?.data?.blockList){
-        console.log("res?.data?.blockList==========================================>", res?.data?.blockList)
           setHasMore(res?.data?.pagination?.hasNextPage);
           setData(prevData => {
             // Avoid adding duplicates by filtering existing items
@@ -71,21 +73,34 @@ const BlockedUsersList = ({ numColumns = 2 }) => {
 
   return (
     <View style={{ flex: 1, gap: scale(20) }}>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        numColumns={numColumns}
-        data={data}
-        keyExtractor={item => item._id}
-        renderItem={renderItem}
-        onEndReachedThreshold={2} // Adjusted for early loading
-        onEndReached={() => {
-        //   if (!loading && hasMore) {
-        //     setPage(page + 1);
-        //   }
-        }}
-        ListFooterComponent={() => loading && <ActivityIndicator size="small" color="#FFA100" />}
-      />
+      {
+        data?.length>0
+        ?
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          numColumns={numColumns}
+          data={data}
+          keyExtractor={item => item._id}
+          renderItem={renderItem}
+          onEndReachedThreshold={2} // Adjusted for early loading
+          onEndReached={() => {
+          //   if (!loading && hasMore) {
+          //     setPage(page + 1);
+          //   }
+          }}
+          ListFooterComponent={() => loading && <ActivityIndicator size="small" color="#FFA100" />}
+        />
+        :
+        !loading
+        ?
+        <NotFound
+        title='No Users found.'
+        />
+        :
+        null
+
+      }
     </View>
   );
 };

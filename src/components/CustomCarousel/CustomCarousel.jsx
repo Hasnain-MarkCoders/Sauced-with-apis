@@ -6,18 +6,14 @@ import Banner from '../Banner/Banner';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
-// import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents';
 import { useDispatch, useSelector } from 'react-redux';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
-// import { handleAllEventsExceptInterested, handleRemoveAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested';
-
 import NotFound from '../NotFound/NotFound';
 import { handleAllEventsExceptInterested , handleRemoveAllEventsExceptInterested} from '../../Redux/allEventsExceptInterested';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents';
 const screenWidth = Dimensions.get('window').width;
 const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
 const effectiveWidth = screenWidth - 2 * horizontalPadding;
-
 const CustomCarousel = ({
     showText=false,
 }) => {
@@ -70,13 +66,8 @@ const [initialLoading, setInitialLoading] = React.useState(true)
         const x = interestedEvents?.find(item=>item?._id==event?._id)
         if(!!x){
             dispatch(handleRemoveInterestedEvents(event?._id))
-            // dispatch(handleAllEventsExceptInterested([event]))
-         
-
  }
         if(!x){
-                //  dispatch(handleRemoveAllEventsExceptInterested(event?._id))
-            // return dispatch(handleRemoveInterestedEvents(event?._id))
             dispatch(handleInterestedEvents([event]))
             const res = await axiosInstance.post(`/interest-event`, {
                 eventId:event?._id

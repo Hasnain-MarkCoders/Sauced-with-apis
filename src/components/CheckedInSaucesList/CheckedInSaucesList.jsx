@@ -5,8 +5,6 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-// import { handleCheckedInSauces, handleIncreaseReviewCountOfCheckedInSauce } from '../../../android/app/Redux/checkedInSauces';
-
 import NotFound from '../NotFound/NotFound';
 import { handleIncreaseReviewCountOfCheckedInSauce, handleCheckedInSauces } from '../../Redux/checkedInSauces';
 const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {

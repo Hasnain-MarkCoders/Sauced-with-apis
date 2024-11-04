@@ -1,382 +1,303 @@
 import {
-    ImageBackground,
-    SafeAreaView,
-    Text,
-    View,
-    Keyboard,
-    ActivityIndicator,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform
-  } from 'react-native';
-  import React, {useCallback, useEffect, useState} from 'react';
-  import Header from '../../components/Header/Header.jsx';
-  import getStartedbackground from './../../../assets/images/product_screen.png';
-  import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
-  import {useFocusEffect, useNavigation} from '@react-navigation/native';
-  import {FlatList} from 'react-native-gesture-handler';
-  import SauceList from '../../components/SauceList/SauceList.jsx';
-  import {handleText, messagesData, topRatedSauces} from '../../../utils.js';
-  import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
-  import ProductCard from '../../components/ProductCard/ProductCard.jsx';
-  import {useRoute} from '@react-navigation/native';
-  import CustomSelectListModal from '../../components/CustomSelectListModal/CustomSelectListModal.jsx';
-  import Snackbar from 'react-native-snackbar';
-  import CommentsList from '../../components/CommentsList/CommentsList.jsx';
-  import CustomInput from '../../components/CustomInput/CustomInput.jsx';
-  import user1 from './../../../assets/images/user1.png';
-  import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
-  import useAxios from '../../../Axios/useAxios.js';
-  import {useDispatch, useSelector} from 'react-redux';
-
-  // import {
-  //   handleRemoveSauceFromListOne,
-  //   handleSaucesListOne,
-  // } from '../../../android/app/Redux/saucesListOne.js';
-  // import {
-  //   handleRemoveSauceFromListThree,
-  //   handleSaucesListThree,
-  // } from '../../../android/app/Redux/saucesListThree.js';
-  // import {
-  //   handleRemoveSauceFromListTwo,
-  //   handleSaucesListTwo,
-  // } from '../../../android/app/Redux/saucesListTwo.js';
+  ImageBackground,
+  SafeAreaView,
+  Text,
+  View,
+  Keyboard,
+  ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import Header from '../../components/Header/Header.jsx';
+import getStartedbackground from './../../../assets/images/product_screen.png';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {FlatList} from 'react-native-gesture-handler';
+import {handleText} from '../../../utils.js';
+import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
+import {useRoute} from '@react-navigation/native';
+import CustomSelectListModal from '../../components/CustomSelectListModal/CustomSelectListModal.jsx';
+import Snackbar from 'react-native-snackbar';
+import CommentsList from '../../components/CommentsList/CommentsList.jsx';
+import CustomInput from '../../components/CustomInput/CustomInput.jsx';
+import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
+import useAxios from '../../../Axios/useAxios.js';
+import {useDispatch, useSelector} from 'react-redux';
 import ProductScreenCard from '../../components/ProductScreenCard/ProductScreenCard.jsx';
-import { handleRemoveSauceFromListOne, handleSaucesListOne } from '../../Redux/saucesListOne.js';
-import { handleRemoveSauceFromListThree , handleSaucesListThree} from '../../Redux/saucesListThree.js';
-import { handleRemoveSauceFromListTwo, handleSaucesListTwo } from '../../Redux/saucesListTwo.js';
+import {
+  handleRemoveSauceFromListOne,
+  handleSaucesListOne,
+} from '../../Redux/saucesListOne.js';
+import {
+  handleRemoveSauceFromListThree,
+  handleSaucesListThree,
+} from '../../Redux/saucesListThree.js';
+import {
+  handleRemoveSauceFromListTwo,
+  handleSaucesListTwo,
+} from '../../Redux/saucesListTwo.js';
 
-  const ProductScreen = ({
+const ProductScreen = ({}) => {
+  const route = useRoute();
+  const auth = useSelector(state => state?.auth);
+  const title = route?.params?.title;
+  const url = route?.params?.url;
+  const product = route?.params?.item;
+  const mycb = route?.params?.mycb || function () {};
+  const handleIncreaseReviewCount =
+    route?.params?.handleIncreaseReviewCount || function () {};
+  const handleLike = route?.params?.handleLike || function () {};
+  const setSelected = route?.params?.setSelected || function () {};
+  const sauceType = route?.params?.sauceType || '';
+  const _id = route?.params?._id || '';
 
-  }) => {
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isKeyBoard, setIsKeyBoard] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [id, setId] = useState(0);
+  const [query, setQuery] = useState({search: ''});
+  const [sauce, setSauce] = useState(null);
+  const [userData, setUserData] = useState({
+    image: '',
+    name: '',
+    email: '',
+    phone: '',
+  });
+  const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
+  const [isEnabled, setisEnabled] = useState(true);
+  const navigation = useNavigation();
 
-
-
-
-    const route = useRoute();
-    const auth = useSelector(state=>state?.auth)
-    const title = route?.params?.title;
-    const url= route?.params?.url;
-    const product = route?.params?.item;
-    const setCount = route?.params?.setCount||function(){};
-
-
-    const mycb = route?.params?.mycb|| function(){}
-    const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
-    const handleLike = route?.params?.handleLike|| function(){}
-    const setSelected = route?.params?.setSelected|| function(){}
-    const sauceType = route?.params?.sauceType||"";
-    const _id = route?.params?._id||"";
-
-    const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [loading1, setLoading1] = useState(false);
-    const [loading2, setLoading2] = useState(false);
-    const [loading3, setLoading3] = useState(false);
-    const [initialLoading, setInitialLoading] = useState(true);
-    const [isKeyBoard, setIsKeyBoard] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [id, setId] = useState(0);
-    const [query, setQuery] = useState({search: ''});
-    const [sauce, setSauce] = useState(null)
-    const [userData, setUserData] = useState({
-      image: "",
-      name: "",
-      email:"",
-      phone:""
-    });
-    const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
-    const [isEnabled, setisEnabled] = useState(true);
-    const navigation = useNavigation();
-
-    const [isAlreadyInList, setAlreadyInList] = useState({
-      list1: false,
-      list2: false,
-      list3: false,
-    });
-    const dispatch = useDispatch();
-    const axiosInstance = useAxios();
-    const list1 = useSelector(state => state?.saucesListOne);
-    const list2 = useSelector(state => state?.saucesListTwo);
-    const list3 = useSelector(state => state?.saucesListThree);
-    useEffect(() => {
-      const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-        setIsKeyBoard(true);
-      });
-      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-        setIsKeyBoard(false);
-      });
-
-      return () => {
-        showSubscription.remove();
-        hideSubscription.remove();
-      };
-    }, []);
-
-
-    const handleSubmitMessage = data => {
+  const [isAlreadyInList, setAlreadyInList] = useState({
+    list1: false,
+    list2: false,
+    list3: false,
+  });
+  const dispatch = useDispatch();
+  const axiosInstance = useAxios();
+  const list1 = useSelector(state => state?.saucesListOne);
+  const list2 = useSelector(state => state?.saucesListTwo);
+  const list3 = useSelector(state => state?.saucesListThree);
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyBoard(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyBoard(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
     };
+  }, []);
 
-    const getId = (id = 0) => {
-      return setId(id);
+  const handleSubmitMessage = data => {
+    setIsKeyBoard(true);
+  };
+
+  const getId = (id = 0) => {
+    return setId(id);
+  };
+
+  const handleAddMessage = async () => {
+    const existingMessage = data.find(item => item?._id == id);
+    console.log(existingMessage);
+    if (existingMessage) {
+      existingMessage?.comments?.push({
+        user: {image: auth?.url, name: auth?.name},
+        text: query.search,
+      });
+      setQuery({search: ''});
+      const res = await axiosInstance.post(`/create-comment`, {
+        checkinId: id,
+        text: query.search,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (list1.find(item => item?._id == sauce?._id)) {
+      setAlreadyInList(prev => ({...prev, list1: true}));
+    }
+    if (list2.find(item => item?._id == sauce?._id)) {
+      setAlreadyInList(prev => ({...prev, list2: true}));
+    }
+    if (list3.find(item => item?._id == sauce?._id)) {
+      setAlreadyInList(prev => ({...prev, list3: true}));
+    }
+
+    return () => {
+      setAlreadyInList(prev => ({list1: false, list2: false, list3: false}));
     };
+  }, [route?.params?.item]);
 
-
-    const handleAddMessage = async () => {
-      const existingMessage = data.find(item => item?._id == id)
-      console.log(existingMessage)
-      if (existingMessage) {
-          existingMessage?.comments?.push({
-              user: { image: auth?.url, name: auth?.name }, text: query.search
-          })
-          setQuery({ search: "" })
-          const res = await axiosInstance.post(`/create-comment`, {
-              "checkinId": id,
-              "text": query.search
-          });
-      }
-
-
-
-  }
-
-
-  useEffect(()=>{
-console.log("_id================================================>",_id)
-  },[_id])
-
-    useEffect(() => {
-      if (list1.find(item => item?._id == sauce?._id)) {
-        setAlreadyInList(prev => ({...prev, list1: true}));
-      }
-      if (list2.find(item => item?._id == sauce?._id)) {
-        setAlreadyInList(prev => ({...prev, list2: true}));
-      }
-      if (list3.find(item => item?._id == sauce?._id)) {
-        setAlreadyInList(prev => ({...prev, list3: true}));
-      }
-
-      return () => {
-        setAlreadyInList(prev => ({list1: false, list2: false, list3: false}));
-      };
-    }, [route?.params?.item]);
-
-    // useEffect(() => {
-      const fetchCheckings = useCallback(async () => {
-          if (!hasMore || loading) return;
-          setLoading(true);
-          try {
-              const res = await axiosInstance.get(`/get-checkins`, {
-                  params: {
-                      page: page,
-                      _id
-                  }
-              });
-              setHasMore(res?.data?.pagination?.hasNextPage);
-              console.log("res.data?.checkins====================================================================>", res?.data?.checkins)
-              if (res?.data?.checkins?.length){
-
-                setData(prev => [...prev, ...res?.data?.checkins]);
-              }
-          } catch (error) {
-              console.error('Failed to fetch photos:', error);
-          } finally {
-              setLoading(false);
-            //   setInitialLoading(false);
-          }
-      },[page,_id, loading, hasMore ]);
-
-
-
-  const fetchProduct =useCallback( async () => {
-    // if (!hasMore || loading) return;
-    // setLoading(true);
-    setInitialLoading(true)
+  const fetchCheckings = useCallback(async () => {
+    if (!hasMore || loading) return;
+    setLoading(true);
     try {
-        const res = await axiosInstance.post(`/view-sauce`, {
-            // params: {
-             "sauceId":_id
-            // }
-        });
-
-        setSauce(res.data.sauce)
-
+      const res = await axiosInstance.get(`/get-checkins`, {
+        params: {
+          page: page,
+          _id,
+        },
+      });
+      setHasMore(res?.data?.pagination?.hasNextPage);
+      if (res?.data?.checkins?.length) {
+        setData(prev => [...prev, ...res?.data?.checkins]);
+      }
     } catch (error) {
-        console.error('Failed to fetch photos:', error);
+      console.error('Failed to fetch photos:', error);
     } finally {
-        // setLoading(false);
-        setInitialLoading(false);
+      setLoading(false);
+      //   setInitialLoading(false);
     }
-},[_id]);
+  }, [page, _id, loading, hasMore]);
 
-//   useEffect(() => {
+  const fetchProduct = useCallback(async () => {
+    setInitialLoading(true);
+    try {
+      const res = await axiosInstance.post(`/view-sauce`, {
+        sauceId: _id,
+      });
 
-//     navigation.addListener("focus", ()=>{
-
-//         fetchProduct();
-//     })
-
-
-//     // return()=>{
-//     //     setInitialLoading(true)
-//     // }
-// }, [_id]);
-useEffect(()=>{
-  navigation.addListener("focus", ()=>{
-    if(page==1){
-      fetchProduct();
-      fetchCheckings();
+      setSauce(res.data.sauce);
+    } catch (error) {
+      console.error('Failed to fetch photos:', error);
+    } finally {
+      setInitialLoading(false);
     }
-
-})
-navigation.addListener("blur", ()=>{
-  setData([])
-})
-return ()=>{
-}
-},[_id, page])
-
-useFocusEffect(
-    useCallback(() => {
-      if(page>1){
+  }, [_id]);
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      if (page == 1) {
         fetchProduct();
         fetchCheckings();
-
       }
+    });
+    navigation.addListener('blur', () => {
+      setData([]);
+    });
+    return () => {};
+  }, [_id, page]);
 
-    }, [_id, page]) // Ensure _id is included if it can change
+  useFocusEffect(
+    useCallback(() => {
+      if (page > 1) {
+        // fetchProduct();
+        fetchCheckings();
+      }
+    }, [_id, page]), // Ensure _id is included if it can change
   );
 
-    const handleLoading = (listNumber, action) => {
-      if (listNumber == 1) {
-        return setLoading1(action);
-      }
-      if (listNumber == 2) {
-        return setLoading2(action);
-      }
-      if (listNumber == 3) {
-        return setLoading3(action);
-      }
-    };
-    addToList = async listNumber => {
-      try {
-        handleLoading(listNumber, true);
-        Snackbar.show({
-          text: `sauce adding in List ${listNumber}`,
-          duration: Snackbar.LENGTH_SHORT,
-          // action: {
-          //   text: 'UNDO',
-          //   textColor: '#FFA100',
-
-          //   onPress: () => {
-          //     Snackbar.show({
-          //       text: `sauce remove from List ${listNumber}`,
-          //       duration: Snackbar.LENGTH_SHORT,
-          //     });
-          //   },
-          // },
-        });
-
-        const type =
-          listNumber == 1
-            ? 'triedSauces'
-            : listNumber == 2
-            ? 'toTrySauces'
-            : 'favoriteSauces';
-        //adding sauces
-        if (listNumber == 1 && !isAlreadyInList?.list1) {
-          dispatch(handleSaucesListOne([sauce]));
-        }
-
-        if (listNumber == 2 && !isAlreadyInList?.list2) {
-          dispatch(handleSaucesListTwo([sauce]));
-        }
-
-        if (listNumber == 3 && !isAlreadyInList?.list3) {
-          dispatch(handleSaucesListThree([sauce]));
-        }
-
-        // removeing sauces
-        if (listNumber == 1 && isAlreadyInList?.list1) {
-          dispatch(handleRemoveSauceFromListOne(_id));
-        }
-
-        if (listNumber == 2 && isAlreadyInList?.list2) {
-          dispatch(handleRemoveSauceFromListTwo(_id));
-        }
-
-        if (listNumber == 3 && isAlreadyInList?.list3) {
-          dispatch(handleRemoveSauceFromListThree(_id));
-        }
-
-        const res = await axiosInstance.post(`/bookmark`, {
-          sauceId: product?._id,
-          listType: type,
-        });
-    //     // setAlreadyInList(prev=>({...prev, [`list${listNumber}`]:!isAlreadyInList[`list${listNumber}`]}))
-
-
-
-      } catch (error) {
-        console.error('Failed to like / dislike:', error);
-      } finally {
-        handleLoading(listNumber, false);
-        setModalVisible(false);
-        setisEnabled(true);
-      }
-    };
-    const handleUserProfileView = data => {
-      console.log(data.item._id)
-      setOpenUserDetailsModal(true)
-      setUserData({
-        image: data.item?.owner?.image,
-        name: data.item?.owner?.name,
-        email:data.item?.owner?.email,
-        phone:data.item?.owner?.phone||"N/A"
-      })
-      // navigation.navigate('ExternalProfileScreen', {
-      //   url: data.item.image,
-      //   name: data.item.name,
-      //    _id:data.item._id
-      // });
-    };
-
-
-    if (initialLoading) {
-      return (
-        <ImageBackground
-          source={getStartedbackground}
-          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#FFA100" />
-        </ImageBackground>
-      );
+  const handleLoading = (listNumber, action) => {
+    if (listNumber == 1) {
+      return setLoading1(action);
     }
+    if (listNumber == 2) {
+      return setLoading2(action);
+    }
+    if (listNumber == 3) {
+      return setLoading3(action);
+    }
+  };
+  addToList = async listNumber => {
+    try {
+      handleLoading(listNumber, true);
+      Snackbar.show({
+        text: `sauce adding in List ${listNumber}`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
 
+      const type =
+        listNumber == 1
+          ? 'triedSauces'
+          : listNumber == 2
+          ? 'toTrySauces'
+          : 'favoriteSauces';
+      //adding sauces
+      if (listNumber == 1 && !isAlreadyInList?.list1) {
+        dispatch(handleSaucesListOne([sauce]));
+      }
+
+      if (listNumber == 2 && !isAlreadyInList?.list2) {
+        dispatch(handleSaucesListTwo([sauce]));
+      }
+
+      if (listNumber == 3 && !isAlreadyInList?.list3) {
+        dispatch(handleSaucesListThree([sauce]));
+      }
+
+      // removeing sauces
+      if (listNumber == 1 && isAlreadyInList?.list1) {
+        dispatch(handleRemoveSauceFromListOne(_id));
+      }
+
+      if (listNumber == 2 && isAlreadyInList?.list2) {
+        dispatch(handleRemoveSauceFromListTwo(_id));
+      }
+
+      if (listNumber == 3 && isAlreadyInList?.list3) {
+        dispatch(handleRemoveSauceFromListThree(_id));
+      }
+
+      const res = await axiosInstance.post(`/bookmark`, {
+        sauceId: product?._id,
+        listType: type,
+      });
+    } catch (error) {
+      console.error('Failed to like / dislike:', error);
+    } finally {
+      handleLoading(listNumber, false);
+      setModalVisible(false);
+      setisEnabled(true);
+    }
+  };
+  const handleUserProfileView = data => {
+    console.log(data.item._id);
+    setOpenUserDetailsModal(true);
+    setUserData({
+      image: data.item?.owner?.image,
+      name: data.item?.owner?.name,
+      email: data.item?.owner?.email,
+      phone: data.item?.owner?.phone || 'N/A',
+    });
+  };
+
+  if (initialLoading) {
     return (
       <ImageBackground
-        style={{flex: 1, width: '100%', height: '100%'}}
-        source={getStartedbackground}>
-           <KeyboardAvoidingView
+        source={getStartedbackground}
+        style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#FFA100" />
+      </ImageBackground>
+    );
+  }
+
+  return (
+    <ImageBackground
+      style={{flex: 1, width: '100%', height: '100%'}}
+      source={getStartedbackground}>
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null} // Added KeyboardAvoidingView
-        style={{ flex: 1 }}
-      >
-
-
-      {/* </KeyboardAvoidingView> */}
+        style={{flex: 1}}>
+        {/* </KeyboardAvoidingView> */}
         <SafeAreaView
           style={{flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0)}}>
           <Header
             showMenu={false}
-            cb={() =>{
+            cb={() => {
+              navigation.navigate('Main');
 
-                navigation.navigate("Main")
-
-                // navigation.goBack()
-
-
+              // navigation.goBack()
             }}
             showProfilePic={false}
             headerContainerStyle={{
@@ -403,29 +324,27 @@ useFocusEffect(
                       style={{
                         marginBottom: scale(20),
                       }}>
-
                       <ProductScreenCard
-                      hasUserLiked = {sauce?.hasLiked}
-                      _id={sauce?._id}
-                      url={sauce?.image}
-                      name={sauce?.name}
-                      averageRating={sauce?.averageRating}
-                      totalReviews={sauce?.reviewCount}
-                      totalcheckIn={sauce?.checkIn}
-                      amazonLink={sauce?.amazonLink}
-                      productLink={sauce?.productLink}
-                      websiteLink={sauce?.websiteLink}
-                      sauce={sauce}
-                      setSelected={setSelected}
-                      handleLike={handleLike}
-                      handleIncreaseReviewCount={handleIncreaseReviewCount}
-                      mycb={mycb}
+                        hasUserLiked={sauce?.hasLiked}
+                        _id={sauce?._id}
+                        url={sauce?.image}
+                        name={sauce?.name}
+                        averageRating={sauce?.averageRating}
+                        totalReviews={sauce?.reviewCount}
+                        totalcheckIn={sauce?.checkIn}
+                        amazonLink={sauce?.amazonLink}
+                        productLink={sauce?.productLink}
+                        websiteLink={sauce?.websiteLink}
+                        sauce={sauce}
+                        setSelected={setSelected}
+                        handleLike={handleLike}
+                        handleIncreaseReviewCount={handleIncreaseReviewCount}
+                        mycb={mycb}
                         sauceType={sauceType}
                         product={product}
                         setshowListModal={setModalVisible}
                         title={title}
                       />
-
                     </View>
                   )}
 
@@ -442,7 +361,7 @@ useFocusEffect(
                           fontSize: moderateScale(24),
                           fontWeight: 600,
                         }}>
-                        { sauce?.name?"About "+ sauce?.name:"N/A"}
+                        {sauce?.name ? 'About ' + sauce?.name : 'N/A'}
                       </Text>
 
                       <Text
@@ -453,7 +372,7 @@ useFocusEffect(
                           fontWeight: 400,
                           lineHeight: 20,
                         }}>
-                        {sauce?.description? sauce?.description:"N/A"}
+                        {sauce?.description ? sauce?.description : 'N/A'}
                       </Text>
 
                       <Text
@@ -496,7 +415,7 @@ useFocusEffect(
                           fontWeight: 700,
                           lineHeight: 18,
                         }}>
-                        {sauce?.ingredients?sauce?.ingredients:"N/A"}
+                        {sauce?.ingredients ? sauce?.ingredients : 'N/A'}
                       </Text>
                     </View>
                   )}
@@ -510,7 +429,6 @@ useFocusEffect(
                         style={{
                           gap: scale(30),
                         }}>
-                        {/* <SauceList title="Shared Images" data={topRatedSauces} /> */}
                         <View>
                           <Text
                             style={{
@@ -524,11 +442,15 @@ useFocusEffect(
                           </Text>
                         </View>
 
-                              <CommentsList
-                              commentsData={data}
-                              cb={handleUserProfileView}  getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
-                              loading={loading} hasMore={hasMore}
-                              />
+                        <CommentsList
+                          commentsData={data}
+                          cb={handleUserProfileView}
+                          getId={getId}
+                          handleSubmitMessage={handleSubmitMessage}
+                          setPage={setPage}
+                          loading={loading}
+                          hasMore={hasMore}
+                        />
                       </View>
                     </View>
                   )}
@@ -536,28 +458,30 @@ useFocusEffect(
               );
             }}
           />
-         { sauce &&<CustomSelectListModal
-         _id={_id}
-         sauce={sauce}
-            modalVisible={modalVisible}
-            setModalVisible={() => {
-              setModalVisible(false);
-            }}
-            cb={addToList}
-            isEnabled={isEnabled}
-            loading1={loading1}
-            loading2={loading2}
-            loading3={loading3}
-            title1={
-              isAlreadyInList.list1 ? 'Remove from list 1' : 'Add in List 1'
-            }
-            title2={
-              isAlreadyInList.list2 ? 'Remove from list 2' : 'Add in List 2'
-            }
-            title3={
-              isAlreadyInList.list3 ? 'Remove from list 3' : 'Add in List 3'
-            }
-          />}
+          {sauce && (
+            <CustomSelectListModal
+              _id={_id}
+              sauce={sauce}
+              modalVisible={modalVisible}
+              setModalVisible={() => {
+                setModalVisible(false);
+              }}
+              cb={addToList}
+              isEnabled={isEnabled}
+              loading1={loading1}
+              loading2={loading2}
+              loading3={loading3}
+              title1={
+                isAlreadyInList.list1 ? 'Remove from list 1' : 'Add in List 1'
+              }
+              title2={
+                isAlreadyInList.list2 ? 'Remove from list 2' : 'Add in List 2'
+              }
+              title3={
+                isAlreadyInList.list3 ? 'Remove from list 3' : 'Add in List 3'
+              }
+            />
+          )}
         </SafeAreaView>
         {isKeyBoard && (
           <View
@@ -599,13 +523,12 @@ useFocusEffect(
                 padding: 15,
                 paddingLeft: scale(10),
                 textAlignVertical: 'top',
-                paddingVertical:scale(15)
+                paddingVertical: scale(15),
               }}
             />
             <TouchableOpacity
               onPress={() => {
                 handleAddMessage();
-                // Linking.openURL(url)
                 setIsKeyBoard(false);
               }}
               style={{
@@ -638,9 +561,8 @@ useFocusEffect(
           setModalVisible={setOpenUserDetailsModal}
         />
       </KeyboardAvoidingView>
+    </ImageBackground>
+  );
+};
 
-      </ImageBackground>
-    );
-  };
-
-  export default ProductScreen;
+export default ProductScreen;

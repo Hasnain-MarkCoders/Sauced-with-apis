@@ -1,10 +1,9 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import search from './../../../assets/images/search_icon.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import FollowListToggle from '../../components/FollowListToggle/FollowListToggle.jsx';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {  handleText } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
@@ -68,7 +67,6 @@ const FollowerScreen = () => {
                                       isURL={false}
                                       showImage={true}
                                       uri={search}
-                                        // cb={() => setPage(1)}
                                         name="search"
                                         onChange={handleText}
                                         updaterFn={setQuery}

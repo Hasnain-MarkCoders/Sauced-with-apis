@@ -7,8 +7,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  BackHandler,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import home from './../../../assets/images/home.png';
@@ -24,13 +22,6 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const axiosInstance = useAxios();
   const route = useRoute();
   const _id = route?.params?._id;
-  // const setReviewCount = route?.params?.setReviewCount|| function(){}
-  // const reviewCount = route?.params?.reviewCount|| null
-  // const handleIncreaseReviewCount = route?.params?.handleIncreaseReviewCount|| function(){}
-  // const product = route?.params?.product||{};
-  // const sauceType = route?.params?.sauceType;
-  // const mycb = route?.params?.mycb || function(){};
-
   const sauceType = route?.params?.sauceType||"" 
   const url = route?.params?.url||"" 
   const title = route?.params?.title||"" 
@@ -40,10 +31,6 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   const setReviewCount = route?.params?.setReviewCount||function(){}
   const reviewCount = route?.params?.reviewCount||"" 
   const handleLike = route?.params?.handleLike|| function(){}
-
-
-
-
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -69,31 +56,6 @@ const AllReviewsScreen = ({showAddReviewButton = true}) => {
   };
 
   const navigation = useNavigation();
-//   React.useEffect(() => {
-//     navigation.addListener("focus", ()=>{
-//       fetchReviews();
-
-//     })
-
-//     navigation.addListener("blur", ()=>{
-//       setPage(1);
-//       setData([]);
-//     })
-//     return () => {
-//       navigation.removeListener("focus", ()=>{
-//         setPage(1);
-//         setData([]);
-//         fetchReviews();
-//       })
-//     }
-//   }, [fetchReviews]);
-
-//   useEffect(()=>{
-// if(page>1){
-//   fetchReviews();
-// }
-//   },[fetchReviews])
-
 useFocusEffect(
   useCallback(() => {
     if(page>1){
@@ -114,20 +76,6 @@ useEffect(()=>{
   })
   
 },[])
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const onBackPress = () => {
-  //       // Optionally, you can show an alert or simply prevent going back
-  //       return true; // Prevent default behavior
-  //     };
-
-  //     BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-  //     return () =>
-  //       BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-  //   }, [])
-  // );
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault(); // Prevent default action
@@ -149,28 +97,10 @@ useEffect(()=>{
             showMenu={false}
             showText={false}
             cb={() => 
-              // navigation.goBack()
               {
-              //   navigation.navigate("ProductDetail", {
-              //     _id,
-              //     url,
-              //     title,
-              //     item,
-              //     reviewCount,
-              //     setReviewCount,
-              //     handleIncreaseReviewCount,
-              //     sauceType,
-              //     mycb,
-              //     handleLike
-              //    })
-              // }
-
                   navigation.navigate("ProductScreen", {
                   _id
-                
                  })
-              // }
-            
             }}
             showProfilePic={false}
             showDescription={false}

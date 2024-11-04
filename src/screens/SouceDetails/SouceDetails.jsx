@@ -149,7 +149,6 @@ const SouceDetails = () => {
                                                 Sauce Name
                                             </Text>
                                             <CustomInput
-                                                // cb={() => setPage(1)}
                                                 name="name"
                                                 onChange={handleText}
                                                 updaterFn={setQuery}
@@ -185,7 +184,6 @@ const SouceDetails = () => {
                                             </Text>
 
                                             <CustomInput
-                                                // cb={() => setPage(1)}
                                                 name="title"
                                                 onChange={handleText}
                                                 updaterFn={setQuery}
@@ -249,7 +247,6 @@ const SouceDetails = () => {
                                             showIcon={false}
                                             buttonTextStyle={{ fontSize: scale(14) }}
                                             buttonstyle={{ width: "100%", marginTop: scale(60), borderColor: "#FFA100", backgroundColor: "#2e210a", paddingHorizontal: scale(15), paddingVertical: scale(13), display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "center" }}
-                                            // onPress={() => {Vibration.vibrate(10) ;setAlertModal(true)}}
                                             onPress={handleRequestSauce}
                                             title={"Submit"}
                                         />

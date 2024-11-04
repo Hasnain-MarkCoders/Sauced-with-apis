@@ -1,10 +1,8 @@
-import { Linking, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import banner from "./../../../assets/images/banner.png";
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
+import React from 'react'
 import youtubeIcon from "./../../../assets/images/youtubeIcon.png";
 import {  scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
-import CustonPlayIcon from '../CustonPlayIcon/CustonPlayIcon';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useSelector } from 'react-redux';
 const Banner = ({
@@ -21,7 +19,6 @@ const Banner = ({
     item
 }) => {
     const interestedEvents = useSelector(state=>state?.interestedEvents)
-    // const [tempIsInterested, setTempIsInterested] = useState(!!interestedEvents?.find(item=>item?._id==event?._id))
     const isInterestedEvent = !!interestedEvents?.find(item => item?._id === event?._id);
     const navigation = useNavigation()
     return (
@@ -75,25 +72,6 @@ const Banner = ({
                         <View style={{
                             gap: scale(10)
                         }}>
-                            {/* <Text style={{
-                                color: "white",
-                                fontSize: scale(10),
-                                lineHeight: scale(13),
-                                fontFamily: "Montserrat",
-                                maxWidth: "80%",
-                                fontWeight: '700',
-                                color: 'white',
-                                fontWeight: 'bold',
-                                textShadowColor: 'rgba(0, 0, 0, 1)',
-                                textShadowOffset: { width: 1, height: 1 },
-                                textShadowRadius: 10
-
-                            }}>
-
-                                {event?.venueDescription}
-
-                            </Text> */}
-
                         </View>
                     </View>
                     <View style={{
@@ -130,7 +108,6 @@ const Banner = ({
                             <TouchableOpacity
 
                                 onPress={()=>{cb(event);
-                                    //  setTempIsInterested(prev=>!prev)
                                     }}
                                 style={{
                                     paddingHorizontal: scale(10),
@@ -151,8 +128,7 @@ const Banner = ({
 
 
                                 }}>
-                                    {/* {isInterested || tempIsInterested?"Not-Interested":"Interested"}
-                                     */}
+                                   
                                     { isInterestedEvent?"Not-Interested":"Interested"}
 
                                     </Text>
@@ -242,18 +218,9 @@ const styles = StyleSheet.create({
         height: "100%",
         borderRadius: scale(10),
     },
-    // bannerTextContainer: {
-    //     // position: "absolute",
-    //     backgroundColor:"red",
-    //     // top: "50%",
-    //     // left: "10%",
-    //     // transform: [{ translateY: -25 }, { translateX: -10 }],
-    // },
     bannerText: {
         color: "white",
         fontSize: scale(23),
         fontWeight: '700',
-        // mixBlendMode:"differnce"
-
     }
 })

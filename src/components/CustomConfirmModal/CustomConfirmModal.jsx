@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, TouchableOpacity } from 'react-native';
-import close from "./../../../assets/images/close.png"
+import React, { useEffect } from 'react'
+import {  Modal, Pressable, View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import closeIcon from "./../../../assets/images/close.png"
-import CustomInput from '../CustomInput/CustomInput';
-import { handleText } from '../../../utils';
 import CustomButtom from '../CustomButtom/CustomButtom';
 const CustomConfirmModal = ({
   modalVisible = false,

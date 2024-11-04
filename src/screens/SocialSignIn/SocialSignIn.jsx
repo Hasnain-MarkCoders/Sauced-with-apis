@@ -6,7 +6,6 @@ import {
   ImageBackground,
   ScrollView,
   Image,
-  Vibration,
   ActivityIndicator,
   Platform,
 } from 'react-native';
@@ -17,15 +16,18 @@ import google from './../../../assets/images/google-icon.png';
 import fb from './../../../assets/images/facebook-icon.png';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import {scale} from 'react-native-size-matters';
 import envelope from './../../../assets/images/envelope.png';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
-import {LoginManager, AccessToken, AuthenticationToken} from 'react-native-fbsdk-next';
+import {
+  LoginManager,
+  AccessToken,
+  AuthenticationToken,
+} from 'react-native-fbsdk-next';
 import {getFriendlyErrorMessage} from './../../../utils';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import messaging from '@react-native-firebase/messaging';
 import {handleAuth} from '../../Redux/userReducer';
@@ -34,7 +36,7 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import { handleStats } from '../../Redux/userStats';
+import {handleStats} from '../../Redux/userStats';
 
 const SocialSignIn = () => {
   const navigation = useNavigation();
@@ -79,13 +81,11 @@ const SocialSignIn = () => {
   const dispatch = useDispatch();
   const [isEnabled, setIsEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
-  // const [alertModal, setAlertModal] =useState(false)
   const [alertModal, setAlertModal] = useState({
     open: false,
     message: '',
     success: true,
   });
-  const [message, setMessage] = useState('');
   useEffect(() => {
     GoogleSignin.configure({
       scopes: [
@@ -102,32 +102,6 @@ const SocialSignIn = () => {
     });
   }, []);
 
-  // async function onAppleButtonPress() {
-  //   //   try{
-  //   // // Start the sign-in request
-  //   // const appleAuthRequestResponse = await appleAuth.performRequest({
-  //   //   requestedOperation: appleAuth.Operation.LOGIN,
-  //   //   // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
-  //   //   // See: https://github.com/invertase/react-native-apple-authentication#faqs
-  //   //   requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-  //   // });
-  //   // console.log("appleAuthRequestResponse==============>", appleAuthRequestResponse)
-  //   // // Ensure Apple returned a user identityToken
-  //   // if (!appleAuthRequestResponse.identityToken) {
-  //   //   throw new Error('Apple Sign-In failed - no identify token returned');
-  //   // }
-  //   // // Create a Firebase credential from the response
-  //   // const { identityToken, nonce } = appleAuthRequestResponse;
-  //   // const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
-  //   // console.log("identityToken============>", identityToken)
-  //   // // Sign the user in with the credential
-  //   // return auth().signInWithCredential(appleCredential);
-  //   //   }catch(err){
-  //   // console.log(err)
-  //   //   }finally{
-  //   //   }
-  // }
-
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
@@ -142,20 +116,20 @@ const SocialSignIn = () => {
       const myuser = await axiosInstance.post('/auth/firebase-authentication', {
         accessToken: firebaseToken,
       });
-      //  console.log("firebaseToken==>", firebaseToken)
-      //  console.log("myuser google==>", myuser.data.user)
 
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
-        dispatch(handleStats({
-          followers:myuser?.data?.user?.followers,
-          followings:myuser?.data?.user?.following,
-          checkins:myuser?.data?.user?.checkinsCount,
-          uri:myuser?.data?.user?.image,
-          name:myuser?.data?.user?.name,
-          date:myuser?.data?.user?.createdAt,
-          reviewsCount:myuser?.data?.user?.reviewsCount
-        }))
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -183,136 +157,12 @@ const SocialSignIn = () => {
           success: false,
         });
       }
-      // if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: "That email address is already in use!",
-      //     success:false
-
-      // });
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: "That email address is invalid!",
-      //     success:false
-
-      // });
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: error?.message,
-      //     success:false
-
-      // });
-      // }
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
     }
   };
 
-  // async function onFacebookButtonPress() {
-  //   setLoading(true);
-
-  //   // Attempt login with permissions
-  //   try {
-  //     const result = await LoginManager.logInWithPermissions([
-  //       'public_profile',
-  //       'email',
-  //     ]);
-
-  //     if (result.isCancelled) {
-  //       return;
-  //       //   setAlertModal({
-  //       //     open: true,
-  //       //     message: "User cancelled the login process",
-  //       //     success:false
-
-  //       // });
-  //       throw 'User cancelled the login process';
-  //     }
-
-  //     // Once signed in, get the users AccessToken
-  //     const data = await AccessToken.getCurrentAccessToken();
-
-  //     if (!data) {
-  //       setAlertModal({
-  //         open: true,
-  //         message: 'Something went wrong obtaining access token',
-  //         success: false,
-  //       });
-  //       throw 'Something went wrong obtaining access token';
-  //     }
-  //     // Create a Firebase credential with the AccessToken
-  //     const facebookCredential = auth.FacebookAuthProvider.credential(
-  //       data.accessToken,
-  //     );
-
-  //     // Sign-in the user with the credential
-  //     const userCredential = await auth().signInWithCredential(
-  //       facebookCredential,
-  //     );
-  //     const firebaseIdToken = await userCredential.user.getIdToken();
-  //     const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-  //       accessToken: firebaseIdToken,
-  //     });
-  //     console.log('firebaseToken==>', firebaseIdToken);
-  //     console.log('myuser google==>', myuser);
-  //     if (myuser) {
-  //       await getInitialFcmToken(myuser?.data?.user?.token);
-
-  //       dispatch(
-  //         handleAuth({
-  //           token: myuser?.data?.user?.token,
-  //           uid: myuser?.data?.user?.token,
-  //           name: myuser?.data?.user?.name,
-  //           email: myuser?.data?.user?.email,
-  //           provider: myuser?.data?.user?.provider,
-  //           type: myuser?.data?.user?.type,
-  //           status: myuser?.data?.user?.status,
-  //           _id: myuser?.data?.user?._id,
-  //           url: myuser?.data?.user?.image,
-  //           authenticated: true,
-  //           welcome: myuser?.data?.user?.welcome,
-  //         }),
-  //       );
-  //     }
-  //   } catch (error) {
-  //     // Handle specific errors
-  //     const friendlyMessage = getFriendlyErrorMessage(error);
-  //     if (friendlyMessage) { // Only show if it's not null
-  //       setAlertModal({
-  //         open: true,
-  //         message: friendlyMessage,
-  //         success: false
-  //       });
-  //     }
-  //     // if (error.code === 'auth/email-already-in-use') {
-  //     //   setAlertModal({
-  //     //     open: true,
-  //     //     message: 'That email address is already in use!',
-  //     //     success: false,
-  //     //   });
-  //     // } else if (error.code === 'auth/invalid-email') {
-  //     //   setAlertModal({
-  //     //     open: true,
-  //     //     message: 'That email address is invalid!',
-  //     //     success: false,
-  //     //   });
-  //     // } else {
-  //     //   console.error(error);
-  //     //   setAlertModal({
-  //     //     open: true,
-  //     //     message: error?.message,
-  //     //     success: false,
-  //     //   });
-  //     // }
-  //   } finally {
-  //     setIsEnabled(true);
-  //     setLoading(false);
-  //   }
-  // }
   async function onFacebookButtonPress() {
     // Attempt login with permissions
     try {
@@ -322,106 +172,73 @@ const SocialSignIn = () => {
 
       let result;
       let token;
-      let data
-      let nonce
+      let data;
+      let nonce;
       if (Platform.OS === 'ios') {
         // Generate a unique nonce for this login request
         nonce = uuidv4();
-  
+
         // Use 'limited' for Limited Login and provide the generated nonce
         result = await LoginManager.logInWithPermissions(
           ['public_profile', 'email'],
           'limited', // loginTrackingIOS
-          nonce // nonceIOS
+          nonce, // nonceIOS
         );
         token = await AuthenticationToken.getAuthenticationTokenIOS();
       } else {
         // For Android, use the standard login
-        result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-        token= await AccessToken.getCurrentAccessToken()
+        result = await LoginManager.logInWithPermissions([
+          'public_profile',
+          'email',
+        ]);
+        token = await AccessToken.getCurrentAccessToken();
       }
 
       if (result.isCancelled) {
-        // setAlertModal({
-        //   open: true,
-        //   message: 'User cancelled the login process',
-        //   success: false,
-        // });
-        return
-        throw 'User cancelled the login process';
+        return;
       }
 
-      // // Once signed in, get the users AccessToken
-      // const data = await AccessToken.getCurrentAccessToken();
-
-      // if (!data) {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'Something went wrong obtaining access token',
-      //     success: false,
-      //   });
-      //   throw 'Something went wrong obtaining access token';
-      // }
-
-      // // Create a Firebase credential with the AccessToken
-      // const facebookCredential = auth.FacebookAuthProvider.credential(
-      //   data.accessToken,
-      // );
-
-      // // Sign-in the user with the credential
-      // const userCredential = await auth().signInWithCredential(
-      //   facebookCredential,
-      // );
-      // const firebaseIdToken = await userCredential.user.getIdToken();
-      // console.log('firebaseIdToken=================>', firebaseIdToken);
-          data = 
-            Platform.OS=="ios"
-            ?
-            {
-              
+      data =
+        Platform.OS == 'ios'
+          ? {
               token,
-              "platform":"ios",
-              nonce
+              platform: 'ios',
+              nonce,
             }
-            :
-            {
+          : {
               token,
-              "platform": "android",
-            }
-            const myuser = await axiosInstance.post('/auth/fb-auth', data);
-console.log("myuser==============>", myuser)
-      // const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-      //   accessToken: firebaseIdToken,
-      // });
-
-
+              platform: 'android',
+            };
+      const myuser = await axiosInstance.post('/auth/fb-auth', data);
       if (myuser) {
-        const firebaseUserCredential = await auth().signInWithCustomToken(myuser?.data?.user?.firebaseCustomToken);
-        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst 
+        const firebaseUserCredential = await auth().signInWithCustomToken(
+          myuser?.data?.user?.firebaseCustomToken,
+        );
+        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst
         let firebaseIdToken = await firebaseUser.getIdToken();
-        if(!firebaseIdToken){
-            // setAuthLoading(false);
-            setAuthLoading(false);
-            setIsEnabled(true); // Re-enable button or other elements
-            setLoading(false);
-            setAlertModal({
-              open: true,
-              message: "Facebook Sign in Failed.",
-              success: false
-            });
-                return
+        if (!firebaseIdToken) {
+          setAuthLoading(false);
+          setIsEnabled(true); // Re-enable button or other elements
+          setLoading(false);
+          setAlertModal({
+            open: true,
+            message: 'Facebook Sign in Failed.',
+            success: false,
+          });
+          return;
         }
         await getInitialFcmToken(myuser?.data?.user?.token);
-console.log("myuser?.data?.user?.token====================>",myuser?.data?.user?.token)
-dispatch(handleStats({
-  followers:myuser?.data?.user?.followers,
-  followings:myuser?.data?.user?.following,
-  checkins:myuser?.data?.user?.checkinsCount,
-  uri:myuser?.data?.user?.image,
-  name:myuser?.data?.user?.name,
-  date:myuser?.data?.user?.createdAt,
-  reviewsCount:myuser?.data?.user?.reviewsCount
-}))
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -446,44 +263,16 @@ dispatch(handleStats({
       setAuthLoading(false);
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
-      const friendlyMessage = getFriendlyErrorMessage(error);
-      console.log("mes==================>", friendlyMessage)
-      if (friendlyMessage) { // Only show if it's not null
-        setAlertModal({
-          open: true,
-          message: friendlyMessage,
-          success: false
-        });
-      }
-
-      // if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is already in use!',
-      //     success: false,
-      //   });
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is invalid!',
-      //     success: false,
-      //   });
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: error?.message,
-      //     success: false,
-      //   });
-      // }
+      setAlertModal({
+        open: true,
+        message: error.userInfo.message,
+        success: false,
+      });
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
       setAuthLoading(false);
     }
-
-
-
   }
   async function onAppleButtonPress() {
     // console.log("hello g")
@@ -552,15 +341,17 @@ dispatch(handleStats({
 
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
-        dispatch(handleStats({
-          followers:myuser?.data?.user?.followers,
-          followings:myuser?.data?.user?.following,
-          checkins:myuser?.data?.user?.checkinsCount,
-          uri:myuser?.data?.user?.image,
-          name:myuser?.data?.user?.name,
-          date:myuser?.data?.user?.createdAt,
-          reviewsCount:myuser?.data?.user?.reviewsCount
-        }))
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -581,48 +372,18 @@ dispatch(handleStats({
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      const friendlyMessage = getFriendlyErrorMessage(error);
-      if (friendlyMessage) { // Only show if it's not null
-        setAlertModal({
-          open: true,
-          message: friendlyMessage,
-          success: false
-        });
-      }
-      // Handle specific errors
-      // if (error.code === AppleAuthError.CANCELED) {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'User cancelled the login process',
-      //     success: false,
-      //   });
-      // } else if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is already in use!',
-      //     success: false,
-      //   });
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is invalid!',
-      //     success: false,
-      //   });
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: error?.message || 'An error occurred during Apple Sign-In',
-      //     success: false,
-      //   });
-      // }
+      setAlertModal({
+        open: true,
+        message: error.userInfo.message,
+        success: false,
+      });
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
     }
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <ImageBackground
         style={{
@@ -652,7 +413,6 @@ dispatch(handleStats({
             showProfilePic={false}
             cb={() => {
               navigation.goBack();
-              Vibration.vibrate(10);
             }}
             title="Sign in"
             description="Sign in with your data that you entered during registration."
@@ -687,7 +447,6 @@ dispatch(handleStats({
                 }}
                 onPress={() => {
                   navigation.navigate('SignIn');
-                  Vibration.vibrate(10);
                 }}
                 title={'Sign In With Email'}
               />
@@ -717,10 +476,7 @@ dispatch(handleStats({
                   }}
                   onPress={() => {
                     onAppleButtonPress();
-                    Vibration.vibrate(10);
                   }}
-                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
                   title={'Sign In With Apple'}
                 />
               )}
@@ -746,10 +502,7 @@ dispatch(handleStats({
                 }}
                 onPress={() => {
                   signInWithGoogle();
-                  Vibration.vibrate(10);
                 }}
-                // onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
                 title={'Sign In With Google'}
               />
               <CustomButtom
@@ -773,10 +526,7 @@ dispatch(handleStats({
                 }}
                 onPress={() => {
                   onFacebookButtonPress();
-                  Vibration.vibrate(10);
                 }}
-                // onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
                 title={'Sign In With Facebook'}
               />
               <Text
@@ -805,7 +555,6 @@ dispatch(handleStats({
                 }}
                 onPress={() => {
                   navigation.navigate('SignUp');
-                  Vibration.vibrate(10);
                 }}
                 title={'Sign Up'}
               />

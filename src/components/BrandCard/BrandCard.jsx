@@ -12,13 +12,9 @@ const BrandCard = ({
     title = "",
     product = {}
 }) => {
-    useEffect(() => {
-        console.log("product==============>", product)
-    }, [])
 
     const [visible, setIsVisible] = useState(false)
 
-    const [LightBox, setLightBox] = useState(false)
     return (
         <View style={{
             width: "100%",
@@ -33,21 +29,6 @@ const BrandCard = ({
                 <View style={{
                 }}>
 
-                    {/* <Lightbox
-//   springConfig={{ tension: 30, friction: 7 }}
-  activeProps={{
-    resizeMode: 'contain',
-    style: {
-      width: '100%',
-      height: '100%',
-      minWidth: scale(120),
-      minHeight: scale(100),
-      borderRadius: 0,
-      borderColor: 'transparent',
-      borderWidth: 0,
-    },
-  }}
-> */}
                     <ImageView
                         images={[{ uri: url }]}
                         imageIndex={0}
@@ -74,7 +55,6 @@ const BrandCard = ({
 
                     </TouchableOpacity>
 
-                    {/* </Lightbox> */}
                 </View>
                 <View style={{
                     gap: scale(14),
@@ -87,13 +67,10 @@ const BrandCard = ({
 
                     <View style={{
                         gap: scale(10),
-                        // flexBasis: "50%",
-                        // justifyContent:"center"
                     }}>
                         <View>
                             <Text
 
-                                // numberOfLines={1} ellipsizeMode="tail"
                                 style={{
                                     color: "white",
                                     fontWeight: 600,
@@ -102,41 +79,6 @@ const BrandCard = ({
                                 }}>{title}</Text>
                         </View>
                     </View>
-
-
-                    {/* <View style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}>
-                            <View style={{
-                                alignItems: "center",
-                                gap: scale(10)
-                            }}>
-                                <View style={{
-                                    gap: scale(1),
-
-                                }}>
-
-                                    <Text style={{
-                                        color: "#FFA100",
-                                        fontWeight: 600,
-                                        fontSize: scale(30),
-                                        lineHeight: scale(36),
-                                        textAlign:"center",
-                                    }}>{product?.totalCheckins}</Text>
-                                    <Text style={{
-                                        color: "white",
-                                        fontWeight: 600,
-                                        fontSize: scale(10),
-                                        lineHeight: scale(25),
-                                        marginTop: scale(-6)
-                                    }}>Check-ins</Text>
-                                </View>
-                                
-                            </View>
-                        </View> */}
-
-
                 </View>
 
             </View>

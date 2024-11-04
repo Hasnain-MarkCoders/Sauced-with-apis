@@ -77,7 +77,6 @@ const FollowingScreen = ({
                                           isURL={false}
                                           showImage={true}
                                           uri={search}
-                                            // cb={() => setPage(1)}
                                             name="search"
                                             onChange={handleText}
                                             updaterFn={setQuery}

@@ -8,7 +8,6 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  ScrollView,
   Linking,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,14 +17,10 @@ import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatEventDate } from '../../../utils.js';
-import ProductsBulletsList from '../../components/ProductsBulletsList/ProductsBulletsList.jsx';
 import { useRoute } from '@react-navigation/native';
-import CustomSelectListModal from '../../components/CustomSelectListModal/CustomSelectListModal.jsx';
-import Snackbar from 'react-native-snackbar';
 import CustomTimer from '../../components/CustomTimer/CustomTimer.jsx';
 import Location from './../../../assets/images/locationIcon.png';
 import calender from './../../../assets/images/calender.png';
-import destination from './../../../assets/images/destination.png';
 import UserDetailsModal from '../../components/UserDetailsModal/UserDetailsModal.jsx';
 import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
@@ -36,9 +31,6 @@ import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
 import darkArrow from "./../../../assets/images/darkArrow.png";
 import { useDispatch, useSelector } from 'react-redux';
-// import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../../android/app/Redux/InterestedEvents.js';
-// import { handleAllEventsExceptInterested } from '../../../android/app/Redux/allEventsExceptInterested.js';
-
 import MapViewDirections from 'react-native-maps-directions';
 
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
@@ -105,11 +97,6 @@ const EventPage = () => {
         const decodedPoints = decodePolyline(points);
       return  setRouteCoordinates(decodedPoints);
       }
-      // if (response.data.status !== 'OK') {
-      //   console.error('Google Maps API Error:', response.data.status);
-      //   Alert.alert("Error", `Directions request failed: ${response.data.status}`);
-      //   return;
-      // }
       else {
         console.error('Error fetching directions:', response.data.status);
       }
@@ -155,25 +142,7 @@ const EventPage = () => {
 
     return points;
   };
-//   const handleInterestedEvent = async()=>{
-//     setTempIsInterested(prev=>!prev)
-//     const x = interestedEvents?.find(item=>item?._id==event?._id)
-//     if(!!x){
-//       dispatch(handleRemoveInterestedEvents(event?._id))
-// }
-//     if(!x){
-//             //  dispatch(handleRemoveAllEventsExceptInterested(event?._id))
-//         // return dispatch(handleRemoveInterestedEvents(event?._id))
-//         dispatch(handleAllEventsExceptInterested([event]))
 
-//         dispatch(handleInterestedEvents([event]))
-//       }
-//       const res = await axiosInstance.post(`/interest-event`, {
-//           eventId:event?._id
-//       });
-
-
-// }
 const handleInterestedEvent = async () => {
     setTempIsInterested(prev=>!prev)
 
@@ -299,57 +268,6 @@ const handleInterestedEvent = async () => {
   };
 
 
-
-    // const checkLocationServiceAndNavigate = () => {
-    //   setLoading(true); // Start loading indicator
-    //   const permission = Platform.OS === 'ios'
-    //     ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-    //     : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-    //   check(permission).then(result => {
-    //     if (result === RESULTS.GRANTED) {
-    //       fetchCurrentLocation();
-    //       setIsLocationAvailable(true)
-
-    //     } else if (result === RESULTS.DENIED) {
-    //       request(permission).then(result => {
-    //         if (result === RESULTS.GRANTED) {
-    //           fetchCurrentLocation();
-    //           setIsLocationAvailable(true)
-    //         } else {
-    //           // Alert.alert("Location Permission Required", "Please grant location permission to use this feature.");
-    //           setYesNoModal({
-    //             open: true,
-    //             message:  "Location Permission Required Please grant location permission to use this feature.",
-    //             success: false,
-    //             isQuestion:true,
-
-    //         })
-    //           setLoading(false); // Stop loading indicator
-    //         }
-    //       });
-    //     } else {
-    //       setLoading(false); // Stop loading indicator
-    //       setYesNoModal({
-    //         open: true,
-    //         message:  "Location Permission, Location permission is not available or blocked. Please enable it in settings.",
-    //         success: false,
-    //         isQuestion:true
-    //     })
-    //       // Alert.alert("Location Permission, Location permission is not available or blocked. Please enable it in settings.");
-    //     }
-    //   }).catch(error => {
-    //     console.warn("Error checking location permission:", error);
-    //     setAlertModal({
-    //       open: true,
-    //       message:  "Error An error occurred while checking location permission. Please try again.",
-    //       success: false
-    //   })
-    //     // Alert.alert("Error", "An error occurred while checking location permission. Please try again.");
-    //     setLoading(false); // Stop loading indicator
-    //   });
-    // };
-
     const fetchCurrentLocation = async () => {
       Geolocation.getCurrentPosition(
         async (position) => {
@@ -369,35 +287,6 @@ const handleInterestedEvent = async () => {
             longitude: parseFloat(event.venueLocation.longitude),
           });
           setIsLocationAvailable(true)
-
-          // const response = await axiosInstance.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
-          //   params: {
-          //     origins: `${position.coords.latitude},${position.coords.longitude}`,
-          //     destinations: `${event.venueLocation.latitude},${event.venueLocation.longitude}`,
-          //     key: GOOGLE_MAP_API_KEY
-
-          //   }
-          // })
-          // // const result = response.data.rows[0].elements[0].distance.value
-          // if (response.data.status === "OK") {
-          //   const elements = response.data.rows[0].elements;
-
-          //   // Check if elements exist and status is not "NOT_FOUND"
-          //   if (elements.length > 0 && elements[0]?.status !== "NOT_FOUND") {
-          //     const distanceInMeters = elements[0]?.distance?.value;
-          //     const distanceInMiles = distanceInMeters / 1609.34;
-          //     if(distanceInMiles){
-          //       // setEventDistance(distanceInMiles?.toFixed(2))
-          //     }
-          //     console.log(`Distance from origin to destination: ${distanceInMeters} meters`);
-          //   } else {
-          //     console.log("Distance could not be calculated. Check origin and destination addresses.");
-          //   }
-          // } else {
-          //   console.error("Error in fetching distance:", response.data.status);
-          // }
-
-
 
           setLoading(false); // Stop loading indicator
         },
@@ -529,17 +418,6 @@ const handleInterestedEvent = async () => {
                           </View>
                         </Marker>
                       )}
-
-
-{/* {routeCoordinates.length > 0 && (
-        <Polyline
-        coordinates={routeCoordinates}
-        strokeWidth={4}
-        strokeColor="#4285F4" // Google Maps-like blue color
-        lineCap="round" // Smooth line ends
-      />
-        )} */}
-
                     {  !!currentCoords && !!eventCoords&& <MapViewDirections
                           origin={{
                             latitude: currentCoords.latitude,
@@ -581,7 +459,6 @@ const handleInterestedEvent = async () => {
    {! isFullScreenMap &&<ImageBackground
       source={getStartedbackground}
       style={{ flex: 1, width: '100%', height: '100%' }}
-      // source={getStartedbackground}
       >
       <SafeAreaView
         style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
@@ -638,10 +515,7 @@ const handleInterestedEvent = async () => {
                             justifyContent: 'space-between',
                           }}>
                             <Text
-                              // ellipsizeMode='tail'
-                              // numberOfLines={1}
                               style={{
-                                // maxWidth: scale(200),
                                 fontSize: scale(25),
                                 fontWeight: 800,
                                 lineHeight: scale(33),
@@ -649,24 +523,6 @@ const handleInterestedEvent = async () => {
                               }}>
                               {event?.eventName?event?.eventName:"N/A"}
                             </Text>
-                          {/* <TouchableOpacity
-                          onPress={handleInterestedEvent}
-                            style={{
-                              paddingHorizontal: scale(10),
-                              paddingVertical: scale(6),
-                              backgroundColor: '#FFA100',
-                              borderRadius: scale(5),
-                              elevation: scale(5),
-                              alignSelf: 'flex-end',
-                            }}>
-                            <Text
-                              style={{
-                                color: 'black',
-                                fontWeight: '700',
-                              }}>
-                              {tempIsInterested?"Not-Interested":"Interested"}
-                            </Text>
-                          </TouchableOpacity> */}
                         </View>
 
                         <View
@@ -752,64 +608,36 @@ const handleInterestedEvent = async () => {
                         <View
                           style={{
                             flexDirection: 'row',
-                            // gap: scale(20),
-                            // flexWrap:"wrap"
                             paddingRight:scale(20),
-                            // backgroundColor:"green"
                           }}>
                             <View style={{
                               flexDirection:"row",
                               gap:scale(10),
                               alignItems:"start",
-                              // flexWrap:"wrap",
-                              // backgroundColor:"red",
-                              // paddingRight:scale(40)
                             }}>
 
                             <Image
                             style={{
                               width: scale(18),
                               height: scale(23),
-                              // marginTop:scale(5)
-
                             }}
                             source={Location}
                           />
                           <View style={{
-                            // backgroundColor:"blue",
                             flexShrink:1
                           }}>
 
                             <Text
-                              // ellipsizeMode='tail'
                               style={{
-                                // maxWidth: scale(100),
                                 fontSize: scale(16),
                                 lineHeight: scale(22),
                                 color: '#FFA100',
                               }}>
-                              {/* {event?.venueName?.charAt(0).toUpperCase() + event?.venueName?.slice(1).toLowerCase()} */}
                               {event.venueName?event.venueName:"N/A"}
                               
                             </Text>
                           </View>
                             </View>
-
-                          {/* <View
-                            style={{
-                              gap: scale(6),
-
-                            }}>
-
-                            <Text
-                              style={{
-                                color: 'white',
-                                fontSize: scale(11),
-                                lineHeight: scale(14),
-                              }}>
-                              {event?.venueDescription}
-                            </Text>
-                          </View> */}
                         </View>
                       }
 
@@ -857,17 +685,6 @@ const handleInterestedEvent = async () => {
                     </Text>
                       </View>
 
-                    {/* <ProductsBulletsList
-                        bulletGap={{
-                          height:scale(10)
-                        }}
-                      data={event?.eventDetails}
-                      textStyles={{
-                        fontWeight: 700,
-                        color: 'white',
-                      }}
-                    /> */}
-
 <Text
                               style={{
                                 color: 'white',
@@ -912,7 +729,6 @@ const handleInterestedEvent = async () => {
                         </View>
                         <View style={{
                             width: scale(1),
-                            // height: "80%",
                             backgroundColor: "#FFA100",
                         }}>
 
@@ -927,7 +743,6 @@ const handleInterestedEvent = async () => {
                                 event?.facebookLink &&Linking.openURL(event?.facebookLink)
                             }}>
                                 <Text
-                                    // numberOfLines={1}
                                     ellipsizeMode='tail'
                                     style={{
                                         maxWidth: scale(110),
@@ -1060,16 +875,8 @@ const handleInterestedEvent = async () => {
                           {
                             eventDuration?` and estimated time is ${eventDuration} mins`:""
                           }
-                        {/* {eventDistance+ `${eventDistance?" m":""}`}  distance from you */}
                       </Text>
-                      {/* <Text
-                        style={{
-                          color: 'white',
-                          fontSize: scale(11),
-                          lineHeight: scale(14),
-                        }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      </Text> */}
+                    
                     </View>
                   </View>
                 )}
@@ -1087,10 +894,6 @@ const handleInterestedEvent = async () => {
                                 message: "",
                                 severity: true,
                             })
-                            // setIsLoading(prev => ({
-                            //     ...prev,
-                            //     loadMap: false
-                            // }))
                             setLoading(false)
                         }}
                         success={yesNoModal.severity}

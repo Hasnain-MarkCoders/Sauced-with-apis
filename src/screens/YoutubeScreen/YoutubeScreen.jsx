@@ -11,15 +11,6 @@ const YoutubeScreen = () => {
   const videoId = route?.params?.videoId
   const navigation = useNavigation()
   const [initialLoading, setInitialLoading] = useState(true)
-
-  // if (initialLoading) {
-  //   return (
-  //     <ImageBackground source={getStartedbackground} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ActivityIndicator size="large" color="#FFA100" />
-  //     </ImageBackground>
-  //   );
-  // }
-  
   return (
  
 
@@ -47,7 +38,6 @@ const YoutubeScreen = () => {
           height={300}
           width={"100%"}
           videoId={videoId}
-          // play={!initialLoading} // Ensures the video plays only when loading is done
         />
     </SafeAreaView>
 

@@ -7,6 +7,8 @@ import { handleAuth } from '../src/Redux/userReducer';
 // export const host =  "https://aws.markcoders.com/sauced-backend/api"
 // export const host =  "http://3.136.48.200/sauced-backend/api"
 export const host =  "https://app.saucedapp.com/sauced-backend/api"
+// export const host =  "https://anton.markcoders.com/sauced-backend/api"
+
 
 
 // export const host =  "https://59455wwt-6000.inc1.devtunnels.ms/"

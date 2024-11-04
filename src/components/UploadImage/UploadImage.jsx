@@ -51,45 +51,6 @@ const UploadImage = () => {
         }
     };
 
-    // const handleImagePicker = () => {
-    //     const options = {
-    //         mediaType: 'photo',
-    //         maxWidth: 300,
-    //         maxHeight: 300,
-    //         quality: 1,
-    //     };
-
-    //     try {
-    //         launchImageLibrary(options, response => {
-    //             if (response.didCancel) {
-    //                 console.log("User cancelled image picker");
-    //             } else if (response.errorCode) {
-    //                 console.log('ImagePicker Error: ', response.errorMessage);
-    //             } else if (response.assets && response.assets.length > 0) {
-    //                 const asset = response.assets[0];
-    //                 const source = { uri: asset.uri };
-    //                 setImageUri(source.uri);
-    //                 const file = {
-    //                     uri: asset.uri,
-    //                     type: asset.type,
-    //                     name: asset.fileName,
-    //                 };
-    //                 handleImage(source.uri, file);
-    //             } else {
-    //                 console.log("Unexpected response from image picker");
-    //             }
-    //         });
-    //     } catch (error) {
-    //         console.error("Error during image selection: ", error);
-    //         setAlertModal({
-    //             open: true,
-    //             message: error.message,
-    //             success: false,
-    //             openYesNoModal: false
-    //         });
-    //     }
-    // };
-
     const handleImagePicker = async () => {
         const options = {
           mediaType: 'photo',

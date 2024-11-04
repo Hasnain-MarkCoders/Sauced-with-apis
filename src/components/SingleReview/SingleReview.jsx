@@ -1,17 +1,11 @@
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import {  Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
-import { formatDate, formatEventDate, generateRandomText } from '../../../utils'
+import {  formatEventDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
-import { useDispatch, useSelector } from 'react-redux'
-import Lightbox from 'react-native-lightbox-v2';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-// import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces'
-
 import ImageView from "react-native-image-viewing";
-import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces  } from '../../Redux/favoriteSauces'
-
 const SingleReview = ({
   item = null,
   isNavigate = false,
@@ -64,18 +58,11 @@ const SingleReview = ({
             }}
           onPress={() => {
             if (isNavigate) {
-              // navigate
-              // if (auth?._id!==_id){
               navigation.navigate("ExternalProfileScreen", {
                 url,
                 _id,
                 name
               })
-
-              // }
-              // else{
-              //   navigation.navigate("Profile")
-              // }
             }
           }}
         >
@@ -186,24 +173,9 @@ const SingleReview = ({
                   />
                 </SkeletonPlaceholder>
               </View>}
-              {/* <Lightbox
-                // springConfig={{ tension: 30, friction: 7 }}
-                activeProps={{
-                  style: {
-                    width: '100%',
-                    height: scale(400),
-                    borderColor: 'transparent',
-                    borderWidth: 0,
-                    borderRadius: 0,
-                    opacity: loading ? 0 : 1,
-                  },
-                }}
-              > */}
+            
               <TouchableOpacity onPress={() => {
                 openImageView(index)
-                //                           setCurrentIndex(index)
-                // setIsVisible(true)
-
               }}>
 
 
@@ -221,8 +193,6 @@ const SingleReview = ({
                   }}
                 />
               </TouchableOpacity>
-
-              {/* </Lightbox> */}
             </>
           ))}
         </View>

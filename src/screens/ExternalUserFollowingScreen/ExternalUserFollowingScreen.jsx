@@ -1,4 +1,4 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
@@ -77,7 +77,6 @@ const ExternalUserFollowingScreen = ({
                                           isURL={false}
                                           showImage={true}
                                           uri={search}
-                                            // cb={() => setPage(1)}
                                             name="search"
                                             onChange={handleText}
                                             updaterFn={setQuery}

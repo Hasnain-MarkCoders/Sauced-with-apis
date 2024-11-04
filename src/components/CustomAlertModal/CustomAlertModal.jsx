@@ -14,13 +14,6 @@ const CustomAlertModal = ({
   cb=()=>{},
   buttonText=""
 }) => {
-  useEffect(()=>{
-    // setTimeout(()=>{
-    //   if(modalVisible){
-    //     setModalVisible()
-    //   }
-    // },4000)
-  },[modalVisible])
   const handleBackgroundTouch = () => {
     setModalVisible(false);
   };

@@ -1,21 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
-import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-// import { handleIncreaseReviewCountOfWishListSauce, handleWishList } from '../../../android/app/Redux/wishlist';
 
 import NotFound from '../NotFound/NotFound';
 import { handleIncreaseReviewCountOfWishListSauce, handleWishList  } from '../../Redux/wishlist';
 
-const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
+const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
-    // const [selected, setSelected] = useState(0)
     const dispatch = useDispatch()
     const wishListSlices = useSelector(state=>state.wishlist)
     const handleIncreaseReviewCount = useCallback((_id , setReviewCount, reviewCount)=>{
@@ -32,7 +29,6 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
                     page
                 }
             });
-                    console.log("fetched wishlist sauces============================================================>", res?.data?.items)
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleWishList(res?.data?.items))
         } catch (error) {
@@ -75,17 +71,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={false}
-                        // contentContainerStyle={{
-                        //     paddingRight: selected ? scale(60) : scale(0)
-                        // }}
                         horizontal
-                        // onViewableItemsChanged={({ viewableItems }) => {
-
-                        //     if (viewableItems.length > 0) {
-                        //         setSelected(viewableItems[viewableItems.length - 1]["index"]);  // Cycle through 0 to 7
-                        //     }
-
-                        // }}
                         data={wishListSlices}
                         scrollEventThrottle={16}
                         onEndReachedThreshold={0.5}

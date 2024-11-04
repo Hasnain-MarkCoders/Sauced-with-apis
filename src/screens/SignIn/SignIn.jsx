@@ -4,14 +4,10 @@ import {
   View,
   SafeAreaView,
   ImageBackground,
-  KeyboardAvoidingView,
   TouchableOpacity,
-  Dimensions,
   ScrollView,
-  Vibration,
   Image,
   ActivityIndicator,
-  Alert,
   Platform,
 } from 'react-native';
 import home from './../../../assets/images/home.png';
@@ -21,39 +17,38 @@ import {handleText, validateEmail} from '../../../utils';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import google from './../../../assets/images/google-icon.png';
 import apple from './../../../assets/images/apple-icon.png';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import fb from './../../../assets/images/facebook-icon.png';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-// import { handleAuth } from '../../../android/app/Redux/userReducer';
 import auth, {firebase} from '@react-native-firebase/auth';
 import useAxios from '../../../Axios/useAxios';
 import {scale} from 'react-native-size-matters';
 import scaledOpenEye from './../../../assets/images/scaledOpenEye.png';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {AccessToken, LoginManager, AuthenticationToken} from 'react-native-fbsdk-next';
+import {
+  AccessToken,
+  LoginManager,
+  AuthenticationToken,
+} from 'react-native-fbsdk-next';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import messaging from '@react-native-firebase/messaging';
 import ModalWithInput from '../../components/ModalWithInput/ModalWithInput';
 import {handleAuth} from '../../Redux/userReducer';
-import {getFriendlyErrorMessage} from "./../../../utils"
-// import {appleAuth} from '@invertase/react-native-apple-authentication';
 import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
-} from '@invertase/react-native-apple-authentication'
-import { handleStats } from '../../Redux/userStats';
+} from '@invertase/react-native-apple-authentication';
+import {handleStats} from '../../Redux/userStats';
 
 const SignIn = () => {
   const dispatch = useDispatch();
-  // const [alertModal, setAlertModal] =useState(false)
   const [alertModal, setAlertModal] = useState({
     open: false,
     message: '',
     success: true,
   });
 
-  const [message, setMessage] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -71,64 +66,7 @@ const SignIn = () => {
     email: '',
     password: '',
   });
-
-  // const handleForgetPassword = async()=>{
-  //     console.log("forgetPasswordEmail.email=============>", forgetPasswordEmail)
-
-  //   // try{
-  //   //   console.log("forgetPasswordEmail.email=============>", forgetPasswordEmail)
-  //   //   if(!forgetPasswordEmail.email){
-  //   //     setAlertModal({
-  //   //       open: true,
-  //   //       message: "Email address can not be empty",
-  //   //       success:false
-
-  //   //   });
-  //   //   setForgetPasswordEmail({email:""})
-
-  //   //   return
-  //   //   }
-  //   //   if(!validateEmail(forgetPasswordEmail.email)){
-  //   //    setForgotPasswordModal(prev=>({...prev,open:false }))
-  //   //      setAlertModal({
-  //   //       open: true,
-  //   //       message: "Please enter a valid email address!",
-  //   //       success:false
-
-  //   //   });
-  //   //   setForgetPasswordEmail({email:""})
-
-  //   //   return
-  //   //   }
-  //   //  await auth().sendPasswordResetEmail(forgetPasswordEmail.email)
-  //   //   setAlertModal({
-  //   //     open: true,
-  //   //     message: "Please check your email",
-  //   //     success:true
-
-  //   // });
-  //   // setForgetPasswordEmail({email:""})
-
-  //   // }catch(error){
-  //   //   console.log(error)
-  //   //   setForgotPasswordModal(prev=>({...prev,open:false }))
-
-  //   //   setAlertModal({
-  //   //     open: true,
-  //   //     message: error?.message,
-  //   //     success:false
-
-  //   // });
-  //   // setForgetPasswordEmail({email:""})
-
-  //   // }finally{
-  //   //   setForgotPasswordModal({open:false})
-  //   // }
-
-  // }
-
   const handleForgetPassword = async (email, setEmail) => {
-    console.log('forgetPasswordEmail=============>', email);
 
     try {
       // Input validation
@@ -254,24 +192,17 @@ const SignIn = () => {
         );
         await getInitialFcmToken(myuser?.data?.user?.token);
         if (myuser) {
-          dispatch(handleStats({
-            followers:myuser?.data?.user?.followers,
-            followings:myuser?.data?.user?.following,
-            checkins:myuser?.data?.user?.checkinsCount,
-            uri:myuser?.data?.user?.image,
-            name:myuser?.data?.user?.name,
-            date:myuser?.data?.user?.createdAt,
-            reviewsCount:myuser?.data?.user?.reviewsCount
-          }))
-          dispatch(handleStats({
-            followers:myuser?.data?.user?.followers,
-            followings:myuser?.data?.user?.following,
-            checkins:myuser?.data?.user?.checkinsCount,
-            uri:myuser?.data?.user?.image,
-            name:myuser?.data?.user?.name,
-            date:myuser?.data?.user?.createdAt,
-            reviewsCount:myuser?.data?.user?.reviewsCount
-          }))
+          dispatch(
+            handleStats({
+              followers: myuser?.data?.user?.followers,
+              followings: myuser?.data?.user?.following,
+              checkins: myuser?.data?.user?.checkinsCount,
+              uri: myuser?.data?.user?.image,
+              name: myuser?.data?.user?.name,
+              date: myuser?.data?.user?.createdAt,
+              reviewsCount: myuser?.data?.user?.reviewsCount,
+            }),
+          );
           dispatch(
             handleAuth({
               token: myuser?.data?.user?.token,
@@ -311,36 +242,13 @@ const SignIn = () => {
       }
     } catch (error) {
       // Handle specific errors
-      setAuthLoading(false);
-      const friendlyMessage = getFriendlyErrorMessage(error);
-      if (friendlyMessage) { // Only show if it's not null
-        setAlertModal({
-          open: true,
-          message: friendlyMessage,
-          success: false
-        });
-      }
 
-      // if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is already in use!',
-      //     success: false,
-      //   });
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is invalid!',
-      //     success: false,
-      //   });
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'Invalid credentials',
-      //     success: false,
-      //   });
-      // }
+      setAuthLoading(false);
+      setAlertModal({
+        open: true,
+        message: error.userInfo.message,
+        success: false,
+      });
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
@@ -355,103 +263,71 @@ const SignIn = () => {
 
       let result;
       let token;
-      let data
-      let nonce
+      let data;
+      let nonce;
       if (Platform.OS === 'ios') {
         // Generate a unique nonce for this login request
         nonce = uuidv4();
-  
+
         // Use 'limited' for Limited Login and provide the generated nonce
         result = await LoginManager.logInWithPermissions(
           ['public_profile', 'email'],
           'limited', // loginTrackingIOS
-          nonce // nonceIOS
+          nonce, // nonceIOS
         );
         token = await AuthenticationToken.getAuthenticationTokenIOS();
       } else {
         // For Android, use the standard login
-        result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-        token= await AccessToken.getCurrentAccessToken()
+        result = await LoginManager.logInWithPermissions([
+          'public_profile',
+          'email',
+        ]);
+        token = await AccessToken.getCurrentAccessToken();
       }
 
       if (result.isCancelled) {
-        // setAlertModal({
-        //   open: true,
-        //   message: 'User cancelled the login process',
-        //   success: false,
-        // });
-        return
+        return;
         throw 'User cancelled the login process';
       }
-
-      // // Once signed in, get the users AccessToken
-      // const data = await AccessToken.getCurrentAccessToken();
-
-      // if (!data) {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'Something went wrong obtaining access token',
-      //     success: false,
-      //   });
-      //   throw 'Something went wrong obtaining access token';
-      // }
-
-      // // Create a Firebase credential with the AccessToken
-      // const facebookCredential = auth.FacebookAuthProvider.credential(
-      //   data.accessToken,
-      // );
-
-      // // Sign-in the user with the credential
-      // const userCredential = await auth().signInWithCredential(
-      //   facebookCredential,
-      // );
-      // const firebaseIdToken = await userCredential.user.getIdToken();
-      // console.log('firebaseIdToken=================>', firebaseIdToken);
-          data = 
-            Platform.OS=="ios"
-            ?
-            {
-              
+      data =
+        Platform.OS == 'ios'
+          ? {
               token,
-              "platform":"ios",
-              nonce
+              platform: 'ios',
+              nonce,
             }
-            :
-            {
+          : {
               token,
-              "platform": "android",
-            }
-            console.log("data================>",data)
-            const myuser = await axiosInstance.post('/auth/fb-auth', data);
-
-      // const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-      //   accessToken: firebaseIdToken,
-      // });
-
-
+              platform: 'android',
+            };
+      const myuser = await axiosInstance.post('/auth/fb-auth', data);
       if (myuser) {
-        const firebaseUserCredential = await auth().signInWithCustomToken(myuser?.data?.user?.firebaseCustomToken);
-        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst 
+        const firebaseUserCredential = await auth().signInWithCustomToken(
+          myuser?.data?.user?.firebaseCustomToken,
+        );
+        const firebaseUser = firebaseUserCredential.user; // Optionally, get the Firebase ID tokenconst
         let firebaseIdToken = await firebaseUser.getIdToken();
-        if(!firebaseIdToken){
-            setAuthLoading(false);
-            setAlertModal({
-              open: true,
-              message: "Facebook Login Failed.",
-              success: false
-            });
-                return
+        if (!firebaseIdToken) {
+          setAuthLoading(false);
+          setAlertModal({
+            open: true,
+            message: 'Facebook Login Failed.',
+            success: false,
+          });
+          return;
         }
         await getInitialFcmToken(myuser?.data?.user?.token);
-        dispatch(handleStats({
-          followers:myuser?.data?.user?.followers,
-          followings:myuser?.data?.user?.following,
-          checkins:myuser?.data?.user?.checkinsCount,
-          uri:myuser?.data?.user?.image,
-          name:myuser?.data?.user?.name,
-          date:myuser?.data?.user?.createdAt,
-          reviewsCount:myuser?.data?.user?.reviewsCount
-        }))
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -470,46 +346,18 @@ const SignIn = () => {
       }
       setAuthLoading(false);
     } catch (error) {
-      // Handle specific errors
       setAuthLoading(false);
-      const friendlyMessage = getFriendlyErrorMessage(error);
-      console.log("mes==================>", friendlyMessage)
-      if (friendlyMessage) { // Only show if it's not null
-        setAlertModal({
-          open: true,
-          message: friendlyMessage,
-          success: false
-        });
-      }
 
-      // if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is already in use!',
-      //     success: false,
-      //   });
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is invalid!',
-      //     success: false,
-      //   });
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: error?.message,
-      //     success: false,
-      //   });
-      // }
+      setAlertModal({
+        open: true,
+        message: error.userInfo.message,
+        success: false,
+      });
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
       setAuthLoading(false);
     }
-
-
-
   }
 
   const signInWithGoogle = async () => {
@@ -526,24 +374,19 @@ const SignIn = () => {
       const myuser = await axiosInstance.post('/auth/firebase-authentication', {
         accessToken: firebaseToken,
       });
-      console.log(
-        'myuser=================================================================>',
-        myuser,
-      );
       if (myuser) {
         await getInitialFcmToken(myuser?.data?.user?.token);
-console.log("myuser?.data?.user========>", myuser?.data?.user)
-
-
-dispatch(handleStats({
-  followers:myuser?.data?.user?.followers,
-  followings:myuser?.data?.user?.following,
-  checkins:myuser?.data?.user?.checkinsCount,
-  uri:myuser?.data?.user?.image,
-  name:myuser?.data?.user?.name,
-  date:myuser?.data?.user?.createdAt,
-  reviewsCount:myuser?.data?.user?.reviewsCount
-}))
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
         dispatch(
           handleAuth({
             token: myuser?.data?.user?.token,
@@ -563,38 +406,11 @@ dispatch(handleStats({
       setAuthLoading(false);
     } catch (error) {
       setAuthLoading(false);
-      const friendlyMessage = getFriendlyErrorMessage(error);
-      if (friendlyMessage) { // Only show if it's not null
-        setAlertModal({
-          open: true,
-          message: friendlyMessage,
-          success: false
-        });
-      }
-      // Handle specific errors
-      // if (error.code === 'auth/email-already-in-use') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is already in use!',
-      //     success: false,
-      //   });
-      //   setAuthLoading(false);
-      // } else if (error.code === 'auth/invalid-email') {
-      //   setAlertModal({
-      //     open: true,
-      //     message: 'That email address is invalid!',
-      //     success: false,
-      //   });
-      //   setAuthLoading(false);
-      // } else {
-      //   console.error(error);
-      //   setAlertModal({
-      //     open: true,
-      //     message: error?.message,
-      //     success: false,
-      //   });
-      //   setAuthLoading(false);
-      // }
+      setAlertModal({
+        open: true,
+        message: error.userInfo.message,
+        success: false,
+      });
     } finally {
       setIsEnabled(true); // Re-enable button or other elements
       setLoading(false);
@@ -604,7 +420,6 @@ dispatch(handleStats({
 
   const navigateToSignUp = () => {
     navigation.goBack();
-    // console.log("hello from hasnain")
   };
 
   useEffect(() => {
@@ -623,326 +438,114 @@ dispatch(handleStats({
     });
   }, []);
 
-//   async function onAppleButtonPress() {
-//     return new Promise(async (resolve, _reject) => {
-//       try {
-//         const appleAuthRequestResponse = await appleAuth.performRequest({
-//           requestedOperation: AppleAuthRequestOperation.LOGIN,
-//           requestedScopes: [
-//             AppleAuthRequestScope.EMAIL,
-//             AppleAuthRequestScope.FULL_NAME,
-//           ],
-//         })
-//         const { identityToken, nonce } = appleAuthRequestResponse
+  async function onAppleButtonPress() {
+    try {
+      setAuthLoading(true);
 
-//         loginWithApple(identityToken, nonce)
-//           .then(async response => {
-//             if (response?.user) {
-//               //handle successful login
-//               resolve({success: true})
-//             } else {
-//               //handle unsuccessful login
-//               resolve({success: false})
-//             }
-//           })
-//       } catch (error) {
-//         console.log(error)
-//         resolve({success: false})
-//       }
-//     })
-//   }
+      // Perform Apple authentication request
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: AppleAuthRequestOperation.LOGIN,
+        requestedScopes: [
+          AppleAuthRequestScope.EMAIL,
+          AppleAuthRequestScope.FULL_NAME,
+        ],
+      });
 
+      // Extract identityToken, nonce, and fullName
+      const {identityToken, nonce, fullName} = appleAuthRequestResponse;
 
-//   const loginWithApple = (identityToken, nonce) => {
-//     const appleCredential = auth.AppleAuthProvider.credential(
-//       identityToken,
-//       nonce,
-//     )
-//     return new Promise((resolve, _reject) => {
+      // Check if identityToken is present
+      if (!identityToken) {
+        setAlertModal({
+          open: true,
+          message: 'Apple Sign-In failed - no identity token returned',
+          success: false,
+        });
+        throw new Error('Apple Sign-In failed - no identity token returned');
+      }
 
-//         auth()
-//         .signInWithCredential(credential)
-//         .then(response => {
-//           const isNewUser = response.additionalUserInfo.isNewUser
-//           const {
-//             first_name,
-//             last_name,
-//             family_name,
-//             given_name,
-//           } = response.additionalUserInfo.profile
-//           const { uid, email, phoneNumber, photoURL } = response.user
-//           const defaultProfilePhotoURL =
-//             'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
-//           if (isNewUser) {
-//             // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-//             const userData = {
-//               id: uid,
-//               email: email || '',
-//               firstName: first_name || given_name || '',
-//               lastName: last_name || family_name || '',
-//               phone: phoneNumber || '',
-//               profilePictureURL: photoURL || defaultProfilePhotoURL,
-//               userID: uid,
-//               // createdAt: timestamp,
-//             }
-//             console.log("new user ha", userData)
-//             // PERSIST NEW USER DATA TO YOU PREFFERRED DB AND SAVE ON REDUX
-//           }
+      // Create a Firebase credential from the response
+      const appleCredential = auth.AppleAuthProvider.credential(
+        identityToken,
+        nonce,
+      );
 
-// console.log("purana user ha",response.additionalUserInfo.profile)
-//           // UPDATE USER LAST LOGIN
-//           resolve({success: true})
+      // Sign in with Firebase
+      const userCredential = await auth().signInWithCredential(appleCredential);
 
-//         })
-//         .catch(_error => {
-//           console.log(_error)
-//           resolve({ success: false })
-//         })
-//     })
-//   }
+      // Check if the user is new
+      const isNewUser = userCredential.additionalUserInfo.isNewUser;
 
-// async function onAppleButtonPress() {
-//   try {
-//     setAuthLoading(true);
+      // Initialize userName
+      let userName = '';
 
-//     // Perform Apple authentication request
-//     const appleAuthRequestResponse = await appleAuth.performRequest({
-//       requestedOperation: AppleAuthRequestOperation.LOGIN,
-//       requestedScopes: [
-//         AppleAuthRequestScope.EMAIL,
-//         AppleAuthRequestScope.FULL_NAME,
-//       ],
-//     });
+      // If the user is new and fullName is available, extract the name
+      if (isNewUser && fullName) {
+        const {givenName, familyName} = fullName;
+        userName = `${givenName || ''} ${familyName || ''}`.trim();
 
-//     // Extract identityToken and nonce
-//     const { identityToken, nonce } = appleAuthRequestResponse;
+        // Update the user's display name in Firebase
+        await userCredential.user.updateProfile({
+          displayName: userName,
+        });
+      } else {
+        // Use the displayName from Firebase if available
+        userName = userCredential.user.displayName || '';
+      }
 
-//     // Check if identityToken is present
-//     if (!identityToken) {
-//       setAlertModal({
-//         open: true,
-//         message: 'Apple Sign-In failed - no identity token returned',
-//         success: false,
-//       });
-//       throw new Error('Apple Sign-In failed - no identity token returned');
-//     }
+      // Get the Firebase ID token
+      const firebaseIdToken = await userCredential.user.getIdToken();
 
-//     // Create a Firebase credential from the response
-//     const appleCredential = auth.AppleAuthProvider.credential(
-//       identityToken,
-//       nonce,
-//     );
+      // Send the Firebase ID token and userName to your backend
+      const myuser = await axiosInstance.post('/auth/firebase-authentication', {
+        accessToken: firebaseIdToken,
+        name: userName, // Include the user's name
+      });
 
-//     // Sign in with Firebase
-//     const userCredential = await auth().signInWithCredential(appleCredential);
+      if (myuser) {
+        await getInitialFcmToken(myuser?.data?.user?.token);
+        dispatch(
+          handleStats({
+            followers: myuser?.data?.user?.followers,
+            followings: myuser?.data?.user?.following,
+            checkins: myuser?.data?.user?.checkinsCount,
+            uri: myuser?.data?.user?.image,
+            name: myuser?.data?.user?.name,
+            date: myuser?.data?.user?.createdAt,
+            reviewsCount: myuser?.data?.user?.reviewsCount,
+          }),
+        );
+        dispatch(
+          handleAuth({
+            token: myuser?.data?.user?.token,
+            uid: myuser?.data?.user?.token,
+            name: myuser?.data?.user?.name || userName, // Use the name from response or the one we have
+            email: myuser?.data?.user?.email,
+            provider: myuser?.data?.user?.provider,
+            type: myuser?.data?.user?.type,
+            status: myuser?.data?.user?.status,
+            _id: myuser?.data?.user?._id,
+            url: myuser?.data?.user?.image,
+            authenticated: true,
+            welcome: myuser?.data?.user?.welcome,
+          }),
+        );
+      }
 
-//     // Get the Firebase ID token
-//     const firebaseIdToken = await userCredential.user.getIdToken();
-//     console.log('firebaseIdToken=================>', firebaseIdToken);
-
-//     // Send the Firebase ID token to your backend for authentication
-//     const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-//       accessToken: firebaseIdToken,
-//     });
-
-//     if (myuser) {
-//       await getInitialFcmToken(myuser?.data?.user?.token);
-
-//       dispatch(
-//         handleAuth({
-//           token: myuser?.data?.user?.token,
-//           uid: myuser?.data?.user?.token,
-//           name: myuser?.data?.user?.name,
-//           email: myuser?.data?.user?.email,
-//           provider: myuser?.data?.user?.provider,
-//           type: myuser?.data?.user?.type,
-//           status: myuser?.data?.user?.status,
-//           _id: myuser?.data?.user?._id,
-//           url: myuser?.data?.user?.image,
-//           authenticated: true,
-//           welcome: myuser?.data?.user?.welcome,
-//         }),
-//       );
-//     }
-
-//     setAuthLoading(false);
-//   } catch (error) {
-//     setAuthLoading(false);
-
-//     // Handle specific errors
-//     if (error.code === AppleAuthError.CANCELED) {
-//       setAlertModal({
-//         open: true,
-//         message: 'User cancelled the login process',
-//         success: false,
-//       });
-//     } else if (error.code === 'auth/email-already-in-use') {
-//       setAlertModal({
-//         open: true,
-//         message: 'That email address is already in use!',
-//         success: false,
-//       });
-//     } else if (error.code === 'auth/invalid-email') {
-//       setAlertModal({
-//         open: true,
-//         message: 'That email address is invalid!',
-//         success: false,
-//       });
-//     } else {
-//       console.error(error);
-//       setAlertModal({
-//         open: true,
-//         message: error?.message || 'An error occurred during Apple Sign-In',
-//         success: false,
-//       });
-//     }
-//   } finally {
-//     setIsEnabled(true); // Re-enable button or other elements
-//     setLoading(false);
-//     setAuthLoading(false);
-//   }
-// }
-
-
-async function onAppleButtonPress() {
-  try {
-    setAuthLoading(true);
-
-    // Perform Apple authentication request
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: AppleAuthRequestOperation.LOGIN,
-      requestedScopes: [
-        AppleAuthRequestScope.EMAIL,
-        AppleAuthRequestScope.FULL_NAME,
-      ],
-    });
-
-    // Extract identityToken, nonce, and fullName
-    const { identityToken, nonce, fullName } = appleAuthRequestResponse;
-
-    // Check if identityToken is present
-    if (!identityToken) {
+      setAuthLoading(false);
+    } catch (error) {
+      setAuthLoading(false);
       setAlertModal({
         open: true,
-        message: 'Apple Sign-In failed - no identity token returned',
+        message: error.userInfo.message,
         success: false,
       });
-      throw new Error('Apple Sign-In failed - no identity token returned');
+    } finally {
+      setIsEnabled(true); // Re-enable button or other elements
+      setLoading(false);
+      setAuthLoading(false);
     }
-
-    // Create a Firebase credential from the response
-    const appleCredential = auth.AppleAuthProvider.credential(
-      identityToken,
-      nonce,
-    );
-
-    // Sign in with Firebase
-    const userCredential = await auth().signInWithCredential(appleCredential);
-
-    // Check if the user is new
-    const isNewUser = userCredential.additionalUserInfo.isNewUser;
-
-    // Initialize userName
-    let userName = '';
-
-    // If the user is new and fullName is available, extract the name
-    if (isNewUser && fullName) {
-      const { givenName, familyName } = fullName;
-      userName = `${givenName || ''} ${familyName || ''}`.trim();
-
-
-      // Update the user's display name in Firebase
-      await userCredential.user.updateProfile({
-        displayName: userName,
-      });
-    } else {
-      // Use the displayName from Firebase if available
-      userName = userCredential.user.displayName || '';
-    }
-
-    // Get the Firebase ID token
-    const firebaseIdToken = await userCredential.user.getIdToken();
-
-    // Send the Firebase ID token and userName to your backend
-    const myuser = await axiosInstance.post('/auth/firebase-authentication', {
-      accessToken: firebaseIdToken,
-      name: userName, // Include the user's name
-    });
-
-    if (myuser) {
-      await getInitialFcmToken(myuser?.data?.user?.token);
-      dispatch(handleStats({
-        followers:myuser?.data?.user?.followers,
-        followings:myuser?.data?.user?.following,
-        checkins:myuser?.data?.user?.checkinsCount,
-        uri:myuser?.data?.user?.image,
-        name:myuser?.data?.user?.name,
-        date:myuser?.data?.user?.createdAt,
-        reviewsCount:myuser?.data?.user?.reviewsCount
-      }))
-      dispatch(
-        handleAuth({
-          token: myuser?.data?.user?.token,
-          uid: myuser?.data?.user?.token,
-          name: myuser?.data?.user?.name || userName, // Use the name from response or the one we have
-          email: myuser?.data?.user?.email,
-          provider: myuser?.data?.user?.provider,
-          type: myuser?.data?.user?.type,
-          status: myuser?.data?.user?.status,
-          _id: myuser?.data?.user?._id,
-          url: myuser?.data?.user?.image,
-          authenticated: true,
-          welcome: myuser?.data?.user?.welcome,
-        }),
-      );
-    }
-
-    setAuthLoading(false);
-  } catch (error) {
-    setAuthLoading(false);
-    const friendlyMessage = getFriendlyErrorMessage(error);
-    if (friendlyMessage) { // Only show if it's not null
-      setAlertModal({
-        open: true,
-        message: friendlyMessage,
-        success: false
-      });
-    }
-    // Handle specific errors
-    // if (error.code === AppleAuthError.CANCELED) {
-    //   setAlertModal({
-    //     open: true,
-    //     message: 'User cancelled the login process',
-    //     success: false,
-    //   });
-    // } else if (error.code === 'auth/email-already-in-use') {
-    //   setAlertModal({
-    //     open: true,
-    //     message: 'That email address is already in use!',
-    //     success: false,
-    //   });
-    // } else if (error.code === 'auth/invalid-email') {
-    //   setAlertModal({
-    //     open: true,
-    //     message: 'That email address is invalid!',
-    //     success: false,
-    //   });
-    // } else {
-    //   console.error(error);
-    //   setAlertModal({
-    //     open: true,
-    //     message: error?.message || 'An error occurred during Apple Sign-In',
-    //     success: false,
-    //   });
-    // }
-  } finally {
-    setIsEnabled(true); // Re-enable button or other elements
-    setLoading(false);
-    setAuthLoading(false);
   }
-}
-
-
 
   if (authLoading) {
     return (
@@ -965,247 +568,231 @@ async function onAppleButtonPress() {
       style={{flex: 1, width: '100%', height: '100%'}}
       source={home}>
       <SafeAreaView style={{flex: 1}}>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{flexGrow: 1, gap: scale(14)}}>
+          <Header
+            showMenu={false}
+            showProfilePic={false}
+            cb={() => {
+              navigateToSignUp();
+            }}
+            title="Sign in"
+            description="Sign in with your data that you entered during registration."
+          />
 
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow: 1, gap: scale(14)}}>
-            <Header
-              showMenu={false}
-              showProfilePic={false}
-              cb={() => {
-                navigateToSignUp();
-                Vibration.vibrate(10);
-              }}
-              title="Sign in"
-              description="Sign in with your data that you entered during registration."
-            />
-
+          <View
+            style={{
+              gap: scale(40),
+              paddingHorizontal: scale(20),
+              paddingVertical: scale(10),
+            }}>
             <View
               style={{
-                gap: scale(40),
-                paddingHorizontal: scale(20),
-                paddingVertical: scale(10),
+                gap: scale(10),
+                flex: 1,
               }}>
+              <CustomInput
+                isWhiteInput={true}
+                onChange={handleText}
+                updaterFn={setData}
+                value={data.email}
+                title="Email"
+                name="email"
+                inputStyle={{
+                  paddingVertical: scale(10),
+                }}
+              />
               <View
                 style={{
                   gap: scale(10),
-                  flex: 1,
                 }}>
                 <CustomInput
                   isWhiteInput={true}
+                  imageStyles={{
+                    top: '50%',
+                    left: '90%',
+                    transform: [{translateY: -0.5 * scale(20)}],
+                    width: scale(25),
+                    height: scale(16),
+                  }}
+                  isURL={false}
+                  showImage={true}
+                  uri={scaledOpenEye}
                   onChange={handleText}
                   updaterFn={setData}
-                  value={data.email}
-                  title="Email"
-                  name="email"
+                  value={data.password}
+                  title="Password"
+                  name="password"
+                  secureTextEntry={true}
                   inputStyle={{
                     paddingVertical: scale(10),
                   }}
                 />
-                <View
+                <TouchableOpacity
                   style={{
-                    gap: scale(10),
+                    marginLeft: 'auto',
+                  }}
+                  onPress={() => {
+                    setForgotPasswordModal({
+                      open: true,
+                      loading: false,
+                      success: false,
+                      message: 'PLease enter your email address',
+                      cb: handleForgetPassword,
+                    });
                   }}>
-                  <CustomInput
-                    isWhiteInput={true}
-                    imageStyles={{
-                      top: '50%',
-                      left: '90%',
-                      transform: [{translateY: -0.5 * scale(20)}],
-                      width: scale(25),
-                      height: scale(16),
-                    }}
-                    isURL={false}
-                    showImage={true}
-                    uri={scaledOpenEye}
-                    onChange={handleText}
-                    updaterFn={setData}
-                    value={data.password}
-                    title="Password"
-                    name="password"
-                    secureTextEntry={true}
-                    inputStyle={{
-                      paddingVertical: scale(10),
-                    }}
-                  />
-                  <TouchableOpacity
+                  <Text
                     style={{
-                      marginLeft: 'auto',
+                      color: '#C1C1C1',
+                      fontSize: scale(12),
+                      lineHeight: scale(25),
+                      textAlign: 'right',
+                    }}>
+                    Forgot Password
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{alignItems: 'center', gap: scale(10)}}>
+              <CustomButtom
+                loading={loading}
+                buttonTextStyle={{fontSize: scale(14)}}
+                buttonstyle={{
+                  width: '100%',
+                  borderColor: '#FFA100',
+                  padding: 15,
+                  backgroundColor: '#2E210A',
+                }}
+                onPress={() =>
+                  isEnabled ? (handleLogin())
+                  : null
+                }
+                title={'Sign In'}
+              />
+
+              <Text
+                style={{
+                  color: '#FFA100',
+                  fontSize: scale(20),
+                  lineHeight: scale(30),
+                  fontWeight: 500,
+                  marginVertical: scale(15),
+                }}>
+                OR
+              </Text>
+              <View
+                style={{
+                  width: '100%',
+                  gap: scale(20),
+                }}>
+                {Platform.OS == 'ios' && (
+                  <CustomButtom
+                    showIcon={true}
+                    Icon={() => (
+                      <Image
+                        style={{width: 24, height: 24, objectFit: 'contain'}}
+                        source={apple}
+                      />
+                    )}
+                    buttonTextStyle={{fontSize: scale(14)}}
+                    buttonstyle={{
+                      width: '100%',
+                      borderColor: '#FFA100',
+                      padding: 15,
+                      backgroundColor: '#2E210A',
+                      justifyContent: 'start',
+                      display: 'flex',
+                      gap: 10,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                     onPress={() => {
-                      // setShowForgotPasswordModal(true)
-                      setForgotPasswordModal({
-                        open: true,
-                        loading: false,
-                        success: false,
-                        message: 'PLease enter your email address',
-                        cb: handleForgetPassword,
-                      });
-                      //   setAlertModal(true)
-                      // Alert.alert("hello")
-                      // setMessage('Feature Coming Soon.')
-                    }}>
-                    <Text
-                      style={{
-                        color: '#C1C1C1',
-                        fontSize: scale(12),
-                        lineHeight: scale(25),
-                        textAlign: 'right',
-                      }}>
-                      Forgot Password
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={{alignItems: 'center', gap: scale(10)}}>
+                      onAppleButtonPress();
+                    }}
+
+                    title={'Sign In With Apple'}
+                  />
+                )}
+
                 <CustomButtom
-                  loading={loading}
+                  showIcon={true}
+                  Icon={() => (
+                    <Image style={{width: 24, height: 24}} source={google} />
+                  )}
                   buttonTextStyle={{fontSize: scale(14)}}
                   buttonstyle={{
                     width: '100%',
                     borderColor: '#FFA100',
                     padding: 15,
                     backgroundColor: '#2E210A',
+                    justifyContent: 'start',
+                    display: 'flex',
+                    gap: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                  onPress={() =>
-                    isEnabled ? (handleLogin(), Vibration.vibrate(10)) : null
-                  }
-                  //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
-                  title={'Sign In'}
+                  onPress={() => {
+                    signInWithGoogle();
+                  }}
+                  title={'Sign In With Google'}
                 />
-
+                <CustomButtom
+                  showIcon={true}
+                  Icon={() => (
+                    <Image style={{width: 24, height: 24}} source={fb} />
+                  )}
+                  buttonTextStyle={{fontSize: scale(14)}}
+                  buttonstyle={{
+                    width: '100%',
+                    borderColor: '#FFA100',
+                    padding: 15,
+                    backgroundColor: '#2E210A',
+                    justifyContent: 'start',
+                    display: 'flex',
+                    gap: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() => {
+                    onFacebookButtonPress();
+                  }}
+                  title={'Sign In With Facebook'}
+                />
+              </View>
+              <View style={{flexDirection: 'row', marginTop: scale(20)}}>
                 <Text
                   style={{
-                    color: '#FFA100',
-                    fontSize: scale(20),
-                    lineHeight: scale(30),
-                    fontWeight: 500,
-                    marginVertical: scale(15),
+                    color: 'white',
+                    fontSize: scale(14),
+                    lineHeight: 18,
                   }}>
-                  OR
+                  Don't have an account?{' '}
                 </Text>
-                <View
-                  style={{
-                    width: '100%',
-                    gap: scale(20),
-                  }}>
-                  {Platform.OS == 'ios' && (
-                    <CustomButtom
-                      showIcon={true}
-                      Icon={() => (
-                        <Image
-                          style={{width: 24, height: 24, objectFit: 'contain'}}
-                          source={apple}
-                        />
-                      )}
-                      buttonTextStyle={{fontSize: scale(14)}}
-                      buttonstyle={{
-                        width: '100%',
-                        borderColor: '#FFA100',
-                        padding: 15,
-                        backgroundColor: '#2E210A',
-                        justifyContent: 'start',
-                        display: 'flex',
-                        gap: 10,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      onPress={() => {
-                        onAppleButtonPress();
-                        Vibration.vibrate(10);
-                      }}
-                      //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
-                      title={'Sign In With Apple'}
-                    />
-                  )}
-
-                  <CustomButtom
-                    showIcon={true}
-                    Icon={() => (
-                      <Image style={{width: 24, height: 24}} source={google} />
-                    )}
-                    buttonTextStyle={{fontSize: scale(14)}}
-                    buttonstyle={{
-                      width: '100%',
-                      borderColor: '#FFA100',
-                      padding: 15,
-                      backgroundColor: '#2E210A',
-                      justifyContent: 'start',
-                      display: 'flex',
-                      gap: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onPress={() => {
-                      signInWithGoogle();
-                      Vibration.vibrate(10);
-                    }}
-                    //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
-                    title={'Sign In With Google'}
-                  />
-                  <CustomButtom
-                    showIcon={true}
-                    Icon={() => (
-                      <Image style={{width: 24, height: 24}} source={fb} />
-                    )}
-                    buttonTextStyle={{fontSize: scale(14)}}
-                    buttonstyle={{
-                      width: '100%',
-                      borderColor: '#FFA100',
-                      padding: 15,
-                      backgroundColor: '#2E210A',
-                      justifyContent: 'start',
-                      display: 'flex',
-                      gap: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onPress={() => {
-                      onFacebookButtonPress();
-                      Vibration.vibrate(10);
-                    }}
-                    //  onPress={()=>{navigation.reset({index:0,routes:[{name:"Drawer"}]});  Vibration.vibrate(10)}}
-
-                    title={'Sign In With Facebook'}
-                  />
-                </View>
-                <View style={{flexDirection: 'row', marginTop: scale(20)}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('SignUp')
+                  }}
+                  style={{verticalAlign: 'middle'}}>
                   <Text
                     style={{
-                      color: 'white',
+                      color: '#FFA100',
                       fontSize: scale(14),
                       lineHeight: 18,
+                      marginTop: scale(0),
+                      paddingHorizontal: scale(3),
                     }}>
-                    Don't have an account?{' '}
+                    Register
                   </Text>
-                  <TouchableOpacity
-                    //  onPress={() => {navigateToSignUp(),  Vibration.vibrate(10)}}
-                    onPress={() => {
-                      navigation.navigate('SignUp'), Vibration.vibrate(10);
-                    }}
-                    style={{verticalAlign: 'middle'}}>
-                    <Text
-                      style={{
-                        color: '#FFA100',
-                        fontSize: scale(14),
-                        lineHeight: 18,
-                        marginTop: scale(0),
-                        paddingHorizontal: scale(3),
-                      }}>
-                      Register
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
+          </View>
+        </ScrollView>
 
         <ModalWithInput
           setInput={setForgetPasswordEmail}

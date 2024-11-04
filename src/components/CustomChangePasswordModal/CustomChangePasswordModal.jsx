@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, TouchableOpacity } from 'react-native';
-import close from "./../../../assets/images/close.png"
+import {  Modal,  Text, View, Image, TouchableOpacity } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import closeIcon from "./../../../assets/images/close.png"
-import CustomInput from '../CustomInput/CustomInput';
-import { handleText } from '../../../utils';
 import CustomButtom from '../CustomButtom/CustomButtom';
 import { useSelector } from 'react-redux';
 const CustomChangePasswordModal = ({
@@ -113,31 +110,6 @@ const CustomChangePasswordModal = ({
               {auth.email}
               </Text>
             </View>
-
-            {/* <CustomInput
-              title={title}
-              name={title}
-              readOnly={true}
-              onChange={handleText}
-              updaterFn={setValue}
-              value={auth.email}
-              showTitle={true}
-              placeholder={placeholder}
-              containterStyle={{
-                flexGrow: 1,
-                paddingTop: scale(20),
-                gap:scale(10)
-
-              }}
-              inputStyle={{
-                borderColor: "#FFA100",
-                borderWidth: 1,
-                borderRadius: 10,
-                padding: 15,
-                marginTop: scale(10)
-
-              }}
-            /> */}
               <CustomButtom
               loading={loading}
                 buttonTextStyle={{ fontSize: scale(12) }}

@@ -173,8 +173,6 @@ function AppRouter() {
 								<Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="BlockedUsersList" component={BlockedUsersScreen} />
                 <Stack.Screen name="Test" component={Test} />
-
-
               </>
               :
               <Stack.Screen name="Public" component={PublicStack} />

@@ -1,13 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { formatDate, getFormattedName } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
 import { useSelector } from 'react-redux'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-// import Lightbox from 'react-native-lightbox';
-import Lightbox from 'react-native-lightbox-v2';
 import { Pencil } from 'lucide-react-native'
 import ImageView from "react-native-image-viewing";
 
@@ -25,7 +23,6 @@ reviewsCount=0
     const navigation = useNavigation()
     const circles = [1, 1, 1, 1, 1]
     const [isLoading, setIsLoading] = useState(true);
-    const [LightBox, setLightBox] = useState(false)
     const [visible, setIsVisible] = useState(false)
 
 
@@ -95,23 +92,6 @@ reviewsCount=0
         </SkeletonPlaceholder>
       )}
 
-{/* <Lightbox
-    activeProps={{
-        style: {
-            width: '100%',
-            height: '50%',
-            top: '25%',
-            left: 0,
-            position: 'absolute',
-            borderRadius: 0,
-            borderColor: 'transparent',
-            borderWidth: 0,
-        },
-        resizeMode: 'contain',
-    }}
-    // springConfig={{ tension: 30, friction: 7 }}
-> */}
-
 <ImageView
   images={[{ uri: url }]}
   imageIndex={0}
@@ -122,7 +102,6 @@ reviewsCount=0
 
     <Image
         style={{
-            // display: isLoading ? 'none' : 'flex',
               opacity:isLoading?0:1,
         position:isLoading?"absolute":"relative",
             width: scale(90),
@@ -139,11 +118,6 @@ reviewsCount=0
         onLoad={() => setIsLoading(false)}
     />
 
-{/* </Lightbox> */}
-
-
-
-
 
                  <Image
                     style={{
@@ -155,14 +129,11 @@ reviewsCount=0
                         height:scale(30)
                     }}
                     source={redFlameIndicator}
-                    // source={url}
-
                 />
                 </View>
 </TouchableOpacity>
 
                 <View style={{
-                    // flexGrow: 1,
                     display:"flex",
                     gap:scale(10)
                 }}>

@@ -1,23 +1,17 @@
-import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Vibration, Image, Alert, ActivityIndicator } from 'react-native'
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View, Keyboard, TouchableOpacity, Vibration, Image, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../../components/Header/Header.jsx'
 import home from './../../../assets/images/home.png';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { UNSPLASH_URL, VITE_UNSPLASH_ACCESSKEY } from "@env"
-import axios from 'axios';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SauceList from '../../components/SauceList/SauceList.jsx';
 import { getFormattedName, handleText, topRatedSauces } from '../../../utils.js';
-import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import ExternalUserCard from '../../components/ExternalUserCard/ExternalUserCard.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import arrow from "./../../../assets/images/arrow.png";
 import useAxios from '../../../Axios/useAxios.js';
 import Snackbar from 'react-native-snackbar';
-// import { handleRemoveUserFromUsers } from '../../../android/app/Redux/users.js';
-// import { handleRemoveUserFromFollowings } from '../../../android/app/Redux/followings.js';
-// import { handleStatsChange } from '../../../android/app/Redux/userStats.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleRemoveUserFromUsers } from '../../Redux/users.js';
 import { handleRemoveUserFromFollowings } from '../../Redux/followings.js';
@@ -35,11 +29,11 @@ const ExternalProfileScreen = ({
     const auth = useSelector(state=>state?.auth)
     const [loading, setLoading] = useState({
         blockLoading:false,
-        initialLoading:true,
+        initialLoading:false,
     });
     const dispatch = useDispatch()
     const [titles, setTitles] = useState({
-        blockTitle:"Block",
+        blockTitle:user?.isBlocked ? 'Unblock' : 'Block',
         reportTitle:""
     })
     const [isKeyBoard, setIsKeyBoard] = useState(false)
@@ -62,46 +56,9 @@ const ExternalProfileScreen = ({
         };
     }, []);
    
-
-
-    // React.useEffect(() => {
-    //     const fetchUser = async () => {
-    //         setLoading(prev=>({
-    //             ...prev,
-    //             initialLoading:true,
-    //         }));
-    //         try {
-    //             const res = await axiosInstance.get(`/get-user`, {
-    //                 params:{
-    //                     _id
-    //                 }
-    //             });
-    //             setUser(res?.data?.user)
-    //         } catch (error) {
-    //             console.error('Failed to fetch user:', error);
-    //         } finally {
-    //             setLoading(prev=>({
-    //                 ...prev,
-    //                 initialLoading:false,
-    //             }));
-    //             if (initialLoading){
-    //                 setInitialLoading(false)
-    //             }
-    //         }
-    //     };
-    //     // Initial fetch
-       
-    //     // Setting up interval for short polling (fetch every 10 seconds, adjust as needed)
-    //     const interval = setInterval(fetchUser, 10000); // 10000 milliseconds = 10 seconds
-    //     // Cleanup function to clear interval when component unmounts
-    //     return () => clearInterval(interval);
-    // }, [_id]);
-
-
      // Function to fetch user data
   const fetchUser = useCallback(async () => {
-      console.log("_id", _id)
-    if (!_id) return; // Ensure _id is available
+    if (!_id || loading.initialLoading) return; // Ensure _id is available
     setLoading(prev => ({
         ...prev,
         initialLoading: true,
@@ -124,28 +81,12 @@ const ExternalProfileScreen = ({
         ...prev,
         initialLoading: false,
       }));
-    //   if (initialLoading) {
-    //     setInitialLoading(false);
-    //   }
     }
   }, [_id]);
 
-  // Fetch data on mount and when _id changes
-//   useEffect(() => {
-//     fetchUser();
-
-//     // Set up interval for polling
-//     const interval = setInterval(fetchUser, 10000); // 10 seconds
-
-//     // Cleanup interval on unmount or when _id changes
-//     return () => clearInterval(interval);
-//   }, [fetchUser]);
-
-  // Fetch data when the screen gains focus
   useFocusEffect(
     useCallback(() => {
-        console.log("focus howa!", _id)
-      fetchUser();
+        fetchUser();
     }, [fetchUser])
   );
 
@@ -172,12 +113,13 @@ const ExternalProfileScreen = ({
         try{
             
             const res = await axiosInstance.post(`/block`, {_id});
+            console.log("res=================>", res.data)
             await handleUser(user)
 
             if(res?.data?.message){
-                setTitles(prev=>({...prev, blockTitle:"Blocked"}))
+                setTitles(prev=>({...prev, blockTitle:res.data.isBlocked?"Unblock":"Block"}))
                 Snackbar.show({
-                    text: `${user?.name } is blocked.`,
+                    text: `${user?.name } is ${res.data.isBlocked?"Blocked":"Unblocked"}.`,
                     duration: Snackbar.LENGTH_SHORT,
                 });
 
@@ -272,32 +214,6 @@ const ExternalProfileScreen = ({
                                         <View style={{
                                             marginBottom: scale(10)
                                         }}>
-
-                                            {/* <CustomInput
-
-                                                imageStyles={{ top: "50%", transform: [{ translateY: -0.5 * scale(25) }], width: scale(25), resizeMode: 'contain', height: scale(25), aspectRatio: "1/1" }}
-                                                isURL={false}
-                                                showImage={true}
-                                                uri={search}
-
-                                                cb={() => setPage(1)}
-                                                name="search"
-                                                onChange={handleText}
-                                                updaterFn={setQuery}
-                                                value={query.search}
-                                                showTitle={false}
-                                                placeholder="Search Favourite..."
-                                                containterStyle={{
-                                                    flexGrow: 1,
-                                                }}
-                                                inputStyle={{
-                                                    borderColor: "#FFA100",
-                                                    borderWidth: 1,
-                                                    borderRadius: 10,
-                                                    padding: 15,
-                                                    paddingLeft: scale(45)
-
-                                                }} /> */}
                                         </View>
                                         <TouchableOpacity onPress={() => {
                                             Vibration.vibrate(10)
@@ -346,7 +262,7 @@ const ExternalProfileScreen = ({
                                                     buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
                                                     buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                                     onPress={() => {
-                                                        Vibration.vibrate(10);
+                                                        // Vibration.vibrate(10);
                                                         handleBlock()
                                                         // Alert.alert("Blocked")
     
@@ -355,42 +271,6 @@ const ExternalProfileScreen = ({
     
                                                 />
                                             }
-                                       
-
-
-                                            {/* <CustomButtom
-                                            disabled={loading}
-
-                                                Icon={() => <Image source={arrow} />}
-                                                showIcon={true}
-                                                buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
-                                                buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                                // onPress={() => {
-                                                //     Vibration.vibrate(10);
-                                                //     Alert.alert("reported")
-
-                                                // }}
-                                                title={`Report`}
-
-                                            /> */}
-
-
-                                            {/* <CustomButtom
-                                             disabled={loading?.initialLoading}
-
-
-                                                Icon={() => <Image source={arrow} />}
-                                                showIcon={true}
-                                                buttonTextStyle={{ fontSize: scale(14), fontWeight: 700 }}
-                                                buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                                // onPress={() => {
-                                                //     Vibration.vibrate(10);
-                                                //     // navigation.navigate("SauceDetails")
-                                                //     Alert.alert("shared")
-                                                // }}
-                                                title={`Share`}
-
-                                            /> */}
                                         </View>
                                     </View>
 
