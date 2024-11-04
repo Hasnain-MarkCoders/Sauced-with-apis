@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { handleFeaturedSauces, handleIncreaseReviewCountOfFeaturedSauce } from '../../../android/app/Redux/featuredSauces';
 import { useNavigation } from '@react-navigation/native';
 import { handleFeaturedSauces , handleIncreaseReviewCountOfFeaturedSauce} from '../../Redux/featuredSauces';
-const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -44,7 +44,7 @@ const FeaturedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     
     useEffect(() => {
             fetchSauces()
-    }, [fetchSauces]);
+    }, [fetchSauces, refresh]);
 
 
 useEffect(() => {

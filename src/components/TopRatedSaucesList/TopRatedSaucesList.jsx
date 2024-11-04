@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces  } from '../../Redux/topRatedSauces';
 // import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
-const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { } }) => {
+const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
     const [page, setPage] = useState(1)
     const axiosInstance = useAxios()
     const [hasMore, setHasMore] = useState(true)
@@ -44,7 +44,7 @@ const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
     
     useEffect(() => {
         fetchSauces();
-    }, [fetchSauces]);
+    }, [fetchSauces, refresh]);
   
 
 

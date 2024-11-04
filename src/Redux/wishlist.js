@@ -5,39 +5,86 @@ const wishListSlice = createSlice({
   initialState: [],
   reducers: {
 
+    // handleWishList: (state, action) => {
+    //   // Create a map of existing state items by their _id
+    //   const stateMap = new Map(state.map(item => [item?._id, item]));
+    //   if(action.payload?.length==0){
+    //     return []
+    //   }
+
+    //   // Update the map with the new payload items
+    //   action.payload.forEach(item => {
+    //     stateMap.set(item?._id, item);
+    //   });
+    //   state.forEach(item => {
+    //     if (!stateMap.has(item?._id)) {
+    //       stateMap.delete(item?._id);
+    //     }
+    //   });
+
+    //   // Replace the state with the updated map values
+    //   return Array.from(stateMap.values());
+    //   // return [...state, ...action.payload]
+    // },
+    // handleToggleWishList: (state, action) => {
+    //   const sauceId = action?.payload?._id; // Assuming payload is the _id of the sauce
+    
+    //   // Check if the sauce already exists in the state
+    //   const existingSauce = state.find(item => item?._id === sauceId);
+    
+    //   if (!!existingSauce) {
+    //     // If it exists, remove it from the state
+    //     const updatedState = state.filter(item => item?._id !== sauceId)
+    //     return updatedState;
+    //     // return state.filter(item => item?._id !== sauceId);
+    //   } else {
+    //     // If it doesn't exist, add it to the state
+    //     if(!!action.payload){
+    //       return [...state, action?.payload]; // You may want to include other sauce properties as needed
+    //     }
+    //   }
+    // },
+
+
+
     handleWishList: (state, action) => {
-      // Create a map of existing state items by their _id
-      const stateMap = new Map(state.map(item => [item._id, item]));
+      if (!Array.isArray(action.payload) || action?.payload?.length === 0) {
+        return [];
+      }
 
-      // Update the map with the new payload items
-      action.payload.forEach(item => {
-        stateMap.set(item._id, item);
-      });
-      state.forEach(item => {
-        if (!stateMap.has(item._id)) {
-          stateMap.delete(item._id);
+      // Create a map from existing state items by their _id for quick lookup
+      const stateMap = new Map(state.map(item => [item?._id, item]));
+
+      // Create the new state by mapping over the incoming payload
+      const newState = action?.payload?.map(newItem => {
+        const existingItem = stateMap.get(newItem?._id);
+        if (existingItem) {
+          // Merge existing properties that need to be preserved
+          return {
+            ...existingItem,
+            ...newItem,
+          };
         }
+        return newItem;
       });
 
-      // Replace the state with the updated map values
-      return Array.from(stateMap.values());
-      // return [...state, ...action.payload]
+      return newState;
     },
+
     handleToggleWishList: (state, action) => {
-      const sauceId = action?.payload?._id; // Assuming payload is the _id of the sauce
-    
-      // Check if the sauce already exists in the state
-      const existingSauce = state.find(item => item._id === sauceId);
-    
-      if (existingSauce) {
+      const sauceId = action?.payload?._id;
+
+      // Find the index of the sauce in the state
+      const existingIndex = state.findIndex(item => item?._id === sauceId);
+
+      if (existingIndex !== -1) {
         // If it exists, remove it from the state
-        return state.filter(item => item._id !== sauceId);
-      } else {
+        state.splice(existingIndex, 1);
+      } else if (action?.payload) {
         // If it doesn't exist, add it to the state
-        return [...state, action?.payload]; // You may want to include other sauce properties as needed
+        state.unshift(action?.payload);
       }
     },
-
     handleToggleLikeWishlistSauce:(state, action)=>{
       const sauce = state.find(x=>x._id==action.payload)
       if(sauce){

@@ -47,6 +47,7 @@ const SingleSauce = ({
   fullWidthText = false,
   searchPageSauceStyles = {},
   showOverlay = false,
+  disabled=false,
   mycb = () => { },
   handleIncreaseReviewCount = () => { },
   handleLike = () => { },
@@ -57,7 +58,7 @@ const SingleSauce = ({
   const navigation = useNavigation()
   const dispatch = useDispatch()
   const [selected, setSelected] = useState({
-    isChecked: item["hasLiked"]
+    isChecked: item?.hasLiked
   })
   useEffect(() => {
     // console.log("selected================================================================>", selected)
@@ -172,12 +173,17 @@ const SingleSauce = ({
     } finally {
     }
   }
+
+
+  useEffect(()=>{
+console.log("=============================================================================================================================================================================================*****************************************", _id)
+  },[_id])
   return (
     <>
       {url ? (
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={handleOnPress}
+          onPress={!disabled? handleOnPress:null}
           style={[
             styles.container,
             { width: scale(110), ...customStyles },
@@ -275,7 +281,7 @@ const SingleSauce = ({
                 >
                   <Image
                     style={styles.heartImage}
-                    source={selected['isChecked'] ? filledHeart : emptyheart}
+                    source={selected.isChecked ? filledHeart : emptyheart}
                   />
                 </TouchableOpacity>
               )}

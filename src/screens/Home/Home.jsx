@@ -25,6 +25,7 @@ import { useDispatch } from 'react-redux';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
 import { addNotification } from '../../Redux/notifications';
 const Home = () => {
+  const [refresh, setRefresh] = useState(true)
     const navigation = useNavigation()
     const [alertModal, setAlertModal] = useState({
         open:false,
@@ -728,6 +729,25 @@ const checkLocationServiceAndNavigate = async () => {
     //     return unsubscribe;
     //   }, []);
 
+
+    useEffect(()=>{
+
+      navigation.addListener("focus", ()=>{
+        setRefresh(true)
+      })
+      navigation.addListener("blur", ()=>{
+        setRefresh(false)
+      })
+      return()=>{
+        navigation.removeListener("focus", ()=>{
+          setRefresh(true)
+        })
+        navigation.removeListener("blur", ()=>{
+          setRefresh(false)
+        })
+      }
+
+    },[])
      
 
     if (initialLoading) {
@@ -816,9 +836,11 @@ const checkLocationServiceAndNavigate = async () => {
                     </View>
                     <View style={styles.contentContainer}>
                     <FeaturedSaucesList
+                    refresh={refresh}
                             title='Featured Sauces'
                     />
                     <TopRatedSaucesList
+                      refresh={refresh}
                             title='Recently Popular Sauces'
                     />
                     <View style={{

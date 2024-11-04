@@ -20,6 +20,8 @@ const SettingScreen = () => {
     const navigation = useNavigation()
     const [showBlockModal, setShowBlockmodal] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showLogoutModal, setLogoutModal] = useState(false)
+
     const [loading, setLoading] = useState(false)
     const [isEnabled, setIsEnabled] = useState(true)
     const axiosInstance = useAxios()
@@ -61,6 +63,10 @@ const SettingScreen = () => {
 
     }
 
+
+    const handleConfirmModal = (setModal)=>{
+        setModal(prev=>!prev)
+    }
 
 
       
@@ -173,7 +179,8 @@ const SettingScreen = () => {
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
                                 onPress={()=>{
-                                    setShowDeleteModal(true)
+                                    // setShowDeleteModal(true)
+                                    handleConfirmModal(setShowDeleteModal)
                                 }}
                                 title={"Delete Account"}
                             />
@@ -183,19 +190,22 @@ const SettingScreen = () => {
                                 showIcon={true}
                                 buttonTextStyle={{ fontSize: scale(14) }}
                                 buttonstyle={{ width: "100%", borderColor: "#FFA100", backgroundColor: "#2e210a", padding: 15, display: "flex", gap: 10, flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between" }}
-                                onPress={handleLogout}
+                                onPress={()=>{
+                                    handleConfirmModal(setLogoutModal)
+                                }}
                                 title={"Log Out"}
                             />
 
                         </View>
                     </View>
             <YesNoModal
-                 modalVisible={showDeleteModal}
-                 setModalVisible={()=>{setShowDeleteModal(false)}}
+                 showCancel={true}
+                 modalVisible={showDeleteModal||showLogoutModal}
+                 setModalVisible={()=>{handleConfirmModal(showDeleteModal?setShowDeleteModal:setLogoutModal)}}
                  success={false}
-                 title={"Are you sure you want to delete your account?"}
+                 title={showDeleteModal?"Are you sure you want to delete your account?":"Are you sure you want to logout?"}
                  isQuestion={true}
-                 cb={handleDeleteAccount}
+                 cb={showDeleteModal?handleDeleteAccount:handleLogout}
             />
                  <CustomConfirmModal
                 isEnabled={isEnabled}

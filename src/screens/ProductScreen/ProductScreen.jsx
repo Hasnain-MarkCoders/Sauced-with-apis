@@ -194,7 +194,7 @@ console.log("_id================================================>",_id)
   const fetchProduct =useCallback( async () => {
     // if (!hasMore || loading) return;
     // setLoading(true);
-    // setInitialLoading(true)
+    setInitialLoading(true)
     try {
         const res = await axiosInstance.post(`/view-sauce`, {
             // params: {

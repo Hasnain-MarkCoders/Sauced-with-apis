@@ -149,7 +149,7 @@ const SignUp = () => {
     if (data.password && !strongPasswordRegex.test(data.password)) {
       setAlertModal({
           open: true,
-          message: "Please create a strong password!",
+          message: "Your password must be at least 8 characters long and include uppercase and lowercase letters, a number, and one special character from @$!%*?&",
           success: false,
       });
       setIsStrongPassword(false);
@@ -216,6 +216,7 @@ const SignUp = () => {
 
       }
     } catch (error) {
+
       setAuthLoading(false)
       const friendlyMessage = getFriendlyErrorMessage(error);
       if (friendlyMessage) { // Only show if it's not null

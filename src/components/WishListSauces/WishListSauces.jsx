@@ -32,7 +32,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
                     page
                 }
             });
-
+                    console.log("fetched wishlist sauces============================================================>", res?.data?.items)
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleWishList(res?.data?.items))
         } catch (error) {
@@ -44,7 +44,7 @@ const WishListSauces = ({ title = "", name = "", showMoreIcon = false, cb = () =
     
     useEffect(() => {
         fetchSauces();
-    }, [fetchSauces]);
+    }, [fetchSauces, refresh]);
   
 
 
