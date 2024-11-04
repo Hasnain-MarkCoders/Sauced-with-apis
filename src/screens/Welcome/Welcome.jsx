@@ -1,7 +1,7 @@
 import {View, SafeAreaView, ScrollView, Dimensions, Text} from 'react-native';
 import React from 'react';
 import {ImageBackground} from 'react-native';
-import home from './../../../assets/images/home.png';
+import home from './../../../assets/images/welcome_screen.png';
 import WelcomeLists from '../../components/WelcomeList/WelcomeList';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import Header from '../../components/Header/Header';

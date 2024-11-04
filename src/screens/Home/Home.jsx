@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
-import home from './../../../assets/images/home.png';
+import home from './../../../assets/images/home_screen.png';
 import search from './../../../assets/images/search_icon.png';
 import {handleText} from '../../../utils';
 import BrandList from '../../components/BrandList/BrandList';
