@@ -336,6 +336,9 @@ const AddReview = () => {
             },
           },
         );
+
+
+        console.log("res?.data========================>", res?.data)
         handleReviewState(reviewedSauce.data.sauce);
 
         handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount);
@@ -370,6 +373,7 @@ const AddReview = () => {
         setImageUris([]);
       }
     } catch (error) {
+      
       return setAlertModal({
         open: true,
         message: error.message,

@@ -639,7 +639,7 @@ const SignIn = () => {
                       open: true,
                       loading: false,
                       success: false,
-                      message: 'PLease enter your email address',
+                      message: 'Pease enter your email address',
                       cb: handleForgetPassword,
                     });
                   }}>
