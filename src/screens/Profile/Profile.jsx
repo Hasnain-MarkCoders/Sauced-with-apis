@@ -40,7 +40,7 @@ const ProfileScreen = () => {
   const [isKeyBoard, setIsKeyBoard] = useState(false);
   const users = useSelector(state => state?.users);
   const userStats = useSelector(state => state?.userStats);
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   useEffect(() => {
@@ -92,12 +92,19 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     navigation.addListener('focus', () => {
-      setRefresh(prev => !prev);
+        setRefresh(false);
     });
+
+    // navigation.addListener('blur', () => {
+    //   setRefresh( true);
+    // });
     return () => {
       navigation.removeListener('focus', () => {
-        setRefresh(prev => !prev);
+          setRefresh(true);
       });
+      // navigation.removeListener("blur", ()=>{
+      //   setRefresh(false)
+      // })
     };
   }, []);
 

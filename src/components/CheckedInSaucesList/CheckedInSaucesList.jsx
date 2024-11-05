@@ -92,7 +92,7 @@ const CheckedInSaucesList = ({ title = "", name = "", showMoreIcon = false, cb =
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
                     _id={item?._id}
-
+                    hasLiked={item?.hasLiked}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="checkedin"
                     item={item}

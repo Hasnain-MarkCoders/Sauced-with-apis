@@ -96,7 +96,7 @@ const BookMarkSauceList = ({ title = "", _id="", name = "",endpoint="/bookmarks"
                                         keyExtractor={(item, index) => index.toString()}
                                         renderItem={({ item }) => <SingleSauce
                                         item={item}
-                    
+                                        hasLiked={item?.hasLiked}
                                             // url={item?.urls?.small} 
                                             // url={item.url}
                                             url={item?.image}

@@ -96,7 +96,7 @@ saucesListTwo?.length>0&&<View style={styles.container}>
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
                     _id={item?._id}
-
+                    hasLiked={item?.hasLiked}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType={2}
                     item={item}

@@ -18,8 +18,9 @@ const auth = useSelector(state=>state.auth)
   return (
 
     <TouchableOpacity
+    disabled={!_id}
       onPress={() => {
-        navigation.navigate("ExternalProfileScreen", {
+        _id && navigation.navigate("ExternalProfileScreen", {
           url,
           name,
           _id

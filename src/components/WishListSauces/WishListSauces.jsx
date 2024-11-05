@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { FlashList } from "@shopify/flash-list";
 import { scale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
@@ -21,7 +22,7 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
     },[])
 
     const fetchSauces = useCallback(async () => {
-        if ( loading) return;
+        if (loading) return;
         setLoading(true);
         try {
             const res = await axiosInstance.get("/wishlist", {
@@ -31,6 +32,8 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
             });
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleWishList(res?.data?.items))
+                 setLoading(false);
+
         } catch (error) {
             console.error('Failed to fetch sauces:', error);
         } finally {
@@ -40,9 +43,11 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
     
     useEffect(() => {
         fetchSauces();
-    }, [fetchSauces, refresh]);
+    }, [fetchSauces]);
   
-
+useEffect(()=>{
+console.log("from wishlist loading==================================>", loading)
+},[loading])
 
 
 
@@ -68,7 +73,7 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
                     flexDirection: "row", alignItems: "center",
                 }}>
 
-                    <FlatList
+                    <FlashList
                         showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={false}
                         horizontal
@@ -81,12 +86,14 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
                                 setPage(currentPage => currentPage + 1);
                             }
                         }}
-                        extraData={wishListSlices}
+                        extraData={loading||refresh}
 
                         keyExtractor={(item, index) => `${item?._id} ${index.toString()}`}
+                        estimatedItemSize={200}
                         renderItem={({ item }) => <SingleSauce
+                        hasLiked={item?.hasLiked}
                         _id={item?._id}
-
+                        isDisabled={loading}
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         sauceType={"wishlist"}
                         item={item}

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -17,7 +17,7 @@ import {useDispatch} from 'react-redux';
 
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
-import {handleFavoriteSauces} from '../../Redux/favoriteSauces';
+import {handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce} from '../../Redux/favoriteSauces';
 
 const SingleSauce = ({
   url = '',
@@ -38,13 +38,15 @@ const SingleSauce = ({
   handleIncreaseReviewCount = () => {},
   handleLike = () => {},
   _id = '',
+  isDisabled=false,
+  hasLiked=true
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const axiosInstance = useAxios();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [selected, setSelected] = useState({
-    isChecked: item?.hasLiked,
+    isChecked: hasLiked,
   });
   const handleOnPress = () => {
     if (showPopup) {
@@ -67,10 +69,21 @@ const SingleSauce = ({
   };
 
   const handleToggleLike = async () => {
-    console.log('_id===============>', _id);
     handleLike(item?._id, setSelected);
     try {
       const res = await axiosInstance.post(`/like-sauce`, {sauceId: _id});
+      if (selected.isChecked){
+        dispatch(handleRemoveSauceFromFavouriteSauces(_id))
+        if (sauceType== "favourite") {
+          setSelected(prev => ({
+            ...prev,
+            isChecked: !prev.isChecked,
+          }));
+        }
+      }else{
+        dispatch(handleFavoriteSauces([{...item, hasLiked:true}]));
+      }
+     dispatch(handleToggleFavoriteSauce(_id));
     } catch (error) {
       console.error('Failed to like / dislike:', error);
       dispatch(handleFavoriteSauces([item]));
@@ -82,8 +95,9 @@ const SingleSauce = ({
     <>
       {url ? (
         <TouchableOpacity
+        disabled={!(!isDisabled && _id) }
           activeOpacity={0.8}
-          onPress={!disabled ? handleOnPress : null}
+          onPress={(!isDisabled && _id) ? handleOnPress : null}
           style={[styles.container, {width: scale(110), ...customStyles}]}>
           {isLoading && (
             <View style={[styles.skeletonContainer, styles.imageContainer]}>
@@ -160,7 +174,7 @@ const SingleSauce = ({
   );
 };
 
-export default SingleSauce;
+export default memo(SingleSauce);
 
 const styles = StyleSheet.create({
   container: {

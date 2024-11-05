@@ -127,7 +127,7 @@ const ProductSearchList = ({
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => <SingleSauce
                     _id={item?._id}
-
+                    hasLiked={item?.hasLiked}
                         handleLike={handleLike}
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         mycb={setData}

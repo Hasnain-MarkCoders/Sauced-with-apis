@@ -109,7 +109,7 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => <SingleSauce
                         _id={item?._id}
-
+                        hasLiked={item?.hasLiked}
                         handleIncreaseReviewCount={handleIncreaseReviewCount}
                         sauceType="reviewed"
                         item={item}

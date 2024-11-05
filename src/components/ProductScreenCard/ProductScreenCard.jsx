@@ -187,9 +187,8 @@ const ProductScreenCard = ({
             setLoading(false);
         }
     }
-    const handleWishlist = async()=>{
+    const handleWishlist = async(sauce)=>{
         try{
-            console.log("_id=======================>", _id)
           setLoadings(prev=>({
             ...prev,
             isWishListLoading:true
@@ -198,6 +197,7 @@ const ProductScreenCard = ({
                 sauceId:_id
            
         });
+        dispatch(handleToggleWishList(sauce))
         }catch(error){
             console.log("error=======================>", error)
         }finally{
@@ -380,8 +380,8 @@ const ProductScreenCard = ({
                                             isAddedToWishList: !prev.isAddedToWishList
 
                                         }));
-                                        dispatch(handleToggleWishList(sauce))
-                                        handleWishlist()
+                                        // dispatch(handleToggleWishList(sauce))
+                                        handleWishlist(sauce)
                                         Snackbar.show({
                                             text: !productStatus.isAddedToWishList ? 'You Added this product in Wishlist.' : "You removed this product from Wishlist.",
                                             duration: Snackbar.LENGTH_SHORT,

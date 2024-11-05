@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 // import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../../android/app/Redux/favoriteSauces';
+import { FlashList } from "@shopify/flash-list";
 
 import NotFound from '../NotFound/NotFound';
 import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce } from '../../Redux/favoriteSauces';
@@ -34,9 +35,8 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                     page
                 }
             });
-                 setHasMore(res.data.pagination.hasNextPage);
-                 dispatch(handleFavoriteSauces(res?.data?.sauces))
-                 console.log("favorite sauces==============================================================================================>", res?.data?.sauces.filter(item=>!item?.hasLiked))
+                 setHasMore(res?.data?.pagination?.hasNextPage);
+                 dispatch(handleFavoriteSauces(res?.data?.sauces||[]))
         } catch (error) {
             console.error('Failed to fetch sauces:', error);
         } finally {
@@ -70,7 +70,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                 flexDirection: "row", alignItems: "center",
             }}>
 
-                <FlatList
+                <FlashList
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{
@@ -85,7 +85,7 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
 
                     }}
                     data={favoriteSauces}
-                    extraData={favoriteSauces}
+                    extraData={loading||refresh}
                     scrollEventThrottle={16}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
@@ -93,11 +93,13 @@ const FavoriteSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                             setPage(currentPage => currentPage + 1);
                         }
                     }}
+                    estimatedItemSize={200}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => <SingleSauce
                     _id={item?._id}
                     handleIncreaseReviewCount={handleIncreaseReviewCount}
                     sauceType="favourite"
+                    hasLiked={item?.hasLiked}
                     item={item}
                         url={item?.image}
                         title={item?.name}
