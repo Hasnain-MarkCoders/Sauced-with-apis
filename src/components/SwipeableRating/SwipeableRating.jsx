@@ -10,6 +10,7 @@ const SwipeableRating = ({
   emptyColor = 'transparent',
   gap = 10,
   cb = () => {},
+  disabled=false
 }) => {
   const [rating, setRating] = useState(initialRating);
   const containerRef = useRef(null);
@@ -114,7 +115,7 @@ const SwipeableRating = ({
       style={styles.container}
       ref={containerRef}
       onLayout={onLayout}
-      {...panResponder.panHandlers}
+      {...(disabled? {}:panResponder.panHandlers)}
     >
       {ratingItems()}
     </View>

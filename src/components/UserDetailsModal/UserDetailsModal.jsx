@@ -116,7 +116,7 @@ const UserDetailsModal = ({
     }}
     // springConfig={{ tension: 30, friction: 7 }}
 > */}
-{isLoading && (
+{/* {isLoading && (
         <SkeletonPlaceholder speed={1600}  backgroundColor='#2E210A'  highlightColor='#fff' >
           <SkeletonPlaceholder.Item              width={scale(50)}
             height={scale(50)}
@@ -140,7 +140,7 @@ const UserDetailsModal = ({
         onLoad={() => setIsLoading(false)}
 
     />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
 {/* </Lightbox> */}
                   <DetailKeyValue Key="" style={{fontSize:scale(22)}} value={getFormattedName(name)} />

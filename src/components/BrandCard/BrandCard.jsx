@@ -114,7 +114,7 @@ const BrandCard = ({
                                     lineHeight: scale(25),
                                     textDecorationStyle: "solid",
                                     textDecorationLine: product?.brand?.websiteLink ? "underline" : "none"
-                                }}>{product?.brand?.websiteLink ? "Visit Website" : "Not Available."}</Text>
+                                }}>{product?.brand?.websiteLink ? "Visit Website" : " N/A."}</Text>
 
                         </TouchableOpacity>
                     </View>
@@ -139,7 +139,7 @@ const BrandCard = ({
                                     lineHeight: scale(25),
                                     textDecorationStyle: "solid",
                                     textDecorationLine: product?.brand?.amazonLink ? "underline" : "none"
-                                }}>{product?.brand?.amazonLink ? "Visit Website" : "Not Available."}</Text>
+                                }}>{product?.brand?.amazonLink ? "Visit Website" : " N/A."}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

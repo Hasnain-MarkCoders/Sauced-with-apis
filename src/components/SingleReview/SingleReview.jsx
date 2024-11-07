@@ -6,6 +6,7 @@ import {  formatEventDate } from '../../../utils'
 import { useNavigation } from '@react-navigation/native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import ImageView from "react-native-image-viewing";
+import SwipeableRating from '../SwipeableRating/SwipeableRating'
 const SingleReview = ({
   item = null,
   isNavigate = false,
@@ -107,12 +108,24 @@ const SingleReview = ({
               {sauceName}
             </Text>
           </TouchableOpacity>
-        <CustomRating
+        {/* <CustomRating
           initialRating={item?.star}
 
           ratingContainerStyle={{
             pointerEvents: "none"
-          }} size={10} />
+          }} size={10} /> */}
+          <View style={{
+            flexDirection:"row",
+            justifyContent:"start",
+          }}>
+
+           <SwipeableRating
+                                disabled={true}
+                                gap={3}
+                                size={10}
+                                 initialRating={item?.star}
+                                />
+          </View>
 
         <View
           style={{ flexDirection: 'row', flexWrap: 'wrap' }}

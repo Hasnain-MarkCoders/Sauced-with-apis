@@ -417,7 +417,7 @@ const ProductCard = ({
                                         lineHeight: scale(25),
                                         textDecorationStyle:"solid",
                                         textDecorationLine:product?.websiteLink ?"underline":"none"
-                                    }}>{product?.websiteLink?"Visit Website":"Not Available."}</Text>
+                                    }}>{product?.websiteLink?"Visit Website":" N/A."}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{
@@ -447,7 +447,7 @@ const ProductCard = ({
                                         lineHeight: scale(25),
                                          textDecorationStyle:"solid",
                                         textDecorationLine:product?.productLink ?"underline":"none"
-                                    }}>{product?.productLink?"Visit Amazon":"Not Available"}</Text>
+                                    }}>{product?.productLink?"Visit Amazon":" N/A"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

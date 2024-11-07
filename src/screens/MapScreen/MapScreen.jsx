@@ -16,6 +16,8 @@ import MapView, {Marker} from 'react-native-maps';
 import darkArrow from './../../../assets/images/darkArrow.png';
 import yellowChilli from './../../../assets/images/yellow-chilli.png';
 import redChilli from './../../../assets/images/red-chilli.png';
+import marker from './../../../assets/images/marker.png';
+
 import debounce from 'lodash.debounce';
 import Geocoder from 'react-native-geocoding';
 // Initialize the Geocoder with your API key (for example, Google API)
@@ -35,6 +37,7 @@ const MapScreen = () => {
   const lat = route?.params?.lat;
   const showContinue = route?.params?.showContinue;
   const handleEventCoords = route?.params?.fn || function () {};
+  const [selectedId, setSelectedId] = useState(null)
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
@@ -153,7 +156,7 @@ const MapScreen = () => {
   const handleMarkerPress = store => {
     Alert.alert(
       'Store Information',
-      `Zip: ${store.zip ? store.zip : 'Not available'}`,
+      `Zip: ${store.zip ? store.zip : ' N/A'}`,
       [{text: 'OK'}],
     );
   };
@@ -191,7 +194,7 @@ const MapScreen = () => {
       // Show details if it's a hot sauce
       Alert.alert(
         'Hot Sauce Details',
-        `Place: ${place.name}\nZip: ${place.zip ? place.zip : 'Not available'}`,
+        `Place: ${place.name}\nZip: ${place.zip ? place.zip : ' N/A'}`,
         [{text: 'OK'}],
       );
     } else {
@@ -334,7 +337,10 @@ const MapScreen = () => {
     ),
     [],
   );
-
+  const handlePoiClick = e => {
+    const {coordinate, name, placeId} = e.nativeEvent;
+    Alert.alert('Place Info', `Name: ${name}`);
+  };
 
   return (
     <SafeAreaView
@@ -437,6 +443,7 @@ const MapScreen = () => {
         </View>
 
         <MapView
+        //  onPoiClick={handlePoiClick}
           onLongPress={e => {
             handleLongPress(e);
           }}
@@ -469,6 +476,8 @@ const MapScreen = () => {
                 geocodeResponse.results[0].address_components.find(component =>
                   component.types.includes('postal_code'),
                 )?.long_name;
+
+                console.log("geocodeResponse.results[0].address_components=====================================================>",JSON.stringify(geocodeResponse.results[0].address_components))
 
               handleEventCoords({
                 latitude,

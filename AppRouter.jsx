@@ -165,7 +165,10 @@ function AppRouter() {
                 <Stack.Screen name="AllCheckinsScreen" component={AllCheckinsScreen} />
                 <Stack.Screen name="BrandScreen" component={BrandScreen} />
                 <Stack.Screen name="UserSearchScreen" component={UserSearchScreen} />
-                <Stack.Screen name="Welcome" component={Welcome} />
+                <Stack.Screen name="Welcome" options={{
+                  animation: 'slide_from_right',
+                  animationDuration: 500
+                }} component={Welcome} />
                 <Stack.Screen  name="ExternalUserFollowing" component={ExternalUserFollowingScreen} />
                 <Stack.Screen  name="ExternalUserFollowers" component={ExternalUserFollowersScreen} />
                 <Stack.Screen name="AddStore" component={AddStore} />

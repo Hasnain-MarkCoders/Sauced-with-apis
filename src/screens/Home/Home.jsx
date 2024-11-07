@@ -99,7 +99,7 @@ const Home = () => {
         case RESULTS.UNAVAILABLE:
           setAlertModal({
             open: true,
-            message: 'Location services are not available on this device.',
+            message: 'Location services are  N/A on this device.',
             success: false,
           });
           setLoading(false);

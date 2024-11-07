@@ -53,6 +53,12 @@ const SignUp = () => {
   const [authLoading, setAuthLoading] = useState(false);
   const [isStrongPassword, setIsStrongPassword] = useState(true);
   const navigation = useNavigation();
+  const [passwordFeedback, setPasswordFeedback] = useState([]);
+
+  const [passwordStrength, setPasswordStrength] = useState('');
+  const [showPasswordStrength, setShowPasswordStrength] = useState(false);
+  
+
 
   const updateTokenOnServer = async (authToken, newFcmToken) => {
     try {
@@ -512,6 +518,70 @@ const SignUp = () => {
     }
   }
 
+  const evaluatePasswordStrength = password => {
+    const feedback = [];
+    let strength = '';
+
+    const lengthCriteria = password.length >= 8;
+    const uppercaseCriteria = /[A-Z]/.test(password);
+    const lowercaseCriteria = /[a-z]/.test(password);
+    const numberCriteria = /[0-9]/.test(password);
+    const specialCharCriteria = /[@$!%*?&]/.test(password);
+
+    const passedCriteria = [
+      lengthCriteria,
+      uppercaseCriteria,
+      lowercaseCriteria,
+      numberCriteria,
+      specialCharCriteria,
+    ].filter(Boolean).length;
+
+    // Determine strength level
+    if (passedCriteria <= 1) {
+      strength = 'Very Weak';
+    } else if (passedCriteria === 2) {
+      strength = 'Weak';
+    } else if (passedCriteria === 3) {
+      strength = 'Medium';
+    } else if (passedCriteria >= 4) {
+      strength = 'Strong';
+    }
+
+    // Provide feedback on missing criteria
+    if (!lengthCriteria) {
+      feedback.push('At least 8 characters');
+    }
+    if (!uppercaseCriteria) {
+      feedback.push('An uppercase letter');
+    }
+    if (!lowercaseCriteria) {
+      feedback.push('A lowercase letter');
+    }
+    if (!numberCriteria) {
+      feedback.push('A number');
+    }
+    if (!specialCharCriteria) {
+      feedback.push('A special character (@$!%*?&)');
+    }
+
+    return {strength, feedback};
+  };
+
+  const handleInputChange = (name, value) => {
+    setData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    if (name === 'password') {
+      setShowPasswordStrength(value.length > 0);
+      const {strength, feedback} = evaluatePasswordStrength(value);
+      setPasswordStrength(strength);
+      setPasswordFeedback(feedback);
+    }
+  };
+
+  
   if (authLoading) {
     return (
       <ImageBackground
@@ -580,6 +650,7 @@ const SignUp = () => {
                   gap: scale(10),
                 }}>
                 <CustomInput
+                handleInputChange={handleInputChange}
                   isWhiteInput={true}
                   imageStyles={{
                     top: '50%',
@@ -601,14 +672,46 @@ const SignUp = () => {
                     paddingVertical: scale(15),
                   }}
                 />
-                <Text
+                {/* <Text
                   style={{
                     color: '#C1C1C1',
                     fontSize: scale(12),
                     lineHeight: scale(25),
                   }}>
                   {isStrongPassword ? '' : 'Please create a strong password'}
-                </Text>
+                </Text> */}
+                        {showPasswordStrength && (
+                  <View>
+                    <Text
+                      style={{
+                        color: '#C1C1C1',
+                        fontSize: scale(12),
+                        lineHeight: scale(20),
+                      }}>
+                      Password Strength: {passwordStrength}
+                    </Text>
+                    {passwordFeedback.length > 0 && (
+                      <Text
+                        style={{
+                          color: '#C1C1C1',
+                          fontSize: scale(12),
+                          lineHeight: scale(20),
+                        }}>
+                        Add{' '}
+                        {passwordFeedback
+                          .map((item, index) => {
+                            if (index === passwordFeedback.length - 1) {
+                              return item;
+                            } else {
+                              return item + ', ';
+                            }
+                          })
+                          .join('')}
+                        {' to make it stronger.'}
+                      </Text>
+                    )}
+                  </View>
+                )}
               </View>
             </View>
             <View style={{alignItems: 'center', gap: 20}}>

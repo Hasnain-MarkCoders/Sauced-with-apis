@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import closeEye from "./../../../assets/images/scaledCloseEye.png"
-const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {
+const CustomInput = ({
+   readOnly=false,title = "",isWhiteInput=false,autoFocus =false, uri = "",localImage=false, isURL = true, multiline = false, numberOfLines = 1, name = "", cb = () => { }, placeholder = "", showTitle = true, secureTextEntry = false, onChange = () => { }, showImage = false, value = "", imageStyles = {}, updaterFn = () => { }, containterStyle = {}, labelStyle = {}, inputStyle = {
 
-},  onSubmitEditing=()=>{}}) => {
+},  
+onSubmitEditing=()=>{},
+handleInputChange=()=>{}
+}) => {
   const [showPassord, setShowPassword] = useState(secureTextEntry)
   return (
 
@@ -75,7 +79,7 @@ const CustomInput = ({ readOnly=false,title = "",isWhiteInput=false,autoFocus =f
 
 
           }}
-          onChangeText={(text) => { onChange(text, name, updaterFn), cb(text) }}
+          onChangeText={(text) => { onChange(text, name, updaterFn), cb(text),handleInputChange(name,text) }}
           value={value}
         />
       </View>

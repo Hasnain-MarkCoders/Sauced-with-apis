@@ -36,6 +36,7 @@ import { handleToggleCheckedInSauce } from '../../Redux/checkedInSauces'
 import { handleFavoriteSauces, handleIncreaseReviewCountOfFavoriteSauce, handleRemoveSauceFromFavouriteSauces, handleToggleFavoriteSauce } from '../../Redux/favoriteSauces'
 import { handleToggleFeaturedSauce } from '../../Redux/featuredSauces'
 import { handleToggleTopRatedSauce } from '../../Redux/topRatedSauces'
+import SwipeableRating from '../SwipeableRating/SwipeableRating'
 
 const ProductScreenCard = ({
     url = "",
@@ -317,13 +318,20 @@ const ProductScreenCard = ({
                                     textDecorationStyle:"solid",
                                     textDecorationLine:"underline"
                                 }}>{ !isNaN(totalReviews) && totalReviews>-1 ?`${totalReviews} Reviews`:"N/A"}</Text>
-                                <CustomRating
+
+                                <SwipeableRating
+                                disabled={true}
+                                gap={3}
+                                size={10}
+                                 initialRating={averageRating}
+                                />
+                                {/* <CustomRating
                                     initialRating={averageRating}
                                     ratingContainerStyle={{
                                         pointerEvents: "none",
                                     }
 
-                                    } />
+                                    } /> */}
                             </TouchableOpacity>
 
                             <View style={{
@@ -450,7 +458,7 @@ const ProductScreenCard = ({
                                         lineHeight: scale(25),
                                         textDecorationStyle:"solid",
                                         textDecorationLine:websiteLink ?"underline":"none"
-                                    }}>{websiteLink?"Visit Website":"Not Available."}</Text>
+                                    }}>{websiteLink?"Visit Website":" N/A."}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{
@@ -480,7 +488,7 @@ const ProductScreenCard = ({
                                         lineHeight: scale(25),
                                          textDecorationStyle:"solid",
                                         textDecorationLine:productLink ?"underline":"none"
-                                    }}>{productLink?"Visit Product":"Not Available"}</Text>
+                                    }}>{productLink?"Visit Product":" N/A"}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -504,7 +512,7 @@ const ProductScreenCard = ({
                                         lineHeight: scale(25),
                                          textDecorationStyle:"solid",
                                         textDecorationLine:amazonLink ?"underline":"none"
-                                    }}>{amazonLink?"Visit Amazon":"Not Available"}</Text>
+                                    }}>{amazonLink?"Visit Amazon":" N/A"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

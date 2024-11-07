@@ -10,6 +10,7 @@ import {welcomepoints} from '../../../utils';
 
 const Welcome = ({route, navigation}) => {
   const handleWelcome = route?.params?.handleWelcome;
+  const About_US = route?.params?.About_US||false;
   return (
     <ImageBackground
       style={{
@@ -113,7 +114,23 @@ const Welcome = ({route, navigation}) => {
             transform: [{translateX: -Dimensions.get('window').width * 0.45}],
             bottom: scale(40),
           }}>
+         { About_US?
           <CustomButtom
+          buttonTextStyle={{fontSize: scale(20)}}
+          buttonstyle={{
+            width: '100%',
+            borderColor: '#FFA100',
+            padding: 15,
+            backgroundColor: '#2E210A',
+          }}
+          onPress={() => {
+            navigation.goBack()
+          }}
+          title={'Go Back'}
+        />
+
+         :
+         <CustomButtom
             buttonTextStyle={{fontSize: scale(20)}}
             buttonstyle={{
               width: '100%',
@@ -125,7 +142,7 @@ const Welcome = ({route, navigation}) => {
               handleWelcome();
             }}
             title={'Get Started'}
-          />
+          />}
         </View>
       </SafeAreaView>
     </ImageBackground>

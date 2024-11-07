@@ -68,7 +68,7 @@ const DrawerStack = () => {
       store.dispatch({type: 'LOGOUT'});
       await persistor.purge();
       persistor.purge();
-      await GoogleSignin.revokeAccess();
+      // await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
       await LoginManager.logOut();
       try {

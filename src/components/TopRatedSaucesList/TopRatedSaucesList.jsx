@@ -6,6 +6,7 @@ import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces  } from '../../Redux/topRatedSauces';
+import NotFound from '../NotFound/NotFound';
 // import { handleIncreaseReviewCountOfTopRatedSauce, handleTopRatedSauces } from '../../../android/app/Redux/topRatedSauces';
 
 const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = () => { }, refresh=false }) => {
@@ -52,9 +53,7 @@ const TopRatedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
 
     return (
         <>
-        {
-
-topRatedSauces?.length>0&&<View style={styles.container}>
+        <View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -64,6 +63,9 @@ topRatedSauces?.length>0&&<View style={styles.container}>
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
                 {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
+
+            {  topRatedSauces?.length>0 ? (
+
             <View style={{
                 gap: scale(20),
                 flexDirection: "row", alignItems: "center",
@@ -121,12 +123,24 @@ topRatedSauces?.length>0&&<View style={styles.container}>
 
                 </TouchableOpacity>}
             </View>
-            {
 
-                loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
-            }
+) : !loading ? (
+    <View
+      style={{
+        marginBottom: scale(20),
+      }}>
+      <NotFound title="No sauces added yet." />
+    </View>
+  ) : null}
+  {loading && (
+    <ActivityIndicator
+      size="small"
+      style={{marginBottom: scale(20)}}
+      color="#FFA100"
+    />
+  )}
+          
         </View>
-        }
         </>
     );
 };

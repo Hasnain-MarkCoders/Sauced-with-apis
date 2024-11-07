@@ -1,7 +1,7 @@
 import { ImageBackground, SafeAreaView, Text, View, ActivityIndicator } from 'react-native'
 import React, { memo, useEffect, useState, useRef } from 'react'
 import Header from '../../components/Header/Header.jsx'
-import getStartedbackground from './../../../assets/images/ProductDescription.jpg';
+import getStartedbackground from './../../../assets/images/welcome_screen.png';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -96,9 +96,14 @@ const BrandScreen = () => {
                 {
                   index == 2 && <View style={{
                     marginTop: scale(20),
-                    alignSelf:"flex-end"
+                    alignSelf:"flex-end",
+                    marginBottom: scale(20),
+
                   }}>
-                      <SauceList _id={brand?.brand?._id} title='Recent Sauces'  />
+                      <SauceList 
+                      
+                      endpoint='/brand-sauces'
+                      _id={brand?.brand?._id} title='Recent Sauces'  />
                   </View>
                 }
               </View>

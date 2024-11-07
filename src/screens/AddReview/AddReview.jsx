@@ -376,7 +376,7 @@ const AddReview = () => {
       
       return setAlertModal({
         open: true,
-        message: error.message,
+        message: error?.response?.data?.message,
         success: false,
       });
     } finally {

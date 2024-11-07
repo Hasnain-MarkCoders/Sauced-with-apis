@@ -42,7 +42,7 @@ const SettingScreen = () => {
 
   const handleLogout = async () => {
     await auth().signOut();
-    await GoogleSignin.revokeAccess(); // Revoke access
+    // await GoogleSignin.revokeAccess(); // Revoke access
     await GoogleSignin.signOut();
     dispatch(
       handleStats({
@@ -204,6 +204,26 @@ const SettingScreen = () => {
                   Linking.openURL('https://www.saucedapp.com/privacy-policy')
                 }
                 title={'Privacy Policy'}
+              />
+                <CustomButtom
+                Icon={() => <Image source={arrow} />}
+                showIcon={true}
+                buttonTextStyle={{fontSize: scale(14)}}
+                buttonstyle={{
+                  width: '100%',
+                  borderColor: '#FFA100',
+                  backgroundColor: '#2e210a',
+                  padding: 15,
+                  display: 'flex',
+                  gap: 10,
+                  flexDirection: 'row-reverse',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+                onPress={() =>
+                navigation.navigate('Welcome', {About_US:true})
+                }
+                title={'About Us'}
               />
                 <CustomButtom
                             Icon={() => <Image source={arrow} />}

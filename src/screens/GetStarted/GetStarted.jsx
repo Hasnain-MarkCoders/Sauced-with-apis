@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
-import getStartedbackground from './../../../assets/images/getStartedbackground.png';
+import getStartedbackground from './../../../assets/images/welcome_screen.png';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import saucedLogo from './../../../assets/images/saucedlogo.png';
 import {useNavigation} from '@react-navigation/native';
@@ -28,7 +28,8 @@ const GetStarted = () => {
         <View style={styles.contentContainer}>
           <Image style={styles.logo} source={saucedLogo} />
           <Text style={styles.titleText}>
-            Discover your perfect flavor with our extensive sauce collection.
+          Discover, share, review, and collect 
+          all of your favorite hot sauces.
           </Text>
 
           <View
@@ -52,7 +53,8 @@ const GetStarted = () => {
               title={'Sign In'}
             />
             <Text style={styles.secondaryTitle}>
-              Discover your perfect flavor with our extensive sauce collection.
+            The ultimate hot 
+            sauce app
             </Text>
           </View>
         </View>

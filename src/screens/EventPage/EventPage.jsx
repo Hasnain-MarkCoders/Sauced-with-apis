@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import Header from '../../components/Header/Header.jsx';
-import getStartedbackground from './../../../assets/images/EventDetailBG.png';
+import getStartedbackground from './../../../assets/images/welcome_screen.png';
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -724,7 +724,7 @@ const handleInterestedEvent = async () => {
                                         lineHeight: scale(25),
                                         textDecorationStyle:"solid",
                                         textDecorationLine:event.websiteLink ?"underline":"none"
-                                    }}>{event.websiteLink?"Visit Website":"Not Available."}</Text>
+                                    }}>{event.websiteLink?"Visit Website":" N/A."}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{
@@ -752,7 +752,7 @@ const handleInterestedEvent = async () => {
                                         lineHeight: scale(25),
                                          textDecorationStyle:"solid",
                                         textDecorationLine:event?.facebookLink ?"underline":"none"
-                                    }}>{event?.facebookLink?"Visit Facebook":"Not Available"}</Text>
+                                    }}>{event?.facebookLink?"Visit Facebook":" N/A"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -869,7 +869,7 @@ const handleInterestedEvent = async () => {
                           color: '#FFA100',
                         }}>
                           {
-                            // isLocationAvailable?eventDistance?" m":"" "distance from you":"Distance from you not available"
+                            // isLocationAvailable?eventDistance?" m":"" "distance from you":"Distance from you  N/A"
                             isLocationAvailable && eventDistance==null?"Press get directions for event details": isLocationAvailable?eventDistance?`${eventDistance} Miles from you`:"":"Please enable location to use this feature"
                           }
                           {
