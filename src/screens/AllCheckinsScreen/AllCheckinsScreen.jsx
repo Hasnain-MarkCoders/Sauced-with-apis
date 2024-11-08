@@ -7,7 +7,7 @@ import {
   Keyboard,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
 import home from './../../../assets/images/home.png';
 import {scale, verticalScale} from 'react-native-size-matters';
@@ -96,44 +96,66 @@ const AllCheckinsScreen = ({}) => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchCheckings = async () => {
-      if (!hasMore || loading) return;
-      setLoading(true);
-      console.log(_id);
-      try {
-        const res = await axiosInstance.get(`/get-checkins`, {
-          params: {
-            page: page,
-            _id,
-          },
-        });
-        setHasMore(res?.data?.pagination?.hasNextPage);
-        setData(prev => [...prev, ...res?.data?.checkins]);
-      } catch (error) {
-        console.error('Failed to fetch photos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchCheckings();
+  const fetchCheckings =useCallback( async () => {
+    if (!hasMore || loading) return;
+    setLoading(true);
+    console.log(_id);
+    try {
+      const res = await axiosInstance.get(`/get-checkins`, {
+        params: {
+          page: page,
+          _id,
+        },
+      });
+      setHasMore(res?.data?.pagination?.hasNextPage);
+      const newData = res?.data?.checkins?res?.data?.checkins:[] 
+      console.log("<=============================================newData=============================================================>", newData?.length)
+      console.log("<=============================================page=============================================================>", page)
+
+      if (newData&& newData?.length>0){
+        setData(prev => [...prev, ...newData]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch photos:', error);
+    } finally {
+      setLoading(false);
+    }
+  },[page]);
+  useEffect(() => {
+    if(page>1){
+      fetchCheckings();
+    }
   }, [page]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault(); // Prevent default action
-      unsubscribe(); // Unsubscribe the event on first call to prevent infinite loop
-      navigation.navigate('ProductScreen', {_id}); // Navigate to your desired screen
-      if (isBack) {
-        navigation.goBack();
-      } else {
-        navigation.navigate('ProductScreen', {
-          _id,
-        });
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('beforeRemove', e => {
+  //     e.preventDefault(); // Prevent default action
+  //     unsubscribe(); // Unsubscribe the event on first call to prevent infinite loop
+  //     // navigation.navigate('ProductScreen', {_id}); // Navigate to your desired screen
+  //     if (isBack) {
+  //       navigation.goBack();
+  //     } else {
+  //       navigation.navigate('ProductScreen', {
+  //         _id,
+  //       });
+  //     }
+  //   });
+  // }, []);
+
+
+  useEffect(()=>{
+    if (page ==1){
+      navigation.addListener("focus", ()=>{
+        fetchCheckings();
+
+      })
+    }
+    navigation.addListener("blur", ()=>{
+      setData([])
+      setPage(1)
+    })
+  },[])
 
   return (
     <ImageBackground
@@ -181,7 +203,7 @@ const AllCheckinsScreen = ({}) => {
                       lineHeight: scale(50),
                       marginBottom: scale(20),
                     }}>
-                    Check-ins
+                    Check-ins 
                   </Text>
                 )}
                 {index == 1 && (

@@ -12,7 +12,7 @@ import {
 import {scale} from 'react-native-size-matters';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import darkArrow from './../../../assets/images/darkArrow.png';
 import yellowChilli from './../../../assets/images/yellow-chilli.png';
 import redChilli from './../../../assets/images/red-chilli.png';
@@ -465,6 +465,7 @@ const MapScreen = () => {
         </View>
 
         <MapView
+        provider={PROVIDER_GOOGLE}
          onPoiClick={handlePoiClick}
           onLongPress={e => {
             handleLongPress(e);

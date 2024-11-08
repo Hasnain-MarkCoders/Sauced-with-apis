@@ -5,7 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import home from './../../../assets/images/home.png';
 import {scale} from 'react-native-size-matters';
 import {
@@ -42,7 +42,10 @@ const AllUserReviews = () => {
         },
       });
       setHasMore(res?.data?.pagination?.hasNextPage);
-      res?.data?.reviews && setData(prev => [...prev, ...res?.data?.reviews]);
+      const newData = res?.data?.reviews?res?.data?.reviews:[]
+      if(newData.length>0){
+        setData(prev => [...prev, ...newData]);
+      }
     } catch (error) {
       console.error('Failed to fetch photos:', error);
     } finally {
@@ -55,6 +58,12 @@ const AllUserReviews = () => {
       fetchReviews();
     }, [_id, page]), // Ensure _id is included if it can change
   );
+  useEffect(()=>{
+navigation.addListener("blur", ()=>{
+  setData([])
+  setPage(1)
+})
+  },[])
   return (
     <ImageBackground
       source={home}

@@ -26,7 +26,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 import { GOOGLE_MAP_API_KEY } from "@env"
 import useAxios from '../../../Axios/useAxios.js';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE  } from 'react-native-maps';
 import yellowChilli from "./../../../assets/images/yellow-chilli.png";
 import redChilli from "./../../../assets/images/red-chilli.png";
 import darkArrow from "./../../../assets/images/darkArrow.png";
@@ -373,6 +373,7 @@ const handleInterestedEvent = async () => {
                      width:"100%"
                     }}>
                     <MapView
+                    provider={PROVIDER_GOOGLE}
                     ref={mapViewRef}
                       style={{ width: "100%", height: "100%"}}
                       zoomTapEnabled={true}
@@ -801,6 +802,7 @@ const handleInterestedEvent = async () => {
                         borderRadius: scale(10),
                       }}>
                       <MapView
+                      provider={PROVIDER_GOOGLE}
                         style={{ width: "100%", height: "100%", }}
                         zoomTapEnabled={true}
                         initialRegion={{

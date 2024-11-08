@@ -6,6 +6,7 @@ import SingleSauce from '../SingleSauce/SingleSauce';
 import moreIcon from "./../../../assets/images/more.png"
 import useAxios from '../../../Axios/useAxios';
 import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../Redux/favoriteSauces';
+import NotFound from '../NotFound/NotFound';
 // import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../../android/app/Redux/favoriteSauces';
 
 
@@ -90,9 +91,7 @@ const SauceList = ({ title = "", _id="", name = "",isCheckedIn=false,endpoint="/
 
     return (
         <>
-        {
-
-data?.length>0&&<View style={styles.container}>
+        <View style={styles.container}>
             <View style={{
                 flexDirection: "row", gap: scale(10)
             }}>
@@ -102,6 +101,7 @@ data?.length>0&&<View style={styles.container}>
                     style={[styles.title, { maxWidth: scale(100) }]}>{name}</Text>}
                 {title && <Text style={[styles.title]}>{title}</Text>}
             </View>
+            {  data?.length>0?(
             <View style={{
                 gap: scale(20),
                 flexDirection: "row", alignItems: "center",
@@ -167,12 +167,22 @@ data?.length>0&&<View style={styles.container}>
 
                 </TouchableOpacity>}
             </View>
-            {
-
-                loading && <ActivityIndicator size="small" style={{ marginBottom: scale(20) }} color="#FFA100" />
-            }
+        ) : !loading ? (
+          <View
+            style={{
+              marginBottom: scale(20),
+            }}>
+            <NotFound title="No sauces added yet." />
+          </View>
+        ) : null}
+        {loading && (
+          <ActivityIndicator    
+            size="small"
+            style={{marginBottom: scale(20)}}
+            color="#FFA100"
+          />
+        )}
         </View>
-        }
         </>
     );
 };

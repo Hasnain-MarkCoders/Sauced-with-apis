@@ -185,6 +185,7 @@ const ProductScreen = ({}) => {
     });
     navigation.addListener('blur', () => {
       setData([]);
+      setPage(1);
     });
     return () => {};
   }, [_id, page]);

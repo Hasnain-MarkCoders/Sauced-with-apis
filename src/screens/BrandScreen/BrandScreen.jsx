@@ -96,7 +96,7 @@ const BrandScreen = () => {
                 {
                   index == 2 && <View style={{
                     marginTop: scale(20),
-                    alignSelf:"flex-end",
+                    // alignSelf:"flex-end",
                     marginBottom: scale(20),
 
                   }}>
