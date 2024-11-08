@@ -339,7 +339,29 @@ const MapScreen = () => {
   );
   const handlePoiClick = e => {
     const {coordinate, name, placeId} = e.nativeEvent;
-    Alert.alert('Place Info', `Name: ${name}`);
+    const postalCode = ""
+    const {latitude, longitude} = coordinate;
+    // Alert.alert('Place Info', `Name: ${name}`);
+    const newSelectedRegion = {
+      latitude,
+      longitude
+    };
+
+    setSelectedRegion(newSelectedRegion);
+    handleEventCoords({
+      latitude,
+      longitude,
+      destination: name,
+      zip: postalCode?.toString(),
+      place_id: placeId?.toString(),
+    });
+
+    Toast.show({
+      type: 'success',
+      text1: 'Location selected',
+      text2: 'Please go Back to continue.',
+    });
+    setIsContinue(true);
   };
 
   return (
@@ -443,7 +465,7 @@ const MapScreen = () => {
         </View>
 
         <MapView
-        //  onPoiClick={handlePoiClick}
+         onPoiClick={handlePoiClick}
           onLongPress={e => {
             handleLongPress(e);
           }}
@@ -456,7 +478,7 @@ const MapScreen = () => {
           //  toolbarEnabled={false}
           //  tracksViewChanges={false}
           //  optimizeWaypoints={true}
-          showsIndoors={false}
+          showsIndoors={true}
           loadingEnabled
           // onRegionChangeComplete={handleRegionChangeComplete}
           ref={mapRef}

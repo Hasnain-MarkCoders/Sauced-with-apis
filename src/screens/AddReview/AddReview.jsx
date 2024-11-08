@@ -80,7 +80,7 @@ const AddReview = () => {
   const [data, setData] = useState({
     review: '',
     rating: '1',
-    heatLevel: 5,
+    heatLevel: 1,
   });
   const navigation = useNavigation();
 
@@ -292,13 +292,13 @@ const AddReview = () => {
           success: false,
         });
       }
-      if (data?.heatLevel < 0.5) {
-        return setAlertModal({
-          open: true,
-          message: 'Heat level at least 0.5',
-          success: false,
-        });
-      }
+      // if (data?.heatLevel < 0.5) {
+      //   return setAlertModal({
+      //     open: true,
+      //     message: 'Heat level at least 0.5',
+      //     success: false,
+      //   });
+      // }
 
       setLoading(true);
       const formData = new FormData();
@@ -367,7 +367,7 @@ const AddReview = () => {
         setData({
           review: '',
           rating: '1',
-          heatLevel: 5,
+          heatLevel: 1,
         });
         progress.value = 0;
         setImageUris([]);
