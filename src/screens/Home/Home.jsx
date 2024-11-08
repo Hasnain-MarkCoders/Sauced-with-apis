@@ -307,7 +307,42 @@ const Home = () => {
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.searchContainer}>
             <View style={styles.searchBarContainer}>
-              <TouchableOpacity
+            <TouchableOpacity
+                        style={{
+                          width: '100%',
+                        }}
+                        onPress={() => {
+                          navigation.navigate('Search');
+                        }}>
+                        <View
+                          style={{
+                            width: '100%',
+                            height: scale(53),
+                            borderRadius: scale(8),
+                            borderWidth: 1,
+                            borderColor: '#FFA100',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: scale(10),
+                            paddingLeft: scale(10),
+                          }}>
+                          <Image
+                            style={{
+                              width: scale(27),
+                              height: scale(27),
+                            }}
+                            source={search}
+                          />
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontSize: scale(13),
+                            }}>
+                            Search for a sauce...
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+              {/* <TouchableOpacity
                 style={{width: '100%'}}
                 onPress={() => {
                   navigation.navigate('Search');
@@ -343,7 +378,7 @@ const Home = () => {
                     paddingVertical: scale(15),
                   }}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <TouchableOpacity
               onPress={() => {

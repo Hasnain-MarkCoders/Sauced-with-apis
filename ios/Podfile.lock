@@ -1369,6 +1369,27 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
+  - RNFlashList (1.7.1):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNGestureHandler (2.20.0):
     - DoubleConversion
     - glog
@@ -1600,6 +1621,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -1793,6 +1815,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/auth"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNFlashList:
+    :path: "../node_modules/@shopify/flash-list"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -1916,6 +1940,7 @@ SPEC CHECKSUMS:
   RNFBApp: 017499cd7ea340963bfac43b4fcb28d2b0b21a09
   RNFBAuth: 97633be48cc4e539d954270a218785d2e3f9fde7
   RNFBMessaging: 81f9447a3790df25c72753b446247ebeba95b182
+  RNFlashList: 31fb427b4c28551a405c70edc2ff3c8320046657
   RNGestureHandler: a8f4a3a7f1889054b3d8002675e537675be6d29d
   RNGoogleSignin: 08dc4ba7eac2096c7fecfe109f0950fa4683c803
   RNPermissions: 8c563614427236061c5250f8d538fad2a4bd1198
@@ -1933,4 +1958,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 978f85f7ad934511f04287149fb1c471f386c7b3
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.14.3

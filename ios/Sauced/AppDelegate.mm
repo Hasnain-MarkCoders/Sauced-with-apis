@@ -7,11 +7,14 @@
 #import <React/RCTBundleURLProvider.h>
 // Add this import for SDWebImageWebPCoder
 #import <SDWebImageWebPCoder/SDImageWebPCoder.h>
+#import <GoogleMaps/GoogleMaps.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Register the WebP coder
+  [GMSServices provideAPIKey:@"AIzaSyDRPFzLdRC8h3_741v8gAW4DqmMusWPl4E"];
   SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
   [[SDImageCodersManager sharedManager] addCoder:webPCoder];
   [FIRApp configure];
