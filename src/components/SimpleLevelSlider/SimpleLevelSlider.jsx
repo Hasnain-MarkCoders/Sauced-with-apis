@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Circle } from 'lucide-react-native';
 import { scale } from 'react-native-size-matters';
-
+import Slider from '@react-native-community/slider';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const SLIDER_WIDTH = SCREEN_WIDTH * 0.8; // 80% of screen width
@@ -127,7 +127,19 @@ const SimpleLevelSlider = ({ cb = () => {} }) => {
   return (
     <View style={styles.container}>
       {/* Slider Line */}
-      <TouchableWithoutFeedback onPress={handleSliderTap}>
+      <Slider
+      thumbTintColor={"#FFA500"}
+      minimumTrackTintColor="#FFA500"
+      maximumTrackTintColor="#FFA500"
+    
+       minimumValue={1}
+       maximumValue={10}
+      onValueChange={(e)=>{
+    cb(Math.floor(e));
+
+      }}
+      />
+      {/* <TouchableWithoutFeedback onPress={handleSliderTap}>
         <View
           style={styles.sliderLineContainer}
           onLayout={(event) => {
@@ -136,7 +148,6 @@ const SimpleLevelSlider = ({ cb = () => {} }) => {
           }}
         >
           <View style={styles.sliderLine} />
-          {/* Draggable Thumb */}
           <Animated.View
             style={[
               styles.thumb,
@@ -149,21 +160,20 @@ const SimpleLevelSlider = ({ cb = () => {} }) => {
             <Circle size={THUMB_SIZE} color="#FFA500" fill={"#FFA500"} />
           </Animated.View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // Fill the parent container
     width: '100%',
   },
   sliderLineContainer: {
     width: "100%",
     height: THUMB_SIZE,
     justifyContent: 'center',
-    position: "relative", // Make parent position relative
+    position: "relative", 
   },
   sliderLine: {
     position: 'absolute',
@@ -173,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFA500",
   },
   thumb: {
-    position: 'absolute', // Position thumb absolutely within parent
+    position: 'absolute', 
     top: "0%",
     width: THUMB_SIZE,
     height: THUMB_SIZE,
