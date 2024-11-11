@@ -41,18 +41,19 @@ const MapScreen = () => {
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
-    latitudeDelta: 0.00001,
-    longitudeDelta: 0.00001,
+    latitudeDelta:0.01,
+    longitudeDelta:0.01,
   });
 
   const [selectedRegion, setSelectedRegion] = useState({
     latitude: lat,
     longitude: lng,
-    latitudeDelta: 0.00001,
-    longitudeDelta: 0.00001,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   });
 
   const [selectedMarkers, setSelectedMarkers] = useState({});
+  const [isSelectedZoom, setIsSelectedZoom] = useState(false)
   const [markerSize, setMarkerSize] = useState(90);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [stores, setStores] = useState([]);
@@ -135,8 +136,8 @@ const MapScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedRegion && mapRef.current) {
-      mapRef.current.animateToRegion(
+    if (isSelectedZoom && selectedRegion && mapRef?.current) {
+      mapRef?.current?.animateToRegion(
         {
           latitude: selectedRegion.latitude,
           longitude: selectedRegion.longitude,
@@ -148,6 +149,10 @@ const MapScreen = () => {
     }
     fetchNearbyPlaces(selectedRegion);
   }, [selectedRegion]);
+
+
+ 
+  
 
   const getRadiusFromDelta = useCallback(latitudeDelta => {
     return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
@@ -211,6 +216,7 @@ const MapScreen = () => {
   }, []);
   const fetchNearbyPlaces = useCallback(async region => {
     try {
+      setIsSelectedZoom(true)
       const radius = getRadiusFromDelta(region.latitudeDelta);
       const nearbyResponse = await axios.get(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json',

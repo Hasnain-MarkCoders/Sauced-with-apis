@@ -145,7 +145,7 @@ function AppRouter() {
           {
             isAuthenticated ?
               <>
-
+                {/* <Stack.Screen name="Test" component={Test} /> */}
                 <Stack.Screen name="Main" component={MainNavigation} />
                 <Stack.Screen name="ProductScreen" component={ProductScreen} />
                 <Stack.Screen name="Drawer" component={DrawerStack} />
@@ -175,7 +175,6 @@ function AppRouter() {
                 <Stack.Screen  options={{ tabBarVisible: false }} name="Camera" component={CameraScreen} />
 								<Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="BlockedUsersList" component={BlockedUsersScreen} />
-                <Stack.Screen name="Test" component={Test} />
               </>
               :
               <Stack.Screen name="Public" component={PublicStack} />
