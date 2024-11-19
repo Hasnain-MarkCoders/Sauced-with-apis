@@ -79,7 +79,7 @@ console.log("photo ha ", photo)
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.textContainer}>
           <Text numberOfLines={1} style={styles.title}>{item.name}</Text>
-          <Text style={styles.description}>{item?.description?.trim()?.slice(0, 80)}</Text>
+          <Text numberOfLines={1}  style={styles.description}>{item?.owner?.name?.trim()}</Text>
         </View>
       </View>
     </TouchableOpacity>

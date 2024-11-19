@@ -205,7 +205,7 @@ const SettingScreen = () => {
                 }
                 title={'Privacy Policy'}
               />
-                <CustomButtom
+                {/* <CustomButtom
                 Icon={() => <Image source={arrow} />}
                 showIcon={true}
                 buttonTextStyle={{fontSize: scale(14)}}
@@ -224,7 +224,7 @@ const SettingScreen = () => {
                 navigation.navigate('Welcome', {About_US:true})
                 }
                 title={'About Us'}
-              />
+              /> */}
                 <CustomButtom
                             Icon={() => <Image source={arrow} />}
                             showIcon={true}

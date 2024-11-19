@@ -27,6 +27,7 @@ import {scale} from 'react-native-size-matters';
 import {handleAuth} from '../../Redux/userReducer';
 import {persistor, store} from '../../Redux/store';
 import {handleStats} from '../../Redux/userStats';
+import Welcome from '../Welcome/Welcome';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -57,7 +58,7 @@ const DrawerStack = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const logScreenNameOnFocus = ({route}) => ({
+  const logScreenNameOnFocus = ({navigation, route}) => ({
     focus: () => {
     },
   });
@@ -132,6 +133,29 @@ const DrawerStack = () => {
           name="Profile"
           component={PrivateStack}
         />
+        <Drawer.Screen
+        listeners={logScreenNameOnFocus}
+        name="Welcome"
+        component={Welcome}
+        initialParams={ {About_US:true, navigation}}
+       
+        options={{
+          drawerLabel: ({ focused, color }) => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text
+                style={{
+                  color,
+                  fontFamily: 'Montserrat', // Replace with your desired font family
+                  fontSize: scale(12), // Replace with your desired font size
+                  fontWeight: '700',
+                }}
+              >
+                About Us
+              </Text>
+            </View>
+          ),
+        }}
+      />
         <Drawer.Screen
           listeners={logScreenNameOnFocus}
           name="Following"

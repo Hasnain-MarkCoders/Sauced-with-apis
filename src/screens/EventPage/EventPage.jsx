@@ -37,6 +37,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
 import { handleAllEventsExceptInterested } from '../../Redux/allEventsExceptInterested.js';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents.js';
+import NotFound from '../../components/NotFound/NotFound.jsx';
 
 const EventPage = () => {
   const route = useRoute();
@@ -190,10 +191,13 @@ const handleInterestedEvent = async () => {
   };
 
   useEffect(() => {
-    setEventsCoords({
-      latitude: parseFloat(event.venueLocation.latitude),
-      longitude: parseFloat(event.venueLocation.longitude),
-    });
+    if( event?.venueLocation?.latitude && event?.venueLocation?.longitude){
+
+      setEventsCoords({
+        latitude: parseFloat(event.venueLocation.latitude),
+        longitude: parseFloat(event.venueLocation.longitude),
+      });
+    }
     const checkLocationServiceAndNavigate = () => {
       // setIsLoading(prev => ({ ...prev, loadMap: true }))
       setLoading(true);
@@ -271,10 +275,12 @@ const handleInterestedEvent = async () => {
     const fetchCurrentLocation = async () => {
       Geolocation.getCurrentPosition(
         async (position) => {
+          if( event?.venueLocation?.latitude && event?.venueLocation?.longitude){
           setEventsCoords({
             latitude: parseFloat(event.venueLocation.latitude),
             longitude: parseFloat(event.venueLocation.longitude),
           });
+        }
           setCurrentCoords({
             latitude: parseFloat(position.coords.latitude),
             longitude: parseFloat(position.coords.longitude),
@@ -774,7 +780,7 @@ const handleInterestedEvent = async () => {
                         }}>
                         About The Venue
                       </Text>
-                      <TouchableOpacity
+                   {  !!currentCoords && !!eventCoords && <TouchableOpacity
                         onPress={()=>{
                           toggleFullScreenMap()
                         }}
@@ -793,8 +799,9 @@ const handleInterestedEvent = async () => {
                           }}>
                           Get Destinations
                         </Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity>}
                     </View>
+                    {!eventCoords?.latitude  && !eventCoords?.longitude && <NotFound/>}
                     {event.venueLocation.longitude && event.venueLocation.latitude && <View
                       style={{
                         height: isFullScreenMap ? '100%' : scale(200), width: '100%',
@@ -849,14 +856,14 @@ const handleInterestedEvent = async () => {
                         )}
 
 
-{(routeCoordinates.length > 0 && isFullScreenMap)&&(
+{/* {(routeCoordinates.length > 0 && isFullScreenMap)&&(
           <Polyline
           coordinates={routeCoordinates}
           strokeWidth={4}
           strokeColor="#4285F4" // Google Maps-like blue color
           lineCap="round" // Smooth line ends
         />
-          )}
+          )} */}
                       </MapView>
 
                     </View>}
@@ -870,13 +877,13 @@ const handleInterestedEvent = async () => {
                           lineHeight: scale(22),
                           color: '#FFA100',
                         }}>
-                          {
+                          {/* {
                             // isLocationAvailable?eventDistance?" m":"" "distance from you":"Distance from you  N/A"
                             isLocationAvailable && eventDistance==null?"Press get directions for event details": isLocationAvailable?eventDistance?`${eventDistance} Miles from you`:"":"Please enable location to use this feature"
                           }
                           {
                             eventDuration?` and estimated time is ${eventDuration} mins`:""
-                          }
+                          } */}
                       </Text>
                     
                     </View>

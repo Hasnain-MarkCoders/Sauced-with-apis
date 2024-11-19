@@ -1,19 +1,30 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View,TouchableOpacity, Alert } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import CustomProgress from '../CustomProgress/CustomProgress'
 import useAxios from '../../../Axios/useAxios'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
+import AwardModal from '../AwardModal/AwardModal'
 
-const Award = ({url="", percentage, name}) => {
+const Award = ({url="", percentage, name, description}) => {
   const [isLoading, setIsLoading] = useState(true);
-
+  const [showModal, setShowModal] = useState(false);
   return (
+    <TouchableOpacity 
+    style={{
+      flexBasis:"48%",
+      borderRadius:scale(10),
+      borderColor:"#FFA100",
+      borderWidth:1,
+      margin:scale(4),
+      position:"relative"
+    }}
+    onPress={()=>{
+      setShowModal(true)
+    }}
+    >
+
     <View style={{
-        flexBasis:"48%",
-        borderRadius:scale(10),
-        borderColor:"#FFA100",
-        borderWidth:1,
         alignItems:"center",
         gap:scale(20),
         justifyContent:"space-between",
@@ -51,6 +62,14 @@ const Award = ({url="", percentage, name}) => {
       <CustomProgress  percentage={percentage} name={name}/>
 
     </View>
+    <AwardModal
+    title={name}
+    url={url}
+    description={description}
+    modalVisible={showModal}
+    setModalVisible={setShowModal}
+    />
+    </TouchableOpacity>
   )
 }
 

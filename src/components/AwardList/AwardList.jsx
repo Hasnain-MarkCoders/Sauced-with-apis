@@ -10,7 +10,7 @@ const AwardList = ({
     setPage=()=>{},
     loading=false
 }) => {
-  console.log(data[5]?.progress)
+  console.log(data[0])
   return (
 
    <View style={{
@@ -33,7 +33,7 @@ const AwardList = ({
       }}
       keyExtractor={(item, index) => index.toString()}
        renderItem={({ item }) => <Award
-
+       description={item?.badge?.description}
        url={item?.badge?.icon}
        name={item?.badge?.name}
        percentage={item?.progress}

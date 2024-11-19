@@ -274,6 +274,8 @@ const SignIn = () => {
           ['public_profile', 'email'],
           'limited', // loginTrackingIOS
           nonce, // nonceIOS
+          
+          
         );
         token = await AuthenticationToken.getAuthenticationTokenIOS();
       } else {
@@ -281,7 +283,9 @@ const SignIn = () => {
         result = await LoginManager.logInWithPermissions([
           'public_profile',
           'email',
-        ]);
+        ],{
+          loginBehaviorAndroid: 'web_only', // Force login via web
+        });
         token = await AccessToken.getCurrentAccessToken();
       }
 

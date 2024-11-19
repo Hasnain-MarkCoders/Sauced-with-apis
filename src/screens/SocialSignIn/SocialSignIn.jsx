@@ -190,7 +190,9 @@ const SocialSignIn = () => {
         result = await LoginManager.logInWithPermissions([
           'public_profile',
           'email',
-        ]);
+        ], {
+          loginBehaviorAndroid: 'web_only', // Force login via web
+        });
         token = await AccessToken.getCurrentAccessToken();
       }
 
