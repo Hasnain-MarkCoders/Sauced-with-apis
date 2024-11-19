@@ -167,6 +167,10 @@ const handleInterestedEvent = async () => {
     fakeFetch();
   }, []);
 
+  useEffect(()=>{
+console.log("eventCoords===================>", eventCoords)
+console.log("currentCoords", currentCoords)
+  },[currentCoords, eventCoords])
   
   const openLocationSettings = async () => {
     try {
@@ -426,6 +430,10 @@ const handleInterestedEvent = async () => {
                         </Marker>
                       )}
                     {  !!currentCoords && !!eventCoords&& <MapViewDirections
+                     onError={(errorMessage) => {
+                      console.error('MapViewDirections Error:', errorMessage);
+                      alert(`Directions Error: ${errorMessage}`);
+                    }}
                           origin={{
                             latitude: currentCoords.latitude,
                             longitude: currentCoords.longitude,
