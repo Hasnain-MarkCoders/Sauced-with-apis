@@ -167,10 +167,6 @@ const handleInterestedEvent = async () => {
     fakeFetch();
   }, []);
 
-  useEffect(()=>{
-console.log("eventCoords===================>", eventCoords)
-console.log("currentCoords", currentCoords)
-  },[currentCoords, eventCoords])
   
   const openLocationSettings = async () => {
     try {
