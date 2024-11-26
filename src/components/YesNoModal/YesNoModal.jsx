@@ -13,7 +13,9 @@ const YesNoModal = ({
   title="",
   isQuestion=false,
   cb=()=>{},
-  showCancel = false
+  showCancel = false,
+  ButtonText = "Continue",
+  CancelText = "Cancel",
 }) => {
   useEffect(()=>{
     // setTimeout(()=>{
@@ -127,7 +129,7 @@ showCancel?
                     fontSize:scale(12),
                     textAlign:"center"
                   }}>
-                  Close
+                  {CancelText}
                   </Text>
                 </TouchableOpacity>
                 :null
@@ -157,7 +159,7 @@ showCancel?
                     textAlign:"center"
 
                   }}>
-                  Continue
+                  {ButtonText}
                   </Text>
                 </TouchableOpacity>
                   </View>

@@ -14,9 +14,12 @@ import AwardList from '../../components/AwardList/AwardList.jsx';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import useAxios from '../../../Axios/useAxios.js';
 import NotFound from '../../components/NotFound/NotFound.jsx';
+import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
+import CustomAwardPointModal from '../../components/CustomAwardPointModal/CustomAwardPointModal.jsx';
 
 const Awards = ({navigation}) => {
   const [awards, setAwards] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const axiosInstance = useAxios();
   const [points, setPoints] = useState(0);
   const [badgeCount, setBadgeCount] = useState('1/1');
@@ -162,9 +165,14 @@ const Awards = ({navigation}) => {
                           </View>
                         </View>
                       </View>
-                      <TouchableOpacity
-                        onPress={() => {
-                        }}>
+                    <View style={{
+                      display:"flex",
+                      flexDirection:"row",
+                      justifyContent:"space-between",
+                      alignItems:"center",
+                      marginTop:scale(5)
+                    }}>
+
                         <Text
                           style={{
                             fontSize: scale(10),
@@ -175,7 +183,25 @@ const Awards = ({navigation}) => {
                           }}>
                           Redeem points (Coming soon)
                         </Text>
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          setShowModal(true);
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: scale(10),
+                            lineHeight: scale(12),
+                            color: 'white',
+                            marginTop: scale(5),
+                            marginBottom: scale(20),
+                            textDecorationStyle: "solid",
+                            textDecorationLine: "underline" 
+                          }}>
+                          How to win points?
+                        </Text>
                       </TouchableOpacity>
+                    </View>
 
                       <Text
                         style={{
@@ -203,7 +229,31 @@ const Awards = ({navigation}) => {
         ) : (
           <NotFound title="Badges Not available" />
         )}
+        {/* <YesNoModal
+        setModalVisible={setShowModal}
+        modalVisible={showModal}
+        cb={()=>{
+          setShowModal(false)
+        }}
+        isQuestion={true}
+        ButtonText={"Close"}
+        title={
+          "Users can display earned badges on their profiles to showcase their expertise and dedication within the hot sauce community. Users are awarded 1 point every time they post a review 2 points if they include an image. "
+        }
+        /> */}
+        <CustomAwardPointModal
+         setModalVisible={setShowModal}
+         modalVisible={showModal}
+         cb={()=>{
+           setShowModal(false)
+         }}
+         title={
+           "Users can display earned badges on their profiles to showcase their expertise and dedication within the hot sauce community. Users are awarded 1 point every time they post a review 2 points if they include an image. "
+         }
+        />
       </SafeAreaView>
+
+
     </ImageBackground>
   );
 };
