@@ -1,11 +1,14 @@
 import {
+  Alert,
   Image,
+  Linking,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState} from 'react';
 import Snackbar from 'react-native-snackbar';
 import {scale} from 'react-native-size-matters';
 import emptyheart from './../../../assets/images/emptyHeart.png';
@@ -13,6 +16,11 @@ import filledHeart from './../../../assets/images/filledHeart.png';
 import useAxios from '../../../Axios/useAxios';
 import ImageView from 'react-native-image-viewing';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
+import YesNoModal from '../YesNoModal/YesNoModal';
 
 const CustomComment = ({
   getId = () => {},
@@ -34,16 +42,37 @@ const CustomComment = ({
   email = '',
   likesCount = 0,
   hasLikedUser = false,
+  location=null
 }) => {
   useEffect(() => {}, [profileUri]);
   const [commentStatus, setCommentStatus] = useState(hasLikedUser);
   const [visible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [locationLoading, setLocationLoading] = useState(false)
   const [imageIndex, setImageIndex] = useState(0);
   const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [likeCount, setLikesCount] = useState(likesCount);
+  const [yesNoModal, setYesNoModal] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+    isQuestion: false,
+    cb: () => {},
+  });
+  const [alertModal, setAlertModal] = useState({
+    open: false,
+    message: '',
+    success: true,
+  });
   const axiosInstance = useAxios();
+  let watchId = useRef(null)
+  const navigation =useNavigation()
+
+useEffect(()=>{
+  console.log("<=================================>location<=============================>", location)
+},[location])
+
   const handleLike = async () => {
     try {
       console.log(hasLikedUser);
@@ -57,6 +86,185 @@ const CustomComment = ({
       });
     } catch (error) {}
   };
+
+
+
+  const checkLocationServiceAndNavigate =async () => {
+    setLocationLoading(true); // Start loading indicator
+    const permission =
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+    try {
+      const result = await check(permission);
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          setAlertModal({
+            open: true,
+            message: 'Location services are  N/A on this device.',
+            success: false,
+          });
+          setLocationLoading(false);
+          break;
+        case RESULTS.DENIED:
+          showPermissionModal(
+            'Location Permission Required. Would you like to grant permission?',
+            async () => {
+              const requestResult = await request(permission);
+              if (requestResult === RESULTS.GRANTED) {
+                fetchCurrentLocation();
+              } else if (requestResult === RESULTS.BLOCKED) {
+                handleBlockedPermission();
+              } else {
+                setLocationLoading(false);
+              }
+            },
+          );
+          break;
+        case RESULTS.LIMITED:
+          // iOS only: proceed with limited access
+          fetchCurrentLocation();
+          break;
+        case RESULTS.GRANTED:
+          fetchCurrentLocation();
+          break;
+        case RESULTS.BLOCKED:
+          handleBlockedPermission();
+          break;
+        default:
+          setAlertModal({
+            open: true,
+            message:
+              'An unexpected error occurred while checking location permission.',
+            success: false,
+          });
+          setLocationLoading(false);
+          break;
+      }
+    } catch (error) {
+      console.warn('Error checking location permission:', error);
+      setAlertModal({
+        open: true,
+        message:
+          'An error occurred while checking location permission. Please try again.',
+        success: false,
+      });
+      setLocationLoading(false);
+    }
+  };
+
+  const fetchCurrentLocation = () => {
+  watchId.current = Geolocation.watchPosition(
+      position => {
+        navigation.navigate('Get-directions', {
+          currentCoords :{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          },
+          targetCoords :{
+            latitude: location.latitude,
+            longitude: location.longitude
+          },
+          fn: () => {},
+          showContinue: true,
+        });
+        setLocationLoading(false); // Stop loading indicator
+      },
+      error => {
+        console.log('Error fetching current location:', error);
+        let errorMessage = '';
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Permission to access location was denied.';
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Location information is unavailable.';
+            break;
+          case 3: // TIMEOUT
+            errorMessage = 'The request to get user location timed out.';
+            break;
+          default:
+            errorMessage = 'An unknown error occurred while fetching location.';
+            break;
+        }
+        setAlertModal({
+          open: true,
+          message: `Location Service Error: ${errorMessage}`,
+          success: false,
+        });
+        setLocationLoading(false); // Stop loading indicator
+      },
+      {enableHighAccuracy: false, timeout: 5000, maximumAge: 30000},
+    );
+  };
+
+  const showPermissionModal = (message, onConfirm) => {
+    setYesNoModal({
+      open: true,
+      message: message,
+      success: true,
+      isQuestion: true,
+      cb: onConfirm,
+    });
+  };
+
+  const openLocationSettings = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        // Android: Open Location Settings
+        const url = 'android.settings.LOCATION_SOURCE_SETTINGS';
+        await Linking.sendIntent(url);
+      } else if (Platform.OS === 'ios') {
+        // iOS: Open App Settings
+        const url = 'app-settings:';
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+          await Linking.openURL(url);
+        } else {
+          Alert.alert('Error', 'Unable to open settings');
+        }
+      }
+    } catch (error) {
+      console.error('Error opening settings:', error);
+      Alert.alert('Error', 'Unable to open settings');
+    }
+  };
+
+  const handleBlockedPermission = () => {
+    Alert.alert(
+      'Location Permission Blocked',
+      'Please enable location permission in your device settings to use this feature.',
+      [
+        {text: 'Cancel', style: 'cancel', onPress: () => setLocationLoading(false)},
+        {
+          text: 'Open Settings',
+          onPress: () => {
+            openLocationSettings();
+            setLocationLoading(false);
+          },
+        },
+      ],
+    );
+  };
+
+
+  const handleClearWatchid=useCallback(()=>{
+    if (watchId.current !==null){
+      Geolocation.clearWatch(watchId.current)
+    }
+  },[])
+
+useEffect(()=>{
+  handleClearWatchid()
+  return ()=>{
+    handleClearWatchid()
+  }
+    
+}, [watchId])
+
+
+  
 
   useEffect(() => {
     console.log(profileUri);
@@ -215,6 +423,7 @@ const CustomComment = ({
           )}
         </View>
       )}
+      
       <View
         style={{
           flexDirection: 'row',
@@ -275,6 +484,36 @@ const CustomComment = ({
             }
           </TouchableOpacity>
         )}
+         <TouchableOpacity
+          style={{
+            marginLeft:"auto",
+            display: (location?.latitude && location?.longitude) ? 'flex' : 'none',
+
+          }}
+          onPress={() => {
+            checkLocationServiceAndNavigate()
+          }}>
+          <View
+            style={{
+              backgroundColor: '#FFA500', // Set the background color in the View
+              borderRadius: scale(20), // Apply the borderRadius here
+              paddingHorizontal: scale(10),
+              paddingVertical: scale(5),
+              display: isReply ? 'none' : 'flex',
+            }}>
+            <Text
+              style={{
+                color: '#000',
+                fontSize: scale(12),
+              }}>
+                {
+                  locationLoading?
+                  "Loading..."
+                  :"Get Directions"
+                }
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       {showReplies ? (
@@ -303,6 +542,33 @@ const CustomComment = ({
           setIsVisible(false);
         }}
       />
+           <CustomAlertModal
+            title={alertModal.message}
+            modalVisible={alertModal.open}
+            setModalVisible={() =>
+              setAlertModal({
+                open: false,
+                message: '',
+                success: true,
+              })
+            }
+            success={alertModal.success}
+          />
+             <YesNoModal
+            isQuestion={yesNoModal.isQuestion}
+            modalVisible={yesNoModal.open}
+            setModalVisible={() => {
+              setYesNoModal({
+                open: false,
+                message: '',
+                severity: true,
+              });
+              setLocationLoading(false);
+            }}
+            success={yesNoModal.severity}
+            title={'Location Request'}
+            cb={yesNoModal.cb}
+          />
     </View>
   );
 };

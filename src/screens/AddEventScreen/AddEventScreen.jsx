@@ -279,6 +279,7 @@ const AddEventScreen = () => {
         title: '',
         eventOrganizer: '',
         date: new Date(),
+        eventEndDate:new Date(),
         address: '',
         destinationDetails: '',
         coordinates: {},

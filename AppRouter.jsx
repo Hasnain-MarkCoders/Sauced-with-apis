@@ -40,6 +40,7 @@ import NetInfo from '@react-native-community/netinfo';
 import Toast from 'react-native-toast-message';
 import ProductScreen from './src/screens/ProductScreen/ProductScreen';
 import { increaseCount, addNotification } from './src/Redux/notifications';
+import MapDirectionsScreen from './src/screens/MapDirectionsScreen/MapDirectionsScreen';
 
 // Check network status before attempting upload
 
@@ -145,6 +146,7 @@ function AppRouter() {
           {
             isAuthenticated ?
               <>
+
                 <Stack.Screen name="Main" component={MainNavigation} />
                 <Stack.Screen name="ProductScreen" component={ProductScreen} />
                 <Stack.Screen name="Drawer" component={DrawerStack} />
@@ -174,6 +176,8 @@ function AppRouter() {
                 <Stack.Screen  options={{ tabBarVisible: false }} name="Camera" component={CameraScreen} />
 								<Stack.Screen name="search" component={SearchScreen} />
                 <Stack.Screen name="BlockedUsersList" component={BlockedUsersScreen} />
+                <Stack.Screen name="Get-directions" component={MapDirectionsScreen} />
+
                 <Stack.Screen name="Test" component={Test} />
 
               </>

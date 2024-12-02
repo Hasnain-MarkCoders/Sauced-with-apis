@@ -7,6 +7,7 @@ import {
   View,
   ImageBackground,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import getStartedbackground from './../../../assets/images/welcome_screen.png';
@@ -25,6 +26,14 @@ const GetStarted = () => {
   return (
     <ImageBackground source={getStartedbackground} style={styles.background}>
       <SafeAreaView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
+           showsVerticalScrollIndicator={false}
+           showsHorizontalScrollIndicator={false}
+        >
+
         <View style={styles.contentContainer}>
           <Image style={styles.logo} source={saucedLogo} />
           <Text style={styles.titleText}>
@@ -58,6 +67,7 @@ const GetStarted = () => {
             </Text>
           </View>
         </View>
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );

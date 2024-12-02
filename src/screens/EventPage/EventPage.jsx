@@ -190,7 +190,8 @@ const handleInterestedEvent = async () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { 
+    let watchId = null
     if( event?.venueLocation?.latitude && event?.venueLocation?.longitude){
 
       setEventsCoords({
@@ -273,7 +274,7 @@ const handleInterestedEvent = async () => {
 
 
     const fetchCurrentLocation = async () => {
-      Geolocation.getCurrentPosition(
+      watchId = Geolocation.watchPosition(
         async (position) => {
           if( event?.venueLocation?.latitude && event?.venueLocation?.longitude){
           setEventsCoords({
@@ -310,6 +311,11 @@ const handleInterestedEvent = async () => {
       );
     };
     checkLocationServiceAndNavigate()
+
+
+    return ()=>{
+      Geolocation.clearWatch(watchId)
+    }
   }, [event])
 
 

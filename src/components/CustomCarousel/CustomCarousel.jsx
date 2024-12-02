@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions, Text, View, useWindowDimensions } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel'
 import { scale } from 'react-native-size-matters';
 import Banner from '../Banner/Banner';
@@ -11,9 +11,10 @@ import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 import NotFound from '../NotFound/NotFound';
 import { handleAllEventsExceptInterested , handleRemoveAllEventsExceptInterested} from '../../Redux/allEventsExceptInterested';
 import { handleInterestedEvents, handleRemoveInterestedEvents } from '../../Redux/InterestedEvents';
-const screenWidth = Dimensions.get('window').width;
-const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
-const effectiveWidth = screenWidth - 2 * horizontalPadding;
+// const screenWidth = Dimensions.get('window').width;
+// const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
+// const effectiveWidth = screenWidth - 2 * horizontalPadding;
+
 const CustomCarousel = ({
     showText=false,
 }) => {
@@ -30,6 +31,9 @@ const [initialLoading, setInitialLoading] = React.useState(true)
  const dispatch=useDispatch()
  const interestedEvents = useSelector(state=>state?.interestedEvents)
  const allEventsExceptInterested =useSelector(state=>state?.allEventsExceptInterested)
+ const { width: windowWidth } = useWindowDimensions();
+ const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
+ const effectiveWidth = windowWidth - 2 * horizontalPadding;
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;

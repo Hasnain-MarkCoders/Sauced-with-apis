@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -21,7 +21,7 @@ import BrandList from '../../components/BrandList/BrandList';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButtom from '../../components/CustomButtom/CustomButtom';
 import arrow from './../../../assets/images/arrow.png';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal';
 import CustomCarousel from '../../components/CustomCarousel/CustomCarousel';
 import CustomOfficialReviewsListCarousel from '../../components/CustomOfficialReviewsListCarousel/CustomOfficialReviewsListCarousel';
@@ -49,6 +49,7 @@ const Home = () => {
     cb: () => {},
   });
   const axiosInstance = useAxios();
+  let watchId = useRef(null)
   const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(true);
   const [data, setData] = useState({
@@ -86,7 +87,7 @@ const Home = () => {
 
 
 
-  const checkLocationServiceAndNavigate = async () => {
+  const checkLocationServiceAndNavigate =async () => {
     setLoading(true); // Start loading indicator
     const permission =
       Platform.OS === 'ios'
@@ -152,8 +153,9 @@ const Home = () => {
   };
 
   const fetchCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
+  watchId.current = Geolocation.watchPosition(
       position => {
+        console.log("<=============================================position=====================================>", position)
         navigation.navigate('Map', {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -288,6 +290,14 @@ const Home = () => {
       });
     };
   }, []);
+
+
+  useFocusEffect(
+    useCallback(()=>{
+      if (watchId.current !==null)
+        Geolocation.clearWatch(watchId.current)
+    },[watchId])
+  )
 
   if (initialLoading) {
     return (

@@ -23,7 +23,6 @@ const YesNoModal = ({
     //     setModalVisible()
     //   }
     // },4000)
-    console.log("title===================>", title)
   },[modalVisible])
   const handleBackgroundTouch = () => {
     setModalVisible(false);

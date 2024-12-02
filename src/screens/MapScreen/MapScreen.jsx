@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Image,
@@ -9,25 +9,29 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import {scale} from 'react-native-size-matters';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import { scale } from 'react-native-size-matters';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import darkArrow from './../../../assets/images/darkArrow.png';
 import yellowChilli from './../../../assets/images/yellow-chilli.png';
 import redChilli from './../../../assets/images/red-chilli.png';
 import marker from './../../../assets/images/marker.png';
+import { GOOGLE_MAP_API_KEY } from '@env';
 
 import debounce from 'lodash.debounce';
 import Geocoder from 'react-native-geocoding';
 // Initialize the Geocoder with your API key (for example, Google API)
 import useAxios from '../../../Axios/useAxios'; // Make sure to import your axios instance
 import Toast from 'react-native-toast-message';
-import {Search} from 'lucide-react-native';
+import { Search } from 'lucide-react-native';
 import axios from 'axios';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
-
-const {width} = Dimensions.get('window');
+import CustomMapDirections from '../../components/CustomMapDirections/CustomMapDirections';
+import MapViewDirections from 'react-native-maps-directions';
+const currentCoords = { latitude: 24.8615, longitude: 67.0099 }
+const targetCoords = { latitude: 24.7967, longitude: 67.0305 }
+const { width } = Dimensions.get('window');
 
 const MapScreen = () => {
   const axiosInstance = useAxios();
@@ -36,13 +40,13 @@ const MapScreen = () => {
   const lng = route?.params?.lng;
   const lat = route?.params?.lat;
   const showContinue = route?.params?.showContinue;
-  const handleEventCoords = route?.params?.fn || function () {};
+  const handleEventCoords = route?.params?.fn || function () { };
   const [selectedId, setSelectedId] = useState(null)
   const [region, setRegion] = useState({
     latitude: lat,
     longitude: lng,
-    latitudeDelta:0.01,
-    longitudeDelta:0.01,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   });
 
   const [selectedRegion, setSelectedRegion] = useState({
@@ -63,6 +67,12 @@ const MapScreen = () => {
   const [hotSauceMarkers, setHotSauceMarkers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [currentCoords, setCurrentCoords] = useState({
+    latitude: lat,
+    longitude: lng
+  })
+  const [targetCoords, setTargetCoords] = useState(null)
+
   const handleAutocompleteFocus = () => {
     setIsAutocompleteActive(true);
   };
@@ -70,6 +80,8 @@ const MapScreen = () => {
   const handleAutocompleteBlur = () => {
     setIsAutocompleteActive(false);
   };
+
+
   useEffect(() => {
     // Fetch stores data
     const fetchHotSauces = async () => {
@@ -151,18 +163,21 @@ const MapScreen = () => {
   }, [selectedRegion]);
 
 
- 
-  
+
+
 
   const getRadiusFromDelta = useCallback(latitudeDelta => {
     return Math.round(latitudeDelta * 100000); // Adjust multiplier for different radius
   }, []);
 
-  const handleMarkerPress = store => {
+  const handleMarkerPress = marker => {
+    const {latitude, longitude} = marker
     Alert.alert(
-      'Store Information',
-      `Zip: ${store.zip ? store.zip : ' N/A'}`,
-      [{text: 'OK'}],
+      'Get Directions?',
+      '',
+      [
+        {text:'Cancel', style:'cancel'},
+        { text: 'Continue', onPress:()=>{setTargetCoords({latitude, longitude})} }],
     );
   };
 
@@ -179,7 +194,7 @@ const MapScreen = () => {
     const zip = selectedPlace.postalCode;
     setHotSauceMarkers(prev => [
       ...prev,
-      {place_id, latitude, longitude, zip, address},
+      { place_id, latitude, longitude, zip, address },
     ]);
     const res = await handleAddHotSauce({
       latitude: latitude?.toString(),
@@ -200,7 +215,7 @@ const MapScreen = () => {
       Alert.alert(
         'Hot Sauce Details',
         `Place: ${place.name}\nZip: ${place.zip ? place.zip : ' N/A'}`,
-        [{text: 'OK'}],
+        [{ text: 'OK' }],
       );
     } else {
       // Show modal to add it as a hot sauce
@@ -287,7 +302,7 @@ const MapScreen = () => {
       fetchNearbyPlaces(newRegion);
     },
     1000,
-    {trailing: true, leading: false},
+    { trailing: true, leading: false },
   );
 
   const fetchPlaceOnTap = async (latitude, longitude) => {
@@ -299,21 +314,23 @@ const MapScreen = () => {
         component => component.types.includes('postal_code'),
       )?.long_name;
 
-      return {placeId, address, postalCode};
+      return { placeId, address, postalCode };
     } catch (error) {
       console.error('Geocoding error:', error);
       throw error; // Re-throw the error to be caught in the calling function
     }
   };
 
+
+ 
   const handleLongPress = async e => {
     try {
-      const {latitude, longitude} = e.nativeEvent.coordinate;
-      const {placeId, address, postalCode} = await fetchPlaceOnTap(
+      const { latitude, longitude } = e.nativeEvent.coordinate;
+      const { placeId, address, postalCode } = await fetchPlaceOnTap(
         latitude,
         longitude,
       );
-      setSelectedPlace({latitude, longitude, placeId, address, postalCode});
+      setSelectedPlace({ latitude, longitude, placeId, address, postalCode });
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching place ID:', error);
@@ -322,7 +339,7 @@ const MapScreen = () => {
   };
 
   const CustomMarker = React.memo(
-    ({imageSource, size}) => (
+    ({ imageSource, size }) => (
       <View
         style={{
           alignItems: 'center',
@@ -337,16 +354,16 @@ const MapScreen = () => {
         }}>
         <Image
           source={imageSource}
-          style={[{width: scale(size), height: scale(size)}]}
+          style={[{ width: scale(size), height: scale(size) }]}
         />
       </View>
     ),
     [],
   );
   const handlePoiClick = e => {
-    const {coordinate, name, placeId} = e.nativeEvent;
+    const { coordinate, name, placeId } = e.nativeEvent;
     const postalCode = ""
-    const {latitude, longitude} = coordinate;
+    const { latitude, longitude } = coordinate;
     // Alert.alert('Place Info', `Name: ${name}`);
     const newSelectedRegion = {
       latitude,
@@ -419,7 +436,7 @@ const MapScreen = () => {
                 longitude: details?.geometry?.location?.lng,
               };
 
-              setSelectedRegion(newSelectedRegion);
+               setSelectedRegion(newSelectedRegion);
 
               handleEventCoords({
                 latitude: details?.geometry?.location?.lat,
@@ -471,8 +488,8 @@ const MapScreen = () => {
         </View>
 
         <MapView
-        provider={PROVIDER_GOOGLE}
-         onPoiClick={handlePoiClick}
+          provider={PROVIDER_GOOGLE}
+          onPoiClick={!showContinue && handlePoiClick}
           onLongPress={e => {
             handleLongPress(e);
           }}
@@ -490,12 +507,12 @@ const MapScreen = () => {
           // onRegionChangeComplete={handleRegionChangeComplete}
           ref={mapRef}
           onPress={async e => {
-            const {latitude, longitude} = e?.nativeEvent?.coordinate;
+            const { latitude, longitude } = e?.nativeEvent?.coordinate;
             const newSelectedRegion = {
               latitude,
               longitude,
             };
-            setSelectedRegion(newSelectedRegion);
+          !showContinue &&  setSelectedRegion(newSelectedRegion);
 
             try {
               const geocodeResponse = await Geocoder.from(latitude, longitude);
@@ -506,8 +523,6 @@ const MapScreen = () => {
                   component.types.includes('postal_code'),
                 )?.long_name;
 
-                console.log("geocodeResponse.results[0].address_components=====================================================>",JSON.stringify(geocodeResponse.results[0].address_components))
-
               handleEventCoords({
                 latitude,
                 longitude,
@@ -515,8 +530,8 @@ const MapScreen = () => {
                 zip: postalCode?.toString(),
                 place_id: placeId?.toString(),
               });
-
-              Toast.show({
+              
+             !showContinue && Toast.show({
                 type: 'success',
                 text1: 'Location selected',
                 text2: 'Please go Back to continue.',
@@ -568,7 +583,7 @@ const MapScreen = () => {
               // optimizeWaypoints={true}
               // showsIndoors={false}
               // loadingEnabled
-              anchor={{x: 0.5, y: 0.5}}
+              anchor={{ x: 0.5, y: 0.5 }}
               coordinate={{
                 latitude: selectedRegion.latitude,
                 longitude: selectedRegion.longitude,
@@ -578,7 +593,7 @@ const MapScreen = () => {
                   source={showContinue ? yellowChilli : redChilli}
                   style={[
                     styles.markerImage,
-                    {width: scale(markerSize), height: scale(markerSize)},
+                    { width: scale(markerSize), height: scale(markerSize) },
                   ]}
                 />
               </View>
@@ -606,7 +621,7 @@ const MapScreen = () => {
                   // // optimizeWaypoints={true}
                   // showsIndoors={false}
                   // loadingEnabled
-                  anchor={{x: 0.5, y: 0.5}}
+                  anchor={{ x: 0.5, y: 0.5 }}
                   key={store.place_id}
                   coordinate={{
                     latitude: latitude,
@@ -619,7 +634,7 @@ const MapScreen = () => {
                       source={redChilli}
                       style={[
                         styles.markerImage,
-                        {width: markerSize, height: markerSize},
+                        { width: markerSize, height: markerSize },
                       ]}
                     />
                   </View>
@@ -650,7 +665,7 @@ const MapScreen = () => {
                   // // optimizeWaypoints={true}
                   // showsIndoors={false}
                   // loadingEnabled
-                  anchor={{x: 0.5, y: 0.5}}
+                  anchor={{ x: 0.5, y: 0.5 }}
                   key={store.place_id}
                   coordinate={{
                     latitude: latitude,
@@ -663,7 +678,7 @@ const MapScreen = () => {
                       source={redChilli}
                       style={[
                         styles.markerImage,
-                        {width: markerSize, height: markerSize},
+                        { width: markerSize, height: markerSize },
                       ]}
                     />
                   </View>
@@ -720,7 +735,65 @@ const MapScreen = () => {
             />
           </Marker>
         ))} */}
+
+          {/* <Marker
+                          anchor={{ x: 0.5, y: 0.5 }}
+                          coordinate={{
+                            latitude: currentCoords.latitude,
+                            longitude: currentCoords.longitude,
+                          }}>
+                        
+                        </Marker>
+                        <Marker
+                          anchor={{ x: 0.5, y: 0.5 }}
+                          onPress={(e) => { console.log(e) }}
+                          coordinate={{
+                            latitude: targetCoords.latitude,
+                            longitude: targetCoords.longitude,
+                          }}>
+                         
+                        </Marker>
+
+<MapViewDirections
+                onError={(errorMessage) => {
+                    console.error('MapViewDirections Error:', errorMessage);
+                    alert(`Directions Error: ${errorMessage}`);
+                }}
+                origin={{
+                    latitude: currentCoords.latitude,
+                    longitude: currentCoords.longitude,
+                }}
+                destination={{
+                    latitude: targetCoords.latitude,  // Fixed spelling
+                    longitude: targetCoords.longitude,  // Fixed spelling
+                }}
+                apikey={GOOGLE_MAP_API_KEY}
+                strokeWidth={6}
+                strokeColor="#FFA100"
+                onReady={result => {
+                    mapRef?.current?.fitToCoordinates(result?.coordinates, {
+                        edgePadding: {
+                            top: 50,
+                            right: 50,
+                            bottom: 50,
+                            left: 50,
+                        },
+                        animated: true,
+                    });
+                }}
+            /> */}
+          <CustomMapDirections
+            currentCoords={currentCoords}
+            targetCoords={targetCoords}
+            showMarkers={false}
+
+            ref={mapRef}
+          />
+
         </MapView>
+        {/* <CustomMapDirections
+        ref={mapRef}
+        /> */}
 
         {isContinue && !showContinue && (
           <TouchableOpacity

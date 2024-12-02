@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions, Text, View, useWindowDimensions } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel'
 import { scale } from 'react-native-size-matters';
 import Banner from '../Banner/Banner';
@@ -8,9 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import useAxios from '../../../Axios/useAxios';
 import CarouselSkeleton from '../CarouselSkeleton/CarouselSkeleton';
 import NotFound from '../NotFound/NotFound';
-const screenWidth = Dimensions.get('window').width;
-const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
-const effectiveWidth = screenWidth - 2 * horizontalPadding;
+// const screenWidth = Dimensions.get('window').width;
+// const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
+// const effectiveWidth = screenWidth - 2 * horizontalPadding;
 const CustomOfficialReviewsListCarousel = ({
     showText=false
 }) => {
@@ -23,6 +23,9 @@ const CustomOfficialReviewsListCarousel = ({
     const [page, setPage] = React.useState(1)
     const [hasMore, setHasMore] = React.useState(true)
     const [loading, setLoading] = React.useState(false);
+    const { width: windowWidth } = useWindowDimensions();
+    const horizontalPadding = scale(20); // Assuming 20 is your scale for horizontal padding
+    const effectiveWidth = windowWidth - 2 * horizontalPadding;
 
     React.useEffect(() => {
         const fetchOfficalReviews = async () => {

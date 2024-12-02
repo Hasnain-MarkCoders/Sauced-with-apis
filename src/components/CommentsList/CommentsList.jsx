@@ -32,6 +32,7 @@ const CommentsList = ({ commentsData=[],
 
         renderItem={({ item, index }) =>
         <CustomComment
+        location = {item?.location}
         getId={getId}
         item={item}
         cb={cb}
