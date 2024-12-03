@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Snackbar from 'react-native-snackbar';
-import {scale} from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import emptyheart from './../../../assets/images/emptyHeart.png';
 import filledHeart from './../../../assets/images/filledHeart.png';
 import useAxios from '../../../Axios/useAxios';
@@ -21,30 +21,32 @@ import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
 import YesNoModal from '../YesNoModal/YesNoModal';
+import { MapPin } from 'lucide-react-native';
 
 const CustomComment = ({
-  getId = () => {},
+  getId = () => { },
   uri = '',
   text = '',
   title = '',
   profileUri = '',
   showImages = false,
-  handleSubmitMessage = () => {},
+  handleSubmitMessage = () => { },
   assets = [],
   replies,
   showBorder = true,
   isReply = false,
   count = 0,
   index = 0,
-  cb = () => {},
+  cb = () => { },
   _id = '',
   item = {},
   email = '',
   likesCount = 0,
   hasLikedUser = false,
-  location=null
+  location = null,
+  address = null
 }) => {
-  useEffect(() => {}, [profileUri]);
+  useEffect(() => { }, [profileUri]);
   const [commentStatus, setCommentStatus] = useState(hasLikedUser);
   const [visible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,12 +55,13 @@ const CustomComment = ({
   const [openUserDetailsModal, setOpenUserDetailsModal] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [likeCount, setLikesCount] = useState(likesCount);
+  const [showMore, setShowMore] = useState(text?.length > 200)
   const [yesNoModal, setYesNoModal] = useState({
     open: false,
     message: '',
     severity: 'success',
     isQuestion: false,
-    cb: () => {},
+    cb: () => { },
   });
   const [alertModal, setAlertModal] = useState({
     open: false,
@@ -67,29 +70,29 @@ const CustomComment = ({
   });
   const axiosInstance = useAxios();
   let watchId = useRef(null)
-  const navigation =useNavigation()
+  const navigation = useNavigation()
 
-useEffect(()=>{
-  console.log("<=================================>location<=============================>", location)
-},[location])
+  useEffect(() => {
+    console.log("<=================================>location<=============================>", location)
+  }, [location])
 
   const handleLike = async () => {
     try {
       console.log(hasLikedUser);
       setLikesCount(prev => (commentStatus && prev > 0 ? prev - 1 : prev + 1));
       setCommentStatus(prev => !prev);
-      const res = await axiosInstance.post(`/like-checkin`, {checkinId: _id});
+      const res = await axiosInstance.post(`/like-checkin`, { checkinId: _id });
       setLikesCount(res.data?.likesCount);
       Snackbar.show({
         text: !commentStatus ? 'Liked' : 'Unliked',
         duration: Snackbar.LENGTH_SHORT,
       });
-    } catch (error) {}
+    } catch (error) { }
   };
 
 
 
-  const checkLocationServiceAndNavigate =async () => {
+  const checkLocationServiceAndNavigate = async () => {
     setLocationLoading(true); // Start loading indicator
     const permission =
       Platform.OS === 'ios'
@@ -155,18 +158,18 @@ useEffect(()=>{
   };
 
   const fetchCurrentLocation = () => {
-  watchId.current = Geolocation.watchPosition(
+    watchId.current = Geolocation.watchPosition(
       position => {
         navigation.navigate('Get-directions', {
-          currentCoords :{
+          currentCoords: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
           },
-          targetCoords :{
+          targetCoords: {
             latitude: location.latitude,
             longitude: location.longitude
           },
-          fn: () => {},
+          fn: () => { },
           showContinue: true,
         });
         setLocationLoading(false); // Stop loading indicator
@@ -195,7 +198,7 @@ useEffect(()=>{
         });
         setLocationLoading(false); // Stop loading indicator
       },
-      {enableHighAccuracy: false, timeout: 5000, maximumAge: 30000},
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 30000 },
     );
   };
 
@@ -236,7 +239,7 @@ useEffect(()=>{
       'Location Permission Blocked',
       'Please enable location permission in your device settings to use this feature.',
       [
-        {text: 'Cancel', style: 'cancel', onPress: () => setLocationLoading(false)},
+        { text: 'Cancel', style: 'cancel', onPress: () => setLocationLoading(false) },
         {
           text: 'Open Settings',
           onPress: () => {
@@ -249,22 +252,22 @@ useEffect(()=>{
   };
 
 
-  const handleClearWatchid=useCallback(()=>{
-    if (watchId.current !==null){
+  const handleClearWatchid = useCallback(() => {
+    if (watchId.current !== null) {
       Geolocation.clearWatch(watchId.current)
     }
-  },[])
+  }, [])
 
-useEffect(()=>{
-  handleClearWatchid()
-  return ()=>{
+  useEffect(() => {
     handleClearWatchid()
-  }
-    
-}, [watchId])
+    return () => {
+      handleClearWatchid()
+    }
+
+  }, [watchId])
 
 
-  
+
 
   useEffect(() => {
     console.log(profileUri);
@@ -273,7 +276,7 @@ useEffect(()=>{
   return (
     <View
       style={{
-        alignItems: isReply || assets.length < 1 ? 'flex-start' : 'center',
+        // alignItems: isReply || assets.length < 1 ? 'flex-start' : 'start',
         gap: scale(20),
         borderBottomColor: '#FFA100',
         borderBottomWidth: showBorder && count > 1 ? 1 : 0,
@@ -321,7 +324,7 @@ useEffect(()=>{
                 opacity: isLoading ? 0 : 1,
                 position: isLoading ? 'absolute' : 'relative',
               }}
-              source={{uri: profileUri}}
+              source={{ uri: profileUri }}
             />
           </View>
           <View
@@ -351,12 +354,76 @@ useEffect(()=>{
                 {title}
               </Text>
             </TouchableOpacity>
-            <Text
-              numberOfLines={3}
-              ellipsizeMode="tail"
-              style={{maxWidth: '90%', color: 'white'}}>
-              {text}
-            </Text>
+            {/* <>
+            <>
+              {
+
+                showMore ?
+                  <>
+                    <Text
+                      style={{ maxWidth: '90%', color: 'white' }}>
+                      {text.slice(0,200) }
+                    </Text>
+                    <TouchableOpacity
+                    
+                    style={{
+                      backgroundColor: '#FFA500', // Set the background color in the View
+                      borderRadius: scale(20), // Apply the borderRadius here
+                      paddingHorizontal: scale(10),
+                      paddingVertical: scale(5),
+                      marginRight:"auto",
+                      marginTop:!showMore ? 0:scale(10)
+
+                    }}
+                    onPress={() => {
+                      setShowMore(false)
+                    }}>
+                      <Text>
+                        show more
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                  :
+                  <>
+                    <Text
+                     style={{ maxWidth: '90%', color: 'white' }}
+                    >{text}</Text>
+                   {text.length>200&& <TouchableOpacity
+                      style={{
+                        backgroundColor: '#FFA500', // Set the background color in the View
+                        borderRadius: scale(20), // Apply the borderRadius here
+                        paddingHorizontal: scale(10),
+                        paddingVertical: scale(5),
+                        marginRight:"auto",
+                        marginTop:showMore ? scale(10):scale(0)
+
+                      }}
+                      onPress={() => {
+                        setShowMore(true)
+                      }}
+                    >
+                      <Text>
+                        show less
+                      </Text>
+                    </TouchableOpacity>}
+                  </>
+              }
+            </>
+            {address && <View style={{
+              flexDirection: "row",
+              gap: scale(10),
+              marginTop: scale(10),
+              // marginLeft: -40
+            }}>
+              <MapPin size={30} stroke={"#FFA500"} />
+              <Text
+                numberOfLines={3}
+                ellipsizeMode="tail"
+                style={{ maxWidth: '90%', color: 'white' }}>
+                {address}
+              </Text>
+            </View>}
+            </> */}
           </View>
         </View>
         <View style={{}}>
@@ -388,6 +455,77 @@ useEffect(()=>{
         </View>
       </View>
 
+      <>
+        <>
+          {
+
+            showMore ?
+              <>
+                <Text
+                  style={{ maxWidth: '100%', color: 'white' }}>
+                  {text.slice(0, 200) + "..."}
+                </Text>
+                <TouchableOpacity
+
+                  style={{
+                    backgroundColor: '#FFA500', // Set the background color in the View
+                    borderRadius: scale(20), // Apply the borderRadius here
+                    paddingHorizontal: scale(10),
+                    paddingVertical: scale(5),
+                    marginRight: "auto",
+
+                  }}
+                  onPress={() => {
+                    setShowMore(false)
+                  }}>
+                  <Text style={{
+                    color:'black'
+                  }}>
+                    show more
+                  </Text>
+                </TouchableOpacity>
+              </>
+              :
+              <>
+                <Text
+                  style={{ maxWidth: '100%', color: 'white'}}
+                >{text}</Text>
+                {text.length > 200 && <TouchableOpacity
+                  style={{
+                    backgroundColor: '#FFA500', // Set the background color in the View
+                    borderRadius: scale(20), // Apply the borderRadius here
+                    paddingHorizontal: scale(10),
+                    paddingVertical: scale(5),
+                    marginRight: "auto",
+
+                  }}
+                  onPress={() => {
+                    setShowMore(true)
+                  }}
+                >
+                  <Text style={{
+                    color:'black'
+                  }}>
+                    show less
+                  </Text>
+                </TouchableOpacity>}
+              </>
+          }
+        </>
+        {address && <View style={{
+          flexDirection: "row",
+          gap: scale(10),
+          marginTop: scale(10),
+        }}>
+          <MapPin size={30} stroke={"#FFA500"} />
+          <Text
+            numberOfLines={3}
+            ellipsizeMode="tail"
+            style={{ maxWidth: '90%', color: 'white' }}>
+            {address}
+          </Text>
+        </View>}
+      </>
       {assets.length > 0 && (
         <View
           style={{
@@ -399,7 +537,7 @@ useEffect(()=>{
           {assets.map(
             (uri, index) =>
               uri && (
-          
+
                 <TouchableOpacity
                   onPress={() => {
                     setIsVisible(true);
@@ -415,7 +553,7 @@ useEffect(()=>{
                       borderColor: '#FFA100',
                       borderWidth: scale(1),
                     }}
-                    source={{uri}}
+                    source={{ uri }}
                     resizeMode="cover"
                   />
                 </TouchableOpacity>
@@ -423,7 +561,7 @@ useEffect(()=>{
           )}
         </View>
       )}
-      
+
       <View
         style={{
           flexDirection: 'row',
@@ -484,7 +622,7 @@ useEffect(()=>{
             }
           </TouchableOpacity>
         )}
-         <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             marginLeft:"auto",
             display: (location?.latitude && location?.longitude) ? 'flex' : 'none',
@@ -513,7 +651,8 @@ useEffect(()=>{
                 }
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
       </View>
 
       {showReplies ? (
@@ -536,39 +675,39 @@ useEffect(()=>{
       ) : null}
       <ImageView
         imageIndex={imageIndex}
-        images={assets.map(uri => ({uri: uri}))}
+        images={assets.map(uri => ({ uri: uri }))}
         visible={visible}
         onRequestClose={() => {
           setIsVisible(false);
         }}
       />
-           <CustomAlertModal
-            title={alertModal.message}
-            modalVisible={alertModal.open}
-            setModalVisible={() =>
-              setAlertModal({
-                open: false,
-                message: '',
-                success: true,
-              })
-            }
-            success={alertModal.success}
-          />
-             <YesNoModal
-            isQuestion={yesNoModal.isQuestion}
-            modalVisible={yesNoModal.open}
-            setModalVisible={() => {
-              setYesNoModal({
-                open: false,
-                message: '',
-                severity: true,
-              });
-              setLocationLoading(false);
-            }}
-            success={yesNoModal.severity}
-            title={'Location Request'}
-            cb={yesNoModal.cb}
-          />
+      <CustomAlertModal
+        title={alertModal.message}
+        modalVisible={alertModal.open}
+        setModalVisible={() =>
+          setAlertModal({
+            open: false,
+            message: '',
+            success: true,
+          })
+        }
+        success={alertModal.success}
+      />
+      <YesNoModal
+        isQuestion={yesNoModal.isQuestion}
+        modalVisible={yesNoModal.open}
+        setModalVisible={() => {
+          setYesNoModal({
+            open: false,
+            message: '',
+            severity: true,
+          });
+          setLocationLoading(false);
+        }}
+        success={yesNoModal.severity}
+        title={'Location Request'}
+        cb={yesNoModal.cb}
+      />
     </View>
   );
 };

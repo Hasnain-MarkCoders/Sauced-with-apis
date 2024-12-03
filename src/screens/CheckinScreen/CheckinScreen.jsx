@@ -445,6 +445,7 @@ const CheckinScreen = () => {
 
       // Append other fields (description, coordinates, sauceId)
       formData.append('text', data?.description);
+      formData.append('address', data?.address);
       formData.append('latitude', data.coordinates?.latitude);
       formData.append('longitude', data.coordinates?.longitude);
       formData.append('sauceId', _id); // Assuming item._id contains the sauceId
