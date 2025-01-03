@@ -10,7 +10,6 @@ const AwardList = ({
     setPage=()=>{},
     loading=false
 }) => {
-  console.log(data[0])
   return (
 
    <View style={{

@@ -72,7 +72,6 @@ const NotificationsScreen = ({}) => {
                   <TouchableOpacity
                     onPress={() => {
                       dispatch(readAllNotifications());
-                      console.log('notifications', notifications);
                     }}
                     style={{
                       backgroundColor: '#2e210a',

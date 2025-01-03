@@ -19,7 +19,6 @@ const CustomCarousel = ({
     showText=false,
 }) => {
     const auth = useSelector(state=>state.auth)
-    console.log(auth.token)
 const [selected, setSelected] = React.useState(0)
 const [initialLoading, setInitialLoading] = React.useState(true)
  const navigation = useNavigation()

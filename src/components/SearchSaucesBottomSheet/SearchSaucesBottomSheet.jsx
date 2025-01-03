@@ -56,14 +56,6 @@ const SearchSaucesBottomSheet = ({photo={}, fn=()=>{}, setCapturedImage=()=>{}})
 
   const snapPoints = ["90%"];
 
-  const handleSheetChange = useCallback((index) => {
-    console.log("handleSheetChange", index);
-  }, []);
-
-useEffect(()=>{
-console.log("photo ha ", photo)
-},[photo])
-
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -72,7 +64,6 @@ console.log("photo ha ", photo)
           return
         }
         setSelectedSauce(item); // Set selected sauce
-        console.log(item); // Log selected sauce
       }}
     >
       <View style={[styles.itemContainer, selectedSauce?._id === item._id && styles.selectedItem]}>
@@ -101,12 +92,10 @@ console.log("photo ha ", photo)
         ref={sheetRef} 
         snapPoints={snapPoints} 
         animateOnMount={true}
-        onChange={handleSheetChange}
       >
         <TouchableOpacity 
           onPress={() => {
             if (selectedSauce) {
-              console.log("Quick Checkin for:", selectedSauce); // Log selected sauce on quick checkin
               setCapturedImage(null)
                 navigation.navigate("Checkin", {_id:selectedSauce?._id, item:selectedSauce,routerNumber:4, photo, fn})
             }

@@ -11,7 +11,6 @@ import { addNotification,increaseCount } from './src/Redux/notifications';
 
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
 
     store.dispatch(
       addNotification({

@@ -73,7 +73,6 @@ const Test = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
-      console.log('Google Maps API Key:', GOOGLE_MAP_API_KEY);
     }, 1000);
 
     // Cleanup the timer on unmount
@@ -82,9 +81,6 @@ const Test = () => {
 
   // Handler when directions are ready
   const onReady = (result) => {
-    console.log(`Distance: ${result.distance} km`);
-    console.log(`Duration: ${result.duration} min.`);
-
     if (mapRef.current) {
       mapRef.current.fitToCoordinates(result.coordinates, {
         edgePadding: {

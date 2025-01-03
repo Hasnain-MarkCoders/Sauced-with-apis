@@ -97,7 +97,6 @@ const SignIn = () => {
         success: true,
       });
     } catch (error) {
-      console.log(error);
       setForgotPasswordModal(prev => ({...prev, open: false}));
       setAlertModal({
         open: true,
@@ -122,7 +121,6 @@ const SignIn = () => {
           },
         },
       );
-      console.log('Token updated on the server successfully.', resposne.data);
     } catch (error) {
       console.error('Failed to update token on server:', error);
     }
@@ -130,7 +128,6 @@ const SignIn = () => {
 
   const getInitialFcmToken = async authToken => {
     const fcmToken = await messaging().getToken();
-    console.log('Initial FCM Token:', fcmToken);
     await updateTokenOnServer(authToken, fcmToken); // Update token to your backend
   };
 
@@ -219,8 +216,6 @@ const SignIn = () => {
             }),
           );
         } else {
-          console.log('No user found');
-
           setAlertModal({
             open: true,
             message: 'No user found on Firebase',
@@ -232,7 +227,6 @@ const SignIn = () => {
 
         // Optional: Update state or handle user authentication details
       } else {
-        console.log('No user found');
         setAlertModal({
           open: true,
           message: 'No user found on Firebase',

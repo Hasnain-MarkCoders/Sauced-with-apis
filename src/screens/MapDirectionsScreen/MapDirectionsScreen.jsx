@@ -76,7 +76,6 @@ const MapDirectionsScreen = ({
                         </Marker>}
                         {!!targetCoords && showMarkers &&<Marker
                           anchor={{ x: 0.5, y: 0.5 }}
-                          onPress={(e) => { console.log(e) }}
                           coordinate={{
                             latitude: parseFloat(targetCoords?.latitude),
                             longitude: parseFloat(targetCoords?.longitude),
@@ -91,7 +90,6 @@ const MapDirectionsScreen = ({
             {!!currentCoords && !!targetCoords && <MapViewDirections
                 onError={(errorMessage) => {
                     console.error('MapViewDirections Error:', errorMessage);
-                    alert(`Directions Error: ${errorMessage}`);
                 }}
                 origin={{
                     latitude: parseFloat(currentCoords?.latitude),

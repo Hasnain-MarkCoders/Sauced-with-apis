@@ -74,7 +74,6 @@ const DrawerStack = () => {
       await LoginManager.logOut();
       try {
         await auth().signOut();
-        console.log('Successfully signed out from Firebase');
       } catch (error) {
         console.error('Error signing out from Firebase: ', error);
       }

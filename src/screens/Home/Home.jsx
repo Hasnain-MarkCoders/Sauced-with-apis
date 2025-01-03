@@ -62,7 +62,6 @@ const Home = () => {
       const resposne = await axiosInstance.post('/update-token', {
         notificationToken: newFcmToken,
       });
-      console.log('Token updated on the server successfully.', resposne.data);
     } catch (error) {
       console.error('Failed to update token on server:', error);
     }
@@ -72,12 +71,10 @@ const Home = () => {
     // Get the initial token
     const getInitialFcmToken = async () => {
       const fcmToken = await messaging().getToken();
-      console.log('Initial FCM Token:', fcmToken);
       await updateTokenOnServer(fcmToken); // Update token to your backend
     };
     getInitialFcmToken();
     const unsubscribe = messaging().onTokenRefresh(async newFcmToken => {
-      console.log('FCM Token refreshed:', newFcmToken);
       await updateTokenOnServer(newFcmToken); // Update new token to your backend
     });
 
@@ -155,7 +152,6 @@ const Home = () => {
   const fetchCurrentLocation = () => {
   watchId.current = Geolocation.watchPosition(
       position => {
-        console.log("<=============================================position=====================================>", position)
         navigation.navigate('Map', {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -165,7 +161,6 @@ const Home = () => {
         setLoading(false); // Stop loading indicator
       },
       error => {
-        console.log('Error fetching current location:', error);
         let errorMessage = '';
         switch (error.code) {
           case 1: // PERMISSION_DENIED
@@ -257,19 +252,15 @@ const Home = () => {
           authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
         if (enabled) {
-          console.log('Authorization status:', authStatus);
           getFcmToken();
         }
       }
 
       const getFcmToken = async () => {
         const token = await messaging().getToken();
-        console.log('FCM Token:', token);
-        // You can save the token to your backend if needed
       };
       requestUserPermission();
     } catch (err) {
-      console.log(err);
     }
   }, []);
 

@@ -213,7 +213,6 @@ const AddStore = () => {
   const fetchCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
-        console.log('Current position:', position);
         navigation.navigate('Map', {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -223,7 +222,6 @@ const AddStore = () => {
         setIsLoading(prev => ({...prev, loadMap: false})); // Stop loading indicator
       },
       error => {
-        console.log('Error fetching current location:', error);
         let errorMessage = '';
         switch (error.code) {
           case 1: // PERMISSION_DENIED

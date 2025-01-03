@@ -44,7 +44,6 @@ const VerticalUserSearchList = ({
       // If it's the first page, replace the state; otherwise, append the data
       if (page === 1) {
         dispatch(handleSearchedUsers(res?.data?.results));
-        console.log("res?.data?.results=============================>", res?.data?.results)
       } else {
         dispatch(appendSearchedUsers(res?.data?.results));
       }

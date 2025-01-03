@@ -37,7 +37,6 @@ const [initialLoading, setInitialLoading] = React.useState(true)
  const [limit,setLimit] = React.useState(null)
  const [ paginationBullets, setPaginationBullets] = React.useState(null)
 
- //  console.log(auth?.token)
  React.useEffect(() => {
      const fetchEvents = async () => {
          if (!hasMore || loading) return;
@@ -51,9 +50,6 @@ const [initialLoading, setInitialLoading] = React.useState(true)
              });
                  setHasMore(res?.data?.pagination?.hasNextPage);
                  setLimit(res?.data?.pagination?.limit)
-                //  console.log("res?.data?.events=============================>", res?.data?.events.length)
-                // //  setData([...res.data?.events]);
-
                 dispatch(handleInterestedEvents(res?.data?.interestedEvents))
                 setPaginationBullets(res?.data?.interestedEvents?.length)
          } catch (error) {

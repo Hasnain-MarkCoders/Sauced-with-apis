@@ -20,9 +20,7 @@ const MainNavigation = () => {
             )
                 setIsWelcome(response?.data?.welcome)
                 setInitialState(false)
-                console.log(isWelcome)
             }catch(error){
-                console.log(error)
             }
         })()
      },[isWelcome, auth])
@@ -30,11 +28,9 @@ const MainNavigation = () => {
       try{
         setInitialState(true)
         const response = await axiosInstance.post("/welcome")
-        console.log(response?.data?.welcome)
          setIsWelcome(response?.data?.welcome)
         setInitialState(false)
       }catch(error){
-        console.log(error)
       }
     }
 

@@ -88,7 +88,6 @@ const SettingScreen = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setShowDeleteModal(false);
     } catch {
-      console.log(error);
       Alert.alert(error.message || error.toString());
     } finally {
       setLoading(false);

@@ -72,13 +72,8 @@ const CustomComment = ({
   let watchId = useRef(null)
   const navigation = useNavigation()
 
-  useEffect(() => {
-    console.log("<=================================>location<=============================>", location)
-  }, [location])
-
   const handleLike = async () => {
     try {
-      console.log(hasLikedUser);
       setLikesCount(prev => (commentStatus && prev > 0 ? prev - 1 : prev + 1));
       setCommentStatus(prev => !prev);
       const res = await axiosInstance.post(`/like-checkin`, { checkinId: _id });
@@ -175,7 +170,6 @@ const CustomComment = ({
         setLocationLoading(false); // Stop loading indicator
       },
       error => {
-        console.log('Error fetching current location:', error);
         let errorMessage = '';
         switch (error.code) {
           case 1: // PERMISSION_DENIED
@@ -267,11 +261,6 @@ const CustomComment = ({
   }, [watchId])
 
 
-
-
-  useEffect(() => {
-    console.log(profileUri);
-  }, [profileUri]);
 
   return (
     <View

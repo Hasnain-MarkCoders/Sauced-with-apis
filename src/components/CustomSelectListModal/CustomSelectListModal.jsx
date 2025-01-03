@@ -92,7 +92,6 @@ const CustomSelectListModal = ({
         sauceId,
         listType: type,
       });
-      console.log("response.data=========================>", response.data)
     } catch (error) {
       console.error('Failed to update the list:', error);
       Snackbar.show({

@@ -37,7 +37,6 @@ const FeaturedSaucesList = ({
   const navigation = useNavigation();
   const handleIncreaseReviewCount = useCallback(
     (_id, setReviewCount, reviewCount) => {
-      console.log('handleIncreaseReviewCount');
       setReviewCount(reviewCount + 1);
       dispatch(handleIncreaseReviewCountOfFeaturedSauce({_id, setReviewCount}));
     },

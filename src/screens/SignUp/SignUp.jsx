@@ -71,7 +71,6 @@ const SignUp = () => {
           },
         },
       );
-      console.log('Token updated on the server successfully.', resposne.data);
     } catch (error) {
       console.error('Failed to update token on server:', error);
     }
@@ -79,7 +78,6 @@ const SignUp = () => {
 
   const getInitialFcmToken = async authToken => {
     const fcmToken = await messaging().getToken();
-    console.log('Initial FCM Token:', fcmToken);
     await updateTokenOnServer(authToken, fcmToken); // Update token to your backend
   };
 
@@ -207,8 +205,6 @@ const SignUp = () => {
         }
         setAuthLoading(false);
       } else {
-        console.log('No user found');
-
         setAlertModal({
           open: true,
           message: 'No user found',

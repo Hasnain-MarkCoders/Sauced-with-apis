@@ -33,7 +33,6 @@ const UploadImage = () => {
             });
             dispatch(handleAuth({ url }));
             setImageUri(url);
-            console.log("response?.data?.message======================>", response?.data)
             setAlertModal({
                 open: true,
                 message: response?.data?.message||"Image uploaded successfully.",
@@ -63,9 +62,7 @@ const UploadImage = () => {
           const response = await launchImageLibrary(options);
       
           if (response.didCancel) {
-            console.log('User cancelled image picker');
           } else if (response.errorCode) {
-            console.log('ImagePicker Error: ', response.errorMessage);
             setAlertModal({
               open: true,
               message: response.errorMessage || 'Something went wrong while picking the image.',
@@ -105,7 +102,6 @@ const UploadImage = () => {
             setImageUri(uri);
             handleImage(uri, file);
           } else {
-            console.log('Unexpected response from image picker');
             setAlertModal({
               open: true,
               message: 'No image was selected. Please try again.',

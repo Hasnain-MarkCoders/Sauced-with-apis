@@ -22,57 +22,7 @@ const FacebookSignInBTN = ({
     const dispatch = useDispatch()
   const axiosInstance = useAxios()
 
-    // const [user, setUser] = useState(null);
-    
-    // useEffect(() => {
-    //          GoogleSignin.configure();
-    // }, []);
-
-    // const signIn = async () => {
-    //     try {
-    //         await GoogleSignin.hasPlayServices()
-
-    //     const userInfo = await GoogleSignin.signIn();
-    //     console.log('User Info --> ', userInfo);
-          
-    //       if(userInfo){
-    //         Alert.alert("user mil gya")
-    //       }else {
-    //         Alert.alert("user ni mila")
-    //       }
-    //       console.log(userInfo)
-    //       dispatch(handleAuth(
-    //      {   ...userInfo,
-    //         authenticated:true}
-    //       ))
-    //       setUser({ userInfo, error: undefined });
-    //     } catch (error) {
-    //       if (isErrorWithCode(error)) {
-    //         switch (error.code) {
-    //           case statusCodes.SIGN_IN_CANCELLED:
-    //             // user cancelled the login flow
-    //             console.log(" user cancelled the login flow",error)
-    //             break;
-    //           case statusCodes.IN_PROGRESS:
-    //             // operation (eg. sign in) already in progress
-    //             console.log(" operation (eg. sign in) already in progress",error)
-
-    //             break;
-    //           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-    //             // play services not available or outdated
-    //             console.log("play services not available or outdated",error)
-
-    //             break;
-    //           default:
-    //           // some other error happened
-    //           console.log("some other error happened",error)
-
-    //         }
-    //       } else {
-    //         // an error that's not related to google sign in occurred
-    //       }
-    //     }
-    //   };
+  
 
     async function onFacebookButtonPress() {
         // Attempt login with permissions

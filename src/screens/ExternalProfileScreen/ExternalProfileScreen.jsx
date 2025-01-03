@@ -113,7 +113,6 @@ const ExternalProfileScreen = ({
         try{
             
             const res = await axiosInstance.post(`/block`, {_id});
-            console.log("res=================>", res.data)
             await handleUser(user)
 
             if(res?.data?.message){

@@ -58,8 +58,6 @@ const EditProfileScreen = () => {
         });
       }, 1000);
     } catch {
-      console.log(error);
-      Alert.alert(error.message || error.toString());
     } finally {
       setLoading(false);
       setIsEnabled(true);
@@ -81,7 +79,6 @@ const EditProfileScreen = () => {
         });
       }, 1000);
     } catch {
-      console.log(error);
       setTimeout(() => {
         Snackbar.show({
           text: 'Error: Failed to reset your password.',

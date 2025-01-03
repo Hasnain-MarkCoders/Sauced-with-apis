@@ -39,7 +39,6 @@ const ReviewedSaucesList = ({ title = "", name = "", showMoreIcon = false, cb = 
                     page
                 }
             });
-            console.log("res?.data?.sauces===========================>", res?.data?.sauces)
                  setHasMore(res.data.pagination.hasNextPage);
                  dispatch(handleReviewedSauces(res?.data?.sauces))
         } catch (error) {

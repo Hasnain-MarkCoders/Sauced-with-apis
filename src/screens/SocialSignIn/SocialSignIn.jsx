@@ -45,13 +45,6 @@ const SocialSignIn = () => {
     password: '',
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-  const navigateToSignUp = () => {
-    navigation.navigate('SignUp');
-  };
-
   const [authLoading, setAuthLoading] = useState(false);
 
   const axiosInstance = useAxios();
@@ -67,15 +60,12 @@ const SocialSignIn = () => {
           },
         },
       );
-      console.log('Token updated on the server successfully.', resposne.data);
     } catch (error) {
-      console.error('Failed to update token on server:', error);
     }
   };
 
   const getInitialFcmToken = async authToken => {
     const fcmToken = await messaging().getToken();
-    console.log('Initial FCM Token:', fcmToken);
     await updateTokenOnServer(authToken, fcmToken); // Update token to your backend
   };
   const dispatch = useDispatch();
@@ -277,7 +267,6 @@ const SocialSignIn = () => {
     }
   }
   async function onAppleButtonPress() {
-    // console.log("hello g")
     try {
       setLoading(true);
 

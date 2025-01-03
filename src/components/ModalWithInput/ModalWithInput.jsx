@@ -19,14 +19,7 @@ const ModalWithInput = ({
   placeholder="",
   loading=false
 }) => {
-  useEffect(()=>{
-    // setTimeout(()=>{
-    //   if(modalVisible){
-    //     setModalVisible()
-    //   }
-    // },4000)
-    console.log(modalVisible)
-  },[modalVisible])
+
   const handleBackgroundTouch = () => {
     setModalVisible(prev=>({...prev, open:false}));
    

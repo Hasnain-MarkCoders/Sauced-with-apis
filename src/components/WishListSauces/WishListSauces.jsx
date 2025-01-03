@@ -45,12 +45,6 @@ const WishListSauces = ({ title = "", name = "", show = false, cb = () => { }, r
         fetchSauces();
     }, [fetchSauces]);
   
-useEffect(()=>{
-console.log("from wishlist loading==================================>", loading)
-},[loading])
-
-
-
     return (
         <>
         {

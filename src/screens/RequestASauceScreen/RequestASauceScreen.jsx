@@ -88,7 +88,6 @@ const RequestASauceScreen = () => {
         setQuery({});
       }
     } catch (error) {
-      console.log(error);
       setAlertModal({
         open: true,
         message:

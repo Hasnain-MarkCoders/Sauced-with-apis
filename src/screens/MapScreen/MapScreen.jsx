@@ -558,7 +558,6 @@ const MapScreen = () => {
           showsIndoors={false}
           loadingEnabled
           anchor={{ x: 0.5, y: 0.5 }}
-            onPress={(e) => { console.log(e) }}
             coordinate={region}>
             <View style={styles.marker}>
               <Image
@@ -746,7 +745,6 @@ const MapScreen = () => {
                         </Marker>
                         <Marker
                           anchor={{ x: 0.5, y: 0.5 }}
-                          onPress={(e) => { console.log(e) }}
                           coordinate={{
                             latitude: targetCoords.latitude,
                             longitude: targetCoords.longitude,

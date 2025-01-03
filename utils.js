@@ -383,7 +383,6 @@ export function formatDate(date) {
   // Get the year, month, day, hours, minutes, seconds, and milliseconds
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth(); // months are zero-indexed
-  console.log(date.getUTCMonth())
   const day = date.getUTCDate().toString().padStart(2, '0');
   // Format the date and time in ISO 8601 format
   return `${monthNames[month]}-${day}-${year}`;
@@ -453,7 +452,6 @@ export function formatEventDate(isoDateString, dayAndMonth, timeZone) {
 
 // Example usage:
 const exampleDate = new Date('August 14, 2024 21:45:36.776');
-console.log(formatDate(exampleDate));
 export const GetPLatformSpecificURL = (platform, uri)=>{
   return platform.os =="ios"? uri:'file://'+uri
 }
@@ -500,6 +498,9 @@ export const welcomepoints= [
   "- Users can display earned badges on their profiles to showcase their expertise and dedication within the hot sauce community. Users are awarded 1 point every time they post a review 2 points if they include an image. "
 ]
 
+export const isDate = function(date) {
+  return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+}
 
 export const validateEmail = (email) => {
   return String(email)

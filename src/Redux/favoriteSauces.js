@@ -29,7 +29,6 @@ const favoriteSaucesSlice = createSlice({
       
     },
     handleRemoveSauceFromFavouriteSauces: (state, action) => {
-      console.log("action.payload", action.payload)
       return state.filter(x => x._id !== action.payload);
     },
 

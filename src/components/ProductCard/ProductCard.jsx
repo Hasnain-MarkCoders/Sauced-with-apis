@@ -85,7 +85,6 @@ const ProductCard = ({
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, { sauceId: product?._id });
-            console.log(res.data)
             if (sauceType == "toprated") {
                 dispatch(handleToggleTopRatedSauce(product?._id))
                   if(productStatus?.isChecked){
@@ -95,7 +94,6 @@ const ProductCard = ({
                 }
             }
             if (sauceType == "featured") {
-                console.log("sauceType============================>", sauceType)
                 dispatch(handleToggleFeaturedSauce(product?._id))
                    if(productStatus?.isChecked){
                     dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
@@ -194,11 +192,6 @@ const ProductCard = ({
         }
       
       },[])
-
-      useEffect(()=>{
-        console.log(product?.reviewCount)
-      },[product?.reviewCount])
-   
 
     return (
         <View style={{
@@ -567,31 +560,7 @@ const ProductCard = ({
                         </View>
                     </View>
                 </View>
-                {/* <TouchableOpacity
-                    onPress={() => {
-                        console.log("has")
-                        handleIncreaseReviewCount(product?._id, setReviewCount)
-                        // handleIncreaseReviewCount()
-                        // dispatch(handleIncreaseReviewCountOfFavoriteSauce({_id:product?._id, setReviewCount}))
-                        console.log("nain")
-                    }}
-                    style={{
-                        paddingHorizontal: scale(10),
-                        paddingVertical: scale(6),
-                        backgroundColor: "#FFA100",
-                        borderRadius: scale(5),
-                        elevation: scale(5),
-                        alignSelf: "flex-end",
-
-                    }}>
-                    <Text style={{
-                        color: "black",
-                        fontWeight: "700"
-
-                    }}>test</Text>
-
-
-                </TouchableOpacity> */}
+                
 
             </View>
 

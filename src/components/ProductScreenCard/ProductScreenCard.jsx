@@ -88,100 +88,9 @@ const ProductScreenCard = ({
   const device = devices.back;
 
     const handleToggleLike = async () => {
-        console.log("productStatus.isChecked===============================================>", productStatus.isChecked)
-        // handleLike(_id, setproductStatus)
-        // setSelected((prev)=>({
-        //     ...prev,
-        //     isChecked: !prev?.isChecked
-        //   }))
-
-        //   setproductStatus((prev)=>({
-        //     ...prev,
-        //     isChecked: !prev?.isChecked
-        //   }))
         setLoading(true);
         try {
             const res = await axiosInstance.post(`/like-sauce`, { sauceId: _id });
-            console.log(res.data)
-        //     if (sauceType == "toprated") {
-        //         dispatch(handleToggleTopRatedSauce(product?._id))
-        //           if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     }
-        //     if (sauceType == "featured") {
-        //         console.log("sauceType============================>", sauceType)
-        //         dispatch(handleToggleFeaturedSauce(product?._id))
-        //            if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-               
-             
-        //     }
-        //     if (sauceType == "favourite") {
-        //         dispatch(handleToggleFavoriteSauce(product?._id))
-        //        if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     // dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-
-        //     }
-        //     if (sauceType == "checkedin") {
-        //         dispatch(handleToggleCheckedInSauce(product?._id))
-        //         if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     }
-
-        //     if (sauceType=="reviewed"){
-        //         dispatch(handleToggleReviewedSauce(item?._id))
-        //         if(selected){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        //             }else{
-        //                 dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-        //             }
-        //     }
-  
-        //     if (sauceType=="wishlist"){
-        //       dispatch(handleToggleLikeWishlistSauce(item?._id))
-        //       if(selected){
-        //           dispatch(handleRemoveSauceFromFavouriteSauces(item?._id))
-        //           }else{
-        //               dispatch(handleFavoriteSauces([{...item, hasLiked:true} ]))
-        //           }
-        //   }
-        //     if (sauceType == 1) {
-        //         dispatch(handleToggleSauceListOne(product?._id))
-        //         if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     }
-        //     if (sauceType == 2) {
-        //         dispatch(handleToggleSauceListTwo(product?._id))
-        //         if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     }
-        //     if (sauceType == 3) {
-        //         dispatch(handleToggleSauceListThree(product?._id))
-        //         if(productStatus?.isChecked){
-        //             dispatch(handleRemoveSauceFromFavouriteSauces(product?._id))
-        //         }else{
-        //             dispatch(handleFavoriteSauces([{...product, hasLiked:true}]))
-        //         }
-        //     }
         } catch (error) {
             console.error('Failed to like / dislike:', error);
         } finally {
@@ -200,7 +109,6 @@ const ProductScreenCard = ({
         });
         dispatch(handleToggleWishList(sauce))
         }catch(error){
-            console.log("error=======================>", error)
         }finally{
           setLoadings(prev=>({
             ...prev,
@@ -632,32 +540,6 @@ const ProductScreenCard = ({
                         </View>
                     </View>
                 </View>
-                {/* <TouchableOpacity
-                    onPress={() => {
-                        console.log("has")
-                        handleIncreaseReviewCount(product?._id, setReviewCount)
-                        // handleIncreaseReviewCount()
-                        // dispatch(handleIncreaseReviewCountOfFavoriteSauce({_id:product?._id, setReviewCount}))
-                        console.log("nain")
-                    }}
-                    style={{
-                        paddingHorizontal: scale(10),
-                        paddingVertical: scale(6),
-                        backgroundColor: "#FFA100",
-                        borderRadius: scale(5),
-                        elevation: scale(5),
-                        alignSelf: "flex-end",
-
-                    }}>
-                    <Text style={{
-                        color: "black",
-                        fontWeight: "700"
-
-                    }}>test</Text>
-
-
-                </TouchableOpacity> */}
-
             </View>
 
 

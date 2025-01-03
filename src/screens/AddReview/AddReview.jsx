@@ -63,7 +63,6 @@ const AddReview = () => {
   const [visible, setIsVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  console.log(auth?.token);
   const [yesNoModal, setYesNoModal] = useState({
     open: false,
     message: '',
@@ -195,10 +194,7 @@ const AddReview = () => {
     const launchFunction = isSelected ? launchCamera : launchImageLibrary;
     launchFunction(options, response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response?.error);
-        Alert.alert('Error', 'Something went wrong while picking the image.');
       } else {
         const sources =
           response?.assets?.map(asset => {
@@ -303,7 +299,6 @@ const AddReview = () => {
       setLoading(true);
       const formData = new FormData();
       imageUris.forEach(imageUri => {
-        console.log(imageUri.type);
         // You might need to provide an object with uri, type, and name depending on your backend requirements
         const file = {
           uri: imageUri?.uri,
@@ -317,9 +312,6 @@ const AddReview = () => {
       formData.append('text', data?.review);
       formData.append('star', data?.rating);
       formData.append('sauceId', sauceId);
-      console.log('heatlevel =================>', data?.rating);
-      console.log('data?.heatLevel =================>', data?.heatLevel);
-
       const res = await axios.post(host + '/create-review', formData, {
         headers: {
           Authorization: `Bearer ${auth?.token}`,
@@ -338,7 +330,6 @@ const AddReview = () => {
         );
 
 
-        console.log("res?.data========================>", res?.data)
         handleReviewState(reviewedSauce.data.sauce);
 
         handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount);

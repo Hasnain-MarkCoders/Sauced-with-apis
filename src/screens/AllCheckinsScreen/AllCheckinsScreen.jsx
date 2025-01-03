@@ -58,7 +58,6 @@ const AllCheckinsScreen = ({}) => {
     return setId(id);
   };
   const handleUserProfileView = data => {
-    console.log(data?.item?.owner?._id);
     navigation.navigate('ExternalProfileScreen', {
       url: data?.profileUri,
       name: data?.name,
@@ -82,11 +81,9 @@ const AllCheckinsScreen = ({}) => {
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyBoard(true);
-      console.log('Keyboard is open');
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setIsKeyBoard(false);
-      console.log('Keyboard is closed');
     });
 
     // Cleanup function
@@ -100,7 +97,6 @@ const AllCheckinsScreen = ({}) => {
   const fetchCheckings =useCallback( async () => {
     if (!hasMore || loading) return;
     setLoading(true);
-    console.log(_id);
     try {
       const res = await axiosInstance.get(`/get-checkins`, {
         params: {
@@ -110,9 +106,6 @@ const AllCheckinsScreen = ({}) => {
       });
       setHasMore(res?.data?.pagination?.hasNextPage);
       const newData = res?.data?.checkins?res?.data?.checkins:[] 
-      console.log("<=============================================newData=============================================================>", newData?.length)
-      console.log("<=============================================page=============================================================>", page)
-
       if (newData&& newData?.length>0){
         setData(prev => [...prev, ...newData]);
       }

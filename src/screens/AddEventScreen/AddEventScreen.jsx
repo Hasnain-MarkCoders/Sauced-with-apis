@@ -14,31 +14,32 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Header from '../../components/Header/Header.jsx';
 import home from './../../../assets/images/home.png';
-import {scale, verticalScale} from 'react-native-size-matters';
-import {useNavigation} from '@react-navigation/native';
-import {handleText, isURL} from '../../../utils.js';
+import { scale, verticalScale } from 'react-native-size-matters';
+import { useNavigation } from '@react-navigation/native';
+import { handleText, isURL } from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import DatePicker from 'react-native-date-picker';
 import arrow from './../../../assets/images/arrow.png';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
 import useAxios from '../../../Axios/useAxios.js';
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const AddEventScreen = () => {
   const [isKeyBoard, setIsKeyBoard] = useState(false);
   const [openDate, setOpenDate] = useState(false);
+  const [openTime, setOpenTime] = useState(false);
   const [yesNoModal, setYesNoModal] = useState({
     open: false,
     message: '',
     severity: 'success',
-    cb: () => {},
+    cb: () => { },
     isQuestion: false,
   });
   const [alertModal, setAlertModal] = useState({
@@ -49,27 +50,21 @@ const AddEventScreen = () => {
   const [query, setQuery] = useState({
     title: '',
     eventOrganizer: '',
-    date: new Date(),
+    date: "",
     address: '',
     destinationDetails: '',
     coordinates: {},
     facebookLink: '',
     websiteLink: '',
-    eventEndDate: new Date(),
+    eventEndDate: "",
     isEndDate: false,
   });
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const axiosInstance = useAxios();
   const navigation = useNavigation();
-  const [pickerMode, setPickerMode] = useState('date');
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isNext, setIsNext] = useState(true);
-  const [currentStep, setCurrentStep] = useState('date'); // 'date' or 'time'
   const auth = useSelector(state => state.auth);
 
-  useEffect(() => {
-    console.log('auth.token', auth.token);
-  }, [auth]);
+  
 
   const handleEventCoords = coords => {
     setQuery(prev => ({
@@ -133,7 +128,7 @@ const AddEventScreen = () => {
                     'Location Permission Blocked',
                     'Please enable location permission in your device settings to use this feature.',
                     [
-                      {text: 'Cancel', style: 'cancel'},
+                      { text: 'Cancel', style: 'cancel' },
                       {
                         text: 'Open Settings',
                         onPress: () => openLocationSettings(),
@@ -162,7 +157,7 @@ const AddEventScreen = () => {
                     'Location Permission Blocked',
                     'Please enable location permission in your device settings to use this feature.',
                     [
-                      {text: 'Cancel', style: 'cancel'},
+                      { text: 'Cancel', style: 'cancel' },
                       {
                         text: 'Open Settings',
                         onPress: () => openLocationSettings(),
@@ -192,7 +187,6 @@ const AddEventScreen = () => {
   const fetchCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
-        console.log('Current position:', position);
         navigation.navigate('Map', {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -202,22 +196,17 @@ const AddEventScreen = () => {
       },
       error => {
         setLoading(false); // Stop loading indicator
-        console.log('Error fetching current location:', error);
         setAlertModal({
           open: true,
           message:
             'Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.',
           success: false,
         });
-        // Alert.alert("Location Service Error", "Could not fetch current location. Please ensure your location services are enabled and try again.");
+      
       },
-      {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 },
     );
   };
-
-  useEffect(() => {
-    console.log('selectedDate======================>', selectedDate);
-  }, [selectedDate]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -278,14 +267,13 @@ const AddEventScreen = () => {
       setQuery({
         title: '',
         eventOrganizer: '',
-        date: new Date(),
-        eventEndDate:new Date(),
+        date: "",
+        eventEndDate: "",
         address: '',
         destinationDetails: '',
         coordinates: {},
       });
     } catch (error) {
-      console.log(error);
       setAlertModal({
         open: true,
         message: error?.message,
@@ -295,29 +283,134 @@ const AddEventScreen = () => {
       setIsSubmitLoading(false);
     }
   };
+  const CustomEventDateModal = useCallback(() => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setOpenDate(false);
+        }}
+        visible={openDate}
+      >
 
-  const togglePickerMode = () => {
-    setPickerMode(prevMode => (prevMode === 'date' ? 'time' : 'date'));
-  };
-  const handleConfirmDateTime = () => {
-    // Update the query state with the combined date and time
-    setQuery(prev => ({
-      ...prev,
-      [query.isEndDate ? 'eventEndDate' : 'date']: selectedDate,
-    }));
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setOpenDate(false)
+          }}
+        >
+          <View style={{
+            backgroundColor: 'rgba(33, 22, 10, .85)',
+            flex: 1,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <TouchableWithoutFeedback>
 
-    // Close the modal and reset the picker
-    setOpenDate(false);
-    setCurrentStep('date');
-    // setIsNext(false)
-  };
+              <DatePicker
+              title={query.isEndDate?"Select Event End Date":"Select Event Start Date"}
+                modal
+                theme="dark"
+                open={openDate}
+                mode={"date"}
+                date={new Date()}
+                textColor="white"
+                fadeToColor="none"
+                androidVariant="iosClone"
+                locale="en"
+                cancelText='Cancel'
+                confirmText={"Confirm"}
+                onCancel={() => {
+                  setOpenDate(false)
+                }}
+                onConfirm={(date) => {
+                  setQuery(prev=>({
+                    ...prev,
+                    [query.isEndDate?"eventEndDate":"date"]:date
+                  }))
+                  setOpenDate(false)
+                  setOpenTime(true)
 
+                }}
+
+              />
+
+            </TouchableWithoutFeedback>
+
+
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    )
+  }, [openDate])
+  const CustomEventTimeModal = useCallback(() => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setOpenTime(false);
+        }}
+        visible={openTime}
+      >
+
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setOpenTime(false)
+          }}
+        >
+          <View style={{
+            backgroundColor: 'rgba(33, 22, 10, .85)',
+            flex: 1,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <TouchableWithoutFeedback>
+
+              <DatePicker
+              title={query.isEndDate?"Select Event End Time":"Select Event Start Time"}
+                modal
+                theme="dark"
+                open={openTime}
+                mode={"time"}
+                date={query.isEndDate?query?.eventEndDate:query?.date}
+                textColor="white"
+                fadeToColor="none"
+                androidVariant="iosClone"
+                locale="en"
+                cancelText='Cancel'
+                confirmText={"Confirm"}
+                onCancel={() => {
+                  setOpenTime(false)
+                }}
+                onConfirm={(date) => {
+                  setQuery(prev=>({
+                    ...prev,
+                    [query.isEndDate?"eventEndDate":"date"]:date
+                  }))
+                  setOpenTime(false)
+                }}
+
+              />
+
+            </TouchableWithoutFeedback>
+
+
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    )
+  }, [openTime])
   return (
     <ImageBackground
-      style={{flex: 1, width: '100%', height: '100%'}}
+      style={{ flex: 1, width: '100%', height: '100%' }}
       source={home}>
       <SafeAreaView
-        style={{flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0)}}>
+        style={{ flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0) }}>
         <ScrollView>
           <Header
             cb={() => navigation.goBack()}
@@ -503,7 +596,7 @@ const AddEventScreen = () => {
                   <CustomButtom
                     Icon={() => <Image source={arrow} />}
                     showIcon={false}
-                    buttonTextStyle={{fontSize: scale(14)}}
+                    buttonTextStyle={{ fontSize: scale(14) }}
                     buttonstyle={{
                       width: '100%',
                       borderColor: '#FFA100',
@@ -516,11 +609,10 @@ const AddEventScreen = () => {
                       justifyContent: 'space-between',
                     }}
                     onPress={() => {
-                      setQuery(prev => ({...prev, isEndDate: false}));
-
+                      setQuery(prev => ({ ...prev, isEndDate: false }));
                       setOpenDate(true);
                     }}
-                    title={query?.date?.toDateString()}
+                    title={query?.date?query?.date?.toDateString() +" "+ query?.date?.toLocaleTimeString():"Please Select Event Start Date"}
                   />
                 </View>
 
@@ -538,7 +630,7 @@ const AddEventScreen = () => {
                   <CustomButtom
                     Icon={() => <Image source={arrow} />}
                     showIcon={false}
-                    buttonTextStyle={{fontSize: scale(14)}}
+                    buttonTextStyle={{ fontSize: scale(14) }}
                     buttonstyle={{
                       width: '100%',
                       borderColor: '#FFA100',
@@ -551,10 +643,10 @@ const AddEventScreen = () => {
                       justifyContent: 'space-between',
                     }}
                     onPress={() => {
-                      setQuery(prev => ({...prev, isEndDate: true}));
+                      setQuery(prev => ({ ...prev, isEndDate: true }));
                       setOpenDate(true);
                     }}
-                    title={query?.eventEndDate?.toDateString()}
+                    title={query?.eventEndDate?query?.eventEndDate?.toDateString() +" "+ query?.eventEndDate?.toLocaleTimeString():"Please Select Event End Date"}
                   />
                 </View>
 
@@ -611,7 +703,7 @@ const AddEventScreen = () => {
                     loading={isloading}
                     Icon={() => <Image source={arrow} />}
                     showIcon={true}
-                    buttonTextStyle={{fontSize: scale(14)}}
+                    buttonTextStyle={{ fontSize: scale(14) }}
                     buttonstyle={{
                       width: '100%',
                       borderColor: '#FFA100',
@@ -627,7 +719,7 @@ const AddEventScreen = () => {
                     title={
                       query?.address
                         ? query?.address?.slice(0, 35) +
-                          `${query?.address?.length > 34 ? '...' : ''}`
+                        `${query?.address?.length > 34 ? '...' : ''}`
                         : 'e.g. 123 Spicy Lane, Flavor Town, USA'
                     }
                   />
@@ -637,7 +729,7 @@ const AddEventScreen = () => {
                 <CustomButtom
                   loading={isSubmitLoading}
                   showIcon={false}
-                  buttonTextStyle={{fontSize: scale(14)}}
+                  buttonTextStyle={{ fontSize: scale(14) }}
                   buttonstyle={{
                     width: '100%',
                     borderColor: '#FFA100',
@@ -672,104 +764,8 @@ const AddEventScreen = () => {
           title={yesNoModal.message}
           cb={yesNoModal.cb}
         />
-
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={openDate}
-          onRequestClose={() => {
-            setOpenDate(false);
-            setCurrentStep('date');
-          }}>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              setOpenDate(false);
-              setCurrentStep('date');
-            }}>
-            <View style={styles.modalOverlay}>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  setOpenDate(false);
-                  setCurrentStep('date');
-                }}>
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>
-                      {currentStep === 'date' ? 'Select Date' : 'Select Time'}
-                    </Text>
-                    <DatePicker
-                      theme="dark"
-                      mode={currentStep}
-                      date={selectedDate}
-                      onDateChange={date => {
-                        setIsNext(true);
-                        if (currentStep === 'date') {
-                          const updatedDate = new Date(
-                            date.getFullYear(),
-                            date.getMonth(),
-                            date.getDate(),
-                            selectedDate.getHours(),
-                            selectedDate.getMinutes(),
-                          );
-                          setSelectedDate(updatedDate);
-                        } else {
-                          const updatedDate = new Date(selectedDate);
-                          updatedDate.setHours(date.getHours());
-                          updatedDate.setMinutes(date.getMinutes());
-                          setSelectedDate(updatedDate);
-                        }
-                      }}
-                      textColor="white"
-                      fadeToColor="none"
-                      androidVariant="iosClone"
-                      locale="en"
-                    />
-                    <View style={styles.buttonContainer}>
-                      {currentStep === 'date' ? (
-                        <TouchableOpacity
-                          style={{
-                            margin: 'auto',
-                          }}
-                          onPress={() => {
-                            setCurrentStep('time');
-                          }}
-                          disabled={!isNext}>
-                          <Text
-                            style={{
-                              color: isNext ? 'white' : 'gray',
-                              alignSelf: 'center',
-                              fontSize: scale(14),
-                            }}>
-                            Next
-                          </Text>
-                        </TouchableOpacity>
-                      ) : (
-                        <TouchableOpacity
-                          style={{
-                            margin: 'auto',
-                          }}
-                          onPress={() => {
-                            handleConfirmDateTime();
-                          }}
-                          disabled={!isNext}>
-                          <Text
-                            style={{
-                              color: isNext ? 'white' : 'gray',
-                              alignSelf: 'center',
-                              fontSize: scale(14),
-                            }}>
-                            Confirm
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-
+        {CustomEventDateModal()}
+        {CustomEventTimeModal()}
         <CustomAlertModal
           title={alertModal?.message}
           modalVisible={alertModal?.open}

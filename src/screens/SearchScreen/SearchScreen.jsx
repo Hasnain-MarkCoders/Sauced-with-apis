@@ -69,7 +69,6 @@ const SearchScreen = () => {
       return prev.map(item => {
         if (item._id == id) {
           setReviewCount(item?.reviewCount + 1);
-          console.log(item);
           return {...item, reviewCount: item?.reviewCount + 1};
         } else {
           return item;

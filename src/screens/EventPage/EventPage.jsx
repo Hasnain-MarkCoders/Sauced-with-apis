@@ -298,7 +298,6 @@ const handleInterestedEvent = async () => {
           setLoading(false); // Stop loading indicator
         },
         (error) => {
-          console.log("Error fetching current location:", error);
           setAlertModal({
             open: true,
             message:  "Location Service Error, Could not fetch current location. Please ensure your location services are enabled and try again.",
@@ -400,7 +399,6 @@ const handleInterestedEvent = async () => {
                       {!!eventCoords && (
                         <Marker
                           anchor={{ x: 0.5, y: 0.5 }}
-                          onPress={(e) => { console.log(e) }}
                           coordinate={{
                             latitude: eventCoords.latitude,
                             longitude: eventCoords.longitude,
@@ -418,7 +416,6 @@ const handleInterestedEvent = async () => {
                       {!!currentCoords && (
                         <Marker
                           anchor={{ x: 0.5, y: 0.5 }}
-                          onPress={(e) => { console.log(e) }}
                           coordinate={{
                             latitude: currentCoords.latitude,
                             longitude: currentCoords.longitude,
@@ -434,7 +431,6 @@ const handleInterestedEvent = async () => {
                     {  !!currentCoords && !!eventCoords&& <MapViewDirections
                      onError={(errorMessage) => {
                       console.error('MapViewDirections Error:', errorMessage);
-                      alert(`Directions Error: ${errorMessage}`);
                     }}
                           origin={{
                             latitude: currentCoords.latitude,
@@ -463,7 +459,6 @@ const handleInterestedEvent = async () => {
               // Set distance and duration
               setEventDistance((result.distance * 0.621371).toFixed(2)); // Convert km to miles
               setEventDuration(Math.ceil(result.duration)); // Duration in minutes
-              console.log("result.duration===============>", result.duration)
             }}
 
                         />}
@@ -833,7 +828,6 @@ const handleInterestedEvent = async () => {
                         {!!eventCoords && (
                           <Marker
                             anchor={{ x: 0.5, y: 0.5 }}
-                            onPress={(e) => { console.log(e) }}
                             coordinate={{
                               latitude: eventCoords.latitude,
                               longitude: eventCoords.longitude,
@@ -851,7 +845,6 @@ const handleInterestedEvent = async () => {
                         {!!currentCoords && (
                           <Marker
                             anchor={{ x: 0.5, y: 0.5 }}
-                            onPress={(e) => { console.log(e) }}
                             coordinate={{
                               latitude: currentCoords.latitude,
                               longitude: currentCoords.longitude,

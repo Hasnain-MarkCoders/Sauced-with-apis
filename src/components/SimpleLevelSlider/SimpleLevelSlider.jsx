@@ -41,7 +41,6 @@ const SimpleLevelSlider = ({ cb = () => {} }) => {
       useNativeDriver: false,
       friction: 7,
     }).start();
-    console.log(`Current Level: ${currentLevel}`);
   }, [currentLevel, sliderWidth, thumbPosition]);
 
   // PanResponder to handle drag gestures

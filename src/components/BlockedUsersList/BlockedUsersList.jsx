@@ -19,7 +19,6 @@ const BlockedUsersList = ({ numColumns = 2 }) => {
         params: { page },
       });
 
-      console.log("res?.data?.blockList================================>", res?.data?.blockList)
       if(res?.data?.blockList){
           setHasMore(res?.data?.pagination?.hasNextPage);
           setData(prevData => {
@@ -67,10 +66,6 @@ const BlockedUsersList = ({ numColumns = 2 }) => {
       showText={false}
     />
   ), [handleBlock]);
-  useEffect(() => {
-   console.log(loading)
-  }, [loading]);
-
   return (
     <View style={{ flex: 1, gap: scale(20) }}>
       {

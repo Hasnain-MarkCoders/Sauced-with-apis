@@ -158,7 +158,6 @@ const CheckinScreen = () => {
         setIsLoading(prev => ({...prev, loadMap: false})); // Stop loading indicator
       },
       error => {
-        console.log('Error fetching current location:', error);
         let errorMessage = '';
         switch (error.code) {
           case 1: // PERMISSION_DENIED
@@ -363,9 +362,7 @@ const CheckinScreen = () => {
     const launchFunction = isSelected ? launchCamera : launchImageLibrary;
     launchFunction(options, response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response?.error);
         // Open the alert modal with the error message
         setAlertModal({
           open: true,
@@ -462,7 +459,6 @@ const CheckinScreen = () => {
           'Content-Type': 'multipart/form-data', // Set the content type
         },
       });
-      console.log('response.data===============>', response.data);
       const reviewedSauce = await axios.post(
         host + '/view-sauce',
         {sauceId: _id},
@@ -515,14 +511,11 @@ const CheckinScreen = () => {
       }
     } catch (error) {
       // Handle error response (e.g., 400 error)
-      console.log('error==============>', JSON.stringify(error));
       setAlertModal({
         open: true,
         message: error?.response?.data?.message || error.message,
         success: false, // Error, so success is false
       });
-      console.log(error?.response?.data?.message);
-      console.log(error?.message);
     } finally {
       // Always stop loading after request
       setLoading(false);

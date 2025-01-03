@@ -86,7 +86,6 @@ const SouceDetails = () => {
             }
 
         } catch (error) {
-            console.log(error)
             setAlertModal({
                 open: true,
                 message: error?.response?.data?.message || "An error occurred. Please try again.",

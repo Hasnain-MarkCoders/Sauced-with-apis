@@ -73,7 +73,6 @@ const SwipeableRating = ({
           }
         },
         onPanResponderRelease: () => {
-          console.log(`New Rating: ${rating}`);
         },
       }),
     [rating, maxRating, size, gap]

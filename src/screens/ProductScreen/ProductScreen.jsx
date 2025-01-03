@@ -110,7 +110,6 @@ const ProductScreen = ({}) => {
 
   const handleAddMessage = async () => {
     const existingMessage = data.find(item => item?._id == id);
-    console.log(existingMessage);
     if (existingMessage) {
       existingMessage?.comments?.push({
         user: {image: auth?.url, name: auth?.name},
@@ -263,7 +262,6 @@ const ProductScreen = ({}) => {
     }
   };
   const handleUserProfileView = data => {
-    console.log(data.item._id);
     setOpenUserDetailsModal(true);
     setUserData({
       image: data.item?.owner?.image,

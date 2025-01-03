@@ -121,7 +121,6 @@ function AppRouter() {
               }
         ));
         dispatch(increaseCount());
-        console.log("remoteMessage===============>", remoteMessage)
   
     });
   
