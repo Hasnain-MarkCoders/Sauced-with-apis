@@ -81,8 +81,8 @@ android {
         applicationId "com.sauced"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 21
-        versionName "1.2.1"
+        versionCode 23
+        versionName "1.2.3"
         missingDimensionStrategy 'react-native-camera', 'general'
 
     }

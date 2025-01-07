@@ -48,7 +48,8 @@ const CommentsList = ({ commentsData=[],
           likesCount={item?.likesCount}
           hasLikedUser={item?.hasLiked}
           count = {commentsData?.length}
-
+          sauce_id={item?.sauceId?._id}
+          sauce_name={item?.sauceId?.name}
           />
 
         }

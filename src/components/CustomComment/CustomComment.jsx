@@ -44,7 +44,9 @@ const CustomComment = ({
   likesCount = 0,
   hasLikedUser = false,
   location = null,
-  address = null
+  address = null,
+  sauce_name=null,
+  sauce_id=null
 }) => {
   useEffect(() => { }, [profileUri]);
   const [commentStatus, setCommentStatus] = useState(hasLikedUser);
@@ -71,7 +73,6 @@ const CustomComment = ({
   const axiosInstance = useAxios();
   let watchId = useRef(null)
   const navigation = useNavigation()
-
   const handleLike = async () => {
     try {
       setLikesCount(prev => (commentStatus && prev > 0 ? prev - 1 : prev + 1));
@@ -321,6 +322,8 @@ const CustomComment = ({
               flexShrink: 1,
               flexGrow: 1,
             }}>
+              <View>
+
             <TouchableOpacity
               onPress={() => {
                 setOpenUserDetailsModal(true);
@@ -343,6 +346,24 @@ const CustomComment = ({
                 {title}
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("ProductScreen", {
+                  _id: sauce_id
+                })
+              }}>
+              <Text
+                style={{
+                  color: isReply ? 'white' : '#FFA100',
+                  fontWeight: 700,
+                  fontSize: isReply ? scale(8) : scale(9),
+                  lineHeight: scale(10),
+                  textDecorationLine:"underline"
+                }}>
+                {sauce_name}
+              </Text>
+            </TouchableOpacity>
+              </View>
             {/* <>
             <>
               {
@@ -452,7 +473,7 @@ const CustomComment = ({
               <>
                 <Text
                   style={{ maxWidth: '100%', color: 'white' }}>
-                  {text.slice(0, 200) + "..."}
+                  {text?.slice(0, 200) + "..."}
                 </Text>
                 <TouchableOpacity
 
