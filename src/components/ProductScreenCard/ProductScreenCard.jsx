@@ -350,7 +350,7 @@ const ProductScreenCard = ({
                             <Text style={{
                                 color: "white"
                             }}>
-                               Find on Company Site
+                               Company Website
                             </Text>
                             <TouchableOpacity onPress={() => {
                                 websiteLink && Linking.openURL(websiteLink)

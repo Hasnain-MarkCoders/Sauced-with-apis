@@ -62,7 +62,12 @@ const [initialLoading, setInitialLoading] = React.useState(true)
      fetchEvents();
     }, [page, refresh]);
     const handleSnapToItem = (index) => {
-        setSelected(index);
+        // if(index==9){
+        //     setSelected(0)
+        // }else{
+        //     setSelected(index);
+        // }
+        setSelected(index % Math.min(interestedEvents.length, 8))
         if (index === interestedEvents.length - 1) {
             setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
         }
@@ -159,7 +164,7 @@ setTimeout(()=>{
                         justifyContent: "flex-start",
                         gap: scale(3),
                     }}>
-                        {Array.from({ length: interestedEvents }).map((_, index) => (  // Only create 8 dots
+                        {Array.from({ length: Math.min(interestedEvents?.length , 8) }).map((_, index) => (  // Only create 8 dots
                             <View
                                 key={index}
                                 style={{

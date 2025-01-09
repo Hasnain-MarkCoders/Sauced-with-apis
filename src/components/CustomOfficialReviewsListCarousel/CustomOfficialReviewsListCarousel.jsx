@@ -40,6 +40,8 @@ const CustomOfficialReviewsListCarousel = ({
                 });
                     setHasMore(res.data.pagination.hasNextPage);
                     setData(res?.data?.officialReviews);
+                    
+                    
             } catch (error) {
                 console.error('Failed to fetch reviews:', error);
             } finally {
@@ -53,10 +55,15 @@ const CustomOfficialReviewsListCarousel = ({
 
 
        const handleSnapToItem = (index) => {
-        setSelected(index);
-        if (index === data.length - 1) {
-            // setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
-        }
+        // if(index>=9){
+        //     setSelected(index %8)
+        // }else{
+        //     setSelected(index);
+        // }
+        setSelected(index % Math.min(data.length, 8));
+        // if (index === data.length - 1) {
+        //     // setPage(prevPage => prevPage + 1); // Increment page to fetch next batch
+        // }
     };
     React.useEffect(()=>{
         setTimeout(()=>{
@@ -125,7 +132,7 @@ const CustomOfficialReviewsListCarousel = ({
                         justifyContent: "flex-start",
                         gap: scale(3),
                     }}>
-                        {Array.from({ length: 8 }).map((_, index) => (  // Only create 8 dots
+                        {Array.from({ length: Math.min(data.length , 8)  }).map((_, index) => (  // Only create 8 dots
                             <View
                                 key={index}
                                 style={{

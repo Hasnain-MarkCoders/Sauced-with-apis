@@ -425,7 +425,7 @@ const Home = () => {
               style={{
                 gap: scale(10),
               }}>
-              <CustomButtom
+              {/* <CustomButtom
                 loading={isloading}
                 Icon={() => <Image source={arrow} />}
                 showIcon={true}
@@ -443,7 +443,7 @@ const Home = () => {
                 }}
                 onPress={checkLocationServiceAndNavigate}
                 title={'Find a hot sauce store near me'}
-              />
+              /> */}
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('AddStore');

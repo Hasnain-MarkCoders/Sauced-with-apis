@@ -112,6 +112,7 @@ const ProductSearchList = ({
                 data.length>0
                 ?
                 <FlatList
+                // removeClippedSubviews={true}
                     data={data}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: scale(100), gap: scale(10) , display:"flex", flexDirection:"row",justifyContent:"flex-start",  flexWrap:"wrap"}}
@@ -123,6 +124,19 @@ const ProductSearchList = ({
                             setPage(currentPage => currentPage + 1);
                         }
                     }}
+                    
+                    ListFooterComponentStyle = {{
+                        width: '100%',
+                    }}
+                        ListFooterComponent={
+                              loading && (
+                                <ActivityIndicator
+                                  size="small"
+                                  style={{ marginBottom: scale(20) }}
+                                  color="#FFA100"
+                                />
+                              )
+                            }
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => <SingleSauce
                     _id={item?._id}
@@ -176,9 +190,9 @@ const ProductSearchList = ({
                 <NotFound title='No results available'/>
                 :null
             }
-            {loading && (
+            {/* {loading && (
                 <ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
-            )}
+            )} */}
 
         </View>
     );
