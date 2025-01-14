@@ -448,9 +448,9 @@ const CheckinScreen = () => {
       formData.append('sauceId', _id); // Assuming item._id contains the sauceId
 
       // Append foodPairings
-      data?.foodPairings.forEach(item => {
-        formData.append('foodPairings', item);
-      });
+      // data?.foodPairings.forEach(item => {
+      //   formData.append('foodPairings', item);
+      // });
 
       // Perform the axios POST request
       const response = await axios.post(`${host}/checkin`, formData, {
@@ -611,7 +611,7 @@ const CheckinScreen = () => {
                 onPress={checkLocationServiceAndNavigate}
                 title={data?.address ? data?.address : 'Address'}
               />
-              <SelectableChips isClearChips={isClearChips} setData={setData} />
+              {/* <SelectableChips isClearChips={isClearChips} setData={setData} /> */}
               <View
                 style={{
                   width: '100%',

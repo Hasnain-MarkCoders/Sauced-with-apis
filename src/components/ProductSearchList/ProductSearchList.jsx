@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Dimensions, Image, Alert } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import SingleSauce from '../SingleSauce/SingleSauce';
 import useAxios from '../../../Axios/useAxios';
@@ -8,6 +8,7 @@ import useAxios from '../../../Axios/useAxios';
 import { useDispatch } from 'react-redux';
 import NotFound from '../NotFound/NotFound';
 import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../Redux/favoriteSauces';
+import { useFocusEffect } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 const ProductSearchList = ({
     setProductDetails = () => { },
@@ -16,7 +17,8 @@ const ProductSearchList = ({
     type = "",
     showHeart = false,
     searchTerm = "",
-    getQueryData = () => { }
+    getQueryData = () => { },
+    navigation
 }) => {
     const axiosInstance = useAxios()
     const [data, setData] = useState([])
@@ -89,10 +91,24 @@ const ProductSearchList = ({
         })
 
     }, [])
-
+    useFocusEffect(
+        useCallback(() => {
+            fetchSauces();
+          // Perform any actions needed when the screen is focused
+          return () => {
+            // Perform cleanup actions when the screen loses focus
+            setData([]);
+            setHasMore(true);
+            setPage(1);
+          };
+        }, [])
+      );
 
     useEffect(() => {
-        fetchSauces();
+        if (page > 1) {
+            fetchSauces();
+        }
+        // fetchSauces();
     }, [fetchSauces]);
 
     useEffect(() => {
@@ -112,7 +128,7 @@ const ProductSearchList = ({
                 data.length>0
                 ?
                 <FlatList
-                // removeClippedSubviews={true}
+                removeClippedSubviews={true}
                     data={data}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: scale(100), gap: scale(10) , display:"flex", flexDirection:"row",justifyContent:"flex-start",  flexWrap:"wrap"}}

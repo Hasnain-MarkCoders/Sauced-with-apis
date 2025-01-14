@@ -177,6 +177,7 @@ useEffect(()=>{
                 renderItem={({item}) => (
                
                   <SingleReview
+                foodPairings={item?.foodPairings||[]}
                   isNavigate={true}
                   sauceId = {item?.sauceId?._id}
                   url={item?.owner.image}

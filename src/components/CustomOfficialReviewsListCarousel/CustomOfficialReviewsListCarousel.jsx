@@ -55,6 +55,8 @@ const CustomOfficialReviewsListCarousel = ({
 
 
        const handleSnapToItem = (index) => {
+        console.log("index", index)
+        // console.log("index % Math.min(data.length, 8)", index % Math.min(data.length, 8))
         // if(index>=9){
         //     setSelected(index %8)
         // }else{

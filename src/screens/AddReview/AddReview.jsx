@@ -39,6 +39,7 @@ import {handleIncreaseReviewCountOfFavoriteSauce} from '../../Redux/favoriteSauc
 import {handleIncreaseReviewCountOfCheckedInSauce} from '../../Redux/checkedInSauces.js';
 import {handleIncreaseReviewCountOfTopRatedSauce} from '../../Redux/topRatedSauces.js';
 import {handleReviewedSauces} from '../../Redux/reviewedSauces.js';
+import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
 
 const AddReview = () => {
   const route = useRoute();
@@ -80,7 +81,11 @@ const AddReview = () => {
     review: '',
     rating: '1',
     heatLevel: 1,
+    foodPairings: [],
+
   });
+    const [isClearChips, setIsClearChips] = useState(false);
+  
   const navigation = useNavigation();
 
   const handleImagePickerPermission = (isSelected = true) => {
@@ -312,6 +317,10 @@ const AddReview = () => {
       formData.append('text', data?.review);
       formData.append('star', data?.rating);
       formData.append('sauceId', sauceId);
+      data?.foodPairings.forEach(item => {
+        formData.append('foodPairings', item);
+      });
+
       const res = await axios.post(host + '/create-review', formData, {
         headers: {
           Authorization: `Bearer ${auth?.token}`,
@@ -359,8 +368,10 @@ const AddReview = () => {
           review: '',
           rating: '1',
           heatLevel: 1,
+          foodPairings: [],
         });
         progress.value = 0;
+        setIsClearChips(true);
         setImageUris([]);
       }
     } catch (error) {
@@ -524,6 +535,8 @@ const AddReview = () => {
                             <SimpleLevelSlider cb={handleSlider} />
                           </View>
                         </View>
+                        <SelectableChips isClearChips={isClearChips} setData={setData} />
+
                         <View
                           style={{
                             width: '100%',

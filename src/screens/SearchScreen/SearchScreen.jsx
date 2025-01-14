@@ -41,6 +41,8 @@ const SearchScreen = () => {
 
   useEffect(() => {
     navigation.addListener('focus', () => {});
+  
+  
   }, [data]);
 
   useEffect(() => {
@@ -246,6 +248,7 @@ const SearchScreen = () => {
               {/* Product Search List */}
               <View style={{flex: 1}}>
                 <ProductSearchList
+                navigation={navigation}
                   handleIncreaseReviewCount={handleIncreaseReviewCount}
                   getQueryData={setData}
                   showHeart={false}

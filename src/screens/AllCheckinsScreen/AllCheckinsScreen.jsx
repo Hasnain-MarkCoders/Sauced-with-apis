@@ -57,13 +57,25 @@ const AllCheckinsScreen = ({}) => {
   const getId = (id = 0) => {
     return setId(id);
   };
-  const handleUserProfileView = data => {
-    navigation.navigate('ExternalProfileScreen', {
-      url: data?.profileUri,
-      name: data?.name,
-      _id: data?.item?.owner?._id,
-    });
+  const handleUserProfileView = (data, isReply) => {
+    if(isReply){
+      // console.log(JSON.stringify(data, null, 5))
+      navigation.navigate('ExternalProfileScreen', {
+        url: data?.item?.user?.image,
+        name: data?.item?.user?.name,
+        _id: data?.item?.user?._id,
+      });
+    }else{
+
+      navigation.navigate('ExternalProfileScreen', {
+        url: data?.profileUri,
+        name: data?.name,
+        _id: data?.item?.owner?._id,
+      });
+    }
   };
+
+
   const handleAddMessage = async () => {
     const existingMessage = data.find(item => item?._id == id);
     if (existingMessage) {

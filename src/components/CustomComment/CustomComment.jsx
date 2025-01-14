@@ -45,8 +45,10 @@ const CustomComment = ({
   hasLikedUser = false,
   location = null,
   address = null,
-  sauce_name=null,
-  sauce_id=null
+  sauce_name = null,
+  sauce_id = null,
+  foodPairings = [],
+
 }) => {
   useEffect(() => { }, [profileUri]);
   const [commentStatus, setCommentStatus] = useState(hasLikedUser);
@@ -85,8 +87,6 @@ const CustomComment = ({
       });
     } catch (error) { }
   };
-
-
 
   const checkLocationServiceAndNavigate = async () => {
     setLocationLoading(true); // Start loading indicator
@@ -266,13 +266,13 @@ const CustomComment = ({
   return (
     <View
       style={{
-        // alignItems: isReply || assets.length < 1 ? 'flex-start' : 'start',
-        gap: scale(20),
+        gap: isReply ? scale(0) : scale(20),
         borderBottomColor: '#FFA100',
         borderBottomWidth: showBorder && count > 1 ? 1 : 0,
         marginBottom: isReply ? scale(0) : scale(30),
         paddingBottom: isReply ? scale(0) : scale(30),
       }}>
+        {/* profile */}
       <View
         style={{
           flexDirection: 'row',
@@ -322,48 +322,47 @@ const CustomComment = ({
               flexShrink: 1,
               flexGrow: 1,
             }}>
-              <View>
-
-            <TouchableOpacity
-              onPress={() => {
-                setOpenUserDetailsModal(true);
-                cb({
-                  profileUri,
-                  name: title,
-                  email,
-                  number: '+1234567890',
-                  item,
-                });
-              }}>
-              <Text
-                style={{
-                  color: isReply ? 'white' : '#FFA100',
-                  fontWeight: 700,
-                  fontSize: isReply ? scale(12) : scale(14),
-                  lineHeight: scale(17),
-                  paddingVertical: scale(10),
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  setOpenUserDetailsModal(true);
+                  cb({
+                    profileUri,
+                    name: title,
+                    email,
+                    number: '+1234567890',
+                    item,
+                  }, isReply);
                 }}>
-                {title}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("ProductScreen", {
-                  _id: sauce_id
-                })
-              }}>
-              <Text
-                style={{
-                  color: isReply ? 'white' : '#FFA100',
-                  fontWeight: 700,
-                  fontSize: isReply ? scale(8) : scale(9),
-                  lineHeight: scale(10),
-                  textDecorationLine:"underline"
+                <Text
+                  style={{
+                    color: isReply ? 'white' : '#FFA100',
+                    fontWeight: 700,
+                    fontSize: isReply ? scale(12) : scale(14),
+                    lineHeight: scale(17),
+                    paddingVertical: scale(10),
+                  }}>
+                  {title}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("ProductScreen", {
+                    _id: sauce_id
+                  })
                 }}>
-                {sauce_name}
-              </Text>
-            </TouchableOpacity>
-              </View>
+                <Text
+                  style={{
+                    color: isReply ? 'white' : '#FFA100',
+                    fontWeight: 700,
+                    fontSize: isReply ? scale(8) : scale(9),
+                    lineHeight: scale(10),
+                    textDecorationLine: "underline"
+                  }}>
+                  {sauce_name}
+                </Text>
+              </TouchableOpacity>
+            </View>
             {/* <>
             <>
               {
@@ -464,7 +463,7 @@ const CustomComment = ({
           </TouchableOpacity>
         </View>
       </View>
-
+{/* message and address */}
       <>
         <>
           {
@@ -489,7 +488,7 @@ const CustomComment = ({
                     setShowMore(false)
                   }}>
                   <Text style={{
-                    color:'black'
+                    color: 'black'
                   }}>
                     show more
                   </Text>
@@ -498,7 +497,7 @@ const CustomComment = ({
               :
               <>
                 <Text
-                  style={{ maxWidth: '100%', color: 'white'}}
+                  style={{ maxWidth: '100%', color: 'white' }}
                 >{text}</Text>
                 {text.length > 200 && <TouchableOpacity
                   style={{
@@ -514,7 +513,7 @@ const CustomComment = ({
                   }}
                 >
                   <Text style={{
-                    color:'black'
+                    color: 'black'
                   }}>
                     show less
                   </Text>
@@ -525,7 +524,6 @@ const CustomComment = ({
         {address && <View style={{
           flexDirection: "row",
           gap: scale(10),
-          marginTop: scale(10),
         }}>
           <MapPin size={30} stroke={"#FFA500"} />
           <Text
@@ -536,6 +534,23 @@ const CustomComment = ({
           </Text>
         </View>}
       </>
+
+      <View style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: scale(7),
+      }}>
+        {foodPairings?.map((foodPair, index) => <View key={index}><Text style={{
+          backgroundColor: '#2e210a', // Dark box for unselected chips
+          borderRadius: scale(20),
+          paddingVertical: scale(6),
+          paddingHorizontal: scale(10),
+          borderColor: '#FFA500', // Orange border for chips to match the theme
+          borderWidth: scale(1),
+          alignItems: 'center',
+          color: "white"
+        }}>{foodPair}</Text></View>)}
+      </View>
       {assets.length > 0 && (
         <View
           style={{
@@ -669,6 +684,7 @@ const CustomComment = ({
         <View
           style={{
             alignSelf: 'flex-start',
+            gap:scale(20)
           }}>
           {replies?.map(item => (
             <CustomComment
@@ -677,8 +693,10 @@ const CustomComment = ({
               showBorder={false}
               handleSubmitMessage={handleSubmitMessage}
               profileUri={item?.user?.image}
+              email={item?.user?.email}
               title={item?.user?.name}
               text={item.text}
+              item={item}
             />
           ))}
         </View>

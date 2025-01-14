@@ -261,14 +261,24 @@ const ProductScreen = ({}) => {
       setisEnabled(true);
     }
   };
-  const handleUserProfileView = data => {
+  const handleUserProfileView = (data, isReply) => {
+    if(isReply){
+      setUserData({
+        image: data?.item?.user?.image,
+        name: data?.item?.user?.name,
+        email: data?.item?.user?.email,
+        phone: data?.item?.user?.phone || 'N/A',
+      });
+    }else{
+      setUserData({
+        image: data?.item?.owner?.image,
+        name: data?.item?.owner?.name,
+        email: data?.item?.owner?.email,
+        phone: data?.item?.owner?.phone || 'N/A',
+      });
+    }
     setOpenUserDetailsModal(true);
-    setUserData({
-      image: data.item?.owner?.image,
-      name: data.item?.owner?.name,
-      email: data.item?.owner?.email,
-      phone: data.item?.owner?.phone || 'N/A',
-    });
+
   };
 
   if (initialLoading) {

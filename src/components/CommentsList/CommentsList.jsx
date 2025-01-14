@@ -11,7 +11,8 @@ const CommentsList = ({ commentsData=[],
     loading =false,
      hasMore,
       setPage = () => { },
-     handleSubmitMessage = () => { } }) => {
+     handleSubmitMessage = () => { }, 
+    }) => {
   return (
     <>
      {
@@ -32,6 +33,7 @@ const CommentsList = ({ commentsData=[],
 
         renderItem={({ item, index }) =>
         <CustomComment
+        foodPairings={item?.foodPairings||[]}
         address = {item?.address}
         location = {item?.location}
         getId={getId}

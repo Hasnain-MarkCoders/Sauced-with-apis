@@ -41,6 +41,7 @@ const AllUserReviews = () => {
           _id,
         },
       });
+      console.log(res.data)
       setHasMore(res?.data?.pagination?.hasNextPage);
       const newData = res?.data?.reviews?res?.data?.reviews:[]
       if(newData.length>0){
@@ -144,6 +145,7 @@ navigation.addListener("blur", ()=>{
               }
               renderItem={({item}) => (
                 <SingleReview
+                foodPairings={item?.foodPairings||[]}
                   sauceId={item?.sauceId?._id}
                   isNavigate={true}
                   url={item?.owner.image}

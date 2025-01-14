@@ -20,7 +20,8 @@ const SingleReview = ({
   text = "",
   textLength = "",
   date = "",
-  images = []
+  images = [],
+  foodPairings=[],
 }) => {
   const navigation = useNavigation()
   const [readMore, setReadMore] = useState(textLength > 130)
@@ -126,6 +127,23 @@ const SingleReview = ({
                                  initialRating={item?.star}
                                 />
           </View>
+          
+      <View style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: scale(7),
+      }}>
+        {foodPairings?.map((foodPair, index) => <View key={index}><Text style={{
+          backgroundColor: '#2e210a', // Dark box for unselected chips
+          borderRadius: scale(20),
+          paddingVertical: scale(6),
+          paddingHorizontal: scale(10),
+          borderColor: '#FFA500', // Orange border for chips to match the theme
+          borderWidth: scale(1),
+          alignItems: 'center',
+          color: "white"
+        }}>{foodPair}</Text></View>)}
+      </View>
 
         <View
           style={{ flexDirection: 'row', flexWrap: 'wrap' }}
