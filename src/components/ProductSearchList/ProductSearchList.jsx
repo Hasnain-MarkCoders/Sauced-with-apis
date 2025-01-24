@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import NotFound from '../NotFound/NotFound';
 import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../../Redux/favoriteSauces';
 import { useFocusEffect } from '@react-navigation/native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const ProductSearchList = ({
     setProductDetails = () => { },
@@ -18,7 +19,8 @@ const ProductSearchList = ({
     showHeart = false,
     searchTerm = "",
     getQueryData = () => { },
-    navigation
+    navigation,
+    closeResults=()=>{}
 }) => {
     const axiosInstance = useAxios()
     const [data, setData] = useState([])
@@ -32,11 +34,12 @@ const ProductSearchList = ({
 
         setLoading(true);
         const endpoint = searchTerm ? "/search-sauces" : "/get-sauces";
-
+        console.log("searchTermsearchTerm", searchTerm)
         try {
             const res = await axiosInstance.get(endpoint, {
                 params: { type, page, searchTerm }
             });
+
             setHasMore(res.data.pagination.hasNextPage);
             setData(prev => [...prev, ...res.data.sauces]);
 
@@ -93,21 +96,24 @@ const ProductSearchList = ({
     }, [])
     useFocusEffect(
         useCallback(() => {
-            fetchSauces();
+            if(page==1){
+                fetchSauces();
+            }
           // Perform any actions needed when the screen is focused
           return () => {
             // Perform cleanup actions when the screen loses focus
             setData([]);
             setHasMore(true);
             setPage(1);
+
           };
         }, [])
       );
 
     useEffect(() => {
-        if (page > 1) {
+        // if (page > 1) {
             fetchSauces();
-        }
+        // }
         // fetchSauces();
     }, [fetchSauces]);
 
@@ -116,14 +122,30 @@ const ProductSearchList = ({
             setData([]);
             setHasMore(true);
             setPage(1);
+            
+        }
+        if(searchTerm==""){
+            setHasMore(true);
+            setData([]);
+            setPage(1);
+            fetchSauces();
+
         }
     }, [searchTerm]);
 
     return (
-        <View style={{
+        <View 
+      onPointerDown={()=>{
+        Alert.alert("hello")
+      }}
+        style={{
             flex: 1,
             ...style,
         }}>
+            <TouchableWithoutFeedback 
+            onPress={closeResults}
+            >
+
             {
                 data.length>0
                 ?
@@ -209,6 +231,7 @@ const ProductSearchList = ({
             {/* {loading && (
                 <ActivityIndicator size="small" style={{ marginBottom: scale(100) }} color="#FFA100" />
             )} */}
+            </TouchableWithoutFeedback>
 
         </View>
     );

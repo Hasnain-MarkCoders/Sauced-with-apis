@@ -39,11 +39,6 @@ const SearchScreen = () => {
     }, 1000);
   }, []);
 
-  useEffect(() => {
-    navigation.addListener('focus', () => {});
-  
-  
-  }, [data]);
 
   useEffect(() => {
     if (query.search) {
@@ -57,8 +52,8 @@ const SearchScreen = () => {
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       // setIsKeyBoard(false)
-      setData([]);
-      setShowResults(false);
+      // setData([]);
+      // setShowResults(false);
     });
     return () => {
       showSubscription.remove();
@@ -83,16 +78,28 @@ const SearchScreen = () => {
       return (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('ProductScreen', {
-             _id:item._id,
-              item,
-              title: item?.name,
-              url: item?.image,
-              handleIncreaseReviewCount,
-            });
+            setQuery({
+              search:item.name
+            })
+            setTimeout(()=>{
+            setShowResults(false);
+
+            },1000)
+            // setTimeout(() => {
+            //   navigation.navigate('ProductScreen', {
+            //     _id:item._id,
+            //      item,
+            //      title: item?.name,
+            //      url: item?.image,
+            //      handleIncreaseReviewCount,
+            //    });
+            // }, 1000)
+         
+            
+            // console.log(JSON.stringify(item))
           }}
           style={{
-            padding: scale(12),
+            padding: scale(20),
             borderBottomWidth: 1,
             borderBottomColor: '#E0E0E0', // Subtle divider between items
           }}
@@ -237,6 +244,8 @@ const SearchScreen = () => {
                     elevation: 5, // For Android shadow effect
                   }}>
                   <FlatList
+                removeClippedSubviews={true}
+
                     data={data}
                     extraData={data}
                     keyExtractor={(item, index) => index.toString()}
@@ -248,6 +257,7 @@ const SearchScreen = () => {
               {/* Product Search List */}
               <View style={{flex: 1}}>
                 <ProductSearchList
+                closeResults={()=>setShowResults(false)}
                 navigation={navigation}
                   handleIncreaseReviewCount={handleIncreaseReviewCount}
                   getQueryData={setData}
