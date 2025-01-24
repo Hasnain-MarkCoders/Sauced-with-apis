@@ -11,6 +11,7 @@ import { handleFavoriteSauces, handleRemoveSauceFromFavouriteSauces } from '../.
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
+import { debounce } from 'lodash';
 const ProductSearchList = ({
     setProductDetails = () => { },
     setAlertModal = () => { },
@@ -19,7 +20,6 @@ const ProductSearchList = ({
     showHeart = false,
     searchTerm = "",
     getQueryData = () => { },
-    navigation,
     closeResults=()=>{}
 }) => {
     const axiosInstance = useAxios()
@@ -29,20 +29,28 @@ const ProductSearchList = ({
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch()
 
-    const fetchSauces = useCallback(async () => {
+    const fetchSauces = useCallback(
+        debounce(   async () => {
         if (!hasMore || loading) return;
 
         setLoading(true);
         const endpoint = searchTerm ? "/search-sauces" : "/get-sauces";
-        console.log("searchTermsearchTerm", searchTerm)
         try {
             const res = await axiosInstance.get(endpoint, {
                 params: { type, page, searchTerm }
             });
 
             setHasMore(res.data.pagination.hasNextPage);
-            setData(prev => [...prev, ...res.data.sauces]);
-
+         
+            setData(prev => {
+                const updatedData = [...prev];
+                res.data.sauces.forEach(item => {
+                  if (!updatedData.some(existingItem => existingItem._id === item._id)) {
+                    updatedData.push(item);
+                  }
+                });
+                return updatedData;
+              });
             getQueryData(res?.data?.sauces)
 
         } catch (error) {
@@ -54,7 +62,11 @@ const ProductSearchList = ({
         } finally {
             setLoading(false);
         }
-    }, [hasMore, page, searchTerm, type]);
+    }, 500, {trailing:true})
+    
+    , [hasMore, page, searchTerm, type]);
+
+  
     const handleIncreaseReviewCount = useCallback((id, setReviewCount) => {
         setData(prev => {
             return prev.map(item => {

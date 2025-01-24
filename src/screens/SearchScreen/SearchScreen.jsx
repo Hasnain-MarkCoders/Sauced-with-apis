@@ -16,7 +16,7 @@ import home from './../../../assets/images/home.png';
 import {handleText} from '../../../utils';
 import {scale} from 'react-native-size-matters';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 import search from './../../../assets/images/search_icon.png';
 import ProductSearchList from '../../components/ProductSearchList/ProductSearchList';
 import {X} from 'lucide-react-native';
@@ -44,6 +44,7 @@ const SearchScreen = () => {
     if (query.search) {
       setShowResults(true);
     }
+  
   }, [query.search]);
 
   useEffect(() => {
@@ -51,9 +52,7 @@ const SearchScreen = () => {
       // setIsKeyBoard(true)
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      // setIsKeyBoard(false)
-      // setData([]);
-      // setShowResults(false);
+      
     });
     return () => {
       showSubscription.remove();
@@ -85,18 +84,6 @@ const SearchScreen = () => {
             setShowResults(false);
 
             },1000)
-            // setTimeout(() => {
-            //   navigation.navigate('ProductScreen', {
-            //     _id:item._id,
-            //      item,
-            //      title: item?.name,
-            //      url: item?.image,
-            //      handleIncreaseReviewCount,
-            //    });
-            // }, 1000)
-         
-            
-            // console.log(JSON.stringify(item))
           }}
           style={{
             padding: scale(20),
@@ -117,6 +104,13 @@ const SearchScreen = () => {
     },
     [navigation],
   );
+useEffect(() => {
+ 
+  navigation.addListener("blur", ()=>{
+    setShowResults(false)
+  })
+ 
+  });
 
   if (initialLoading) {
     return (

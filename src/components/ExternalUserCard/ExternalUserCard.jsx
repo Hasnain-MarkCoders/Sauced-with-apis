@@ -1,14 +1,14 @@
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback,  useState } from 'react'
 import { scale } from 'react-native-size-matters'
-import { useSelector } from 'react-redux'
-import { formatDate, generateThreeDigitRandomNumber, getRandomDate } from '../../../utils'
-import { useNavigation } from '@react-navigation/native'
+import { formatDate } from '../../../utils'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import flames from "./../../../assets/images/flames.png"
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 // import Lightbox from 'react-native-lightbox';
 import Lightbox from 'react-native-lightbox-v2';
 import ImageView from "react-native-image-viewing";
+import useAxios from '../../../Axios/useAxios'
 
 const ExternalUserCard = ({
     totalCheckIns=0,
@@ -21,10 +21,30 @@ const ExternalUserCard = ({
     reviewsCount=0,
 }) => {
     const navigation = useNavigation()
-    const circles = [1, 1, 1, 1, 1]
+    const [circles, setCircles] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [LightBox, setLightBox] = useState(false)
     const [visible, setIsVisible] = useState(false)
+    const axiosInstance = useAxios()
+    const fetchBadges = useCallback(
+         async () => {
+          const endpoint = "/get-user-badge";
+          try {
+              const res = await axiosInstance.get(endpoint, {
+                  params: {
+                    _id
+                  }
+              });
+              setCircles(res?.data?.userBadges?.badges||[])
+          } catch (error) {
+      }
+      
+   }, []);
+
+useFocusEffect(
+  useCallback(() => {
+      fetchBadges();
+  }, []))
 
 
     return (
@@ -248,22 +268,24 @@ const ExternalUserCard = ({
                     flexDirection: "row",
 
                 }}>
-                    <View style={{
-                        width: scale(10),
-                        height: scale(10),
-                        borderRadius: scale(50),
-                        backgroundColor: "#FFA100"
-                    }}>
-
-                    </View>
-                    {circles.map((item, index) => <View key={index} style={{
-                        width: scale(10),
-                        height: scale(10),
+                     {circles.map((item, index) => <View key={index} style={{
+                        width: scale(15),
+                        height: scale(15),
                         borderRadius: scale(50),
                         backgroundColor: "#774d06"
                     }}>
+                        <Image
+                        source={{uri:item?.badgeId?.icon}}
+                            style={{
+                                width:"100%",
+                                height:"100%",
+                                resizeMode:"contain",
+                                borderRadius:scale(50)
+                            }}
+                        />
 
                     </View>)}
+
 
                 </View>
             </View>

@@ -1,13 +1,14 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import { formatDate, getFormattedName } from '../../../utils'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import redFlameIndicator from "./../../../assets/images/redFlameIndicator.png"
 import { useSelector } from 'react-redux'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import { Pencil } from 'lucide-react-native'
 import ImageView from "react-native-image-viewing";
+import useAxios from '../../../Axios/useAxios'
 
 const ProfileCard = ({
 totalCheckIns=0,
@@ -21,10 +22,30 @@ reviewsCount=0
 }) => {
     const auth = useSelector(state=>state.auth)
     const navigation = useNavigation()
-    const circles = [1, 1, 1, 1, 1]
+    const [circles, setCircles] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [visible, setIsVisible] = useState(false)
+    const axiosInstance = useAxios()
+      const fetchBadges = useCallback(
+           async () => {
+            const endpoint = "/get-user-badge";
+            try {
+                const res = await axiosInstance.get(endpoint, {
+                    params: {
+                        _id: auth?._id
+                    }
+                });
+                setCircles(res?.data?.userBadges?.badges||[])
+                console.log(res.data)
+            } catch (error) {
+        }
+        
+     }, []);
 
+useFocusEffect(
+    useCallback(() => {
+        fetchBadges();
+    }, []))
 
     return (
         <View style={{
@@ -289,20 +310,22 @@ reviewsCount=0
                     flexDirection: "row",
 
                 }}>
-                    <View style={{
-                        width: scale(10),
-                        height: scale(10),
-                        borderRadius: scale(50),
-                        backgroundColor: "#FFA100"
-                    }}>
-
-                    </View>
+                  
                     {circles.map((item, index) => <View key={index} style={{
-                        width: scale(10),
-                        height: scale(10),
+                        width: scale(15),
+                        height: scale(15),
                         borderRadius: scale(50),
                         backgroundColor: "#774d06"
                     }}>
+                        <Image
+                        source={{uri:item?.badgeId?.icon}}
+                            style={{
+                                width:"100%",
+                                height:"100%",
+                                resizeMode:"contain",
+                                borderRadius:scale(50)
+                            }}
+                        />
 
                     </View>)}
 
