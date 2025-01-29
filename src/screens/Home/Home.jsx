@@ -421,11 +421,11 @@ const Home = () => {
               refresh={refresh}
               title="Recently Popular Sauces"
             />
-            <View
+            {/* <View
               style={{
                 gap: scale(10),
               }}>
-              {/* <CustomButtom
+              <CustomButtom
                 loading={isloading}
                 Icon={() => <Image source={arrow} />}
                 showIcon={true}
@@ -443,7 +443,7 @@ const Home = () => {
                 }}
                 onPress={checkLocationServiceAndNavigate}
                 title={'Find a hot sauce store near me'}
-              /> */}
+              />
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('AddStore');
@@ -460,7 +460,7 @@ const Home = () => {
                   Want to recommend a local store?
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <BrandList title="Popular Brands" />
             <View
