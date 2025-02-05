@@ -102,8 +102,15 @@ function AppRouter() {
   //   handleNetwork()
   // },[])
   React.useEffect(() => {
+    try{
+      messaging()
+      .subscribeToTopic('custom')
+      .then(() => console.log('Subscribed to topic!'));
+    }catch(error){
+      console.log(error)
+    }
 
-
+    
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
         Toast.show({
