@@ -97,7 +97,7 @@ const SearchSaucesBottomSheet = ({photo={}, fn=()=>{}, setCapturedImage=()=>{}})
           onPress={() => {
             if (selectedSauce) {
               setCapturedImage(null)
-                navigation.navigate("Checkin", {_id:selectedSauce?._id, item:selectedSauce,routerNumber:4, photo, fn})
+                navigation.navigate("Checkin", {_id:selectedSauce?._id, item:selectedSauce,routerNumber:4, sendToRoute:"Home", photo, fn})
             }
             
           }}

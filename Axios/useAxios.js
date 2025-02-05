@@ -1,18 +1,15 @@
 import  axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
-// import { handleAuth } from '../android/app/Redux/userReducer';
 import { useNavigation } from "@react-navigation/native";
 import { handleAuth } from '../src/Redux/userReducer';
-//export const host =  "http://localhost:5000"
-// export const host =  "https://aws.markcoders.com/sauced-backend/api"
-// export const host =  "http://3.136.48.200/sauced-backend/api"
+import { useEffect, useRef } from 'react';
+import axiosRetry from 'axios-retry'; 
 export const host =  "https://app.saucedapp.com/sauced-backend/api"
 // export const host =  "https://anton.markcoders.com/sauced-backend/api"
+// export const host =  "http://localhost:6001/api"
+// export const host =  "https://9hjl5qp6-6001.inc1.devtunnels.ms/api"
 
 
-
-// export const host =  "https://59455wwt-6000.inc1.devtunnels.ms/"
-// export const host =  "https://s4v6lgbv-6000.uks1.devtunnels.ms/api"
 
 
 const useAxios = () => {
@@ -20,6 +17,7 @@ const useAxios = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation()
   const token = auth.token;
+  const cancelTokenSource = useRef(null);
   const axiosInstance = axios.create({
     // baseURL: host,
     baseURL:host,
@@ -27,9 +25,21 @@ const useAxios = () => {
       return status >= 200 && status < 300; // default
     }
   });
+  axiosRetry(axiosInstance, {
+    retries: 4, // Maximum number of retries
+    retryDelay: (retryCount) => {
+      return retryCount * 1000; // Exponential backoff
+    },
+    shouldRetry: (error) => {
+      // Retry on network errors or 5xx server errors
+      return error.response && error.response.status >= 500;
+    },
+  });
   axiosInstance.interceptors.request.use(
     (config) => {
       config.headers["Authorization"] = `Bearer ${token}`;
+      cancelTokenSource.current = axios.CancelToken.source(); // Create a new cancel token before request
+      config.cancelToken = cancelTokenSource.current.token;
       return config;
     },
     (error) => Promise.reject(error)
@@ -55,9 +65,20 @@ const useAxios = () => {
         );
         navigation.navigate("SignIn");
       }
-      
+      return Promise.reject(error);
     }
   );
-  return axiosInstance;
+  // return axiosInstance;
+
+
+  useEffect(() => {
+    return () => {
+      if (cancelTokenSource.current) {
+        cancelTokenSource.current.cancel("Component unmounted, request canceled");
+      }
+    };
+  }, []);
+
+  return { ...axiosInstance };
 };
 export default useAxios;

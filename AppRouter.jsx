@@ -41,7 +41,6 @@ import Toast from 'react-native-toast-message';
 import ProductScreen from './src/screens/ProductScreen/ProductScreen';
 import { increaseCount, addNotification } from './src/Redux/notifications';
 import MapDirectionsScreen from './src/screens/MapDirectionsScreen/MapDirectionsScreen';
-
 // Check network status before attempting upload
 
 const Stack = createNativeStackNavigator();
@@ -126,7 +125,7 @@ function AppRouter() {
   
     return unsubscribe;
   }, []);
-
+  
   if (initialState) {
     return <ImageBackground style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }} source={home}>
     <ActivityIndicator color="#FFA100" size="large" />

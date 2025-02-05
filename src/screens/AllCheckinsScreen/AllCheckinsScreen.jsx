@@ -6,12 +6,13 @@ import {
   View,
   Keyboard,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
 import home from './../../../assets/images/home.png';
 import {scale, verticalScale} from 'react-native-size-matters';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import CommentsList from '../../components/CommentsList/CommentsList.jsx';
@@ -25,7 +26,7 @@ const AllCheckinsScreen = ({}) => {
 
   const fn = route?.params?.fn || function () {};
   const numberOfRoutesBack = route?.params?.routerNumber || 1;
-
+const sendToRoute = route?.params?.sendToRoute
   const isBack = route?.params?.isBack || false;
   const auth = useSelector(state => state.auth);
   const url = route?.params?.url || '';
@@ -162,6 +163,34 @@ const AllCheckinsScreen = ({}) => {
     })
   },[])
 
+  useEffect(() => {
+    const backAction = () => {
+      // Manually navigate to the desired route when back is pressed
+      if(sendToRoute=="Home"){
+      navigation.navigate(sendToRoute); // Specify the route you want to navigate to
+      return true; }else{
+        navigation.goBack()// Prevent the default back action
+    };
+  }
+
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+    };
+  }, [navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("<===========================================sendToRoute====================================>",sendToRoute)
+      if (sendToRoute =="Home"){
+        navigation.reset({
+          index: 0,
+          routes: [{ name: sendToRoute }], 
+        });
+      }
+    }, []),
+  );
   return (
     <ImageBackground
       style={{flex: 1, width: '100%', height: '100%'}}
@@ -172,13 +201,18 @@ const AllCheckinsScreen = ({}) => {
           showMenu={false}
           cb={() => {
             
+
             if (isBack) {
+
               return navigation.goBack();
             }
-
-            return navigation.navigate('ProductScreen', {
-              _id,
-            });
+            if(sendToRoute =="Home"){
+              return navigation.navigate(sendToRoute);
+            }else{
+              return navigation.navigate('ProductScreen', {
+                _id,
+              });
+            }
           }}
           showProfilePic={false}
           headerContainerStyle={{

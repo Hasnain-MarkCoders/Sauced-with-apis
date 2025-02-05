@@ -41,11 +41,11 @@ const SearchScreen = () => {
 
 
   useEffect(() => {
-    if (query.search) {
+    if (query?.search?.trim()) {
       setShowResults(true);
     }
   
-  }, [query.search]);
+  }, [query?.search.trim()]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -171,7 +171,7 @@ useEffect(() => {
                     name="search"
                     onChange={handleText}
                     updaterFn={setQuery}
-                    value={query.search}
+                    value={query?.search}
                     showTitle={false}
                     placeholder="Search for a sauce..."
                     containterStyle={{
@@ -186,7 +186,7 @@ useEffect(() => {
                       paddingVertical: scale(15),
                     }}
                   />
-                  {query.search !== '' && (
+                  {query?.search?.trim() !== '' && (
                     <TouchableOpacity
                       onPress={() => setQuery({search: ''})}
                       style={{
@@ -220,7 +220,7 @@ useEffect(() => {
               </View>
 
               {/* Search Suggestion List */}
-              {data?.length > 0 && query?.search && showResult && (
+              {data?.length > 0 && query?.search?.trim() && showResult && (
                 <View
                   style={{
                     backgroundColor: '#FFFFFF', // White background like search engines
@@ -256,7 +256,7 @@ useEffect(() => {
                   handleIncreaseReviewCount={handleIncreaseReviewCount}
                   getQueryData={setData}
                   showHeart={false}
-                  searchTerm={query.search}
+                  searchTerm={query?.search?.trim()}
                 />
               </View>
             </View>

@@ -19,7 +19,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {scale} from 'react-native-size-matters';
 import {useDispatch, useSelector} from 'react-redux';
 import {handleText} from '../../../utils.js';
-import  {host} from '../../../Axios/useAxios';
+import  useAxios, {host} from '../../../Axios/useAxios';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
@@ -34,9 +34,11 @@ import ImageView from 'react-native-image-viewing';
 import {handleCheckedInSauces} from '../../Redux/checkedInSauces.js';
 
 const CheckinScreen = () => {
+  const axiosInstance = useAxios()
   const route = useRoute();
   const fn = route?.params?.fn || function () {};
   const routerNumber = route?.params?.routerNumber;
+  const sendToRoute = route?.params?.sendToRoute
   const photo = route?.params?.photo || null;
   const auth = useSelector(state => state.auth);
   const sauceType = route?.params?.sauceType || '';
@@ -374,13 +376,13 @@ const CheckinScreen = () => {
           response?.assets?.map(asset => {
             // Adjust the URI for platform differences
             let uri = asset?.uri;
-            if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+            if (Platform.OS === 'android' && !uri?.startsWith('file://')) {
               uri = 'file://' + uri;
             }
 
             // Extract filename and extension
             const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
-            const extension = filename.split('.').pop().toLowerCase();
+            const extension = filename?.split('.')?.pop()?.toLowerCase();
 
             // Determine MIME type with fallback
             const mimeTypes = {
@@ -424,14 +426,14 @@ const CheckinScreen = () => {
 
       // Create FormData to send
       const formData = new FormData();
-
+      await new Promise(r=>setTimeout(r, 4000))
       // Append each image to the FormData object
-      imageUris.forEach((imageUri, index) => {
-        if (imageUri.uri && imageUri.name && imageUri.type) {
-          formData.append('images', {
-            uri: imageUri.uri,
-            type: imageUri.type, // Use the correct MIME type
-            name: imageUri.name,
+      imageUris && imageUris?.forEach((imageUri, index) => {
+        if (imageUri?.uri && imageUri?.name && imageUri?.type) {
+          formData?.append('images', {
+            uri: imageUri?.uri,
+            type: imageUri?.type, // Use the correct MIME type
+            name: imageUri?.name,
           });
         } else {
           console.warn(
@@ -453,23 +455,25 @@ const CheckinScreen = () => {
       // });
 
       // Perform the axios POST request
-      const response = await axios.post(`${host}/checkin`, formData, {
+      // const response = await axios.post(`${host}/checkin`, formData, {
+        const response = await axiosInstance.post(`/checkin`, formData, {
+
         headers: {
-          Authorization: `Bearer ${auth?.token}`, // Authorization header with token
+          // Authorization: `Bearer ${auth?.token}`, // Authorization header with token
           'Content-Type': 'multipart/form-data', // Set the content type
         },
       });
-      const reviewedSauce = await axios.post(
-        host + '/view-sauce',
+      const reviewedSauce = await axiosInstance.post(
+        '/view-sauce',
         {sauceId: _id},
         {
-          headers: {
-            Authorization: `Bearer ${auth?.token}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${auth?.token}`,
+          // },
         },
       );
-      handleCheckedIn(reviewedSauce.data.sauce);
-
+      handleCheckedIn(reviewedSauce?.data?.sauce);
+console.log("sendToRoute============================================>", sendToRoute)
       // Handle successful response
       if (response?.data?.message) {
         setAlertModal({
@@ -478,6 +482,7 @@ const CheckinScreen = () => {
           success: true, // Success is true for a successful response,
           buttonText: 'View all check-ins',
           cb: () => {
+       
             navigation.navigate('AllCheckinsScreen', {
               _id,
               routerNumber,
@@ -491,8 +496,11 @@ const CheckinScreen = () => {
               mycb,
               sauceType,
               handleLike,
+              sendToRoute
             });
+           
           },
+          
         });
 
         // Reset form fields after successful submission
