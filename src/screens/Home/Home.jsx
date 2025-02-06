@@ -57,6 +57,9 @@ const Home = () => {
   });
   const [isloading, setLoading] = useState(false);
 
+  useEffect(()=>{
+console.log()
+  },[])
   const updateTokenOnServer = async newFcmToken => {
     try {
       const resposne = await axiosInstance.post('/update-token', {
@@ -258,6 +261,7 @@ const Home = () => {
 
       const getFcmToken = async () => {
         const token = await messaging().getToken();
+        console.log(token)
       };
       requestUserPermission();
     } catch (err) {

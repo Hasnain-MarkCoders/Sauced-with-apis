@@ -11,7 +11,7 @@ const notificationsSlice = createSlice({
   reducers: {
     addNotification: (state, action) => {
       state.notifications.unshift(action.payload);
-      state.count += 1;
+      // state.count += 1;
     },
     readAllNotifications: (state) => {
       state.notifications.forEach(notification => {
