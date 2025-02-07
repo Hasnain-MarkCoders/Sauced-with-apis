@@ -12,7 +12,7 @@ const BrandCard = ({
     title = "",
     product = {}
 }) => {
-
+    const count = product?.totalCheckins ? product.totalCheckins : product.brand.checkinsCount
     const [visible, setIsVisible] = useState(false)
 
     return (
@@ -162,7 +162,7 @@ const BrandCard = ({
                                 fontSize: scale(30),
                                 lineHeight: scale(36),
                                 textAlign: "center",
-                            }}>{product?.totalCheckins}</Text>
+                            }}>{count}</Text>
                             <Text style={{
                                 color: "white",
                                 fontWeight: 600,

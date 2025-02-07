@@ -107,6 +107,11 @@ const NotificationsScreen = ({}) => {
                       body={item.body}
                       date={item.date}
                       isRead={item.isRead}
+                      _id = {item?._id}
+                      route = {item?.route}
+                      isNavigate={item?.isNavigate=="true"?true:false}
+                      
+
                     />
                   )}
                 />

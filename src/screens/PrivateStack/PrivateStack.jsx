@@ -17,14 +17,22 @@ import camera from './../../../assets/images/camera.png';
 import search from './../../../assets/images/search.png';
 import {scale} from 'react-native-size-matters';
 import SearchScreen from '../SearchScreen/SearchScreen';
-import {memo, useState} from 'react';
+import React, {memo, useState} from 'react';
 import CameraScreen from '../CameraScreen/CameraScreen';
 import {useNavigation} from '@react-navigation/native';
 import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
+import messaging from '@react-native-firebase/messaging';
+import useAxios from '../../../Axios/useAxios';
+import { addNotification } from '../../Redux/notifications';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Tab = createBottomTabNavigator();
 
 const PrivateStack = () => {
+  const dispatch = useDispatch()
+
+  const axiosInstance = useAxios()
   const [yesNoModal, setYesNoModal] = useState({
     open: false,
     message: '',
@@ -37,6 +45,84 @@ const PrivateStack = () => {
   const handleNavigateToCameraScreen = () => {
     navigation.navigate('QRScan');
   };
+
+//   React.useEffect(()=>{
+//     messaging().onNotificationOpenedApp((remoteMessage) => {
+//       const _id = remoteMessage?.data?._id
+//       const route = remoteMessage?.data?.route
+//       const isNavigate = (remoteMessage?.data?.isNavigate=="true" && route && _id)?true:false
+//       if (isNavigate) {
+//         console.log("_id", _id)
+//         console.log("route", route)
+//         console.log("isNavigate", isNavigate)
+
+//         navigation.navigate(remoteMessage?.data?.route, {_id:remoteMessage?.data?._id});
+//       }
+//     });
+// })
+const findBrand = async (_id) => {
+  const res = await axiosInstance.get(`/get-user`, { params: { _id} });
+  return res;
+};
+
+React.useEffect(() => {
+  const handleNotification = async(remoteMessage) => {
+    if (remoteMessage) {
+      const _id = remoteMessage?.data?._id;
+      const route = remoteMessage?.data?.route;
+      const isNavigate = remoteMessage?.data?.isNavigate === "true" && route && _id;
+           dispatch(addNotification({
+                    type: 'success',
+                    title: remoteMessage.notification.title,
+                    body: remoteMessage.notification.body,
+                    isRead:remoteMessage.data.isRead=="1"?true:false,
+                    // data: remoteMessage.data
+                    ...remoteMessage.data
+      
+      
+                    }
+              ));
+
+      if (isNavigate) {
+        // navigation.navigate(route, { _id });
+        {
+          if(route =="ProductScreen"){
+            navigation.navigate(route, {
+              _id
+            })
+          }
+          else{
+           const brand =  await findBrand(_id)
+           const data = {brand:brand?.data?.user}
+            const title  =brand?.data?.user?.name
+            const url  =brand?.data?.user?.image
+           if(route =="BrandScreen"){
+            navigation.navigate(route, {
+             item:data,
+             title,
+             url
+            })
+          }
+      
+          }
+        }
+        
+      }
+
+      
+    }
+  };
+
+  // Foreground & Background (App is open or minimized)
+  const unsubscribe = messaging().onNotificationOpenedApp(handleNotification);
+
+  // Killed State (App is completely closed)
+  messaging()
+    .getInitialNotification()
+    .then(handleNotification);
+
+  return unsubscribe;
+}, []);
 
   const handleCameraPermission = () => {
     const cameraPermission =
