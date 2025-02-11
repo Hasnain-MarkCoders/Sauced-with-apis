@@ -282,6 +282,8 @@ const AddReview = () => {
   
             try {
               // Wait for user to crop and confirm each image
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay to ensure readiness
+
               const croppedImage = await ImagePicker.openCropper({
                 path: uri,
                 width: 500,

@@ -413,6 +413,96 @@ const CheckinScreen = () => {
 
   
   
+  // const handleImagePicker = isSelected => {
+  //   const options = {
+  //     mediaType: 'photo',
+  //     quality: 1,
+  //     selectionLimit: 0, // Allows multiple selection
+  //   };
+  
+  //   const launchFunction = isSelected ? launchCamera : launchImageLibrary;
+  
+  //   const handleImagePick = async () => {
+  //     try {
+  //       launchFunction(options, async response => {
+  //         if (response.didCancel) {
+  //           console.log('User cancelled image picker');
+  //           return;
+  //         }
+  //         if (response.errorCode || response.errorMessage) {
+  //           console.error('Image picker error:', response.errorMessage);
+  //           setAlertModal({
+  //             open: true,
+  //             message: 'Something went wrong while picking the image.',
+  //             success: false,
+  //           });
+  //           return;
+  //         }
+  
+  //         const assets = response?.assets || [];
+  //         if (assets.length === 0) {
+  //           setAlertModal({
+  //             open: true,
+  //             message: 'No image selected.',
+  //             success: false,
+  //           });
+  //           return;
+  //         }
+  
+  //         // Process images one by one using a loop
+  //         let croppedImages = [];
+  
+  //         for (const asset of assets) {
+  //           let uri = asset.uri;
+  //           if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+  //             uri = 'file://' + uri;
+  //           }
+  
+  //           try {
+  //             // Wait for user to crop and confirm each image
+  //             const croppedImage = await ImagePicker.openCropper({
+  //               path: uri,
+  //               width: 500,
+  //               height: 500,
+  //               cropping: true,
+  //               freeStyleCropEnabled: true,
+  //               cropperCircleOverlay: false,
+  //               rotateClockwise: true,
+  //             });
+  
+  //             croppedImages.push({
+  //               uri: croppedImage.path,
+  //               type: croppedImage.mime,
+  //               name: `photo_${Date.now()}.${croppedImage.mime.split('/')[1]}`,
+  //             });
+  
+  //           } catch (cropError) {
+  //             console.error('Error cropping image:', cropError);
+  //             croppedImages.push({
+  //               uri: uri,
+  //               type: asset.type || 'image/jpeg',
+  //               name: asset.fileName || `photo_${Date.now()}.jpg`,
+  //             });
+  //           }
+  //         }
+  
+  //         // Push all cropped images to state after all have been processed
+  //         setImageUris(prevUris => [...prevUris, ...croppedImages]);
+  //       });
+  //     } catch (error) {
+  //       console.error('Error picking image:', error);
+  //       setAlertModal({
+  //         open: true,
+  //         message: 'Unexpected error occurred.',
+  //         success: false,
+  //       });
+  //     }
+  //   };
+  
+  //   // Call the function to launch the picker
+  //   handleImagePick();
+  // };
+  
   const handleImagePicker = isSelected => {
     const options = {
       mediaType: 'photo',
@@ -424,6 +514,7 @@ const CheckinScreen = () => {
   
     const handleImagePick = async () => {
       try {
+
         launchFunction(options, async response => {
           if (response.didCancel) {
             console.log('User cancelled image picker');
@@ -440,6 +531,7 @@ const CheckinScreen = () => {
           }
   
           const assets = response?.assets || [];
+          console.log(assets)
           if (assets.length === 0) {
             setAlertModal({
               open: true,
@@ -454,12 +546,16 @@ const CheckinScreen = () => {
   
           for (const asset of assets) {
             let uri = asset.uri;
+  
+            // Fix URI for Android
             if (Platform.OS === 'android' && !uri.startsWith('file://')) {
               uri = 'file://' + uri;
             }
   
             try {
               // Wait for user to crop and confirm each image
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay to ensure readiness
+
               const croppedImage = await ImagePicker.openCropper({
                 path: uri,
                 width: 500,
@@ -478,6 +574,8 @@ const CheckinScreen = () => {
   
             } catch (cropError) {
               console.error('Error cropping image:', cropError);
+  
+              // If cropping fails, use the original image
               croppedImages.push({
                 uri: uri,
                 type: asset.type || 'image/jpeg',
@@ -503,7 +601,6 @@ const CheckinScreen = () => {
     handleImagePick();
   };
   
-
 
   const handleCheckedIn = data => {
     if (!!data) {
