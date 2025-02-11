@@ -113,6 +113,7 @@ function AppRouter() {
     
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log("remoteMessage====================================>", JSON.stringify(remoteMessage, null, 6))
         Toast.show({
             type: 'success',
             text1: remoteMessage.notification.title,
@@ -121,7 +122,7 @@ function AppRouter() {
               type: 'success',
               title: remoteMessage.notification.title,
               body: remoteMessage.notification.body,
-              isRead:remoteMessage.data.isRead=="1"?true:false,
+              // isRead:remoteMessage.data.isRead=="1"?true:false,
               // data: remoteMessage.data
               ...remoteMessage.data
 

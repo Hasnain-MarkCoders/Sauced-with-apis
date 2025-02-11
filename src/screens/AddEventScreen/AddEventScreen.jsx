@@ -228,6 +228,15 @@ const AddEventScreen = () => {
         message: 'Title is required!',
         success: false,
       });
+      
+    }
+
+    if (!query?.date) {
+      return setAlertModal({
+        open: true,
+        message: 'Event Start date is required!',
+        success: false,
+      });
     }
 
     if (query?.websiteLink?.trim() && !isURL(query.websiteLink)) {
@@ -283,6 +292,9 @@ const AddEventScreen = () => {
       setIsSubmitLoading(false);
     }
   };
+
+ 
+ 
   const CustomEventDateModal = useCallback(() => {
     return (
       <Modal
@@ -591,7 +603,7 @@ const AddEventScreen = () => {
                       fontSize: scale(17),
                       color: 'white',
                     }}>
-                    Date
+                    Date *
                   </Text>
                   <CustomButtom
                     Icon={() => <Image source={arrow} />}

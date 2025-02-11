@@ -15,8 +15,8 @@ const notificationsSlice = createSlice({
     },
     readAllNotifications: (state) => {
       state.notifications.forEach(notification => {
-        if (!notification.isRead) {
-          notification.isRead = true;
+        if (notification.isRead=="0") {
+          notification.isRead = "1";
         }
       });
       state.count = 0; // Reset unread count

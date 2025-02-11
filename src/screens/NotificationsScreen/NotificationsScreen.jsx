@@ -105,8 +105,8 @@ const NotificationsScreen = ({}) => {
                     <CustomNotification
                       title={item.title}
                       body={item.body}
-                      date={item.date}
-                      isRead={item.isRead}
+                      date={item.time}
+                      isRead={item.isRead=="1"?true:false}
                       _id = {item?._id}
                       route = {item?.route}
                       isNavigate={item?.isNavigate=="true"?true:false}

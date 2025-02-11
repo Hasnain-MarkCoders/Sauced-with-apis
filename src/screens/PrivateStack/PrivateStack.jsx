@@ -6,7 +6,7 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../Home/Home';
 import homeIcon from './../../../assets/images/homeIcon.png';
 import Awards from '../Awards/Awards';
@@ -15,16 +15,16 @@ import profileicon from './../../../assets/images/profileicon.png';
 import ProfileScreen from '../Profile/Profile';
 import camera from './../../../assets/images/camera.png';
 import search from './../../../assets/images/search.png';
-import {scale} from 'react-native-size-matters';
+import { scale } from 'react-native-size-matters';
 import SearchScreen from '../SearchScreen/SearchScreen';
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import CameraScreen from '../CameraScreen/CameraScreen';
-import {useNavigation} from '@react-navigation/native';
-import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
+import { useNavigation } from '@react-navigation/native';
+import { PERMISSIONS, RESULTS, check, request } from 'react-native-permissions';
 import YesNoModal from '../../components/YesNoModal/YesNoModal';
 import messaging from '@react-native-firebase/messaging';
 import useAxios from '../../../Axios/useAxios';
-import { addNotification } from '../../Redux/notifications';
+import { addNotification, increaseCount } from '../../Redux/notifications';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
@@ -37,7 +37,7 @@ const PrivateStack = () => {
     open: false,
     message: '',
     severity: 'success',
-    cb: () => {},
+    cb: () => { },
     isQuestion: false,
   });
   const navigation = useNavigation();
@@ -46,83 +46,92 @@ const PrivateStack = () => {
     navigation.navigate('QRScan');
   };
 
-//   React.useEffect(()=>{
-//     messaging().onNotificationOpenedApp((remoteMessage) => {
-//       const _id = remoteMessage?.data?._id
-//       const route = remoteMessage?.data?.route
-//       const isNavigate = (remoteMessage?.data?.isNavigate=="true" && route && _id)?true:false
-//       if (isNavigate) {
-//         console.log("_id", _id)
-//         console.log("route", route)
-//         console.log("isNavigate", isNavigate)
+  //   React.useEffect(()=>{
+  //     messaging().onNotificationOpenedApp((remoteMessage) => {
+  //       const _id = remoteMessage?.data?._id
+  //       const route = remoteMessage?.data?.route
+  //       const isNavigate = (remoteMessage?.data?.isNavigate=="true" && route && _id)?true:false
+  //       if (isNavigate) {
+  //         console.log("_id", _id)
+  //         console.log("route", route)
+  //         console.log("isNavigate", isNavigate)
 
-//         navigation.navigate(remoteMessage?.data?.route, {_id:remoteMessage?.data?._id});
-//       }
-//     });
-// })
-const findBrand = async (_id) => {
-  const res = await axiosInstance.get(`/get-user`, { params: { _id} });
-  return res;
-};
+  //         navigation.navigate(remoteMessage?.data?.route, {_id:remoteMessage?.data?._id});
+  //       }
+  //     });
+  // })
+  const findBrand = async (_id) => {
+    const res = await axiosInstance.get(`/get-user`, { params: { _id } });
+    return res;
+  };
+  const isNotificationAvailable = async (_id, route) => {
+    const type = route =="BrandScreen"?1:route =="ProductScreen"?2:3
+    const res = await axiosInstance.get(`/is-notification-available`, { params: { _id , type} });
+    return res;
+  }
 
-React.useEffect(() => {
-  const handleNotification = async(remoteMessage) => {
-    if (remoteMessage) {
-      const _id = remoteMessage?.data?._id;
-      const route = remoteMessage?.data?.route;
-      const isNavigate = remoteMessage?.data?.isNavigate === "true" && route && _id;
-           dispatch(addNotification({
-                    type: 'success',
-                    title: remoteMessage.notification.title,
-                    body: remoteMessage.notification.body,
-                    isRead:remoteMessage.data.isRead=="1"?true:false,
-                    // data: remoteMessage.data
-                    ...remoteMessage.data
-      
-      
-                    }
-              ));
+  React.useEffect(() => {
+    const handleNotification = async (remoteMessage) => {
+      if (remoteMessage) {
+        const _id = remoteMessage?.data?._id;
+        const route = remoteMessage?.data?.route;
+        const isNavigate = remoteMessage?.data?.isNavigate === "true" && route && _id;
+        dispatch(addNotification({
+          type: 'success',
+          title: remoteMessage.notification.title,
+          body: remoteMessage.notification.body,
+          // isRead:remoteMessage.data.isRead=="1"?true:false,
+          // data: remoteMessage.data
+          ...remoteMessage.data
 
-      if (isNavigate) {
-        // navigation.navigate(route, { _id });
-        {
-          if(route =="ProductScreen"){
+
+        }
+        ));
+        dispatch(increaseCount());
+
+        if (isNavigate) {
+          // navigation.navigate(route, { _id });
+          const res = await isNotificationAvailable(_id, route)
+          if(!res.data.success){
+            return
+          }
+          if (route == "ProductScreen") {
             navigation.navigate(route, {
               _id
             })
           }
-          else{
-           const brand =  await findBrand(_id)
-           const data = {brand:brand?.data?.user}
-            const title  =brand?.data?.user?.name
-            const url  =brand?.data?.user?.image
-           if(route =="BrandScreen"){
-            navigation.navigate(route, {
-             item:data,
-             title,
-             url
-            })
+          else {
+            const brand = await findBrand(_id)
+            const data = { brand: brand?.data?.user }
+            const title = brand?.data?.user?.name
+            const url = brand?.data?.user?.image
+            if (route == "BrandScreen") {
+              navigation.navigate(route, {
+                item: data,
+                title,
+                url
+              })
+            }
+
           }
-      
-          }
+
+
         }
-        
+
+
       }
+    };
 
-      
-    }
-  };
+    // Foreground & Background (App is open or minimized)
+    const unsubscribe = messaging().onNotificationOpenedApp(handleNotification);
 
-  // Foreground & Background (App is open or minimized)
-  const unsubscribe = messaging().onNotificationOpenedApp(handleNotification);
+    // Killed State (App is completely closed)
+    messaging()
+      .getInitialNotification()
+      .then(handleNotification);
 
-  // Killed State (App is completely closed)
-  messaging()
-    .getInitialNotification()
-    .then(handleNotification);
-
-  return unsubscribe;
-}, []);
+    return unsubscribe;
+  }, []);
 
   const handleCameraPermission = () => {
     const cameraPermission =
@@ -151,7 +160,7 @@ React.useEffect(() => {
                     'Camera Permission Blocked',
                     'Please enable Camera permission in your device settings to use this feature.',
                     [
-                      {text: 'Cancel', style: 'cancel'},
+                      { text: 'Cancel', style: 'cancel' },
                       {
                         text: 'Open Settings',
                         onPress: () => Linking.openSettings(),
@@ -167,8 +176,8 @@ React.useEffect(() => {
             'Camera Permission Blocked',
             'Please enable Camera permission in your device settings to use this feature.',
             [
-              {text: 'Cancel', style: 'cancel'},
-              {text: 'Open Settings', onPress: () => Linking.openSettings()},
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Open Settings', onPress: () => Linking.openSettings() },
             ],
           );
         }
@@ -186,7 +195,7 @@ React.useEffect(() => {
   return (
     <>
       <Tab.Navigator
-        screenOptions={({route}) => ({
+        screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,
           headerShown: false,
@@ -202,7 +211,7 @@ React.useEffect(() => {
           },
           tabBarActiveTintColor: 'black',
           tabBarInactiveTintColor: 'white',
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({ focused, color, size }) => {
             let icon;
             if (route.name === 'Home') {
               icon = homeIcon;
@@ -264,8 +273,8 @@ React.useEffect(() => {
                       {route.name.toLocaleLowerCase() == 'main'
                         ? 'Profile'
                         : route.name == 'Awards'
-                        ? 'Badges'
-                        : route.name}{' '}
+                          ? 'Badges'
+                          : route.name}{' '}
                     </Text>
                   </View>
                 )}
@@ -277,7 +286,7 @@ React.useEffect(() => {
         <Tab.Screen name="Search" component={SearchScreen} />
         <Tab.Screen
           options={{
-            tabBarStyle: {display: 'none'}, // Hide the tab bar on QRScan screen
+            tabBarStyle: { display: 'none' }, // Hide the tab bar on QRScan screen
           }}
           name="QRScan"
           component={CameraScreen}
