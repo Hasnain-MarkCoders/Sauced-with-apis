@@ -1435,6 +1435,15 @@ PODS:
   - RNGoogleSignin (12.2.1):
     - GoogleSignIn (~> 7.1)
     - React-Core
+  - RNImageCropPicker (0.42.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.42.0)
+    - TOCropViewController (~> 2.7.4)
+  - RNImageCropPicker/QBImagePickerController (0.42.0):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController (~> 2.7.4)
   - RNPermissions (5.0.0):
     - React-Core
   - RNReanimated (3.15.5):
@@ -1558,6 +1567,7 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
   - SocketRocket (0.7.0)
+  - TOCropViewController (2.7.4)
   - VisionCamera (4.5.3):
     - VisionCamera/Core (= 4.5.3)
     - VisionCamera/React (= 4.5.3)
@@ -1646,6 +1656,7 @@ DEPENDENCIES:
   - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1689,6 +1700,7 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - SocketRocket
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   boost:
@@ -1845,6 +1857,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-google-signin/google-signin"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1968,6 +1982,7 @@ SPEC CHECKSUMS:
   RNFlashList: 31fb427b4c28551a405c70edc2ff3c8320046657
   RNGestureHandler: a8f4a3a7f1889054b3d8002675e537675be6d29d
   RNGoogleSignin: 08dc4ba7eac2096c7fecfe109f0950fa4683c803
+  RNImageCropPicker: 64b6bec9ec185ee59b71a93d7058816bd0e1916e
   RNPermissions: 8c563614427236061c5250f8d538fad2a4bd1198
   RNReanimated: 5225be977b53145f8d4ee88c993927670616825e
   RNScreens: 26f35a7963227fbe7f7fe29ebadf61fdf75f5490
@@ -1978,6 +1993,7 @@ SPEC CHECKSUMS:
   SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
+  TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   VisionCamera: cb84d0d8485b3e67c91b62931d3aa88f49747c92
   Yoga: dbb1bd5faecc60d38ed0a2f2a75db536c759b334
 
