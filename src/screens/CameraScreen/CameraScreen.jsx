@@ -18,6 +18,7 @@ import {
   useCameraPermission,
 } from "react-native-vision-camera";
 import SearchSaucesBottomSheet from "../../components/SearchSaucesBottomSheet/SearchSaucesBottomSheet";
+import ImagePicker from 'react-native-image-crop-picker';
 
 const { width, height } = Dimensions.get("window");
 
@@ -68,7 +69,17 @@ const CameraScreen = () => {
         // Format URI correctly
         const uri = Platform.OS === "ios" ? photo.path : `file://${photo.path}`;
 
-        setCapturedImage({ ...photo, uri, name: filename, type });
+        const croppedImage = await ImagePicker.openCropper({
+          path: uri,
+          width: 500, // Adjust as needed
+          height: 500,
+          cropping: true,
+          freeStyleCropEnabled: true, // Allow user to freely adjust crop
+          cropperCircleOverlay: false, // Set true for circular cropping
+          rotateClockwise: true, // Enable rotation
+        });
+
+        setCapturedImage({ ...photo, uri:croppedImage.path, name: filename, type });
       }
     } catch (error) {
       console.error("Error capturing photo:", error);

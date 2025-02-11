@@ -23,6 +23,7 @@ import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal
 import  {host} from '../../../Axios/useAxios.js';
 import {useSharedValue} from 'react-native-reanimated';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import YesNoModal from '../../components/YesNoModal/YesNoModal.jsx';
@@ -189,51 +190,141 @@ const AddReview = () => {
       });
   };
 
+  // const handleImagePicker = isSelected => {
+  //   const options = {
+  //     mediaType: 'photo',
+  //     quality: 1,
+  //     selectionLimit: 0,
+  //   };
+
+  //   const launchFunction = isSelected ? launchCamera : launchImageLibrary;
+  //   launchFunction(options, response => {
+  //     if (response.didCancel) {
+  //     } else if (response.error) {
+  //     } else {
+  //       const sources =
+  //         response?.assets?.map(asset => {
+  //           // Adjust the URI for platform differences
+  //           let uri = asset?.uri;
+  //           if (Platform.OS === 'android' && !uri.startsWith('file://')) {
+  //             uri = 'file://' + uri;
+  //           }
+
+  //           // Extract filename and extension
+  //           const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
+  //           const extension = filename.split('.').pop().toLowerCase();
+
+  //           // Determine MIME type with fallback
+  //           const mimeTypes = {
+  //             jpg: 'image/jpeg',
+  //             jpeg: 'image/jpeg',
+  //             png: 'image/png',
+  //             // Add more types if needed
+  //           };
+  //           const type = mimeTypes[extension] || asset?.type || 'image/jpeg';
+
+  //           return {
+  //             uri: uri,
+  //             type: type,
+  //             name: filename,
+  //           };
+  //         }) || [];
+
+  //       setImageUris(prevUris => [...prevUris, ...sources]);
+  //     }
+  //   });
+  // };
+  
   const handleImagePicker = isSelected => {
     const options = {
       mediaType: 'photo',
       quality: 1,
-      selectionLimit: 0,
+      selectionLimit: 0, // Allows multiple selection
     };
-
+  
     const launchFunction = isSelected ? launchCamera : launchImageLibrary;
-    launchFunction(options, response => {
-      if (response.didCancel) {
-      } else if (response.error) {
-      } else {
-        const sources =
-          response?.assets?.map(asset => {
-            // Adjust the URI for platform differences
-            let uri = asset?.uri;
+  
+    const handleImagePick = async () => {
+      try {
+        launchFunction(options, async response => {
+          if (response.didCancel) {
+            console.log('User cancelled image picker');
+            return;
+          }
+          if (response.errorCode || response.errorMessage) {
+            console.error('Image picker error:', response.errorMessage);
+            setAlertModal({
+              open: true,
+              message: 'Something went wrong while picking the image.',
+              success: false,
+            });
+            return;
+          }
+  
+          const assets = response?.assets || [];
+          if (assets.length === 0) {
+            setAlertModal({
+              open: true,
+              message: 'No image selected.',
+              success: false,
+            });
+            return;
+          }
+  
+          // Process images one by one using a loop
+          let croppedImages = [];
+  
+          for (const asset of assets) {
+            let uri = asset.uri;
             if (Platform.OS === 'android' && !uri.startsWith('file://')) {
               uri = 'file://' + uri;
             }
-
-            // Extract filename and extension
-            const filename = asset?.fileName || `photo_${Date.now()}.jpg`;
-            const extension = filename.split('.').pop().toLowerCase();
-
-            // Determine MIME type with fallback
-            const mimeTypes = {
-              jpg: 'image/jpeg',
-              jpeg: 'image/jpeg',
-              png: 'image/png',
-              // Add more types if needed
-            };
-            const type = mimeTypes[extension] || asset?.type || 'image/jpeg';
-
-            return {
-              uri: uri,
-              type: type,
-              name: filename,
-            };
-          }) || [];
-
-        setImageUris(prevUris => [...prevUris, ...sources]);
+  
+            try {
+              // Wait for user to crop and confirm each image
+              const croppedImage = await ImagePicker.openCropper({
+                path: uri,
+                width: 500,
+                height: 500,
+                cropping: true,
+                freeStyleCropEnabled: true,
+                cropperCircleOverlay: false,
+                rotateClockwise: true,
+              });
+  
+              croppedImages.push({
+                uri: croppedImage.path,
+                type: croppedImage.mime,
+                name: `photo_${Date.now()}.${croppedImage.mime.split('/')[1]}`,
+              });
+  
+            } catch (cropError) {
+              console.error('Error cropping image:', cropError);
+              croppedImages.push({
+                uri: uri,
+                type: asset.type || 'image/jpeg',
+                name: asset.fileName || `photo_${Date.now()}.jpg`,
+              });
+            }
+          }
+  
+          // Push all cropped images to state after all have been processed
+          setImageUris(prevUris => [...prevUris, ...croppedImages]);
+        });
+      } catch (error) {
+        console.error('Error picking image:', error);
+        setAlertModal({
+          open: true,
+          message: 'Unexpected error occurred.',
+          success: false,
+        });
       }
-    });
+    };
+  
+    // Call the function to launch the picker
+    handleImagePick();
   };
-
+  
   const handleUpdateReviewsCount = () => {
     if (sauceType == 'toprated') {
       dispatch(handleIncreaseReviewCountOfTopRatedSauce(sauceId));
