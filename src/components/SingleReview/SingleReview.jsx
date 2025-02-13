@@ -135,7 +135,7 @@ const SingleReview = ({
       }}>
         {foodPairings?.map((foodPair, index) => <View key={index}><Text style={{
           backgroundColor: '#2e210a', // Dark box for unselected chips
-          borderRadius: scale(20),
+          borderRadius: scale(14),
           paddingVertical: scale(6),
           paddingHorizontal: scale(10),
           borderColor: '#FFA500', // Orange border for chips to match the theme

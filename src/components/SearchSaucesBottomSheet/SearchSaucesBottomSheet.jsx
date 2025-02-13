@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     color:"black",
     textAlign: "center",
     paddingVertical: scale(17),
-    marginBottom: scale(20),
+    marginBottom: scale(10),
     backgroundColor: "#FFA100",
     fontSize: scale(14),
     borderRadius: scale(8)
