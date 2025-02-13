@@ -574,8 +574,6 @@ const handleInterestedEvent = async () => {
                     <View
                       style={{
                         gap: scale(25),
-                        // backgroundColor:"yellow"
-
                       }}>
                       {
                         event?.eventDate &&
@@ -595,6 +593,8 @@ const handleInterestedEvent = async () => {
                           />
                           <Text
                             style={{
+                            marginTop:-6,
+
                               fontSize: scale(12),
                               fontWeight: 700,
                               fontFamily: 'Montserrat',
@@ -625,7 +625,7 @@ const handleInterestedEvent = async () => {
                             <View style={{
                               flexDirection:"row",
                               gap:scale(10),
-                              alignItems:"start",
+                              alignItems:"flex-start",
                             }}>
 
                             <Image
@@ -636,7 +636,8 @@ const handleInterestedEvent = async () => {
                             source={Location}
                           />
                           <View style={{
-                            flexShrink:1
+                            flexShrink:1,
+                            marginTop:-6,
                           }}>
 
                             <Text
@@ -645,7 +646,7 @@ const handleInterestedEvent = async () => {
                                 lineHeight: scale(22),
                                 color: '#FFA100',
                               }}>
-                              {event.venueName?event.venueName:"N/A"}
+                              {event.venueAddress?event.venueAddress:"N/A"}
                               
                             </Text>
                           </View>
