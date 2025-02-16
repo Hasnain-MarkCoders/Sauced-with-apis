@@ -12,6 +12,7 @@ const CommentsList = ({ commentsData=[],
      hasMore,
       setPage = () => { },
      handleSubmitMessage = () => { }, 
+     fetchCheckings=()=>{}
     }) => {
   return (
     <>
@@ -33,6 +34,7 @@ const CommentsList = ({ commentsData=[],
 
         renderItem={({ item, index }) =>
         <CustomComment
+        fetchCheckings={fetchCheckings}
         foodPairings={item?.foodPairings||[]}
         address = {item?.address}
         location = {item?.location}
@@ -52,6 +54,7 @@ const CommentsList = ({ commentsData=[],
           count = {commentsData?.length}
           sauce_id={item?.sauceId?._id}
           sauce_name={item?.sauceId?.name}
+          ownerId = {item?.owner?._id}
           />
 
         }

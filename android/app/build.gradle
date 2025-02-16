@@ -81,8 +81,8 @@ android {
         applicationId "com.sauced"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 33
-        versionName "1.3.3"
+        versionCode 35
+        versionName "1.3.5"
         missingDimensionStrategy 'react-native-camera', 'general'
          vectorDrawables.useSupportLibrary = true
 

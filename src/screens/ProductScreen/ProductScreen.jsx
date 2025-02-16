@@ -452,6 +452,10 @@ const ProductScreen = ({}) => {
                         </View>
 
                         <CommentsList
+                        fetchCheckings={(id)=>{
+                          const newData = data.filter(item=>item._id!=id)
+                          setData(newData)
+                        }}
                           commentsData={data}
                           cb={handleUserProfileView}
                           getId={getId}

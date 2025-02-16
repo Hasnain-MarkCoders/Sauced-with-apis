@@ -41,6 +41,8 @@ import Toast from 'react-native-toast-message';
 import ProductScreen from './src/screens/ProductScreen/ProductScreen';
 import { increaseCount, addNotification } from './src/Redux/notifications';
 import MapDirectionsScreen from './src/screens/MapDirectionsScreen/MapDirectionsScreen';
+import EditCheckInScreen from './src/screens/EditCheckInScreen/EditCheckInScreen';
+import EditReviewScreen from './src/screens/EditReviewScreen/EditReviewScreen';
 // Check network status before attempting upload
 
 const Stack = createNativeStackNavigator();
@@ -159,6 +161,8 @@ function AppRouter() {
                 <Stack.Screen name="ProductScreen" component={ProductScreen} />
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="AllReviews" component={AllReviewsScreen} />
+                <Stack.Screen name="EditCheckInScreen"    options={{ animation: 'slide_from_right' }}  component={EditCheckInScreen} />
+                <Stack.Screen  name="EditReviewScreen"   options={{ animation: 'slide_from_right' }}  component={EditReviewScreen} />
                 <Stack.Screen name="QRScreen" component={QRScreen} />
                 <Stack.Screen name="Checkin" component={CheckinScreen} />
                 <Stack.Screen name="AddReview" component={AddReview} />

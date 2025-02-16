@@ -10,17 +10,17 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
 import home from './../../../assets/images/home.png';
 import {scale, verticalScale} from 'react-native-size-matters';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useNavigation, useRoute} from '@react-navigation/native';
 import {handleText} from '../../../utils.js';
 import CustomInput from '../../components/CustomInput/CustomInput.jsx';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import CustomButtom from '../../components/CustomButtom/CustomButtom.jsx';
 import CustomAlertModal from '../../components/CustomAlertModal/CustomAlertModal.jsx';
-import  {host} from '../../../Axios/useAxios.js';
+import  useAxios, {host} from '../../../Axios/useAxios.js';
 import {useSharedValue} from 'react-native-reanimated';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -42,9 +42,14 @@ import {handleIncreaseReviewCountOfTopRatedSauce} from '../../Redux/topRatedSauc
 import {handleReviewedSauces} from '../../Redux/reviewedSauces.js';
 import SelectableChips from '../../components/FoodPairing/FoodPairing.jsx';
 
-const AddReview = () => {
+const EditReviewScreen = () => {
+  const axiosInstance = useAxios()
+
   const route = useRoute();
   const [imageUris, setImageUris] = useState([]);
+    const [carouselType, setCarouselType] = useState(false)
+      const [currentURLS, setCurrentURLS] = useState([])
+    
   const sauceId = route?.params?.sauceId;
   const sauceType = route?.params?.sauceType || '';
   const url = route?.params?.url || '';
@@ -63,7 +68,9 @@ const AddReview = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state?.auth);
   const [visible, setIsVisible] = useState(false);
+  const _id  = route.params._id
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [hasFetched, setHasFetched] = useState(false);
 
   const [yesNoModal, setYesNoModal] = useState({
     open: false,
@@ -80,7 +87,7 @@ const AddReview = () => {
   });
   const [data, setData] = useState({
     review: '',
-    rating: '1',
+    rating: 1,
     heatLevel: 1,
     foodPairings: [],
 
@@ -409,40 +416,49 @@ const AddReview = () => {
       formData.append('heatLevel', data?.heatLevel);
       formData.append('text', data?.review);
       formData.append('star', data?.rating);
-      formData.append('sauceId', sauceId);
+      // formData.append('sauceId', sauceId);
       data?.foodPairings.forEach(item => {
         formData.append('foodPairings', item);
       });
+      currentURLS && currentURLS?.forEach((image, index) => {
+        if (image) {
+          formData?.append('existingImages', image);
+        } else {
+          console.warn(
+            `Image at index ${index} is missing required properties.`,
+          );
+        }
+      });
 
-      const res = await axios.post(host + '/create-review', formData, {
+      const res = await axios.put(host + `/update-review/${_id}`, formData, {
         headers: {
           Authorization: `Bearer ${auth?.token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (res?.data && res?.data?.message) {
-        const reviewedSauce = await axios.post(
-          host + '/view-sauce',
-          {sauceId},
-          {
-            headers: {
-              Authorization: `Bearer ${auth?.token}`,
-            },
-          },
-        );
+      // if (res?.data && res?.data?.message) {
+      //   const reviewedSauce = await axios.post(
+      //     host + '/view-sauce',
+      //     {sauceId},
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${auth?.token}`,
+      //       },
+      //     },
+      //   );
 
 
-        handleReviewState(reviewedSauce.data.sauce);
+      //   handleReviewState(reviewedSauce.data.sauce);
 
-        handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount);
+      //   handleIncreaseReviewCount(sauceId, setReviewCount, reviewCount);
         setAlertModal({
           open: true,
           message: res?.data?.message,
           success: true,
           buttonText: 'View Reviews',
           cb: () => {
-            navigation.navigate('AllReviews', {
-              _id: sauceId,
+            navigation.navigate('AllUserReviews', {
+              _id:auth._id,
               item,
               title,
               url,
@@ -457,21 +473,21 @@ const AddReview = () => {
         });
         handleUpdateReviewsCount();
 
-        setData({
-          review: '',
-          rating: '1',
-          heatLevel: 1,
-          foodPairings: [],
-        });
-        progress.value = 0;
-        setIsClearChips(true);
-        setImageUris([]);
-      }
+        // setData({
+        //   review: '',
+        //   rating: '1',
+        //   heatLevel: 1,
+        //   foodPairings: [],
+        // });
+        // progress.value = 0;
+        // setIsClearChips(true);
+        // setImageUris([]);
+      // }
     } catch (error) {
       
       return setAlertModal({
         open: true,
-        message: error?.response?.data?.message,
+        message: error?.response?.data?.message||error.message,
         success: false,
       });
     } finally {
@@ -495,7 +511,31 @@ const AddReview = () => {
   const deleteImage = index => {
     setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
   };
+  const deleteCurrentImage = index => {
+    setCurrentURLS(prevUris => prevUris.filter((_, i) => i !== index));
+  };
+  // Alert.alert("nain")
+const handleFetchReview =useCallback(async ()=>{
+   const res = await axiosInstance.get(`/get-review/${_id}`)
+   setData({
+    review: res.data.review?.text,
+    heatLevel: res.data.review?.heatLevel,
+    rating: res.data.review?.star,
+    foodPairings: res.data.review?.foodPairings,
+    
+   })
+   console.log("res.data.review?.star", res.data.review?.star)
+   setCurrentURLS(res.data.review.images||[])
+},[])
 
+useFocusEffect(
+    useCallback(() => {
+        if (!hasFetched) {
+            handleFetchReview();
+            setHasFetched(true);
+        }
+    }, [handleFetchReview, hasFetched])
+);
   return (
     <ImageBackground
       style={{flex: 1, width: '100%', height: '100%'}}
@@ -541,7 +581,7 @@ const AddReview = () => {
                         lineHeight: scale(50),
                         marginBottom: scale(20),
                       }}>
-                      Add Review
+                      Edit Review
                     </Text>
                     <View
                       style={{
@@ -580,7 +620,9 @@ const AddReview = () => {
                           style={{
                             gap: scale(50),
                           }}>
-                          <SwipeableRating cb={handleRating} />
+                          <SwipeableRating 
+                          initialRating={data.rating}
+                          cb={handleRating} />
                           <View
                             style={{
                               gap: scale(20),
@@ -625,11 +667,13 @@ const AddReview = () => {
                                 </View>
                               </View>
                             </View>
-                            <SimpleLevelSlider cb={handleSlider} />
+                            <SimpleLevelSlider
+                            initialValue={data.heatLevel}
+                            cb={handleSlider} />
                           </View>
                         </View>
-                        <SelectableChips
-                      
+                        <SelectableChips 
+                        initialTasteNotes={data.foodPairings}
                         isClearChips={isClearChips} setData={setData} />
 
                         <View
@@ -709,9 +753,51 @@ const AddReview = () => {
                             gap: scale(20),
                             justifyContent: 'center',
                           }}>
+                            {currentURLS.map((uri, index) => (
+                                           <TouchableOpacity
+                                                               onPress={() => {
+                                                                   setCarouselType(true)
+                                                                       setIsVisible(true);
+                                                                       setCurrentImageIndex(index);
+                                           
+                                                               }}>
+                                                               <View
+                                                                 style={{
+                                                                   position: 'relative',
+                                                                 }}>
+                                                                  <View style={styles.closeButton}>
+                                                                    
+                                                                 <TouchableOpacity
+                                                                   disabled={loading}
+                                                                   onPress={async () => {
+                                                                       deleteCurrentImage(index);
+                                                                   }}
+                                                                 >
+                                                                   <View style={styles.closeButtonInner}>
+                                                                     <X color="#fff" size={scale(15)} />
+                                                                   </View>
+                                                                 </TouchableOpacity>
+                                                                 </View>
+
+                                                                 <Image
+                                                                   key={`${index}_${uri}`}
+                                                                   source={{uri: uri}}
+                                                                   style={{
+                                                                     width: scale(100),
+                                                                     borderColor: '#FFA100',
+                                                                     borderWidth: 1,
+                                                                     height: scale(100),
+                                                                     borderRadius: scale(12),
+                                                                   }}
+                                                                 />
+                                                               </View>
+                                                             </TouchableOpacity>
+                                            ))}
                           {imageUris.map((uri, index) => (
                             <TouchableOpacity
                               onPress={() => {
+                                setCarouselType(false)
+
                                 setIsVisible(true);
                                 setCurrentImageIndex(index);
                               }}>
@@ -749,7 +835,7 @@ const AddReview = () => {
                               handleImagePickerPermission(isSelected);
                             }}
                             style={{
-                              width: imageUris[0]?.uri ? scale(100) : '100%',
+                              width: (imageUris[0] || currentURLS[0]) ? scale(100) : '100%',
                             }}>
                             <View
                               style={{
@@ -772,7 +858,7 @@ const AddReview = () => {
                                   color: 'white',
                                   fontWeight: 700,
                                 }}>
-                                {imageUris[0]?.uri ? '+' : 'Upload a picture'}
+                                {(imageUris[0] || currentURLS[0])? '+' : 'Upload a picture'}
                               </Text>
                             </View>
                           </TouchableOpacity>
@@ -824,12 +910,18 @@ const AddReview = () => {
           title={yesNoModal.message}
           cb={yesNoModal.cb}
         />
-        <ImageView
-          imageIndex={currentImageIndex}
-          images={imageUris.map(uri => ({uri: uri.uri}))}
-          visible={visible}
-          onRequestClose={() => setIsVisible(false)}
-        />
+          {carouselType &&<ImageView
+            imageIndex={currentImageIndex}
+            images={currentURLS.map(uri => ({uri}))}
+            visible={visible}
+            onRequestClose={() => setIsVisible(false)}
+          />}
+          {!carouselType&&<ImageView
+            imageIndex={currentImageIndex}
+            images={imageUris.map(uri => ({uri: uri.uri}))}
+            visible={visible}
+            onRequestClose={() => setIsVisible(false)}
+          />}
       </SafeAreaView>
       <CustomAlertModal
         title={alertModal?.message}
@@ -848,7 +940,7 @@ const AddReview = () => {
   );
 };
 
-export default AddReview;
+export default EditReviewScreen;
 
 const styles = StyleSheet.create({
   separator: {
@@ -861,7 +953,7 @@ const styles = StyleSheet.create({
     right: scale(10),
   },
   closeButtonInner: {
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     padding: scale(2),
     borderRadius: 100,
   },

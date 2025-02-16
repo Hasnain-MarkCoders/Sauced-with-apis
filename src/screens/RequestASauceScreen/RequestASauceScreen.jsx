@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../components/Header/Header.jsx';
@@ -104,6 +105,7 @@ const RequestASauceScreen = () => {
     <ImageBackground
       style={{flex: 1, width: '100%', height: '100%'}}
       source={home}>
+      
       <SafeAreaView
         style={{flex: 1, paddingBottom: isKeyBoard ? 0 : verticalScale(0)}}>
         <Header
@@ -113,10 +115,15 @@ const RequestASauceScreen = () => {
           headerContainerStyle={{
             paddingBottom: scale(20),
           }}
-          title={'Followers'}
+          title={'Request A Sauce'}
           showText={false}
         />
-
+  <TouchableWithoutFeedback 
+  accessible={false}
+        onPress={Keyboard.dismiss}
+        sx={{
+          flex:1
+        }}>
         <View
           style={{
             paddingHorizontal: scale(20),
@@ -284,6 +291,7 @@ const RequestASauceScreen = () => {
             </View>
           </View>
         </View>
+        </TouchableWithoutFeedback>
 
         <CustomAlertModal
           success={alertModal?.success}

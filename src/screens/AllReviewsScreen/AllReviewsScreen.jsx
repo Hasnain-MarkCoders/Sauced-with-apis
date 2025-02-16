@@ -131,7 +131,7 @@ useEffect(()=>{
                     fontSize: scale(35),
                     lineHeight: scale(50),
                   }}>
-                  Reviews 
+                  Reviews
                 </Text>
                 {showAddReviewButton && (
                   <TouchableOpacity
@@ -177,6 +177,10 @@ useEffect(()=>{
                 renderItem={({item}) => (
                
                   <SingleReview
+                  fetchReview={(id)=>{
+                    const newData = data.filter(item=>item._id!=id)
+                    setData(newData)
+                  }}
                 foodPairings={item?.foodPairings||[]}
                   isNavigate={true}
                   sauceId = {item?.sauceId?._id}
@@ -191,6 +195,7 @@ useEffect(()=>{
                  textLength={item?.text?.length}
                  date={item?.createdAt}
                  images={item?.images}
+                 reviewId = {item?._id}
                   
                   
                   />

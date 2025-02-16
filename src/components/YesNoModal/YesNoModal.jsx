@@ -139,8 +139,7 @@ showCancel?
                 
                 onPress={()=>{
                   cb()
-                  setModalVisible(false)
-                
+                    setModalVisible(false)
                 }}
                 style={{
                   backgroundColor:"white",

@@ -1,4 +1,4 @@
-import {  Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {  Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import CustomRating from '../CustomRating/CustomRating'
 import { scale } from 'react-native-size-matters'
@@ -7,6 +7,11 @@ import { useNavigation } from '@react-navigation/native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import ImageView from "react-native-image-viewing";
 import SwipeableRating from '../SwipeableRating/SwipeableRating'
+import { Pencil, Trash } from 'lucide-react-native'
+import { useSelector } from 'react-redux'
+import CustomConfirmModal from '../CustomConfirmModal/CustomConfirmModal'
+import YesNoModal from '../YesNoModal/YesNoModal'
+import useAxios from '../../../Axios/useAxios'
 const SingleReview = ({
   item = null,
   isNavigate = false,
@@ -22,12 +27,25 @@ const SingleReview = ({
   date = "",
   images = [],
   foodPairings=[],
+  reviewId=null,
+  fetchReview=()=>{}
 }) => {
+  const axiosInstance = useAxios()
+
   const navigation = useNavigation()
+  const auth = useSelector(state=>state.auth)
+  const authId = auth?._id
   const [readMore, setReadMore] = useState(textLength > 130)
   const [loading, setLoading] = useState(true)
   const [visible, setIsVisible] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [yesNoModal, setYesNoModal] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+    cb: () => { },
+    isQuestion:false
+  })
   const openImageView = (index) => {
     setCurrentIndex(index);
     setIsVisible(true);
@@ -37,10 +55,37 @@ const SingleReview = ({
     setIsVisible(false);
   };
 
+  const handleDelete = ()=>{
+    setYesNoModal({
+      open: true,
+      message: "Delete Review?",
+      severity: "success",
+      cb: async() => { 
+        const res = await axiosInstance.delete(`/delete-review/${reviewId}`);
+        fetchReview(reviewId)
+      },
+      isQuestion:true
+    })
+  }
+
+  const handleEditReview = ()=>{
+    setYesNoModal({
+      open: true,
+      message: "Edit Review?",
+      severity: "success",
+      cb: () => { 
+        navigation.navigate("EditReviewScreen", {
+          _id:reviewId,
+        })
+      },
+      isQuestion:true
+    })
+  }
+
   return (
     <View style={{
       gap: scale(20),
-      marginBottom: scale(40)
+      marginBottom: scale(10)
     }}>
       <View
 
@@ -56,7 +101,9 @@ const SingleReview = ({
         }}>
         <TouchableOpacity
             style={{
-              marginBottom: scale(10)
+              marginBottom: scale(10),
+              alignSelf: "flex-start", // Ensures width matches content
+
             }}
           onPress={() => {
             if (isNavigate) {
@@ -82,6 +129,12 @@ const SingleReview = ({
           </Text>
         </TouchableOpacity>
           <TouchableOpacity
+          style={{
+            alignSelf: "flex-start", // Ensures width matches content
+            marginTop:scale(7),
+            maxWidth:"80%"
+
+          }}
             onPress={() => {
               if (isNavigate) {
                 navigation.navigate("ProductScreen", {
@@ -164,17 +217,46 @@ const SingleReview = ({
           }
 
         </View>
-        {date && <Text style={{
+        {/* {date && <Text style={{
           position: "absolute",
           top: scale(10),
           right: scale(10),
           fontSize: scale(11),
-          color: "white"
+        
         }}>
           {
             formatEventDate(new Date(date), true)
           }
-        </Text>}
+        </Text>} */}
+        {
+          <View style={{
+            position: "absolute",
+            top: scale(10),
+            right: scale(10),
+          }}>
+        {date&&  <Text style={{
+              color: "white"
+          }}>
+          {
+            formatEventDate(new Date(date), true)
+          }
+          </Text>}
+       { _id==authId &&  <View style={{
+            flexDirection: "row",
+            gap: scale(20),
+            marginTop:scale(10),
+            justifyContent:"flex-end",
+          }}>
+          <Pencil hitSlop={20}
+            onPress={()=>{
+              handleEditReview()
+          }}  size={14} stroke={"#FFA500"} />
+          <Trash hitSlop={20} onPress={()=>{
+           handleDelete()
+          }}   size={14} stroke={"#FFA500"} />
+          </View>}
+          </View>
+        }
         <View style={{
           width: 'flex',
           width: '100%',
@@ -234,7 +316,24 @@ const SingleReview = ({
           visible={visible}
           onRequestClose={closeImageView}
         />
+     
+       <YesNoModal
+       
+       modalVisible = {yesNoModal.open}
+       setModalVisible = {(isOpen)=>{
+        setYesNoModal(prev=>({...prev,open:isOpen}))
+       }}
+       success={true}
+       title={yesNoModal.message}
+       isQuestion={true}
+       cb={yesNoModal.cb}
+       showCancel = {true}
+       ButtonText = "Continue"
+       CancelText = "Cancel"
+       />
+      
       </View>
+    
     </View>
   )
 }

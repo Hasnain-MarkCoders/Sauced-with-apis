@@ -24,7 +24,7 @@ const LEVEL_MAX = 10;
 // Updated total levels calculation
 const TOTAL_LEVELS = LEVEL_MAX - LEVEL_MIN + 1; // Added +1 to include both min and max levels
 
-const SimpleLevelSlider = ({ cb = () => {} }) => {
+const SimpleLevelSlider = ({ cb = () => {} , initialValue=1}) => {
   const [currentLevel, setCurrentLevel] = useState(LEVEL_MIN); // Start at level 1
   const [sliderWidth, setSliderWidth] = useState(SLIDER_WIDTH); // Actual slider width after layout
   const thumbPosition = useRef(new Animated.Value(0)).current;
@@ -130,7 +130,7 @@ const SimpleLevelSlider = ({ cb = () => {} }) => {
       thumbTintColor={"#FFA500"}
       minimumTrackTintColor="#FFA500"
       maximumTrackTintColor="#FFA500"
-    
+    value={initialValue}
        minimumValue={1}
        maximumValue={10}
       onValueChange={(e)=>{

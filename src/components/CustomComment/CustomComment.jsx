@@ -21,7 +21,8 @@ import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import CustomAlertModal from '../CustomAlertModal/CustomAlertModal';
 import YesNoModal from '../YesNoModal/YesNoModal';
-import { MapPin } from 'lucide-react-native';
+import { MapPin, Pencil, Trash } from 'lucide-react-native';
+import { useSelector } from 'react-redux';
 
 const CustomComment = ({
   getId = () => { },
@@ -48,9 +49,15 @@ const CustomComment = ({
   sauce_name = null,
   sauce_id = null,
   foodPairings = [],
-
+  ownerId = null,
+  fetchCheckings=()=>{}
 }) => {
+  const axiosInstance = useAxios()
+
+  const auth = useSelector(state=>state.auth)
+  const authId = auth?._id
   useEffect(() => { }, [profileUri]);
+  
   const [commentStatus, setCommentStatus] = useState(hasLikedUser);
   const [visible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,7 +79,6 @@ const CustomComment = ({
     message: '',
     success: true,
   });
-  const axiosInstance = useAxios();
   let watchId = useRef(null)
   const navigation = useNavigation()
   const handleLike = async () => {
@@ -245,7 +251,30 @@ const CustomComment = ({
       ],
     );
   };
+  const handleDelete = ()=>{
+    setYesNoModal({
+      open: true,
+      message: "Delete Check-in?",
+      severity: "success",
+      cb: async() => { 
+        const res = await axiosInstance.delete(`/delete-checkin/${_id}`);
+        fetchCheckings(_id)
+      },
+      isQuestion:true
+    })
+  }
 
+  const handleEditReview = ()=>{
+    setYesNoModal({
+      open: true,
+      message: "Edit Check-in?",
+      severity: "success",
+      cb: () => { 
+        navigation.navigate('EditCheckInScreen', {_id})
+      },
+      isQuestion:true
+    })
+  }
 
   const handleClearWatchid = useCallback(() => {
     if (watchId.current !== null) {
@@ -435,6 +464,7 @@ const CustomComment = ({
             </> */}
           </View>
         </View>
+        <View>
         <View style={{}}>
           <TouchableOpacity
             onPress={() => {
@@ -461,6 +491,21 @@ const CustomComment = ({
               </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        { ownerId==authId &&  <View style={{
+            flexDirection: "row",
+            gap: scale(20),
+            marginTop:scale(10),
+            justifyContent:"flex-end",
+          }}>
+          <Pencil hitSlop={20}
+            onPress={()=>{
+              handleEditReview()
+          }}  size={14} stroke={"#FFA500"} />
+          <Trash hitSlop={20} onPress={()=>{
+           handleDelete()
+          }}   size={14} stroke={"#FFA500"} />
+          </View>}
         </View>
       </View>
 {/* message and address */}
@@ -732,8 +777,10 @@ const CustomComment = ({
           });
           setLocationLoading(false);
         }}
+        showCancel={true}
         success={yesNoModal.severity}
-        title={'Location Request'}
+        // title={'Location Request'}
+        title={yesNoModal.message}
         cb={yesNoModal.cb}
       />
     </View>

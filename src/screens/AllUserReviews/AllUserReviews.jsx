@@ -145,6 +145,10 @@ navigation.addListener("blur", ()=>{
               }
               renderItem={({item}) => (
                 <SingleReview
+                fetchReview = {(id)=>{
+                  const newData = data.filter(item=>item._id!=id)
+                  setData(newData)
+                }}
                 foodPairings={item?.foodPairings||[]}
                   sauceId={item?.sauceId?._id}
                   isNavigate={true}
@@ -159,6 +163,7 @@ navigation.addListener("blur", ()=>{
                   textLength={item?.text?.length}
                   date={item?.createdAt}
                   images={item?.images}
+                  reviewId = {item?._id}
                 />
               )}
             />

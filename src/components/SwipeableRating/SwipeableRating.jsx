@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { View, PanResponder, StyleSheet } from 'react-native';
 import { Star } from 'lucide-react-native';
 
@@ -108,6 +108,9 @@ const SwipeableRating = ({
       );
     });
   }, [rating, maxRating, size, color, emptyColor, gap]);
+  useEffect(()=>{
+    setRating(initialRating)
+  },[initialRating])
 
   return (
     <View

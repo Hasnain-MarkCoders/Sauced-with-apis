@@ -67,8 +67,9 @@ const wishListSlice = createSlice({
         }
         return newItem;
       });
+      const update = [...state, newState]
 
-      return newState;
+      return update;
     },
 
     handleToggleWishList: (state, action) => {

@@ -9,7 +9,8 @@ const CustomConfirmModal = ({
   cb=()=>{},
   isEnabled=true,
   loading=false,
-    title=""
+    title="",
+    showBackDrop=true
 }) => {
 
   useEffect(()=>{
@@ -29,7 +30,7 @@ const CustomConfirmModal = ({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    backgroundColor: 'rgba(33, 22, 10, .85)', // Black overlay with transparency
+    backgroundColor: showBackDrop ?'rgba(33, 22, 10, .85)':'transparent', // Black overlay with transparency
     width: '100%', // Ensure it covers the full screen width
     height: '100%', // Ensure it covers the full screen height
   }}>

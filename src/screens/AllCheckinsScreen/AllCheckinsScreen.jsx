@@ -248,6 +248,10 @@ const sendToRoute = route?.params?.sendToRoute
                 {index == 1 && (
                   <View style={{}}>
                     <CommentsList
+                    fetchCheckings={(id)=>{
+                      const newData = data.filter(item=>item._id!=id)
+                      setData(newData)
+                    }}
                       commentsData={data}
                       cb={handleUserProfileView}
                       getId={getId}

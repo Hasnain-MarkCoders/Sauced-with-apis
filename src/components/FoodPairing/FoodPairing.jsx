@@ -8,11 +8,13 @@ const flavors = [
   "Fruity", "Mild", "Mellow", "Medium", "Scorching", "Tomatoey", "Vinegary", 
   "Onion", "Umami", "Soy", "Sesame", "Chemical", "Capsaicin"
 ];
+const defaultTasteNotes = []; // Outside component to avoid re-creation
+
 
 const { width } = Dimensions.get('window');
 
-const SelectableChips = ({setData=()=>{}, isClearChips=false}) => {
-  const [selectedFlavors, setSelectedFlavors] = useState([]);
+const SelectableChips = ({setData=()=>{}, isClearChips=false, initialTasteNotes=defaultTasteNotes}) => {
+  const [selectedFlavors, setSelectedFlavors] = useState(initialTasteNotes);
 
   const handleChipPress = (flavor) => {
     if (selectedFlavors.includes(flavor)) {
@@ -29,6 +31,10 @@ const SelectableChips = ({setData=()=>{}, isClearChips=false}) => {
       setSelectedFlavors([])
     }
   },[isClearChips])
+
+  useEffect(()=>{
+setSelectedFlavors(initialTasteNotes)
+  },[initialTasteNotes])
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -57,8 +63,9 @@ const SelectableChips = ({setData=()=>{}, isClearChips=false}) => {
         numColumns={4} // Three chips per row
         contentContainerStyle={styles.flatListContent}
       /> */}
-      {flavors.map(item=>{
+      {flavors.map((item, index)=>{
         return <TouchableOpacity
+         key={index}
          style={[
            styles.chip,
            selectedFlavors.includes(item) && styles.chipSelected

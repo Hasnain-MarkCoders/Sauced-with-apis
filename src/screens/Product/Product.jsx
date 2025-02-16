@@ -432,6 +432,10 @@ const Product = () => {
                       </View>
 
                             <CommentsList
+                            fetchCheckings={(id)=>{
+                              const newData = data.filter(item=>item._id!=id)
+                              setData(newData)
+                            }}
                             commentsData={data}
                             cb={handleUserProfileView}  getId={getId} handleSubmitMessage={handleSubmitMessage} setPage={setPage}
                             loading={loading} hasMore={hasMore}
