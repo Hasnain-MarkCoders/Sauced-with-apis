@@ -55,21 +55,33 @@ const wishListSlice = createSlice({
       // Create a map from existing state items by their _id for quick lookup
       const stateMap = new Map(state.map(item => [item?._id, item]));
 
-      // Create the new state by mapping over the incoming payload
-      const newState = action?.payload?.map(newItem => {
-        const existingItem = stateMap.get(newItem?._id);
-        if (existingItem) {
-          // Merge existing properties that need to be preserved
-          return {
-            ...existingItem,
-            ...newItem,
-          };
-        }
-        return newItem;
-      });
-      const update = [...state, newState]
+      // // Create the new state by mapping over the incoming payload
+      // const newState = action?.payload?.map(newItem => {
+      //   const existingItem = stateMap.get(newItem?._id);
+      //   if (existingItem) {
+      //     // Merge existing properties that need to be preserved
+      //     return {
+      //       ...existingItem,
+      //       ...newItem,
+      //     };
+      //   }
+      //   return newItem;
+      // });
+      // const update = [...state, newState]
 
-      return update;
+      // return update;
+
+      action.payload.forEach(item => {
+        stateMap.set(item._id, item);
+      });
+      state.forEach(item => {
+        if (!stateMap.has(item._id)) {
+          stateMap.delete(item._id);
+        }
+      });
+
+      // Replace the state with the updated map values
+      return Array.from(stateMap.values());
     },
 
     handleToggleWishList: (state, action) => {
