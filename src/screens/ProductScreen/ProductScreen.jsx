@@ -64,6 +64,8 @@ const ProductScreen = ({}) => {
   const [isKeyBoard, setIsKeyBoard] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [id, setId] = useState(0);
+  const [replyId, setReplyId] = useState(null);
+
   const [query, setQuery] = useState({search: ''});
   const [sauce, setSauce] = useState(null);
   const [userData, setUserData] = useState({
@@ -92,6 +94,7 @@ const ProductScreen = ({}) => {
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setIsKeyBoard(false);
+      
     });
 
     return () => {
@@ -104,23 +107,73 @@ const ProductScreen = ({}) => {
     setIsKeyBoard(true);
   };
 
-  const getId = (id = 0) => {
+  const getId = (id = 0, replyID) => {
+    if(replyID){
+      setReplyId(replyID)
+      const existingMessage = data.find(item => item?._id == id);
+      if(replyID && existingMessage){
+      const reply =   existingMessage?.comments?.find(item=>item._id ==replyID)
+      if(reply){
+        setQuery({search:reply.text})
+      }
+      }
+    }
     return setId(id);
+    
   };
 
   const handleAddMessage = async () => {
     const existingMessage = data.find(item => item?._id == id);
-    if (existingMessage) {
-      existingMessage?.comments?.push({
-        user: {image: auth?.url, name: auth?.name},
-        text: query.search,
+    if(replyId && existingMessage){
+      if (existingMessage) {
+        const replyIndex = existingMessage?.comments?.findIndex(item => item?._id == replyId);
+        if (replyIndex !== -1) {
+            const updatedData = data.map(item => {
+                if (item._id === id) {
+                    return {
+                        ...item,
+                        comments: item.comments.map(comment => 
+                            comment._id === replyId ? { ...comment, text: query.search } : comment
+                        ),
+                    };
+                }
+                return item;
+            });
+            setData(updatedData);
+          }}
+
+          const res = await axiosInstance.put(`/edit-comment?commentId=${replyId}&text=${query.search}`);
+          setReplyId(null)
+    }else{
+
+      if (existingMessage) {
+        const tempId = `temp-${Date.now()}`;
+        existingMessage?.comments?.push({
+          _id:tempId,
+          user: {image: auth?.url, name: auth?.name, _id:auth._id},
+          text: query.search,
+        });
+        const res = await axiosInstance.post(`/create-comment`, {
+          checkinId: id,
+          text: query.search,
+        });
+        const updatedData = data.map(item => {
+          if (item._id === id) {
+              return {
+                  ...item,
+                  comments: item.comments.map(comment => 
+                      comment._id === tempId? { ...comment, _id:res.data.comment._id } : comment
+                  ),
+              };
+          }
+          return item;
       });
-      setQuery({search: ''});
-      const res = await axiosInstance.post(`/create-comment`, {
-        checkinId: id,
-        text: query.search,
-      });
+      setData(updatedData);
     }
+  }
+  
+  
+      setQuery({search: ''});
   };
 
   useEffect(() => {
@@ -452,9 +505,31 @@ const ProductScreen = ({}) => {
                         </View>
 
                         <CommentsList
-                        fetchCheckings={(id)=>{
-                          const newData = data.filter(item=>item._id!=id)
-                          setData(newData)
+                        fetchCheckings={(id, replyId)=>{
+                          if(replyId){
+                            const existingMessage = data.find(item => item?._id == id);
+                            if(replyId && existingMessage){
+                              if (existingMessage) {
+                                const replyIndex = existingMessage?.comments?.findIndex(item => item?._id == replyId);
+                                if (replyIndex !== -1) {
+                                    const updatedData = data.map(item => {
+                                        if (item._id === id) {
+                                            return {
+                                                ...item,
+                                                comments: item.comments.filter(comment => 
+                                                    comment._id !== replyId 
+                                                ),
+                                            };
+                                        }
+                                        return item;
+                                    });
+                                    setData(updatedData);
+                                }}}
+                          }else{
+                            const newData = data.filter(item=>item._id!=id)
+                            setData(newData)
+
+                          }
                         }}
                           commentsData={data}
                           cb={handleUserProfileView}

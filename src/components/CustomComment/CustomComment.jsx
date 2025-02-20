@@ -50,7 +50,7 @@ const CustomComment = ({
   sauce_id = null,
   foodPairings = [],
   ownerId = null,
-  fetchCheckings=()=>{}
+  fetchCheckings=()=>{},
 }) => {
   const axiosInstance = useAxios()
 
@@ -254,11 +254,18 @@ const CustomComment = ({
   const handleDelete = ()=>{
     setYesNoModal({
       open: true,
-      message: "Delete Check-in?",
+      message: "Delete "+(isReply?"Comment?":"Check-in?"),
       severity: "success",
       cb: async() => { 
-        const res = await axiosInstance.delete(`/delete-checkin/${_id}`);
+        let endpoint = ""
+        if(isReply){
+        endpoint =  `/delete-comment?commentId=${item._id}`
+        fetchCheckings(_id, item._id)
+        }else{
+          endpoint =  `/delete-checkin/${_id}`
         fetchCheckings(_id)
+        }
+        const res = await axiosInstance.delete(endpoint);
       },
       isQuestion:true
     })
@@ -267,10 +274,19 @@ const CustomComment = ({
   const handleEditReview = ()=>{
     setYesNoModal({
       open: true,
-      message: "Edit Check-in?",
+      message: "Edit " + (isReply?"Comment?":" Check-in?"),
       severity: "success",
       cb: () => { 
-        navigation.navigate('EditCheckInScreen', {_id})
+
+        if(isReply){
+          getId(_id,item._id)
+          setTimeout(()=>{
+            handleSubmitMessage();
+          },0)
+        }else{
+
+          navigation.navigate('EditCheckInScreen', {_id})
+        }
       },
       isQuestion:true
     })
@@ -510,7 +526,8 @@ const CustomComment = ({
       </View>
 {/* message and address */}
       <>
-        <>
+        <View style={{
+        }}>
           {
 
             showMore ?
@@ -565,7 +582,8 @@ const CustomComment = ({
                 </TouchableOpacity>}
               </>
           }
-        </>
+     
+        </View>
         {address && <View style={{
           flexDirection: "row",
           gap: scale(10),
@@ -733,6 +751,8 @@ const CustomComment = ({
           }}>
           {replies?.map(item => (
             <CustomComment
+            _id={_id}
+            getId={getId}
               cb={cb}
               isReply={true}
               showBorder={false}
@@ -742,6 +762,8 @@ const CustomComment = ({
               title={item?.user?.name}
               text={item.text}
               item={item}
+              ownerId={item?.user?._id}
+              fetchCheckings={fetchCheckings}
             />
           ))}
         </View>

@@ -12,7 +12,8 @@ const CommentsList = ({ commentsData=[],
      hasMore,
       setPage = () => { },
      handleSubmitMessage = () => { }, 
-     fetchCheckings=()=>{}
+     fetchCheckings=()=>{},
+     setIsReply=()=>{}
     }) => {
   return (
     <>
@@ -38,6 +39,7 @@ const CommentsList = ({ commentsData=[],
         foodPairings={item?.foodPairings||[]}
         address = {item?.address}
         location = {item?.location}
+        setIsReply={setIsReply}
         getId={getId}
         item={item}
         cb={cb}

@@ -3,17 +3,19 @@ import AppRouter from './AppRouter';
 import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './src/Redux/store';
-import { LogBox } from 'react-native';
+import {  Alert, BackHandler, Linking, LogBox, Text, View } from 'react-native';
 import BootSplash from "react-native-bootsplash";
 import Toast, { BaseToast }  from 'react-native-toast-message';
 import { scale } from 'react-native-size-matters';
-import { Alert, Linking, Platform } from 'react-native';
-import SpInAppUpdates, { IAUUpdateKind } from 'sp-react-native-in-app-updates';
-
+import { Platform } from 'react-native';
+import SpInAppUpdates, {
+  AndroidInstallStatus,
+  IAUUpdateKind,
+} from 'sp-react-native-in-app-updates';
+const APP_STORE_URL = 'https://apps.apple.com/us/app/sauced-app/id6737129890';
 function App() {
 LogBox.ignoreLogs(['Warning: ...']); 
 LogBox.ignoreAllLogs();
-
 React.useEffect(() => {
   if (__DEV__) {
     console.warn = () => {};
@@ -27,45 +29,6 @@ React.useEffect(() => {
     await BootSplash.hide({ fade: true });
   });
 }, []);
-
-
-React.useEffect(() => {
-  const checkForUpdate = async () => {
-    const inAppUpdates = new SpInAppUpdates(false);  // Disable debug mode for production
-    try {
-      // Check if an update is available without needing to manually specify the version
-      const result = await inAppUpdates.checkNeedsUpdate();
-
-      console.log('Update check result:', result);
-
-      // For Android
-      if (Platform.OS === 'android') {
-        if (result.shouldUpdate) {
-          console.log('Android update available');
-          inAppUpdates.startUpdate({ updateType: IAUUpdateKind.IMMEDIATE });  // Force update immediately
-        } else {
-          console.log('No update needed on Android');
-        }
-      }
-
-      // For iOS
-      else if (Platform.OS === 'ios') {
-        if (result.shouldUpdate) {
-          console.log('iOS update available. Redirecting to App Store.');
-          const appStoreURL = 'itms-apps://apps.apple.com/us/app/sauced-app/id6737129890';  // Your App Store URL
-          Linking.openURL(appStoreURL);  // Redirect to App Store
-        } else {
-          console.log('No update needed for iOS.');
-        }
-      }
-    } catch (error) {
-      console.error('Error checking update:', error);
-    }
-  };
-
-  checkForUpdate();  // Trigger the check on app startup
-}, []);
-
 
 const toastConfig = {
   /*
@@ -92,10 +55,65 @@ const toastConfig = {
       }}
     />
   ),
-  
 
 };
 
+const inAppUpdates = new SpInAppUpdates(
+  false // isDebug
+);
+
+// inAppUpdates.checkNeedsUpdate().then(result => {
+//   if (result.shouldUpdate) {
+//     const updateOptions = Platform.select({
+//       ios: {
+//         title: 'Update available',
+//         message: "There is a new version of the app available on the App Store, do you want to update it?",
+//         buttonUpgradeText: 'Update',
+//         buttonCancelText: 'Cancel',
+//         forceUpgrade :true
+//       },
+//       android: {
+//         updateType: IAUUpdateKind.IMMEDIATE,
+//       },
+//     });
+//     inAppUpdates.startUpdate(updateOptions);
+//   }
+// });
+
+
+inAppUpdates.checkNeedsUpdate().then((result) => {
+  if (result.shouldUpdate) {
+    const showUpdatePrompt = () => {
+      const updateOptions = Platform.select({
+        ios: {
+          title: 'Update available',
+          message: "There is a new version of the app available on the App Store, do you want to update it?",
+          buttonUpgradeText: 'Update',
+          buttonCancelText: 'Cancel',
+          forceUpgrade: true, // Ensures user cannot dismiss the update
+          onUpgrade: () => Linking.openURL(APP_STORE_URL),
+        },
+        android: {
+          updateType: IAUUpdateKind.IMMEDIATE,
+        },
+      });
+
+      inAppUpdates.startUpdate(updateOptions).then(() => {
+        // Android-specific listeners
+        if (Platform.OS === 'android') {
+          // Listen for status changes (e.g., cancellation)
+          inAppUpdates.addStatusUpdateListener((status) => {
+            if (status.status === AndroidInstallStatus.CANCELED || status.status === AndroidInstallStatus.FAILED) {
+              BackHandler.exitApp(); // Close app on cancellation/failure
+            }
+          });
+        }
+      });
+    };
+
+    showUpdatePrompt();
+  }
+});
 
 
   return (

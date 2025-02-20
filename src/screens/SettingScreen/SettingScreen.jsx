@@ -178,7 +178,7 @@ const SettingScreen = () => {
                 }}
                 onPress={() =>
                   Linking.openURL(
-                    'https://www.saucedapp.com/terms-and-conditions',
+                    'https://www.saucedapp.com/contact',
                   )
                 }
                 title={'Help & Support'}
