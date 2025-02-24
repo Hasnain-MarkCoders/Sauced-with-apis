@@ -513,7 +513,7 @@ const AddReview = () => {
           headerContainerStyle={{
             paddingBottom: scale(20),
           }}
-          title={'Followers'}
+          title={'Add Review'}
           showText={false}
         />
         <FlatList

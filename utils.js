@@ -495,7 +495,7 @@ export const welcomepoints= [
   "- Tracking/collecting every hot sauce you've tried and want to try",
   "- Stay up to date with the latest hot sauce events",
   "- Total bragging rights (every time you leave a review or post, you're awarded points and move up a tier)",
-  "- Users can display earned badges on their profiles to showcase their expertise and dedication within the hot sauce community. Users are awarded 1 point every time they post a review 2 points if they include an image. "
+  "- Users can display earned badges on their profiles to showcase their expertise and dedication within the hot sauce community. Users are awarded 1 point every time they post a review or check-in, 2 points if they include an image. "
 ]
 
 export const isDate = function(date) {

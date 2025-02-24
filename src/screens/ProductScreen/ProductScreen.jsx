@@ -357,7 +357,8 @@ const ProductScreen = ({}) => {
           <Header
             showMenu={false}
             cb={() => {
-              navigation.navigate('Main');
+              // navigation.navigate('Main');
+              navigation.goBack()
 
               // navigation.goBack()
             }}

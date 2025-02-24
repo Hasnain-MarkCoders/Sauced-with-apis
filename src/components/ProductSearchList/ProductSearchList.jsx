@@ -27,6 +27,7 @@ const ProductSearchList = ({
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [loading, setLoading] = useState(false);
+    
     const dispatch = useDispatch()
 
     const fetchSauces = useCallback(
@@ -62,7 +63,7 @@ const ProductSearchList = ({
         } finally {
             setLoading(false);
         }
-    }, 500, {trailing:true})
+    }, 500, {trailing:true, leading:true})
     
     , [hasMore, page, searchTerm, type]);
 
